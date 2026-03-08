@@ -1,0 +1,55 @@
+import type { IndustryTemplate } from './index';
+
+export const kommuneTemplate: IndustryTemplate = {
+  id: 'kommune',
+  name: 'Kommune',
+  description: 'Kommunal forvaltning med innbyggertjenester, plan og bygg, helse og omsorg, og digital infrastruktur.',
+  icon: '🏛️',
+  capabilities: [
+    // L1 domains
+    { id: 'k1', name: 'Innbyggertjenester', level: 1, parent: null, maturity: 2, risk: 3, description: 'Digitale tjenester mot innbyggere og næringsliv.' },
+    { id: 'k2', name: 'Plan & Bygg', level: 1, parent: null, maturity: 2, risk: 2, description: 'Arealplanlegging, byggesak og geodata.' },
+    { id: 'k3', name: 'Helse & Omsorg', level: 1, parent: null, maturity: 1, risk: 3, description: 'Helsetjenester, eldreomsorg og velferdsteknologi.' },
+    { id: 'k4', name: 'Oppvekst & Utdanning', level: 1, parent: null, maturity: 2, risk: 2, description: 'Barnehage, skole og oppveksttjenester.' },
+    { id: 'k5', name: 'Økonomi & Styring', level: 1, parent: null, maturity: 2, risk: 2, description: 'Budsjett, regnskap og virksomhetsstyring.' },
+    { id: 'k6', name: 'Digital Infrastruktur', level: 1, parent: null, maturity: 1, risk: 3, description: 'IT-drift, integrasjon, informasjonssikkerhet og felleskomponenter.' },
+    // L2 sub-capabilities
+    { id: 'k1.1', name: 'Selvbetjening', level: 2, parent: 'k1', maturity: 2, risk: 3, description: 'Digitale selvbetjeningsløsninger for innbyggere.' },
+    { id: 'k1.2', name: 'Saksbehandling', level: 2, parent: 'k1', maturity: 2, risk: 2, description: 'Digital saksbehandling og dokumenthåndtering.' },
+    { id: 'k1.3', name: 'Innbyggerdialog', level: 2, parent: 'k1', maturity: 1, risk: 2, description: 'Kanaler for dialog og medvirkning.' },
+    { id: 'k2.1', name: 'Byggesak', level: 2, parent: 'k2', maturity: 2, risk: 2, description: 'Digital byggesaksbehandling.' },
+    { id: 'k2.2', name: 'Arealplan', level: 2, parent: 'k2', maturity: 2, risk: 2, description: 'Arealplanlegging og regulering.' },
+    { id: 'k2.3', name: 'Geodata', level: 2, parent: 'k2', maturity: 2, risk: 1, description: 'Kartdata og geografisk informasjon.' },
+    { id: 'k3.1', name: 'Pasientjournal', level: 2, parent: 'k3', maturity: 1, risk: 3, description: 'Elektronisk pasientjournal og helsedata.' },
+    { id: 'k3.2', name: 'Velferdsteknologi', level: 2, parent: 'k3', maturity: 1, risk: 3, description: 'Trygghetsalarmer, sensorer og digital hjemmeoppfølging.' },
+    { id: 'k3.3', name: 'Koordinering', level: 2, parent: 'k3', maturity: 1, risk: 2, description: 'Koordinering mellom tjenestenivåer.' },
+    { id: 'k4.1', name: 'Skoleadministrasjon', level: 2, parent: 'k4', maturity: 2, risk: 2, description: 'Elevadministrasjon og skoleportaler.' },
+    { id: 'k4.2', name: 'Læringsplattform', level: 2, parent: 'k4', maturity: 2, risk: 2, description: 'Digitale læringsverktøy og plattformer.' },
+    { id: 'k4.3', name: 'Barnehageopptak', level: 2, parent: 'k4', maturity: 2, risk: 1, description: 'Digital barnehageopptak og administrasjon.' },
+    { id: 'k5.1', name: 'Budsjett & Regnskap', level: 2, parent: 'k5', maturity: 2, risk: 2, description: 'Budsjettering og regnskapsføring.' },
+    { id: 'k5.2', name: 'Virksomhetsstyring', level: 2, parent: 'k5', maturity: 1, risk: 2, description: 'Mål- og resultatstyring.' },
+    { id: 'k5.3', name: 'Innkjøp', level: 2, parent: 'k5', maturity: 2, risk: 2, description: 'Innkjøpsprosesser og avtalehåndtering.' },
+    { id: 'k6.1', name: 'Integrasjon', level: 2, parent: 'k6', maturity: 1, risk: 3, description: 'Integrasjon mellom fagsystemer.' },
+    { id: 'k6.2', name: 'Informasjonssikkerhet', level: 2, parent: 'k6', maturity: 1, risk: 3, description: 'Sikkerhet, personvern og tilgangsstyring.' },
+    { id: 'k6.3', name: 'Skyplattform', level: 2, parent: 'k6', maturity: 1, risk: 2, description: 'Skybasert infrastruktur og drift.' },
+  ],
+  sampleInitiatives: [
+    { id: 'ki1', name: 'Digital innbyggerportal', dimension: 'teknologi', horizon: 'near', order: 1, capabilities: ['k1', 'k1.1', 'k1.3'], description: 'Ny selvbetjeningsportal for kommunale tjenester.', owner: 'IT', dependsOn: [], maturityEffect: { 'k1': 3, 'k1.1': 3 }, notes: '', valueChains: ['kvc1'] },
+    { id: 'ki2', name: 'Integrasjonsplattform', dimension: 'teknologi', horizon: 'near', order: 2, capabilities: ['k6', 'k6.1'], description: 'Sentral integrasjon mellom fagsystemer.', owner: 'IT', dependsOn: [], maturityEffect: { 'k6.1': 3 }, notes: '', valueChains: ['kvc2'] },
+    { id: 'ki3', name: 'Velferdsteknologi-program', dimension: 'virksomhet', horizon: 'near', order: 1, capabilities: ['k3', 'k3.2'], description: 'Innføre velferdsteknologi i hjemmetjenesten.', owner: 'Helse', dependsOn: [], maturityEffect: { 'k3.2': 3 }, notes: '', valueChains: ['kvc1'] },
+    { id: 'ki4', name: 'Digitaliseringsstrategi', dimension: 'ledelse', horizon: 'near', order: 1, capabilities: ['k5.2'], description: 'Utvikle og forankre helhetlig digitaliseringsstrategi.', owner: 'Rådmann', dependsOn: [], maturityEffect: {}, notes: '', valueChains: [] },
+    { id: 'ki5', name: 'Digital kompetanse ansatte', dimension: 'organisasjon', horizon: 'near', order: 1, capabilities: ['k4.2'], description: 'Kompetanseløft for digitale verktøy.', owner: 'HR', dependsOn: ['ki4'], maturityEffect: { 'k4.2': 3 }, notes: '', valueChains: [] },
+    { id: 'ki6', name: 'Skymigrering', dimension: 'teknologi', horizon: 'far', order: 1, capabilities: ['k6', 'k6.3'], description: 'Migrere fagsystemer til skyplattform.', owner: 'IT', dependsOn: ['ki2'], maturityEffect: { 'k6.3': 3 }, notes: '', valueChains: ['kvc2'] },
+    { id: 'ki7', name: 'Datadrevet styring', dimension: 'ledelse', horizon: 'far', order: 1, capabilities: ['k5.2', 'k5.1'], description: 'Bygge kultur for datadrevet kommunestyring.', owner: 'Rådmann', dependsOn: ['ki4', 'ki2'], maturityEffect: { 'k5.2': 3 }, notes: '', valueChains: ['kvc2'] },
+  ],
+  valueChains: [
+    { id: 'kvc1', name: 'Innbyggerreisen', color: '#3b82f6' },
+    { id: 'kvc2', name: 'Digital forvaltning', color: '#8b5cf6' },
+  ],
+  effects: [
+    { id: 'keff-001', name: 'Raskere saksbehandling', description: 'Digital saksbehandling reduserer behandlingstid', type: 'speed', capabilities: ['k1.2'], initiatives: ['ki1'], indicator: 'Gjennomsnittlig behandlingstid', baseline: '30 dager', target: '10 dager' },
+    { id: 'keff-002', name: 'Bedre tjenestekvalitet', description: 'Innbyggere får bedre tilgang til tjenester døgnet rundt', type: 'quality', capabilities: ['k1', 'k1.1'], initiatives: ['ki1'], indicator: 'Innbyggertilfredshet', baseline: 'Ikke målt', target: '> 4/5' },
+    { id: 'keff-003', name: 'Tryggere hjemmetjeneste', description: 'Velferdsteknologi gir økt trygghet for brukere og pårørende', type: 'quality', capabilities: ['k3.2'], initiatives: ['ki3'], indicator: 'Uønskede hendelser', baseline: 'Manuell rapportering', target: '50% reduksjon' },
+    { id: 'keff-004', name: 'Reduserte IT-kostnader', description: 'Konsolidering og skymigrering reduserer driftskostnader', type: 'cost', capabilities: ['k6.3', 'k6.1'], initiatives: ['ki6', 'ki2'], indicator: 'IT-driftskost per innbygger', baseline: 'Fragmentert', target: '20% reduksjon' },
+  ],
+};

@@ -1,0 +1,55 @@
+import type { IndustryTemplate } from './index';
+
+export const itSelskapTemplate: IndustryTemplate = {
+  id: 'it-selskap',
+  name: 'IT-selskap',
+  description: 'Teknologiselskaper med fokus på produktutvikling, tjenesteleveranse, skyplattform og kundeopplevelse.',
+  icon: '💻',
+  capabilities: [
+    // L1 domains
+    { id: 'it1', name: 'Produktutvikling', level: 1, parent: null, maturity: 2, risk: 3, description: 'Utvikling, arkitektur og kvalitetssikring av programvare.' },
+    { id: 'it2', name: 'Tjenesteleveranse', level: 1, parent: null, maturity: 2, risk: 2, description: 'Drift, support og SLA-oppfølging.' },
+    { id: 'it3', name: 'Salg & Marked', level: 1, parent: null, maturity: 2, risk: 2, description: 'Markedsføring, salg og partnerhåndtering.' },
+    { id: 'it4', name: 'Kundeopplevelse', level: 1, parent: null, maturity: 1, risk: 3, description: 'Kundeportal, onboarding og selvbetjening.' },
+    { id: 'it5', name: 'Skyplattform & Infra', level: 1, parent: null, maturity: 2, risk: 3, description: 'Cloud-plattform, DevOps og sikkerhet.' },
+    { id: 'it6', name: 'Data & AI', level: 1, parent: null, maturity: 1, risk: 2, description: 'Dataplatform, analyse og maskinlæring.' },
+    // L2 sub-capabilities
+    { id: 'it1.1', name: 'Arkitektur', level: 2, parent: 'it1', maturity: 2, risk: 3, description: 'Systemarkitektur og teknisk gjeld.' },
+    { id: 'it1.2', name: 'CI/CD', level: 2, parent: 'it1', maturity: 2, risk: 2, description: 'Kontinuerlig integrasjon og leveranse.' },
+    { id: 'it1.3', name: 'Kvalitetssikring', level: 2, parent: 'it1', maturity: 2, risk: 2, description: 'Testing, code review og kvalitetsstandarder.' },
+    { id: 'it2.1', name: 'Drift & Overvåking', level: 2, parent: 'it2', maturity: 2, risk: 2, description: 'Systemovervåking og driftsstabilitet.' },
+    { id: 'it2.2', name: 'Support', level: 2, parent: 'it2', maturity: 2, risk: 2, description: 'Kundesupport og hendelsesha\u0308ndtering.' },
+    { id: 'it2.3', name: 'SLA-oppfølging', level: 2, parent: 'it2', maturity: 2, risk: 2, description: 'Oppfølging av tjenestenivåavtaler.' },
+    { id: 'it3.1', name: 'Markedsføring', level: 2, parent: 'it3', maturity: 2, risk: 1, description: 'Digital markedsføring og innholdsstrategier.' },
+    { id: 'it3.2', name: 'Salgsprosess', level: 2, parent: 'it3', maturity: 2, risk: 2, description: 'CRM, pipeline og salgsstyrking.' },
+    { id: 'it3.3', name: 'Partnerprogram', level: 2, parent: 'it3', maturity: 1, risk: 2, description: 'Partnerhåndtering og kanalsalg.' },
+    { id: 'it4.1', name: 'Kundeportal', level: 2, parent: 'it4', maturity: 1, risk: 3, description: 'Selvbetjeningsportal for kunder.' },
+    { id: 'it4.2', name: 'Onboarding', level: 2, parent: 'it4', maturity: 1, risk: 2, description: 'Kundens oppstartsprosess.' },
+    { id: 'it4.3', name: 'Kundetilfredshet', level: 2, parent: 'it4', maturity: 1, risk: 2, description: 'Måling og oppfølging av kundetilfredshet.' },
+    { id: 'it5.1', name: 'Cloud-plattform', level: 2, parent: 'it5', maturity: 2, risk: 3, description: 'Skyinfrastruktur og plattformtjenester.' },
+    { id: 'it5.2', name: 'DevOps', level: 2, parent: 'it5', maturity: 2, risk: 2, description: 'DevOps-praksis og automatisering.' },
+    { id: 'it5.3', name: 'Sikkerhet', level: 2, parent: 'it5', maturity: 1, risk: 3, description: 'Informasjonssikkerhet og sårbarhetshåndtering.' },
+    { id: 'it6.1', name: 'Dataplattform', level: 2, parent: 'it6', maturity: 1, risk: 2, description: 'Datainnsamling, lagring og prosessering.' },
+    { id: 'it6.2', name: 'Analyse & BI', level: 2, parent: 'it6', maturity: 1, risk: 2, description: 'Forretningsanalyse og rapportering.' },
+    { id: 'it6.3', name: 'ML & AI', level: 2, parent: 'it6', maturity: 1, risk: 2, description: 'Maskinlæring og AI-modeller i produkt.' },
+  ],
+  sampleInitiatives: [
+    { id: 'iti1', name: 'Platform modernisering', dimension: 'teknologi', horizon: 'near', order: 1, capabilities: ['it1', 'it1.1', 'it5.1'], description: 'Modernisere kjerneplattformen til mikrotjenester.', owner: 'CTO', dependsOn: [], maturityEffect: { 'it1.1': 3, 'it5.1': 3 }, notes: '', valueChains: ['itvc1'] },
+    { id: 'iti2', name: 'DevOps-transformasjon', dimension: 'teknologi', horizon: 'near', order: 2, capabilities: ['it5', 'it5.2', 'it1.2'], description: 'Innføre fullstendig DevOps-pipeline.', owner: 'Engineering', dependsOn: [], maturityEffect: { 'it5.2': 3, 'it1.2': 3 }, notes: '', valueChains: ['itvc1'] },
+    { id: 'iti3', name: 'Kundeportal 2.0', dimension: 'virksomhet', horizon: 'near', order: 1, capabilities: ['it4', 'it4.1', 'it4.2'], description: 'Ny selvbetjeningsportal med dashboard og API-tilgang.', owner: 'Produkt', dependsOn: ['iti1'], maturityEffect: { 'it4.1': 3, 'it4.2': 3 }, notes: '', valueChains: ['itvc2'] },
+    { id: 'iti4', name: 'Produktstrategi', dimension: 'ledelse', horizon: 'near', order: 1, capabilities: ['it3.2'], description: 'Definere produktvisjon og strategisk retning.', owner: 'CEO', dependsOn: [], maturityEffect: {}, notes: '', valueChains: [] },
+    { id: 'iti5', name: 'Sikkerhetsprogram', dimension: 'organisasjon', horizon: 'near', order: 1, capabilities: ['it5.3'], description: 'ISO 27001-sertifisering og sikkerhetsprogram.', owner: 'CISO', dependsOn: [], maturityEffect: { 'it5.3': 3 }, notes: '', valueChains: [] },
+    { id: 'iti6', name: 'AI-drevet produkt', dimension: 'teknologi', horizon: 'far', order: 1, capabilities: ['it6', 'it6.3', 'it6.1'], description: 'Integrere AI/ML-funksjonalitet i kjerneproduktet.', owner: 'CTO', dependsOn: ['iti1', 'iti2'], maturityEffect: { 'it6.3': 3, 'it6.1': 3 }, notes: '', valueChains: ['itvc1'] },
+    { id: 'iti7', name: 'Datadrevet salg', dimension: 'virksomhet', horizon: 'far', order: 1, capabilities: ['it3', 'it3.2', 'it6.2'], description: 'Bruke data og analyse for å optimalisere salgsprosessen.', owner: 'Salg', dependsOn: ['iti6'], maturityEffect: { 'it6.2': 3, 'it3.2': 3 }, notes: '', valueChains: ['itvc2'] },
+  ],
+  valueChains: [
+    { id: 'itvc1', name: 'Produktleveranse', color: '#6366f1' },
+    { id: 'itvc2', name: 'Kundeopplevelse', color: '#f59e0b' },
+  ],
+  effects: [
+    { id: 'iteff-001', name: 'Raskere leveranser', description: 'DevOps og CI/CD gir hyppigere og tryggere utrullinger', type: 'speed', capabilities: ['it1.2', 'it5.2'], initiatives: ['iti2'], indicator: 'Deploy-frekvens', baseline: 'Månedlig', target: 'Daglig' },
+    { id: 'iteff-002', name: 'Forbedret kundetilfredshet', description: 'Ny kundeportal og onboarding øker kundetilfredshet', type: 'quality', capabilities: ['it4.1', 'it4.3'], initiatives: ['iti3'], indicator: 'NPS', baseline: '25', target: '> 50' },
+    { id: 'iteff-003', name: 'Redusert teknisk gjeld', description: 'Plattformmodernisering reduserer vedlikeholdskostnader', type: 'cost', capabilities: ['it1.1'], initiatives: ['iti1'], indicator: 'Vedlikeholdstimer/mnd', baseline: '40%', target: '15%' },
+    { id: 'iteff-004', name: 'AI-drevet verdi', description: 'ML-modeller gir prediktive funksjoner til kundene', type: 'strategic', capabilities: ['it6.3'], initiatives: ['iti6'], indicator: 'AI-feature adoption', baseline: '0%', target: '> 30%' },
+  ],
+};
