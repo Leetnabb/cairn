@@ -14,6 +14,7 @@ const EFFECT_CONCENTRATION_THRESHOLD = 3;
 
 export function computeInsights(initiatives: Initiative[], capabilities: Capability[], effects: Effect[] = []): Insight[] {
   const insights: Insight[] = [];
+  const capabilityMap = new Map(capabilities.map(c => [c.id, c]));
 
   // Capability collision: ≥3 initiatives touching same capability
   const capCount: Record<string, number> = {};
@@ -24,7 +25,7 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
   }
   for (const [capId, count] of Object.entries(capCount)) {
     if (count >= CAP_COLLISION_THRESHOLD) {
-      const cap = capabilities.find(c => c.id === capId);
+      const cap = capabilityMap.get(capId);
       insights.push({ type: 'warning', message: i18n.t('insights.capCollision', { name: cap?.name ?? capId, count }) });
     }
   }
@@ -122,7 +123,7 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
     }
     for (const [cid, count] of Object.entries(capEffCount)) {
       if (count >= EFFECT_CONCENTRATION_THRESHOLD) {
-        const cap = capabilities.find(c => c.id === cid);
+        const cap = capabilityMap.get(cid);
         if (cap) {
           insights.push({ type: 'info', message: i18n.t('effects.effectConcentration', { count, total: effects.length, name: cap.name }) });
         }
