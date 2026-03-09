@@ -7,6 +7,11 @@ export interface Insight {
   message: string;
 }
 
+const CAP_COLLISION_THRESHOLD = 3;
+const OWNER_CAPACITY_THRESHOLD = 4;
+const MAX_ORPHAN_DISPLAY = 3;
+const EFFECT_CONCENTRATION_THRESHOLD = 3;
+
 export function computeInsights(initiatives: Initiative[], capabilities: Capability[], effects: Effect[] = []): Insight[] {
   const insights: Insight[] = [];
 
@@ -18,7 +23,7 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
     }
   }
   for (const [capId, count] of Object.entries(capCount)) {
-    if (count >= 3) {
+    if (count >= CAP_COLLISION_THRESHOLD) {
       const cap = capabilities.find(c => c.id === capId);
       insights.push({ type: 'warning', message: i18n.t('insights.capCollision', { name: cap?.name ?? capId, count }) });
     }
@@ -43,7 +48,7 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
     ownerCount[i.owner] = (ownerCount[i.owner] || 0) + 1;
   }
   for (const [owner, count] of Object.entries(ownerCount)) {
-    if (count >= 4) {
+    if (count >= OWNER_CAPACITY_THRESHOLD) {
       insights.push({ type: 'warning', message: i18n.t('insights.ownerCapacity', { owner, count }) });
     }
   }
@@ -59,21 +64,20 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
   // Orphan capabilities: capabilities not referenced by any initiative
   const referencedCaps = new Set(initiatives.flatMap(i => i.capabilities));
   const orphanCaps = capabilities.filter(c => c.level === 2 && !referencedCaps.has(c.id));
-  const maxOrphans = 3;
-  for (const cap of orphanCaps.slice(0, maxOrphans)) {
+  for (const cap of orphanCaps.slice(0, MAX_ORPHAN_DISPLAY)) {
     insights.push({ type: 'warning', message: i18n.t('insights.orphanCapability', { name: cap.name }) });
   }
-  if (orphanCaps.length > maxOrphans) {
-    insights.push({ type: 'warning', message: i18n.t('insights.more', { count: orphanCaps.length - maxOrphans }) });
+  if (orphanCaps.length > MAX_ORPHAN_DISPLAY) {
+    insights.push({ type: 'warning', message: i18n.t('insights.more', { count: orphanCaps.length - MAX_ORPHAN_DISPLAY }) });
   }
 
   // Orphan initiatives: initiatives without any linked capabilities
   const orphanInits = initiatives.filter(i => i.capabilities.length === 0);
-  for (const init of orphanInits.slice(0, maxOrphans)) {
+  for (const init of orphanInits.slice(0, MAX_ORPHAN_DISPLAY)) {
     insights.push({ type: 'warning', message: i18n.t('insights.orphanInitiative', { name: init.name }) });
   }
-  if (orphanInits.length > maxOrphans) {
-    insights.push({ type: 'warning', message: i18n.t('insights.more', { count: orphanInits.length - maxOrphans }) });
+  if (orphanInits.length > MAX_ORPHAN_DISPLAY) {
+    insights.push({ type: 'warning', message: i18n.t('insights.more', { count: orphanInits.length - MAX_ORPHAN_DISPLAY }) });
   }
 
   // All dimensions covered
@@ -96,7 +100,7 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
     // Initiatives without effect linkage
     const initIdsInEffects = new Set(effects.flatMap(e => e.initiatives));
     const unlinkedInits = initiatives.filter(i => !initIdsInEffects.has(i.id));
-    for (const init of unlinkedInits.slice(0, 3)) {
+    for (const init of unlinkedInits.slice(0, MAX_ORPHAN_DISPLAY)) {
       insights.push({ type: 'warning', message: i18n.t('effects.initiativeWithoutEffect', { name: init.name }) });
     }
 
@@ -117,7 +121,7 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
       }
     }
     for (const [cid, count] of Object.entries(capEffCount)) {
-      if (count >= 3) {
+      if (count >= EFFECT_CONCENTRATION_THRESHOLD) {
         const cap = capabilities.find(c => c.id === cid);
         if (cap) {
           insights.push({ type: 'info', message: i18n.t('effects.effectConcentration', { count, total: effects.length, name: cap.name }) });

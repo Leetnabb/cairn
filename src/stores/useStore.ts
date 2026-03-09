@@ -342,8 +342,7 @@ export const useStore = create<StoreState>()(
 
         // Snapshots
         saveSnapshot: (label) => set(state => {
-          const { ui, snapshots, ...appState } = state;
-          void ui;
+          const { ui: _ui, snapshots, ...appState } = state;
           const snapshot: Snapshot = {
             id: `snap_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -358,8 +357,7 @@ export const useStore = create<StoreState>()(
           const snapshot = state.snapshots.find(s => s.id === id);
           if (!snapshot) return state;
           // Auto-backup before restore
-          const { ui, snapshots, ...currentState } = state;
-          void ui;
+          const { ui: _ui, snapshots, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_backup_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -482,8 +480,7 @@ export const useStore = create<StoreState>()(
         // Import
         importState: (imported) => set(state => {
           // Auto-backup
-          const { ui, snapshots, ...currentState } = state;
-          void ui;
+          const { ui: _ui, snapshots, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_import_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -498,8 +495,7 @@ export const useStore = create<StoreState>()(
 
         // Template
         loadTemplate: (template) => set(state => {
-          const { ui, snapshots, ...currentState } = state;
-          void ui;
+          const { ui: _ui, snapshots, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_template_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -529,8 +525,7 @@ export const useStore = create<StoreState>()(
     {
       limit: 50,
       partialize: (state) => {
-        const { ui, ...rest } = state;
-        void ui;
+        const { ui: _ui, ...rest } = state;
         return rest as Omit<StoreState, 'ui'>;
       },
     }
@@ -547,11 +542,11 @@ export const useStore = create<StoreState>()(
       return {
         ...currentState,
         ...persistedRest,
-        effects: Array.isArray((persisted as any).effects) ? (persisted as any).effects : currentState.effects,
+        effects: Array.isArray(persisted.effects) ? persisted.effects : currentState.effects,
         ui: {
-          ...(currentState as any).ui,
+          ...currentState.ui,
           ...(typeof persistedUI === 'object' && persistedUI !== null ? persistedUI : {}),
-          selectedItems: (currentState as any).ui.selectedItems,  // Always keep the Set
+          selectedItems: currentState.ui.selectedItems,  // Always keep the Set
         },
       } as StoreState;
     },

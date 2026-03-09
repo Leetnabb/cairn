@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import type { AppState } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { exportJson } from '../../lib/exportJson';
@@ -35,8 +36,8 @@ export function ImportModal() {
   const activeFilters = exportFiltered ? filters : undefined;
 
   const handleExportJson = () => {
-    const { ui, ...rest } = state;
-    exportJson(rest as any);
+    const { ui: _ui, ...rest } = state;
+    exportJson(rest as AppState);
   };
 
   const handleExportCsv = () => {
@@ -68,7 +69,10 @@ export function ImportModal() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => handleImport(reader.result as string);
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') return;
+      handleImport(reader.result);
+    };
     reader.readAsText(file);
   };
 

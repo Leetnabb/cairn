@@ -31,6 +31,25 @@ export function validateImport(raw: unknown): ValidationResult {
     errors.push('Mangler "activeScenario" (string)');
   }
 
+  // Validate array item shapes
+  if (Array.isArray(data.capabilities)) {
+    for (const [i, cap] of (data.capabilities as unknown[]).entries()) {
+      if (typeof cap !== 'object' || cap === null || typeof (cap as Record<string, unknown>).id !== 'string' || typeof (cap as Record<string, unknown>).name !== 'string') {
+        errors.push(`capabilities[${i}] mangler påkrevde felter (id, name)`);
+        break;
+      }
+    }
+  }
+
+  if (Array.isArray(data.scenarios)) {
+    for (const [i, sc] of (data.scenarios as unknown[]).entries()) {
+      if (typeof sc !== 'object' || sc === null || typeof (sc as Record<string, unknown>).id !== 'string' || typeof (sc as Record<string, unknown>).name !== 'string') {
+        errors.push(`scenarios[${i}] mangler påkrevde felter (id, name)`);
+        break;
+      }
+    }
+  }
+
   if (errors.length > 0) {
     return { valid: false, errors };
   }

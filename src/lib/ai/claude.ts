@@ -83,8 +83,9 @@ export async function* streamChatResponse(
           if (event.type === 'content_block_delta' && event.delta?.text) {
             yield event.delta.text;
           }
-        } catch {
-          // Skip non-JSON lines
+        } catch (parseErr) {
+          // Skip non-JSON lines (expected for SSE metadata)
+          if (data !== '[DONE]') console.warn('Unexpected non-JSON SSE line:', data, parseErr);
         }
       }
     }

@@ -6,7 +6,7 @@ const BOM = '\uFEFF';
 
 export type ExportFilters = UIState['filters'] | undefined;
 
-function filterInitiatives(initiatives: Initiative[], filters?: ExportFilters): Initiative[] {
+export function filterInitiatives(initiatives: Initiative[], filters?: ExportFilters): Initiative[] {
   if (!filters) return initiatives;
   return initiatives.filter(i => {
     if (filters.dimensions.length > 0 && !filters.dimensions.includes(i.dimension)) return false;

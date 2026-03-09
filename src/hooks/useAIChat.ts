@@ -78,7 +78,7 @@ export function useAIChat() {
       }
       useAIStore.getState().finalizeStreaming();
     } catch (err) {
-      if ((err as Error).name === 'AbortError') {
+      if (err instanceof Error && err.name === 'AbortError') {
         useAIStore.getState().finalizeStreaming();
       } else {
         useAIStore.getState().setStreaming(false);
