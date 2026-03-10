@@ -357,7 +357,7 @@ export const useStore = create<StoreState>()(
           const snapshot = state.snapshots.find(s => s.id === id);
           if (!snapshot) return state;
           // Auto-backup before restore
-          const { ui: _ui, snapshots, ...currentState } = state;
+          const { ui: _ui, snapshots: _snapshotsBackup, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_backup_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -480,7 +480,7 @@ export const useStore = create<StoreState>()(
         // Import
         importState: (imported) => set(state => {
           // Auto-backup
-          const { ui: _ui, snapshots, ...currentState } = state;
+          const { ui: _ui, snapshots: _snapshotsImport, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_import_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -495,7 +495,7 @@ export const useStore = create<StoreState>()(
 
         // Template
         loadTemplate: (template) => set(state => {
-          const { ui: _ui, snapshots, ...currentState } = state;
+          const { ui: _ui, snapshots: _snapshotsTemplate, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_template_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -533,7 +533,7 @@ export const useStore = create<StoreState>()(
   {
     name: 'cairn-storage',
     partialize: (state) => {
-      const { ui, ...rest } = state;
+      const { ui: _uiPartialize, ...rest } = state;
       return { ...rest, ui: { filters: state.ui.filters, roleMode: state.ui.roleMode } };
     },
     merge: (persistedState, currentState) => {

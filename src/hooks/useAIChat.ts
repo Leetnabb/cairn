@@ -13,7 +13,7 @@ function getErrorMessage(err: unknown): string {
     if (err.status === 429) return i18n.t('ai.errors.tooMany');
     if (err.status >= 500) return i18n.t('ai.errors.serverError');
   }
-  if (err instanceof TypeError && (err as Error).message?.includes('fetch')) {
+  if (err instanceof TypeError && err.message?.includes('fetch')) {
     return i18n.t('ai.errors.networkError');
   }
   return i18n.t('ai.errors.networkError');

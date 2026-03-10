@@ -13,7 +13,7 @@ const BARS = [
   { w: 46, color: "#6366f1" },  // Teknologi
 ];
 
-export function CairnMark({ size = 1, dark = false }: { size?: number; dark?: boolean }) {
+export function CairnMark({ size = 1, dark: _dark = false }: { size?: number; dark?: boolean }) {
   return (
     <svg width={48 * size} height={52 * size} viewBox="0 0 48 52" fill="none">
       {BARS.map((bar, i) => (

@@ -1,7 +1,7 @@
 import type { AppState } from '../types';
 
 export function exportJson(state: AppState) {
-  const { snapshots, ...exportData } = state;
+  const { snapshots: _snapshots, ...exportData } = state;
   const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
