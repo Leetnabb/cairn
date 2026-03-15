@@ -30,6 +30,7 @@ export interface Capability {
   maturity: 1 | 2 | 3;
   risk: 1 | 2 | 3;
   description: string;
+  order?: number;
 }
 
 export interface Initiative {
@@ -82,6 +83,7 @@ export interface Effect {
   indicator?: string;
   baseline?: string;
   target?: string;
+  order?: number;
 }
 
 export const EFFECT_TYPE_COLORS: Record<EffectType, string> = {
@@ -131,7 +133,7 @@ export interface AppState {
   snapshots: Snapshot[];
 }
 
-export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities';
+export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects';
 
 export interface UIState {
   selectedItem: { type: 'capability' | 'initiative' | 'milestone' | 'effect'; id: string } | null;

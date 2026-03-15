@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
-import { reorderInitiatives } from '../lib/ordering';
+import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
 
 // One-time migration from old storage key
 const _legacyStorage = localStorage.getItem('ea-light-storage');
@@ -49,6 +49,10 @@ interface StoreState extends AppState {
   addEffect: (effect: Effect) => void;
   updateEffect: (id: string, updates: Partial<Effect>) => void;
   deleteEffect: (id: string) => void;
+  moveEffect: (id: string, type: EffectType, newOrder: number) => void;
+
+  // Capability move
+  moveCapability: (id: string, newParent: string | null, newOrder: number) => void;
 
   // Comments
   addComment: (comment: Comment) => void;
@@ -319,6 +323,18 @@ export const useStore = create<StoreState>()(
           effects: state.effects.filter(e => e.id !== id),
           ui: { ...state.ui, selectedItem: state.ui.selectedItem?.id === id ? null : state.ui.selectedItem },
         })),
+
+        moveEffect: (id, type, newOrder) => set(state => {
+          const reordered = reorderEffects(state.effects, id, type, newOrder);
+          if (!reordered) return state;
+          return { effects: reordered };
+        }),
+
+        moveCapability: (id, newParent, newOrder) => set(state => {
+          const reordered = reorderCapabilities(state.capabilities, id, newParent, newOrder);
+          if (!reordered) return state;
+          return { capabilities: reordered };
+        }),
 
         // Comments
         addComment: (comment) => set(state => ({

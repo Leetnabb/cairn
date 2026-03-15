@@ -9,6 +9,7 @@ import { DetailPanel } from './components/detail/DetailPanel';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { CompareView } from './components/scenarios/CompareView';
 import { CapabilityLandscape } from './components/capabilities/CapabilityLandscape';
+import { EffectBoard } from './components/effects/EffectBoard';
 import { CapabilityOverlay } from './components/capabilities/CapabilityOverlay';
 import { AddModal } from './components/modals/AddModal';
 import { ImportModal } from './components/modals/ImportModal';
@@ -88,6 +89,7 @@ export default function App() {
         <nav className="flex items-center gap-1">
           <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
+          <NavBtn active={view === 'effects'} onClick={() => setView('effects')}>{t('nav.effects')}</NavBtn>
           <NavBtn active={false} onClick={() => setPresentationMode(true)}>{t('nav.presentation')}</NavBtn>
           <div className="w-px h-5 bg-border mx-0.5" />
           {view === 'roadmap' && <FilterDropdown />}
@@ -112,6 +114,24 @@ export default function App() {
       <div className="flex-1 flex overflow-hidden">
         {view === 'dashboard' ? (
           <Dashboard />
+        ) : view === 'effects' ? (
+          <>
+            <main className="flex-1 overflow-auto">
+              <EffectBoard />
+            </main>
+            {showDetailPanel && (
+              <aside className="shrink-0 border-l border-border bg-white w-[320px] overflow-hidden transition-all duration-200">
+                <div className="flex h-full">
+                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-gray-100 transition-colors" title={t('common.close')}>
+                    <span className="text-xs text-text-secondary">&raquo;</span>
+                  </button>
+                  <div className="flex-1 overflow-y-auto">
+                    {aiPanelOpen ? <AIChatPanel /> : <DetailPanel />}
+                  </div>
+                </div>
+              </aside>
+            )}
+          </>
         ) : view === 'compare' ? (
           <CompareView />
         ) : view === 'capabilities' ? (

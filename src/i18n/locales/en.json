@@ -20,7 +20,14 @@
     "capabilityMap": "Capability map",
     "roleWork": "Work mode",
     "roleGovernance": "Governance mode",
-    "getStarted": "Get started"
+    "getStarted": "Get started",
+    "effects": "Effects"
+  },
+  "effectBoard": {
+    "title": "Effect Board",
+    "total": "effects",
+    "empty": "Drag effects here",
+    "addEffect": "New effect"
   },
   "capLandscape": {
     "title": "Capability Landscape",

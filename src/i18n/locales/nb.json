@@ -20,7 +20,14 @@
     "capabilityMap": "Kapabilitetskart",
     "roleWork": "Arbeidsmodus",
     "roleGovernance": "Styringsmodus",
-    "getStarted": "Kom i gang"
+    "getStarted": "Kom i gang",
+    "effects": "Effekter"
+  },
+  "effectBoard": {
+    "title": "Effekttavle",
+    "total": "effekter",
+    "empty": "Dra effekter hit",
+    "addEffect": "Ny effekt"
   },
   "capLandscape": {
     "title": "Kapabilitetslandskap",
