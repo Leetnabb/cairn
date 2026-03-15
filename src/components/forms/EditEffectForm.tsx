@@ -16,6 +16,7 @@ export function EditEffectForm({ effect }: Props) {
   const setEditingId = useStore(s => s.setEditingId);
   const capabilities = useStore(s => s.capabilities);
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
+  const modules = useStore(s => s.modules);
 
   const [name, setName] = useState(effect.name);
   const [description, setDescription] = useState(effect.description);
@@ -97,28 +98,32 @@ export function EditEffectForm({ effect }: Props) {
           />
         </div>
       </div>
-      <div>
-        <label className="text-[9px] text-text-tertiary uppercase">{t('effects.linkedCapabilities')}</label>
-        <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-          {capabilities.map(c => (
-            <button key={c.id} onClick={() => toggleItem(caps, c.id, setCaps)}
-              className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                caps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
-              }`}>{c.name}</button>
-          ))}
+      {modules.capabilities && (
+        <div>
+          <label className="text-[9px] text-text-tertiary uppercase">{t('effects.linkedCapabilities')}</label>
+          <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
+            {capabilities.map(c => (
+              <button key={c.id} onClick={() => toggleItem(caps, c.id, setCaps)}
+                className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
+                  caps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
+                }`}>{c.name}</button>
+            ))}
+          </div>
         </div>
-      </div>
-      <div>
-        <label className="text-[9px] text-text-tertiary uppercase">{t('effects.linkedInitiatives')}</label>
-        <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-          {initiatives.map(i => (
-            <button key={i.id} onClick={() => toggleItem(inits, i.id, setInits)}
-              className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                inits.includes(i.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
-              }`}>{i.name}</button>
-          ))}
+      )}
+      {modules.roadmap && (
+        <div>
+          <label className="text-[9px] text-text-tertiary uppercase">{t('effects.linkedInitiatives')}</label>
+          <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
+            {initiatives.map(i => (
+              <button key={i.id} onClick={() => toggleItem(inits, i.id, setInits)}
+                className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
+                  inits.includes(i.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
+                }`}>{i.name}</button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex gap-1 pt-1">
         <Button variant="primary" onClick={handleSave}>{t('common.save')}</Button>
         <Button onClick={() => setEditingId(null)}>{t('common.cancel')}</Button>

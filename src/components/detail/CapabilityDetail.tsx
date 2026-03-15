@@ -23,6 +23,7 @@ export function CapabilityDetail({ capability }: Props) {
   const isEditing = editingId === capability.id;
   const children = capabilities.filter(c => c.parent === capability.id);
   const effects = useStore(s => s.effects);
+  const modules = useStore(s => s.modules);
 
   const relatedInitiatives = useMemo(() =>
     initiatives.filter(i => i.capabilities.includes(capability.id)),
@@ -111,7 +112,7 @@ export function CapabilityDetail({ capability }: Props) {
         </div>
       )}
 
-      {relatedInitiatives.length > 0 && (
+      {modules.roadmap && relatedInitiatives.length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.relatedActivities')}</div>
           <div className="space-y-0.5">
@@ -127,7 +128,7 @@ export function CapabilityDetail({ capability }: Props) {
       )}
 
       {/* Effects */}
-      {relatedEffects.length > 0 && (
+      {modules.effects && relatedEffects.length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('effects.enablesEffects')}</div>
           <div className="space-y-0.5">

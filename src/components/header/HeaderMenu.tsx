@@ -17,6 +17,8 @@ export function HeaderMenu() {
   const setCapabilityOverlayOpen = useStore(s => s.setCapabilityOverlayOpen);
   const openWizard = useOnboardingStore(s => s.openWizard);
   const roleMode = useStore(s => s.ui.roleMode);
+  const modules = useStore(s => s.modules);
+  const setModules = useStore(s => s.setModules);
 
   useEffect(() => {
     if (!open) return;
@@ -29,9 +31,8 @@ export function HeaderMenu() {
 
   const items = [
     { label: t('nav.compare'), action: () => setView('compare'), hide: false },
-    { label: t('nav.capabilityMap'), action: () => setCapabilityOverlayOpen(true), hide: false },
-    { label: t('nav.capabilities'), action: () => setView('capabilities'), hide: false },
-    { label: t('nav.simulation'), action: toggleSimulation, toggle: simulationEnabled, hide: false },
+    { label: t('nav.capabilityMap'), action: () => setCapabilityOverlayOpen(true), hide: !modules.capabilities },
+    { label: t('nav.simulation'), action: toggleSimulation, toggle: simulationEnabled, hide: !modules.capabilities },
     { label: t('nav.criticalPath'), action: toggleCriticalPath, toggle: criticalPathEnabled, hide: false },
     { divider: true },
     { label: t('nav.importExport'), action: () => setImportModalOpen(true), hide: false },
@@ -49,7 +50,7 @@ export function HeaderMenu() {
         &#x22EF;
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg py-1 min-w-[180px] z-50">
+        <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg py-1 min-w-[200px] z-50">
           {items.map((item, idx) => {
             if (item.hide) return null;
             if ('divider' in item && item.divider) {
@@ -68,6 +69,34 @@ export function HeaderMenu() {
               </button>
             );
           })}
+
+          {/* Module settings section */}
+          <div className="border-t border-border mt-1 pt-1">
+            <div className="px-3 py-1 text-[9px] text-text-tertiary uppercase tracking-wider font-medium">
+              {t('modules.title')}
+            </div>
+            {/* Roadmap – always on */}
+            <div className="w-full px-3 py-1.5 text-[11px] text-text-tertiary flex items-center justify-between cursor-default">
+              <span>{t('modules.roadmap')}</span>
+              <span className="w-2 h-2 rounded-full bg-primary opacity-40" title={t('modules.core')} />
+            </div>
+            {/* Capabilities toggle */}
+            <button
+              onClick={() => setModules({ capabilities: !modules.capabilities })}
+              className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+            >
+              <span>{t('modules.capabilities')}</span>
+              <span className={`w-2 h-2 rounded-full ${modules.capabilities ? 'bg-primary' : 'bg-gray-300'}`} />
+            </button>
+            {/* Effects toggle */}
+            <button
+              onClick={() => setModules({ effects: !modules.effects })}
+              className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+            >
+              <span>{t('modules.effects')}</span>
+              <span className={`w-2 h-2 rounded-full ${modules.effects ? 'bg-primary' : 'bg-gray-300'}`} />
+            </button>
+          </div>
         </div>
       )}
     </div>

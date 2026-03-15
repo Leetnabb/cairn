@@ -29,6 +29,34 @@
     "empty": "Dra effekter hit",
     "addEffect": "Ny effekt"
   },
+  "modules": {
+    "title": "Moduler",
+    "roadmap": "Veikart",
+    "roadmapDesc": "Planlegg og prioriter initiativer – fra strategi til gjennomføring",
+    "capabilities": "Kapabiliteter",
+    "capabilitiesDesc": "Kartlegg organisasjonens evner og modenhetsnivå",
+    "effects": "Effekter",
+    "effectsDesc": "Definer og spor effekter fra strategisk innsats",
+    "recommended": "Anbefalt",
+    "core": "Alltid på",
+    "addLater": "Du kan alltid legge til flere moduler i Innstillinger",
+    "stepTitle": "Velg dine moduler",
+    "stepSubtitle": "Start med det du trenger nå. Utvid når du er klar."
+  },
+  "onboarding": {
+    "stepWelcome": "Velkommen",
+    "stepModules": "Moduler",
+    "stepTemplate": "Mal",
+    "stepAI": "AI-forslag",
+    "stepReview": "Gjennomgang",
+    "reviewTitle": "Gjennomgang",
+    "reviewSubtitle": "Her er det som vil bli opprettet. Klikk Fullfør for å starte.",
+    "capabilities": "kapabiliteter",
+    "initiatives": "initiativer",
+    "aiSuggestedCaps": "AI-foreslåtte kapabiliteter",
+    "complete": "Fullfør",
+    "startNow": "Start nå"
+  },
   "capLandscape": {
     "title": "Kapabilitetslandskap",
     "domains": "domener",
@@ -63,7 +91,9 @@
     "color": "Farge",
     "level": "Nivå",
     "note": "Notat",
-    "owner": "Eier"
+    "owner": "Eier",
+    "back": "Tilbake",
+    "continue": "Fortsett"
   },
   "labels": {
     "maturity": {

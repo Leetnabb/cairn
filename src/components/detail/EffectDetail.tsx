@@ -21,6 +21,7 @@ export function EffectDetail({ effect }: Props) {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
 
   const isEditing = editingId === effect.id;
+  const modules = useStore(s => s.modules);
 
   const relatedCaps = useMemo(() =>
     capabilities.filter(c => effect.capabilities.includes(c.id)),
@@ -87,7 +88,7 @@ export function EffectDetail({ effect }: Props) {
       )}
 
       {/* Linked capabilities */}
-      {relatedCaps.length > 0 && (
+      {modules.capabilities && relatedCaps.length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('effects.linkedCapabilities')}</div>
           <div className="space-y-0.5">
@@ -103,7 +104,7 @@ export function EffectDetail({ effect }: Props) {
       )}
 
       {/* Linked initiatives */}
-      {relatedInits.length > 0 && (
+      {modules.roadmap && relatedInits.length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('effects.linkedInitiatives')}</div>
           <div className="space-y-0.5">

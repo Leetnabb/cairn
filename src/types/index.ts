@@ -121,6 +121,12 @@ export interface ScenarioState {
   initiatives: Initiative[];
 }
 
+export interface ModuleSettings {
+  roadmap: boolean;
+  capabilities: boolean;
+  effects: boolean;
+}
+
 export interface AppState {
   capabilities: Capability[];
   scenarios: Scenario[];
@@ -131,6 +137,7 @@ export interface AppState {
   effects: Effect[];
   comments: Comment[];
   snapshots: Snapshot[];
+  modules: ModuleSettings;
 }
 
 export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects';

@@ -40,6 +40,7 @@ export default function App() {
   const openWizard = useOnboardingStore(s => s.openWizard);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
+  const modules = useStore(s => s.modules);
 
   // Auto-show wizard for first-time users
   useEffect(() => {
@@ -47,6 +48,12 @@ export default function App() {
       openWizard();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Redirect to roadmap if active view belongs to a disabled module
+  useEffect(() => {
+    if (view === 'capabilities' && !modules.capabilities) setView('roadmap');
+    if (view === 'effects' && !modules.effects) setView('roadmap');
+  }, [modules, view, setView]);
 
   // Global undo/redo keyboard shortcuts
   useEffect(() => {
@@ -89,7 +96,12 @@ export default function App() {
         <nav className="flex items-center gap-1">
           <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
-          <NavBtn active={view === 'effects'} onClick={() => setView('effects')}>{t('nav.effects')}</NavBtn>
+          {modules.capabilities && (
+            <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
+          )}
+          {modules.effects && (
+            <NavBtn active={view === 'effects'} onClick={() => setView('effects')}>{t('nav.effects')}</NavBtn>
+          )}
           <NavBtn active={false} onClick={() => setPresentationMode(true)}>{t('nav.presentation')}</NavBtn>
           <div className="w-px h-5 bg-border mx-0.5" />
           {view === 'roadmap' && <FilterDropdown />}

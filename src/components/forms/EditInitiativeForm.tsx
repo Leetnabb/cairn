@@ -16,6 +16,7 @@ export function EditInitiativeForm({ initiative }: Props) {
   const capabilities = useStore(s => s.capabilities);
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const valueChains = useStore(s => s.valueChains);
+  const modules = useStore(s => s.modules);
 
   const [name, setName] = useState(initiative.name);
   const [description, setDescription] = useState(initiative.description);
@@ -119,19 +120,21 @@ export function EditInitiativeForm({ initiative }: Props) {
           ))}
         </div>
       </div>
-      <div>
-        <label className="text-[9px] text-text-tertiary uppercase">{t('forms.capabilities')}</label>
-        <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-          {capabilities.map(c => (
-            <button key={c.id} onClick={() => toggleItem(selectedCaps, c.id, setSelectedCaps)}
-              className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                selectedCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary hover:border-gray-300'
-              }`}>
-              {c.name}
-            </button>
-          ))}
+      {modules.capabilities && (
+        <div>
+          <label className="text-[9px] text-text-tertiary uppercase">{t('forms.capabilities')}</label>
+          <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
+            {capabilities.map(c => (
+              <button key={c.id} onClick={() => toggleItem(selectedCaps, c.id, setSelectedCaps)}
+                className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
+                  selectedCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary hover:border-gray-300'
+                }`}>
+                {c.name}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div>
         <label className="text-[9px] text-text-tertiary uppercase">{t('forms.dependsOn')}</label>
         <div className="flex flex-wrap gap-1 mt-0.5 max-h-16 overflow-y-auto">

@@ -25,6 +25,7 @@ export function InitiativeDetail({ initiative }: Props) {
   const updateInitiative = useStore(s => s.updateInitiative);
   const criticalPathEnabled = useStore(s => s.ui.criticalPathEnabled);
   const roleMode = useStore(s => s.ui.roleMode);
+  const modules = useStore(s => s.modules);
   const isGovernance = roleMode === 'governance';
 
   const isEditing = editingId === initiative.id;
@@ -204,7 +205,7 @@ export function InitiativeDetail({ initiative }: Props) {
       })()}
 
       {/* Maturity effects */}
-      {Object.keys(initiative.maturityEffect).length > 0 && (
+      {modules.capabilities && Object.keys(initiative.maturityEffect).length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.maturityEffect')}</div>
           <div className="space-y-0.5">
@@ -257,7 +258,7 @@ export function InitiativeDetail({ initiative }: Props) {
       )}
 
       {/* Capabilities */}
-      {relatedCaps.length > 0 && (
+      {modules.capabilities && relatedCaps.length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.capabilities')}</div>
           <div className="flex flex-wrap gap-1">
@@ -272,8 +273,8 @@ export function InitiativeDetail({ initiative }: Props) {
         </div>
       )}
 
-      {/* Effects (moved here — between capabilities and overlapping) */}
-      {relatedEffects.length > 0 ? (
+      {/* Effects */}
+      {modules.effects && (relatedEffects.length > 0 ? (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('effects.contributesToEffects')}</div>
           <div className="space-y-0.5">
@@ -293,7 +294,7 @@ export function InitiativeDetail({ initiative }: Props) {
         <div className="px-2 py-1.5 rounded bg-gray-50 border border-gray-200 text-[10px] text-text-tertiary italic">
           {t('detail.noEffectLink')}
         </div>
-      )}
+      ))}
 
       {/* Value chains */}
       {vcItems.length > 0 && (
@@ -326,7 +327,7 @@ export function InitiativeDetail({ initiative }: Props) {
       )}
 
       {/* Impact analysis */}
-      {(impactedCapabilities.length > 0 || blocksInits.length > 0) && (
+      {(modules.capabilities && impactedCapabilities.length > 0 || blocksInits.length > 0) && (
         <div className="px-2 py-1.5 rounded bg-orange-50 border border-orange-200">
           <div className="text-[9px] text-orange-700 uppercase font-medium mb-1">{t('detail.impactAnalysis')}</div>
           {impactedCapabilities.length > 0 && (

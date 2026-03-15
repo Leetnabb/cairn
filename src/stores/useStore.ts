@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -87,6 +87,9 @@ interface StoreState extends AppState {
   clearSelectedItems: () => void;
   bulkMoveInitiatives: (ids: string[], dimension: DimensionKey, horizon: 'near' | 'far') => void;
   bulkDeleteInitiatives: (ids: string[]) => void;
+
+  // Modules
+  setModules: (modules: Partial<ModuleSettings>) => void;
 
   // Import
   importState: (state: Partial<AppState>) => void;
@@ -492,6 +495,11 @@ export const useStore = create<StoreState>()(
           };
         }),
 
+        // Modules
+        setModules: (modules) => set(state => ({
+          modules: { ...state.modules, ...modules },
+        })),
+
         // Import
         importState: (imported) => set(state => {
           // Auto-backup
@@ -554,9 +562,15 @@ export const useStore = create<StoreState>()(
     merge: (persistedState, currentState) => {
       const persisted = (persistedState ?? {}) as Partial<StoreState>;
       const { ui: persistedUI, ...persistedRest } = persisted as Record<string, unknown>;
+      // Existing users who have data but no modules field get all modules enabled (backward compat)
+      const hasExistingData = !!(persisted.capabilities?.length || persisted.effects?.length);
+      const fallbackModules: ModuleSettings = hasExistingData
+        ? { roadmap: true, capabilities: true, effects: true }
+        : currentState.modules;
       return {
         ...currentState,
         ...persistedRest,
+        modules: (persisted.modules as ModuleSettings | undefined) ?? fallbackModules,
         effects: Array.isArray(persisted.effects) ? persisted.effects : currentState.effects,
         ui: {
           ...currentState.ui,

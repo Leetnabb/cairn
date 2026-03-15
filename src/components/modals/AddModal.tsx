@@ -13,6 +13,7 @@ export function AddModal() {
   const tab = useStore(s => s.ui.addModalTab);
   const defaults = useStore(s => s.ui.addModalDefaults);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
+  const modules = useStore(s => s.modules);
   const addInitiative = useStore(s => s.addInitiative);
   const addCapability = useStore(s => s.addCapability);
   const addMilestone = useStore(s => s.addMilestone);
@@ -169,7 +170,11 @@ export function AddModal() {
 
         {/* Tabs */}
         <div className="flex border-b border-border">
-          {(['initiative', 'capability', 'milestone', 'valuechain', 'effect'] as const).map(tb => (
+          {(['initiative', 'capability', 'milestone', 'valuechain', 'effect'] as const).filter(tb => {
+            if (tb === 'capability') return modules.capabilities;
+            if (tb === 'effect') return modules.effects;
+            return true;
+          }).map(tb => (
             <button
               key={tb}
               onClick={() => setActiveTab(tb)}
@@ -270,26 +275,28 @@ export function AddModal() {
                   ))}
                 </div>
               </div>
-              <div>
-                <div className="flex items-center justify-between">
-                  <label className="text-[9px] text-text-tertiary uppercase">{t('forms.capabilities')}</label>
-                  <AutoLinkButton
-                    initiativeName={iName}
-                    initiativeDescription={iDesc}
-                    capabilities={capabilities}
-                    selectedCapIds={iCaps}
-                    onToggleCapability={(capId) => toggleItem(iCaps, capId, setICaps)}
-                  />
+              {modules.capabilities && (
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[9px] text-text-tertiary uppercase">{t('forms.capabilities')}</label>
+                    <AutoLinkButton
+                      initiativeName={iName}
+                      initiativeDescription={iDesc}
+                      capabilities={capabilities}
+                      selectedCapIds={iCaps}
+                      onToggleCapability={(capId) => toggleItem(iCaps, capId, setICaps)}
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
+                    {capabilities.map(c => (
+                      <button key={c.id} onClick={() => toggleItem(iCaps, c.id, setICaps)}
+                        className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
+                          iCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
+                        }`}>{c.name}</button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-                  {capabilities.map(c => (
-                    <button key={c.id} onClick={() => toggleItem(iCaps, c.id, setICaps)}
-                      className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                        iCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
-                      }`}>{c.name}</button>
-                  ))}
-                </div>
-              </div>
+              )}
               <div>
                 <label className="text-[9px] text-text-tertiary uppercase">{t('forms.dependsOn')}</label>
                 <div className="flex flex-wrap gap-1 mt-0.5 max-h-16 overflow-y-auto">

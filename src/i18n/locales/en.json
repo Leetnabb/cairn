@@ -29,6 +29,34 @@
     "empty": "Drag effects here",
     "addEffect": "New effect"
   },
+  "modules": {
+    "title": "Modules",
+    "roadmap": "Roadmap",
+    "roadmapDesc": "Plan and prioritize initiatives – from strategy to execution",
+    "capabilities": "Capabilities",
+    "capabilitiesDesc": "Map organizational capabilities and maturity levels",
+    "effects": "Effects",
+    "effectsDesc": "Define and track effects from strategic efforts",
+    "recommended": "Recommended",
+    "core": "Always on",
+    "addLater": "You can always add more modules in Settings",
+    "stepTitle": "Choose your modules",
+    "stepSubtitle": "Start with what you need right now. Expand later."
+  },
+  "onboarding": {
+    "stepWelcome": "Welcome",
+    "stepModules": "Modules",
+    "stepTemplate": "Template",
+    "stepAI": "AI suggestions",
+    "stepReview": "Review",
+    "reviewTitle": "Review",
+    "reviewSubtitle": "Here is what will be created. Click Finish to start.",
+    "capabilities": "capabilities",
+    "initiatives": "initiatives",
+    "aiSuggestedCaps": "AI-suggested capabilities",
+    "complete": "Finish",
+    "startNow": "Start now"
+  },
   "capLandscape": {
     "title": "Capability Landscape",
     "domains": "domains",
@@ -63,7 +91,9 @@
     "color": "Colour",
     "level": "Level",
     "note": "Note",
-    "owner": "Owner"
+    "owner": "Owner",
+    "back": "Back",
+    "continue": "Continue"
   },
   "labels": {
     "maturity": {

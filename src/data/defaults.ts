@@ -1,4 +1,4 @@
-import type { Capability, Initiative, Milestone, ValueChain, Scenario, ScenarioState, Effect } from '../types';
+import type { Capability, Initiative, Milestone, ValueChain, Scenario, ScenarioState, Effect, ModuleSettings } from '../types';
 import { frivilligTemplate } from './templates/frivillig';
 
 // Re-export from frivillig template for backward compatibility
@@ -19,6 +19,13 @@ export const defaultScenario: Scenario = {
   color: '#6366f1',
 };
 
+// Default for new users: roadmap only. Existing users get all enabled via merge fallback in store.
+export const defaultModules: ModuleSettings = {
+  roadmap: true,
+  capabilities: false,
+  effects: false,
+};
+
 export function createDefaultState(): {
   capabilities: Capability[];
   scenarios: Scenario[];
@@ -27,6 +34,7 @@ export function createDefaultState(): {
   milestones: Milestone[];
   valueChains: ValueChain[];
   effects: Effect[];
+  modules: ModuleSettings;
 } {
   return {
     capabilities: defaultCapabilities,
@@ -38,5 +46,6 @@ export function createDefaultState(): {
     milestones: defaultMilestones,
     valueChains: defaultValueChains,
     effects: defaultEffects,
+    modules: defaultModules,
   };
 }
