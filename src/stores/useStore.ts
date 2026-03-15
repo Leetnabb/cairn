@@ -355,6 +355,13 @@ export const useStore = create<StoreState>()(
           return {
             ...snapshot.data,
             snapshots: [backup, ...state.snapshots].slice(0, 20),
+            // Reset transient UI state to avoid stale references after restore
+            ui: {
+              ...state.ui,
+              selectedItem: null,
+              editingId: null,
+              selectedItems: new Set<string>(),
+            },
           };
         }),
 
@@ -457,6 +464,10 @@ export const useStore = create<StoreState>()(
                   })),
               },
             },
+            effects: state.effects.map(e => ({
+              ...e,
+              initiatives: e.initiatives.filter(iid => !idSet.has(iid)),
+            })),
             ui: {
               ...state.ui,
               selectedItems: new Set<string>(),

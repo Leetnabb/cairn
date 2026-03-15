@@ -97,9 +97,12 @@ export function Roadmap() {
   const showFar = !(focusMode && filters.horizon === 'near');
   const gridCols = showNear && showFar ? '120px 1fr 1fr' : '120px 1fr';
 
-  const visibleDimensions = focusMode && filters.dimensions.length > 0
-    ? DIMENSIONS.filter(d => filters.dimensions.includes(d.key))
-    : DIMENSIONS;
+  const visibleDimensions = useMemo(
+    () => focusMode && filters.dimensions.length > 0
+      ? DIMENSIONS.filter(d => filters.dimensions.includes(d.key))
+      : DIMENSIONS,
+    [focusMode, filters.dimensions]
+  );
 
   const zoomLevel = filters.zoomLevel ?? 1;
 

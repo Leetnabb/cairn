@@ -24,6 +24,7 @@ export function parseSuggestions(text: string): AISuggestion[] {
   const regex = /```json:suggestion\s*\n([\s\S]*?)```/g;
   let match;
 
+  // exec() with a global regex returns null when no more matches remain – condition is intentional
   while ((match = regex.exec(text)) !== null) {
     try {
       const parsed = JSON.parse(match[1]);
@@ -37,8 +38,11 @@ export function parseSuggestions(text: string): AISuggestion[] {
           suggestions.push(parsed as AISuggestion);
         }
       }
-    } catch {
-      // Skip invalid JSON blocks
+    } catch (parseErr) {
+      // Malformed JSON in suggestion block – expected when AI output is imperfect
+      if (import.meta.env.DEV) {
+        console.warn('[parseSuggestions] Invalid JSON block skipped:', parseErr);
+      }
     }
   }
 
