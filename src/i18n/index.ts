@@ -5,7 +5,7 @@ import en from './locales/en.json';
 
 const STORAGE_KEY = 'cairn-language';
 
-const savedLang = localStorage.getItem(STORAGE_KEY) || 'nb';
+const savedLang = localStorage.getItem(STORAGE_KEY) || 'en';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -13,7 +13,7 @@ i18n.use(initReactI18next).init({
     en: { translation: en },
   },
   lng: savedLang,
-  fallbackLng: 'nb',
+  fallbackLng: 'en',
   interpolation: {
     escapeValue: false,
   },
