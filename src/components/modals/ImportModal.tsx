@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import type { AppState } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
+
+const MAX_IMPORT_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 import { exportJson } from '../../lib/exportJson';
 import { exportCapabilitiesCsv, exportInitiativesCsv, exportEffectsCsv } from '../../lib/exportCsv';
 import { exportPptx } from '../../lib/exportPptx';
@@ -68,10 +70,17 @@ export function ImportModal() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_IMPORT_FILE_SIZE) {
+      setErrors([t('importModal.fileTooLarge')]);
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result !== 'string') return;
       handleImport(reader.result);
+    };
+    reader.onerror = () => {
+      setErrors([t('importModal.fileReadError')]);
     };
     reader.readAsText(file);
   };

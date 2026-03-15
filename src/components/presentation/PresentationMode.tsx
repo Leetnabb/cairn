@@ -54,6 +54,8 @@ export function PresentationMode() {
             className={`w-2 h-2 rounded-full transition-all ${
               idx === slide ? 'bg-white scale-125' : 'bg-white/30 hover:bg-white/50'
             }`}
+            aria-label={SLIDE_LABELS[idx]}
+            aria-current={idx === slide ? 'true' : undefined}
             title={SLIDE_LABELS[idx]}
           />
         ))}

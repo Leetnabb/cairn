@@ -1,4 +1,7 @@
-const STORAGE_KEY = 'cairn-ai-key';
+import { parseJsonObjectFromAI } from './parseJsonResponse';
+
+const STORAGE_KEY_LOCAL = 'cairn-ai-key';
+const STORAGE_KEY_SESSION = 'cairn-ai-key-session';
 const MODEL = 'claude-sonnet-4-20250514';
 const MAX_TOKENS = 2048;
 const API_URL = 'https://api.anthropic.com/v1/messages';
@@ -12,16 +15,41 @@ export class AIError extends Error {
   }
 }
 
+// Migrate existing key from old storage key to session
+(function migrateApiKey() {
+  const legacy = localStorage.getItem('cairn-ai-key');
+  if (legacy && !sessionStorage.getItem(STORAGE_KEY_SESSION)) {
+    sessionStorage.setItem(STORAGE_KEY_SESSION, legacy);
+  }
+})();
+
+/** Returns the API key from sessionStorage first, then localStorage (persisted). */
 export function getApiKey(): string | null {
-  return localStorage.getItem(STORAGE_KEY);
+  return sessionStorage.getItem(STORAGE_KEY_SESSION)
+    ?? localStorage.getItem(STORAGE_KEY_LOCAL);
 }
 
-export function setApiKey(key: string): void {
-  localStorage.setItem(STORAGE_KEY, key);
+/**
+ * Saves the API key. By default stored only in sessionStorage (cleared on tab close).
+ * Pass `persist: true` to also save in localStorage across sessions.
+ */
+export function setApiKey(key: string, persist = false): void {
+  sessionStorage.setItem(STORAGE_KEY_SESSION, key);
+  if (persist) {
+    localStorage.setItem(STORAGE_KEY_LOCAL, key);
+  } else {
+    localStorage.removeItem(STORAGE_KEY_LOCAL);
+  }
 }
 
 export function removeApiKey(): void {
-  localStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem(STORAGE_KEY_SESSION);
+  localStorage.removeItem(STORAGE_KEY_LOCAL);
+}
+
+/** Returns true if the key is persisted to localStorage across sessions. */
+export function isApiKeyPersisted(): boolean {
+  return !!localStorage.getItem(STORAGE_KEY_LOCAL);
 }
 
 interface ChatMessage {
@@ -60,7 +88,8 @@ export async function* streamChatResponse(
     );
   }
 
-  const reader = res.body!.getReader();
+  if (!res.body) throw new AIError('Response body is empty', 0);
+  const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
 
@@ -127,16 +156,6 @@ export async function getFormSuggestion(
   }
 
   const json = await res.json();
-  const text = json.content?.[0]?.text || '';
-
-  // Extract JSON from the response — try raw parse first, then look for code block
-  try {
-    return JSON.parse(text);
-  } catch {
-    const match = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
-    if (match) {
-      return JSON.parse(match[1]);
-    }
-    throw new AIError('Kunne ikke tolke AI-responsen som JSON', 0);
-  }
+  const text: string = json.content?.[0]?.text || '';
+  return parseJsonObjectFromAI(text);
 }

@@ -4,10 +4,12 @@ import { temporal } from 'zundo';
 import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
+import { reorderInitiatives } from '../lib/ordering';
 
 // One-time migration from old storage key
-if (localStorage.getItem('ea-light-storage') && !localStorage.getItem('cairn-storage')) {
-  localStorage.setItem('cairn-storage', localStorage.getItem('ea-light-storage')!);
+const _legacyStorage = localStorage.getItem('ea-light-storage');
+if (_legacyStorage && !localStorage.getItem('cairn-storage')) {
+  localStorage.setItem('cairn-storage', _legacyStorage);
   localStorage.removeItem('ea-light-storage');
 }
 
@@ -185,22 +187,8 @@ export const useStore = create<StoreState>()(
 
         moveInitiative: (id, dimension, horizon, newOrder) => set(state => {
           const scenarioState = state.scenarioStates[state.activeScenario];
-          const initiatives = scenarioState.initiatives.map(i => {
-            if (i.id === id) {
-              return { ...i, dimension, horizon, order: newOrder };
-            }
-            return i;
-          });
-          // Reorder items in the same zone
-          const zone = initiatives.filter(i => i.dimension === dimension && i.horizon === horizon && i.id !== id);
-          zone.sort((a, b) => a.order - b.order);
-          const moved = initiatives.find(i => i.id === id)!;
-          zone.splice(newOrder, 0, moved);
-          const reordered = initiatives.map(i => {
-            const idx = zone.findIndex(z => z.id === i.id);
-            if (idx >= 0) return { ...i, order: idx };
-            return i;
-          });
+          const reordered = reorderInitiatives(scenarioState.initiatives, id, dimension, horizon, newOrder);
+          if (!reordered) return state;
           return {
             scenarioStates: {
               ...state.scenarioStates,
