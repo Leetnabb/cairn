@@ -229,7 +229,9 @@
     "pasteJson": "Or paste JSON:",
     "invalidJson": "Invalid JSON",
     "exportFiltered": "Export filtered data only",
-    "exportAll": "Export all data"
+    "exportAll": "Export all data",
+    "fileTooLarge": "File is too large (max 10 MB)",
+    "fileReadError": "Could not read the file"
   },
   "scenarios": {
     "label": "Scenario:",
@@ -350,7 +352,8 @@
       "invalidKey": "Invalid API key.",
       "tooManyRequests": "Too many requests. Please wait.",
       "couldNotFetch": "Could not fetch suggestions.",
-      "networkError": "Network error. Check your internet connection."
+      "networkError": "Network error. Check your internet connection.",
+      "persistKey": "Remember key between sessions (stored in browser)"
     },
     "errors": {
       "invalidKey": "Invalid API key. Check settings.",

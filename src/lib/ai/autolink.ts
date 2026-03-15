@@ -1,5 +1,6 @@
 import type { Capability } from '../../types';
 import { AIError } from './claude';
+import { parseJsonArrayFromAI } from './parseJsonResponse';
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
@@ -66,17 +67,5 @@ Returner KUN gyldig JSON-array uten markdown-formatering, maks 8 forslag, sorter
 
   const json = await res.json();
   const text: string = json.content?.[0]?.text || '';
-
-  try {
-    const parsed = JSON.parse(text);
-    if (Array.isArray(parsed)) return parsed;
-    throw new Error('Not an array');
-  } catch {
-    const match = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
-    if (match) {
-      const parsed = JSON.parse(match[1]);
-      if (Array.isArray(parsed)) return parsed;
-    }
-    throw new AIError('Kunne ikke tolke AI-responsen som JSON', 0);
-  }
+  return parseJsonArrayFromAI<CapabilityLinkSuggestion>(text);
 }

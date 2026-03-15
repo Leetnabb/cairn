@@ -15,9 +15,9 @@ export function SnapshotList() {
       {snapshots.length === 0 ? (
         <p className="text-[10px] text-text-tertiary italic">{t('snapshots.none')}</p>
       ) : (
-        <div className="space-y-1 max-h-48 overflow-y-auto">
+        <ul className="space-y-1 max-h-48 overflow-y-auto">
           {snapshots.map(s => (
-            <div key={s.id} className="flex items-center justify-between px-2 py-1 rounded border border-border bg-gray-50">
+            <li key={s.id} className="flex items-center justify-between px-2 py-1 rounded border border-border bg-gray-50">
               <div>
                 <div className="text-[10px] font-medium">{s.label || t('snapshots.default')}</div>
                 <div className="text-[8px] text-text-tertiary">
@@ -34,9 +34,9 @@ export function SnapshotList() {
                 }}>{t('snapshots.restore')}</Button>
                 <Button variant="danger" onClick={() => deleteSnapshot(s.id)}>\u00d7</Button>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

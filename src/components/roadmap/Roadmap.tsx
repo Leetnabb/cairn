@@ -97,9 +97,12 @@ export function Roadmap() {
   const showFar = !(focusMode && filters.horizon === 'near');
   const gridCols = showNear && showFar ? '120px 1fr 1fr' : '120px 1fr';
 
-  const visibleDimensions = focusMode && filters.dimensions.length > 0
-    ? DIMENSIONS.filter(d => filters.dimensions.includes(d.key))
-    : DIMENSIONS;
+  const visibleDimensions = useMemo(
+    () => focusMode && filters.dimensions.length > 0
+      ? DIMENSIONS.filter(d => filters.dimensions.includes(d.key))
+      : DIMENSIONS,
+    [focusMode, filters.dimensions]
+  );
 
   const zoomLevel = filters.zoomLevel ?? 1;
 
@@ -144,16 +147,20 @@ export function Roadmap() {
           return (
             <div
               key={dim.key}
+              role="button"
+              tabIndex={0}
               className="grid mb-1 cursor-pointer"
               style={{ gridTemplateColumns: gridCols, gap: '4px', opacity: dimOpacity }}
               onClick={() => toggleCollapse(dim.key)}
-              title={t('roadmap.expand')}
+              onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && toggleCollapse(dim.key)}
+              aria-label={`${t(`labels.dimensions.${dim.key}`)} – ${t('roadmap.expand')}`}
+              aria-expanded={false}
             >
               <div
                 className="flex items-center px-2 rounded text-[10px] font-semibold"
                 style={{ backgroundColor: dim.bgColor, color: dim.textColor, height: 24 }}
               >
-                <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} />
+                <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} aria-hidden="true" />
                 {t(`labels.dimensions.${dim.key}`)}
                 <span className="ml-1 text-[8px] opacity-60">({t('roadmap.collapsed')})</span>
               </div>
@@ -176,6 +183,8 @@ export function Roadmap() {
           >
             {/* Label */}
             <div
+              role="button"
+              tabIndex={0}
               className="flex items-center px-2 py-1 rounded text-[11px] font-semibold cursor-pointer hover:opacity-80"
               style={{
                 backgroundColor: dim.bgColor,
@@ -183,9 +192,11 @@ export function Roadmap() {
                 ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
               }}
               onClick={() => toggleCollapse(dim.key)}
-              title={t('roadmap.collapsed')}
+              onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && toggleCollapse(dim.key)}
+              aria-label={`${t(`labels.dimensions.${dim.key}`)} – ${t('roadmap.collapsed')}`}
+              aria-expanded={true}
             >
-              <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} />
+              <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} aria-hidden="true" />
               {t(`labels.dimensions.${dim.key}`)}
             </div>
 

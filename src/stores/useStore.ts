@@ -4,10 +4,12 @@ import { temporal } from 'zundo';
 import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
+import { reorderInitiatives } from '../lib/ordering';
 
 // One-time migration from old storage key
-if (localStorage.getItem('ea-light-storage') && !localStorage.getItem('cairn-storage')) {
-  localStorage.setItem('cairn-storage', localStorage.getItem('ea-light-storage')!);
+const _legacyStorage = localStorage.getItem('ea-light-storage');
+if (_legacyStorage && !localStorage.getItem('cairn-storage')) {
+  localStorage.setItem('cairn-storage', _legacyStorage);
   localStorage.removeItem('ea-light-storage');
 }
 
@@ -185,22 +187,8 @@ export const useStore = create<StoreState>()(
 
         moveInitiative: (id, dimension, horizon, newOrder) => set(state => {
           const scenarioState = state.scenarioStates[state.activeScenario];
-          const initiatives = scenarioState.initiatives.map(i => {
-            if (i.id === id) {
-              return { ...i, dimension, horizon, order: newOrder };
-            }
-            return i;
-          });
-          // Reorder items in the same zone
-          const zone = initiatives.filter(i => i.dimension === dimension && i.horizon === horizon && i.id !== id);
-          zone.sort((a, b) => a.order - b.order);
-          const moved = initiatives.find(i => i.id === id)!;
-          zone.splice(newOrder, 0, moved);
-          const reordered = initiatives.map(i => {
-            const idx = zone.findIndex(z => z.id === i.id);
-            if (idx >= 0) return { ...i, order: idx };
-            return i;
-          });
+          const reordered = reorderInitiatives(scenarioState.initiatives, id, dimension, horizon, newOrder);
+          if (!reordered) return state;
           return {
             scenarioStates: {
               ...state.scenarioStates,
@@ -342,8 +330,7 @@ export const useStore = create<StoreState>()(
 
         // Snapshots
         saveSnapshot: (label) => set(state => {
-          const { ui, snapshots, ...appState } = state;
-          void ui;
+          const { ui: _ui, snapshots, ...appState } = state;
           const snapshot: Snapshot = {
             id: `snap_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -358,8 +345,7 @@ export const useStore = create<StoreState>()(
           const snapshot = state.snapshots.find(s => s.id === id);
           if (!snapshot) return state;
           // Auto-backup before restore
-          const { ui, snapshots, ...currentState } = state;
-          void ui;
+          const { ui: _ui, snapshots: _snapshotsBackup, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_backup_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -369,6 +355,13 @@ export const useStore = create<StoreState>()(
           return {
             ...snapshot.data,
             snapshots: [backup, ...state.snapshots].slice(0, 20),
+            // Reset transient UI state to avoid stale references after restore
+            ui: {
+              ...state.ui,
+              selectedItem: null,
+              editingId: null,
+              selectedItems: new Set<string>(),
+            },
           };
         }),
 
@@ -471,6 +464,10 @@ export const useStore = create<StoreState>()(
                   })),
               },
             },
+            effects: state.effects.map(e => ({
+              ...e,
+              initiatives: e.initiatives.filter(iid => !idSet.has(iid)),
+            })),
             ui: {
               ...state.ui,
               selectedItems: new Set<string>(),
@@ -482,8 +479,7 @@ export const useStore = create<StoreState>()(
         // Import
         importState: (imported) => set(state => {
           // Auto-backup
-          const { ui, snapshots, ...currentState } = state;
-          void ui;
+          const { ui: _ui, snapshots: _snapshotsImport, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_import_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -498,8 +494,7 @@ export const useStore = create<StoreState>()(
 
         // Template
         loadTemplate: (template) => set(state => {
-          const { ui, snapshots, ...currentState } = state;
-          void ui;
+          const { ui: _ui, snapshots: _snapshotsTemplate, ...currentState } = state;
           const backup: Snapshot = {
             id: `snap_template_${Date.now()}`,
             timestamp: new Date().toISOString(),
@@ -529,8 +524,7 @@ export const useStore = create<StoreState>()(
     {
       limit: 50,
       partialize: (state) => {
-        const { ui, ...rest } = state;
-        void ui;
+        const { ui: _ui, ...rest } = state;
         return rest as Omit<StoreState, 'ui'>;
       },
     }
@@ -538,7 +532,7 @@ export const useStore = create<StoreState>()(
   {
     name: 'cairn-storage',
     partialize: (state) => {
-      const { ui, ...rest } = state;
+      const { ui: _uiPartialize, ...rest } = state;
       return { ...rest, ui: { filters: state.ui.filters, roleMode: state.ui.roleMode } };
     },
     merge: (persistedState, currentState) => {
@@ -547,11 +541,11 @@ export const useStore = create<StoreState>()(
       return {
         ...currentState,
         ...persistedRest,
-        effects: Array.isArray((persisted as any).effects) ? (persisted as any).effects : currentState.effects,
+        effects: Array.isArray(persisted.effects) ? persisted.effects : currentState.effects,
         ui: {
-          ...(currentState as any).ui,
+          ...currentState.ui,
           ...(typeof persistedUI === 'object' && persistedUI !== null ? persistedUI : {}),
-          selectedItems: (currentState as any).ui.selectedItems,  // Always keep the Set
+          selectedItems: currentState.ui.selectedItems,  // Always keep the Set
         },
       } as StoreState;
     },

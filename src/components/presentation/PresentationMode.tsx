@@ -1,15 +1,15 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS, DIMENSION_MAP, MATURITY_COLORS, RISK_COLORS, EFFECT_TYPE_COLORS } from '../../types';
-import type { EffectType } from '../../types';
+import type { Capability, Effect, EffectType, Initiative } from '../../types';
 import { CairnLogo } from '../CairnLogo';
 
 const SLIDES = ['overview', 'ledelse', 'virksomhet', 'organisasjon', 'teknologi', 'capabilities', 'effects', 'summary'] as const;
 
 function useSlideLabels() {
   const { t } = useTranslation();
-  return [
+  return useMemo(() => [
     t('presentation.slides.overview'),
     t('labels.dimensions.ledelse'),
     t('labels.dimensions.virksomhet'),
@@ -18,7 +18,7 @@ function useSlideLabels() {
     t('presentation.slides.capabilities'),
     t('presentation.slides.effects'),
     t('presentation.slides.summary'),
-  ];
+  ], [t]);
 }
 
 export function PresentationMode() {
@@ -54,6 +54,8 @@ export function PresentationMode() {
             className={`w-2 h-2 rounded-full transition-all ${
               idx === slide ? 'bg-white scale-125' : 'bg-white/30 hover:bg-white/50'
             }`}
+            aria-label={SLIDE_LABELS[idx]}
+            aria-current={idx === slide ? 'true' : undefined}
             title={SLIDE_LABELS[idx]}
           />
         ))}
@@ -132,21 +134,22 @@ function OverviewSlide({ initiatives }: { initiatives: ReturnType<typeof useStor
   );
 }
 
-function DimensionSlide({ dimensionKey, initiatives, capabilities }: { dimensionKey: string; initiatives: any[]; capabilities: any[] }) {
+function DimensionSlide({ dimensionKey, initiatives, capabilities }: { dimensionKey: string; initiatives: Initiative[]; capabilities: Capability[] }) {
   const { t } = useTranslation();
   const dim = DIMENSION_MAP[dimensionKey as keyof typeof DIMENSION_MAP];
-  const near = initiatives.filter((i: any) => i.dimension === dimensionKey && i.horizon === 'near').sort((a: any, b: any) => a.order - b.order);
-  const far = initiatives.filter((i: any) => i.dimension === dimensionKey && i.horizon === 'far').sort((a: any, b: any) => a.order - b.order);
+  const capabilityMap = useMemo(() => new Map(capabilities.map(c => [c.id, c])), [capabilities]);
+  const near = initiatives.filter(i => i.dimension === dimensionKey && i.horizon === 'near').sort((a, b) => a.order - b.order);
+  const far = initiatives.filter(i => i.dimension === dimensionKey && i.horizon === 'far').sort((a, b) => a.order - b.order);
 
-  const renderCard = (init: any) => (
+  const renderCard = (init: Initiative) => (
     <div key={init.id} className="px-4 py-3 rounded-lg mb-2" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderLeft: `3px solid ${dim.color}` }}>
       <div className="text-[16px] text-white font-semibold">{init.name}</div>
       <div className="text-[11px] text-white/50 mt-0.5">{init.owner}</div>
       {init.description && <div className="text-[12px] text-white/60 mt-1">{init.description}</div>}
       {init.capabilities.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
-          {init.capabilities.map((cid: string) => {
-            const cap = capabilities.find((c: any) => c.id === cid);
+          {init.capabilities.map(cid => {
+            const cap = capabilityMap.get(cid);
             return cap ? (
               <span key={cid} className="px-1.5 py-0.5 text-[9px] rounded bg-white/10 text-white/60">{cap.name}</span>
             ) : null;
@@ -178,15 +181,15 @@ function DimensionSlide({ dimensionKey, initiatives, capabilities }: { dimension
   );
 }
 
-function CapabilitiesSlide({ capabilities }: { capabilities: any[] }) {
+function CapabilitiesSlide({ capabilities }: { capabilities: Capability[] }) {
   const { t } = useTranslation();
-  const l1 = capabilities.filter((c: any) => c.level === 1);
+  const l1 = capabilities.filter(c => c.level === 1);
   return (
     <div className="w-full max-w-5xl">
       <h1 className="text-[36px] font-bold text-white mb-8">{t('presentation.slides.capabilities')}</h1>
       <div className="grid grid-cols-3 gap-4">
-        {l1.map((cap: any) => {
-          const children = capabilities.filter((c: any) => c.parent === cap.id);
+        {l1.map(cap => {
+          const children = capabilities.filter(c => c.parent === cap.id);
           return (
             <div key={cap.id} className="rounded-lg p-4" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
               <h3 className="text-[16px] text-white font-semibold mb-1">{cap.name}</h3>
@@ -200,7 +203,7 @@ function CapabilitiesSlide({ capabilities }: { capabilities: any[] }) {
                   R: {t(`labels.risk.${cap.risk}`)}
                 </span>
               </div>
-              {children.map((c: any) => (
+              {children.map(c => (
                 <div key={c.id} className="text-[11px] text-white/40 py-0.5 pl-2 border-l border-white/10">
                   {c.name}
                 </div>
@@ -213,15 +216,15 @@ function CapabilitiesSlide({ capabilities }: { capabilities: any[] }) {
   );
 }
 
-function EffectChainSlide({ effects, initiatives, capabilities }: { effects: any[]; initiatives: any[]; capabilities: any[] }) {
+function EffectChainSlide({ effects, initiatives, capabilities }: { effects: Effect[]; initiatives: Initiative[]; capabilities: Capability[] }) {
   const { t } = useTranslation();
   const types: EffectType[] = ['cost', 'quality', 'speed', 'compliance', 'strategic'];
 
   // Gather all initiative/capability IDs referenced by effects
-  const initIds = new Set(effects.flatMap((e: any) => e.initiatives));
-  const capIds = new Set(effects.flatMap((e: any) => e.capabilities));
-  const linkedInits = initiatives.filter((i: any) => initIds.has(i.id));
-  const linkedCaps = capabilities.filter((c: any) => capIds.has(c.id));
+  const initIds = new Set(effects.flatMap(e => e.initiatives));
+  const capIds = new Set(effects.flatMap(e => e.capabilities));
+  const linkedInits = initiatives.filter(i => initIds.has(i.id));
+  const linkedCaps = capabilities.filter(c => capIds.has(c.id));
 
   return (
     <div className="w-full max-w-6xl">
@@ -231,7 +234,7 @@ function EffectChainSlide({ effects, initiatives, capabilities }: { effects: any
         <div>
           <h2 className="text-[14px] font-semibold text-white/60 mb-3 uppercase tracking-wide">{t('dashboard.activities')}</h2>
           <div className="space-y-1.5">
-            {linkedInits.map((i: any) => (
+            {linkedInits.map(i => (
               <div key={i.id} className="px-3 py-2 rounded-lg text-[11px] text-white/70" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
                 {i.name}
               </div>
@@ -242,7 +245,7 @@ function EffectChainSlide({ effects, initiatives, capabilities }: { effects: any
         <div>
           <h2 className="text-[14px] font-semibold text-white/60 mb-3 uppercase tracking-wide">{t('detail.capabilities')}</h2>
           <div className="space-y-1.5">
-            {linkedCaps.map((c: any) => (
+            {linkedCaps.map(c => (
               <div key={c.id} className="px-3 py-2 rounded-lg text-[11px] text-white/70" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
                 {c.name}
               </div>
@@ -254,11 +257,11 @@ function EffectChainSlide({ effects, initiatives, capabilities }: { effects: any
           <h2 className="text-[14px] font-semibold text-white/60 mb-3 uppercase tracking-wide">{t('effects.title')}</h2>
           <div className="space-y-2">
             {types.map(type => {
-              const typeEffects = effects.filter((e: any) => e.type === type);
+              const typeEffects = effects.filter(e => e.type === type);
               if (typeEffects.length === 0) return null;
               return (
                 <div key={type}>
-                  {typeEffects.map((e: any) => (
+                  {typeEffects.map(e => (
                     <div key={e.id} className="px-3 py-2 rounded-lg mb-1.5 border-l-[3px]" style={{ borderColor: EFFECT_TYPE_COLORS[type as EffectType], backgroundColor: 'rgba(255,255,255,0.06)' }}>
                       <div className="flex items-center gap-1.5 mb-0.5">
                         <span className="px-1.5 py-0.5 text-[8px] font-medium rounded text-white" style={{ backgroundColor: EFFECT_TYPE_COLORS[type as EffectType] }}>
@@ -283,9 +286,9 @@ function EffectChainSlide({ effects, initiatives, capabilities }: { effects: any
   );
 }
 
-function SummarySlide({ initiatives, capabilities }: { initiatives: any[]; capabilities: any[] }) {
+function SummarySlide({ initiatives, capabilities }: { initiatives: Initiative[]; capabilities: Capability[] }) {
   const { t } = useTranslation();
-  const totalDeps = initiatives.reduce((acc: number, i: any) => acc + i.dependsOn.length, 0);
+  const totalDeps = initiatives.reduce((acc, i) => acc + i.dependsOn.length, 0);
   return (
     <div className="w-full max-w-4xl text-center">
       <h1 className="text-[42px] font-bold text-white mb-10">{t('presentation.summaryTitle')}</h1>
@@ -311,7 +314,7 @@ function SummarySlide({ initiatives, capabilities }: { initiatives: any[]; capab
         {DIMENSIONS.map(d => (
           <div key={d.key} className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
-            <span className="text-[12px] text-white/60">{t(`labels.dimensions.${d.key}`)}: {initiatives.filter((i: any) => i.dimension === d.key).length}</span>
+            <span className="text-[12px] text-white/60">{t(`labels.dimensions.${d.key}`)}: {initiatives.filter(i => i.dimension === d.key).length}</span>
           </div>
         ))}
       </div>

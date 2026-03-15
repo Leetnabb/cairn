@@ -3,6 +3,7 @@ import type { Capability, Initiative, Effect, EffectType, UIState } from '../typ
 import { DIMENSIONS, EFFECT_TYPE_COLORS } from '../types';
 import i18n from '../i18n';
 import { getMaturityLabel, getRiskLabel, getDimensionLabel, getDateLocale } from './labels';
+import { filterInitiatives } from './exportCsv';
 
 const DARK_BG = '1E293B';
 const ACCENT = '6366F1';
@@ -13,20 +14,8 @@ function addShadow() {
   return { type: 'outer' as const, blur: 4, offset: 1, angle: 135, color: '000000', opacity: 0.08 };
 }
 
-function applyFilters(initiatives: Initiative[], filters?: UIState['filters']): Initiative[] {
-  if (!filters) return initiatives;
-  return initiatives.filter(i => {
-    if (filters.dimensions.length > 0 && !filters.dimensions.includes(i.dimension)) return false;
-    if (filters.horizon !== 'all' && filters.horizon !== i.horizon) return false;
-    if (filters.owner && !i.owner.toLowerCase().includes(filters.owner.toLowerCase())) return false;
-    if (filters.status && (i.status ?? 'planned') !== filters.status) return false;
-    if (filters.search && !i.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
-    return true;
-  });
-}
-
 export function exportPptx(capabilities: Capability[], initiatives: Initiative[], effects: Effect[] = [], filters?: UIState['filters']) {
-  initiatives = applyFilters(initiatives, filters);
+  initiatives = filterInitiatives(initiatives, filters);
   const pptx = new PptxGenJS();
   pptx.author = 'Cairn';
   pptx.title = i18n.t('export.pptxTitle');

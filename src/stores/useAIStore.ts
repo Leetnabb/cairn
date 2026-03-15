@@ -2,8 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 // One-time migration from old storage key
-if (localStorage.getItem('ea-light-ai-key') && !localStorage.getItem('cairn-ai-key')) {
-  localStorage.setItem('cairn-ai-key', localStorage.getItem('ea-light-ai-key')!);
+const _legacyAiKey = localStorage.getItem('ea-light-ai-key');
+if (_legacyAiKey && !localStorage.getItem('cairn-ai-key')) {
+  localStorage.setItem('cairn-ai-key', _legacyAiKey);
   localStorage.removeItem('ea-light-ai-key');
 }
 
@@ -40,7 +41,7 @@ export const useAIStore = create<AIState>()(
       isStreaming: false,
       streamingText: '',
       panelOpen: false,
-      apiKeyConfigured: !!localStorage.getItem('cairn-ai-key'),
+      apiKeyConfigured: !!(sessionStorage.getItem('cairn-ai-key-session') || localStorage.getItem('cairn-ai-key')),
       showApiKeyInput: false,
       error: null,
 

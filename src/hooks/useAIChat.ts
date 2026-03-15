@@ -7,13 +7,29 @@ import i18n from '../i18n';
 
 const MAX_MESSAGES = 20;
 
+/** Builds the system prompt context from current app state. Pure function – no hooks. */
+function buildChatContext(): string {
+  const appState = useStore.getState();
+  return buildChatSystemPrompt({
+    capabilities: appState.capabilities,
+    scenarios: appState.scenarios,
+    scenarioStates: appState.scenarioStates,
+    activeScenario: appState.activeScenario,
+    milestones: appState.milestones,
+    valueChains: appState.valueChains,
+    effects: appState.effects,
+    comments: appState.comments,
+    snapshots: [],
+  });
+}
+
 function getErrorMessage(err: unknown): string {
   if (err instanceof AIError) {
     if (err.status === 401) return i18n.t('ai.errors.invalidKey');
     if (err.status === 429) return i18n.t('ai.errors.tooMany');
     if (err.status >= 500) return i18n.t('ai.errors.serverError');
   }
-  if (err instanceof TypeError && (err as Error).message?.includes('fetch')) {
+  if (err instanceof TypeError && err.message?.includes('fetch')) {
     return i18n.t('ai.errors.networkError');
   }
   return i18n.t('ai.errors.networkError');
@@ -43,19 +59,7 @@ export function useAIChat() {
     store.setError(null);
     store.setStreaming(true);
 
-    // Build context from app state
-    const appState = useStore.getState();
-    const systemPrompt = buildChatSystemPrompt({
-      capabilities: appState.capabilities,
-      scenarios: appState.scenarios,
-      scenarioStates: appState.scenarioStates,
-      activeScenario: appState.activeScenario,
-      milestones: appState.milestones,
-      valueChains: appState.valueChains,
-      effects: appState.effects,
-      comments: appState.comments,
-      snapshots: [],
-    });
+    const systemPrompt = buildChatContext();
 
     // Build message history (last N messages)
     const allMessages = [...useAIStore.getState().messages];
@@ -78,7 +82,7 @@ export function useAIChat() {
       }
       useAIStore.getState().finalizeStreaming();
     } catch (err) {
-      if ((err as Error).name === 'AbortError') {
+      if (err instanceof Error && err.name === 'AbortError') {
         useAIStore.getState().finalizeStreaming();
       } else {
         useAIStore.getState().setStreaming(false);

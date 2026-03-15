@@ -229,7 +229,9 @@
     "pasteJson": "Eller lim inn JSON:",
     "invalidJson": "Ugyldig JSON",
     "exportFiltered": "Eksporter kun filtrert data",
-    "exportAll": "Eksporter all data"
+    "exportAll": "Eksporter all data",
+    "fileTooLarge": "Filen er for stor (maks 10 MB)",
+    "fileReadError": "Kunne ikke lese filen"
   },
   "scenarios": {
     "label": "Scenario:",
@@ -350,7 +352,8 @@
       "invalidKey": "Ugyldig API-nøkkel.",
       "tooManyRequests": "For mange forespørsler. Vent litt.",
       "couldNotFetch": "Kunne ikke hente forslag.",
-      "networkError": "Nettverksfeil. Sjekk internettforbindelsen."
+      "networkError": "Nettverksfeil. Sjekk internettforbindelsen.",
+      "persistKey": "Husk nøkkel mellom økter (lagres i nettleseren)"
     },
     "errors": {
       "invalidKey": "Ugyldig API-nøkkel. Sjekk innstillingene.",
