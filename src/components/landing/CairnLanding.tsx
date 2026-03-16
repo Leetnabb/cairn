@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
-import { Link } from "react-router-dom";
 import { CairnMark } from "../CairnLogo";
+
+// ── Hooks ────────────────────────────────────────────────────────────────────
 
 function useInView(threshold = 0.15): [React.RefObject<HTMLDivElement | null>, boolean] {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -8,226 +9,331 @@ function useInView(threshold = 0.15): [React.RefObject<HTMLDivElement | null>, b
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold });
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVisible(true); },
+      { threshold }
+    );
     obs.observe(el);
     return () => obs.disconnect();
   }, [threshold]);
   return [ref, visible];
 }
 
-function FadeIn({ children, delay = 0, style = {} }: { children: ReactNode; delay?: number; style?: CSSProperties }) {
+// ── Base components ──────────────────────────────────────────────────────────
+
+function FadeIn({
+  children,
+  delay = 0,
+  style = {},
+}: {
+  children: ReactNode;
+  delay?: number;
+  style?: CSSProperties;
+}) {
   const [ref, visible] = useInView();
   return (
-    <div ref={ref} style={{
-      opacity: visible ? 1 : 0,
-      transform: visible ? "translateY(0)" : "translateY(32px)",
-      transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
-      ...style,
-    }}>{children}</div>
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: `opacity 0.75s ease ${delay}s, transform 0.75s ease ${delay}s`,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
   );
 }
 
+// Four bars as a recurring structural divider motif
+function BarDivider({ align = "center" }: { align?: "left" | "center" }) {
+  const bars = [
+    { w: 16, c: "#ef4444" },
+    { w: 26, c: "#22c55e" },
+    { w: 36, c: "#eab308" },
+    { w: 46, c: "#6366f1" },
+  ];
+  return (
+    <div style={{ display: "flex", gap: 4, justifyContent: align === "center" ? "center" : "flex-start" }}>
+      {bars.map((b, i) => (
+        <div
+          key={i}
+          style={{ width: b.w, height: 3, borderRadius: 2, background: b.c, opacity: 0.35 }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Animated logo for hero — bars rise bottom to top on page load
+function HeroMark() {
+  const [phase, setPhase] = useState(0);
+  const [lineW, setLineW] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 300);
+    const t2 = setTimeout(() => setPhase(2), 600);
+    const t3 = setTimeout(() => setPhase(3), 900);
+    const t4 = setTimeout(() => setPhase(4), 1200);
+    const tl = setTimeout(() => setLineW(120), 1600);
+    return () => [t1, t2, t3, t4, tl].forEach(clearTimeout);
+  }, []);
+
+  const bars = [
+    { w: 46, c: "#6366f1", phase: 1 }, // Technology — bottom, first
+    { w: 36, c: "#eab308", phase: 2 }, // Organisation
+    { w: 26, c: "#22c55e", phase: 3 }, // Business
+    { w: 16, c: "#ef4444", phase: 4 }, // Leadership — top, last
+  ];
+
+  // Rendered top→bottom for correct visual stacking (narrow on top)
+  const barsTopDown = [...bars].reverse();
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+      <svg width={64} height={64} viewBox="0 0 64 64" fill="none">
+        {barsTopDown.map((bar, i) => (
+          <rect
+            key={i}
+            x={(64 - bar.w) / 2}
+            y={8 + i * 14}
+            width={bar.w}
+            height={9}
+            rx={3.5}
+            fill={bar.c}
+            style={{
+              opacity: phase >= bar.phase ? 0.9 : 0,
+              transform: phase >= bar.phase ? "translateY(0)" : "translateY(6px)",
+              transition: "opacity 0.4s ease, transform 0.4s ease",
+            }}
+          />
+        ))}
+      </svg>
+      {/* Path extending rightward */}
+      <div
+        style={{
+          height: 1,
+          width: lineW,
+          background: "linear-gradient(90deg, rgba(99,102,241,0.5) 0%, transparent 100%)",
+          transition: "width 1.2s ease",
+          marginLeft: 2,
+        }}
+      />
+    </div>
+  );
+}
+
+// ── Style tokens ─────────────────────────────────────────────────────────────
+
 const S: Record<string, CSSProperties> = {
-  page: { background: "#0a0f1a", color: "#e8ecf4", fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", overflowX: "hidden" },
+  page: {
+    background: "#0a0f1a",
+    color: "#f1f5f9",
+    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    overflowX: "hidden",
+  },
   serif: { fontFamily: "'Instrument Serif', Georgia, serif" },
-  sans: { fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" },
-  muted: { color: "#7a8599" },
-  accent: { color: "#818cf8" },
-  dim: { color: "#4a5568" },
+  muted: { color: "#94a3b8" },
+  dim: { color: "#3a4558" },
+  accent: { color: "#6366f1" },
 };
 
-const navItems: { label: string; href: string }[] = [
-  { label: "Product", href: "#produkt" },
-  { label: "For whom", href: "#for-hvem" },
-  { label: "About", href: "#om-oss" },
-];
+const ctaStyle: CSSProperties = {
+  display: "inline-block",
+  fontSize: 14,
+  fontWeight: 600,
+  color: "#fff",
+  background: "#6366f1",
+  padding: "12px 28px",
+  borderRadius: 5,
+  cursor: "pointer",
+  textDecoration: "none",
+  letterSpacing: "0.01em",
+  transition: "all 0.2s",
+  border: "none",
+  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+};
 
-const dims = [
-  { label: "Governance", color: "#ef4444", desc: "Governance models, decision structure, and strategic alignment" },
-  { label: "Business", color: "#22c55e", desc: "Processes, KPIs, and value chains that drive the organisation" },
-  { label: "Organisation", color: "#eab308", desc: "Competence, culture, and capacity for change" },
-  { label: "Technology", color: "#6366f1", desc: "Platforms, integrations, and digital capabilities" },
-];
+// ── Main component ────────────────────────────────────────────────────────────
 
 export default function CairnLanding() {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const handler = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
+    const h = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
   }, []);
 
   return (
     <div style={S.page}>
-      {/* Noise overlay */}
-      <div style={{ position: "fixed", inset: 0, opacity: 0.03, pointerEvents: "none", zIndex: 100,
+
+      {/* Noise grain overlay */}
+      <div style={{
+        position: "fixed", inset: 0, opacity: 0.025, pointerEvents: "none", zIndex: 100,
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
       }} />
 
-      {/* Nav */}
+      {/* ── Nav ── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-        padding: "20px 48px", display: "flex", justifyContent: "space-between", alignItems: "center",
-        background: scrollY > 60 ? "rgba(10,15,26,0.85)" : "transparent",
+        padding: "20px 48px",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        background: scrollY > 60 ? "rgba(10,15,26,0.88)" : "transparent",
         backdropFilter: scrollY > 60 ? "blur(20px)" : "none",
         borderBottom: scrollY > 60 ? "1px solid rgba(255,255,255,0.05)" : "1px solid transparent",
         transition: "all 0.4s ease",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <CairnMark size={0.55} />
-          <span style={{ ...S.serif, fontSize: 22, color: "#e8ecf4", letterSpacing: "-0.02em" }}>Cairn</span>
+          <CairnMark size={0.5} />
+          <span style={{ ...S.serif, fontSize: 20, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Cairn</span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {navItems.map(item => (
-            <a key={item.label} href={item.href} style={{ fontSize: 13, color: "#7a8599", cursor: "pointer", fontWeight: 500, letterSpacing: "0.02em", transition: "color 0.2s", textDecoration: "none" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "#e8ecf4")}
-              onMouseLeave={e => (e.currentTarget.style.color = "#7a8599")}
+          {[
+            { label: "Product", href: "#solution" },
+            { label: "For whom", href: "#audience" },
+            { label: "About", href: "#narrative" },
+          ].map(item => (
+            <a
+              key={item.label}
+              href={item.href}
+              style={{ fontSize: 13, color: "#64748b", fontWeight: 500, textDecoration: "none", transition: "color 0.2s", letterSpacing: "0.01em" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "#f1f5f9")}
+              onMouseLeave={e => (e.currentTarget.style.color = "#64748b")}
             >{item.label}</a>
           ))}
-          <Link to="/app" style={{
-            fontSize: 13, fontWeight: 600, color: "#0a0f1a", background: "#e8ecf4",
-            padding: "8px 20px", borderRadius: 6, cursor: "pointer", letterSpacing: "0.01em",
-            transition: "all 0.2s", textDecoration: "none",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = "#818cf8"; e.currentTarget.style.color = "#fff"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "#e8ecf4"; e.currentTarget.style.color = "#0a0f1a"; }}
-          >Get started</Link>
+          <a
+            href="mailto:hello@cairnpath.io"
+            style={ctaStyle}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+          >Request early access</a>
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* ── 1. Hero ── */}
       <section style={{
-        minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center",
-        padding: "0 48px", position: "relative", overflow: "hidden",
+        minHeight: "100vh",
+        display: "flex", flexDirection: "column", justifyContent: "center",
+        padding: "120px 48px 80px",
+        position: "relative", overflow: "hidden",
       }}>
-        {/* Fog layers */}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 120% 80% at 50% 90%, rgba(99,102,241,0.07) 0%, transparent 70%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 50% at 80% 40%, rgba(234,179,8,0.03) 0%, transparent 60%)" }} />
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0, height: "40%",
-          background: "linear-gradient(to top, rgba(10,15,26,0.9) 0%, transparent 100%)",
-        }} />
-
-        {/* Animated fog wisps */}
+        {/* Subtle ambient glow */}
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 100% 70% at 50% 100%, rgba(99,102,241,0.06) 0%, transparent 70%)" }} />
+        {/* Fog wisps */}
         {[0, 1, 2].map(i => (
           <div key={i} style={{
             position: "absolute",
-            top: `${55 + i * 12}%`,
-            left: `${-20 + i * 15}%`,
-            width: "140%",
+            top: `${52 + i * 14}%`,
+            left: `${-10 + i * 10}%`,
+            width: "130%",
             height: 1,
-            background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${0.03 - i * 0.008}) 30%, rgba(255,255,255,${0.04 - i * 0.01}) 50%, transparent 100%)`,
-            transform: `translateX(${Math.sin(scrollY * 0.002 + i) * 30}px)`,
+            background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${0.025 - i * 0.006}) 40%, transparent 100%)`,
+            transform: `translateX(${Math.sin(scrollY * 0.0015 + i) * 20}px)`,
           }} />
         ))}
 
-        <div style={{ maxWidth: 800, position: "relative", zIndex: 2 }}>
-          <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 24 }}>Strategic wayfinding</p>
-          </FadeIn>
-          <FadeIn delay={0.15}>
-            <h1 style={{ ...S.serif, fontSize: 72, fontWeight: 400, lineHeight: 1.05, margin: "0 0 28px", letterSpacing: "-0.02em", color: "#f1f5f9" }}>
+        <div style={{ maxWidth: 760, position: "relative", zIndex: 2 }}>
+          {/* Animated logo mark */}
+          <div style={{ marginBottom: 48 }}>
+            <HeroMark />
+          </div>
+
+          <FadeIn delay={0.2}>
+            <h1 style={{
+              ...S.serif,
+              fontSize: "clamp(40px, 6vw, 68px)",
+              fontWeight: 400,
+              lineHeight: 1.08,
+              margin: "0 0 28px",
+              letterSpacing: "-0.025em",
+              color: "#f1f5f9",
+            }}>
               When the fog rolls in,<br />
-              <span style={{ ...S.serif, fontStyle: "italic", color: "#818cf8" }}>you need a cairn.</span>
+              you don&rsquo;t need a better map.<br />
+              <span style={{ ...S.serif, fontStyle: "italic", color: "#6366f1" }}>You need a cairn.</span>
             </h1>
           </FadeIn>
-          <FadeIn delay={0.3}>
-            <p style={{ fontSize: 18, lineHeight: 1.65, color: "#7a8599", maxWidth: 540, margin: "0 0 40px", fontWeight: 400 }}>
-              Cairn is the strategic roadmap tool that gives leaders full visibility across the entire transformation — without requiring a modelling language.
+
+          <FadeIn delay={0.4}>
+            <p style={{ fontSize: 18, lineHeight: 1.7, color: "#64748b", maxWidth: 520, margin: "0 0 16px", fontWeight: 400 }}>
+              Cairn turns strategy into a living path — connecting priorities,
+              capabilities, and initiatives into one navigable picture your
+              leadership team actually uses.
             </p>
           </FadeIn>
-          <FadeIn delay={0.45}>
-            <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-              <Link to="/app" style={{
-                fontSize: 14, fontWeight: 600, color: "#0a0f1a", background: "#e8ecf4",
-                padding: "12px 28px", borderRadius: 6, cursor: "pointer",
-                transition: "all 0.2s", textDecoration: "none",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.background = "#818cf8"; e.currentTarget.style.color = "#fff"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "#e8ecf4"; e.currentTarget.style.color = "#0a0f1a"; }}
-              >Try Cairn for free</Link>
-              <span style={{ fontSize: 14, color: "#7a8599", cursor: "pointer", padding: "12px 20px", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#e8ecf4")}
-                onMouseLeave={e => (e.currentTarget.style.color = "#7a8599")}
-              >See demo →</span>
+
+          <FadeIn delay={0.55}>
+            <p style={{ ...S.serif, fontStyle: "italic", fontSize: 16, color: "#3a4558", marginBottom: 44 }}>
+              From cairn to cairn. Always forward.
+            </p>
+          </FadeIn>
+
+          <FadeIn delay={0.7}>
+            <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
+              <a
+                href="mailto:hello@cairnpath.io"
+                style={{ ...ctaStyle, fontSize: 15, padding: "13px 32px" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+              >Request early access</a>
+              <a
+                href="#solution"
+                style={{ fontSize: 14, color: "#475569", fontWeight: 500, textDecoration: "none", transition: "color 0.2s", letterSpacing: "0.01em" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#94a3b8")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#475569")}
+              >See how it works ↓</a>
             </div>
           </FadeIn>
         </div>
 
         {/* Scroll indicator */}
-        <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, opacity: scrollY > 100 ? 0 : 0.4, transition: "opacity 0.3s" }}>
-          <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, transparent, #7a8599)" }} />
+        <div style={{
+          position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)",
+          opacity: scrollY > 80 ? 0 : 0.3, transition: "opacity 0.4s",
+        }}>
+          <div style={{ width: 1, height: 48, background: "linear-gradient(to bottom, transparent, #475569)", margin: "0 auto" }} />
         </div>
       </section>
 
-      {/* Problem statement */}
-      <section style={{ padding: "140px 48px", position: "relative" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      {/* ── 2. The Problem ── */}
+      <section style={{ padding: "140px 48px 160px", position: "relative" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.serif, fontSize: 42, lineHeight: 1.35, fontWeight: 400, color: "#c8d0de", letterSpacing: "-0.01em", textAlign: "center" }}>
-              Everyone has a strategy. Everyone has projects.<br />
-              <span style={S.dim}>No one has the path between them.</span>
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={0.2}>
-            <div style={{ display: "flex", gap: 1, marginTop: 80, justifyContent: "center" }}>
-              {[
-                { label: "Strategy", sub: "Decided and anchored", highlight: false },
-                { label: "???", sub: "What everyone lacks", highlight: true },
-                { label: "Execution", sub: "Projects and teams", highlight: false },
-              ].map((item, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{
-                    padding: "28px 40px", borderRadius: 8, textAlign: "center", minWidth: 180,
-                    background: item.highlight ? "rgba(129,140,248,0.08)" : "rgba(255,255,255,0.03)",
-                    border: item.highlight ? "1.5px solid rgba(129,140,248,0.3)" : "1px solid rgba(255,255,255,0.06)",
-                  }}>
-                    <div style={{ ...S.serif, fontSize: 26, color: item.highlight ? "#818cf8" : "#c8d0de", marginBottom: 6 }}>{item.label}</div>
-                    <div style={{ fontSize: 12, color: item.highlight ? "#818cf8" : "#5a6577", fontWeight: 500 }}>{item.sub}</div>
-                  </div>
-                  {i < 2 && <div style={{ width: 48, height: 1, background: "rgba(255,255,255,0.1)", margin: "0 -1px" }} />}
-                </div>
-              ))}
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.35}>
-            <p style={{ textAlign: "center", marginTop: 48, fontSize: 18, color: "#818cf8", fontWeight: 600, ...S.serif, fontStyle: "italic" }}>
-              Cairn is the &ldquo;to&rdquo;.
-            </p>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* Four dimensions */}
-      <section id="produkt" style={{ padding: "100px 48px 140px", position: "relative" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Four dimensions</p>
-            <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 64, letterSpacing: "-0.01em" }}>
-              Transformation is never just technology.
+            <BarDivider />
+            <h2 style={{
+              ...S.serif,
+              fontSize: "clamp(28px, 4vw, 44px)",
+              fontWeight: 400, lineHeight: 1.25,
+              color: "#cbd5e1", letterSpacing: "-0.02em",
+              margin: "48px 0 24px",
+            }}>
+              Every organization has a strategy.<br />
+              <span style={{ color: "#3a4558" }}>Most can&rsquo;t tell you if it&rsquo;s actually moving.</span>
             </h2>
           </FadeIn>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
-            {dims.map((d, i) => (
-              <FadeIn key={d.label} delay={0.1 * i}>
-                <div style={{
-                  padding: "32px 24px", borderRadius: 10,
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  transition: "all 0.3s ease",
-                  cursor: "default",
-                  position: "relative", overflow: "hidden",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.background = `${d.color}08`; e.currentTarget.style.borderColor = `${d.color}30`; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
-                >
-                  <div style={{ width: 32, height: 4, borderRadius: 2, background: d.color, opacity: 0.8, marginBottom: 20 }} />
-                  <h3 style={{ ...S.serif, fontSize: 22, color: "#e8ecf4", marginBottom: 10, fontWeight: 400 }}>{d.label}</h3>
-                  <p style={{ fontSize: 13, color: "#5a6577", lineHeight: 1.6, margin: 0 }}>{d.desc}</p>
+          <FadeIn delay={0.15}>
+            <p style={{ fontSize: 17, lineHeight: 1.75, color: "#475569", maxWidth: 580, margin: "0 0 64px", fontWeight: 400 }}>
+              The initiatives are running. The projects are green.<br />
+              And yet — six months later — the organization hasn&rsquo;t changed.<br />
+              The problem isn&rsquo;t execution.<br />
+              It&rsquo;s that no one can see the path.
+            </p>
+          </FadeIn>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 520 }}>
+            {[
+              "Why are we doing this initiative?",
+              "What capability are we building?",
+              "How does this connect to our strategy?",
+              "Is our strategy actually progressing?",
+            ].map((q, i) => (
+              <FadeIn key={i} delay={0.1 * i}>
+                <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                  <div style={{ width: 3, height: 20, borderRadius: 2, background: ["#ef4444", "#22c55e", "#eab308", "#6366f1"][i], opacity: 0.7, marginTop: 2, flexShrink: 0 }} />
+                  <span style={{ fontSize: 15, color: "#64748b", lineHeight: 1.5, fontWeight: 400 }}>{q}</span>
                 </div>
               </FadeIn>
             ))}
@@ -235,73 +341,156 @@ export default function CairnLanding() {
         </div>
       </section>
 
-      {/* Effect chain */}
-      <section style={{ padding: "100px 48px 140px", background: "rgba(255,255,255,0.015)" }}>
+      {/* ── 3. The Solution ── */}
+      <section id="solution" style={{ padding: "140px 48px 160px", background: "rgba(255,255,255,0.018)", position: "relative" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>The effect chain</p>
-            <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 16, letterSpacing: "-0.01em" }}>
-              From investment to value. Visible.
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#6366f1", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 20 }}>The solution</p>
+            <h2 style={{ ...S.serif, fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 400, color: "#f1f5f9", marginBottom: 24, letterSpacing: "-0.02em" }}>
+              Not a better map. A path.
             </h2>
-            <p style={{ textAlign: "center", color: "#5a6577", fontSize: 16, marginBottom: 72, maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
-              Cairn shows the unbroken line from what you do, through what you build, to what you achieve.
+            <p style={{ fontSize: 17, lineHeight: 1.75, color: "#475569", maxWidth: 560, margin: "0 0 80px", fontWeight: 400 }}>
+              Cairn turns strategy into a living path of execution.
+              Instead of disconnected initiatives, you see how everything
+              connects — and why it matters.
             </p>
           </FadeIn>
 
-          <FadeIn delay={0.15}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0 }}>
+          {/* Causal chain — the key visual */}
+          <FadeIn delay={0.1}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: 0, marginBottom: 56 }}>
               {[
-                { num: "23", label: "Activities", sub: "What we do", color: "#ef4444" },
-                { num: "12", label: "Capability lifts", sub: "What we can do", color: "#22c55e" },
-                { num: "7", label: "Effects", sub: "What we achieve", color: "#818cf8" },
-              ].map((item, i) => (
-                <div key={item.label} style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{ textAlign: "center", padding: "36px 40px", minWidth: 180 }}>
-                    <div style={{ fontSize: 48, fontWeight: 800, color: item.color, marginBottom: 4, ...S.sans }}>{item.num}</div>
-                    <div style={{ ...S.serif, fontSize: 18, color: "#c8d0de", marginBottom: 4 }}>{item.label}</div>
-                    <div style={{ fontSize: 12, color: "#5a6577" }}>{item.sub}</div>
+                { label: "Strategy", color: "#ef4444" },
+                { label: "Capabilities", color: "#22c55e" },
+                { label: "Initiatives", color: "#eab308" },
+                { label: "Effects", color: "#6366f1" },
+              ].map((node, i, arr) => (
+                <div key={node.label} style={{ display: "flex", alignItems: "center" }}>
+                  <div style={{
+                    padding: "24px 32px",
+                    borderRadius: 8,
+                    background: `${node.color}09`,
+                    border: `1px solid ${node.color}25`,
+                    textAlign: "center",
+                    minWidth: 148,
+                    position: "relative",
+                  }}>
+                    <div style={{ width: 28, height: 3, borderRadius: 2, background: node.color, opacity: 0.75, margin: "0 auto 12px" }} />
+                    <div style={{ ...S.serif, fontSize: 20, color: "#cbd5e1", fontWeight: 400 }}>{node.label}</div>
                   </div>
-                  {i < 2 && (
-                    <div style={{ display: "flex", alignItems: "center", width: 60 }}>
-                      <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
-                      <div style={{ color: "#3a4558", fontSize: 16, margin: "0 4px" }}>&rarr;</div>
-                      <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
+                  {i < arr.length - 1 && (
+                    <div style={{ display: "flex", alignItems: "center", width: 44, flexShrink: 0 }}>
+                      <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
+                      <span style={{ color: "#334155", fontSize: 14, margin: "0 2px" }}>→</span>
+                      <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
                     </div>
                   )}
                 </div>
               ))}
             </div>
           </FadeIn>
+
+          <FadeIn delay={0.25}>
+            <p style={{ fontSize: 15, lineHeight: 1.8, color: "#475569", maxWidth: 580 }}>
+              Every initiative has a clear strategic purpose.
+              Every capability shows where the organization is headed.
+              The path from decision to effect is never more than one click away.
+            </p>
+          </FadeIn>
         </div>
       </section>
 
-      {/* Key features */}
-      <section style={{ padding: "100px 48px 140px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      {/* ── 4. Leadership Value ── */}
+      <section style={{ padding: "140px 48px 160px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16 }}>Built for decisions</p>
-            <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, color: "#e8ecf4", marginBottom: 72, letterSpacing: "-0.01em" }}>
-              Not another architecture tool.<br />
-              <span style={{ color: "#5a6577" }}>A governance tool.</span>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#6366f1", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 20 }}>Leadership value</p>
+            <h2 style={{ ...S.serif, fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 400, color: "#f1f5f9", marginBottom: 24, letterSpacing: "-0.02em", maxWidth: 680 }}>
+              Built for the meeting before the meeting.
+            </h2>
+            <p style={{ fontSize: 17, lineHeight: 1.75, color: "#475569", maxWidth: 560, margin: "0 0 80px" }}>
+              Cairn is what you open the evening before the board meeting —
+              not to update slides, but to see if the strategy is actually
+              moving. And if it isn&rsquo;t, to know exactly why.
+            </p>
+          </FadeIn>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1 }}>
+            {[
+              {
+                heading: "See the path",
+                body: "Connect strategy to execution in one living picture.",
+                color: "#22c55e",
+              },
+              {
+                heading: "Find where it breaks",
+                body: "See which capabilities lack momentum — before it's too late.",
+                color: "#eab308",
+              },
+              {
+                heading: "Defend the decisions",
+                body: "Walk into the boardroom with a clear narrative, not just project status.",
+                color: "#6366f1",
+              },
+            ].map((col, i) => (
+              <FadeIn key={col.heading} delay={0.1 * i}>
+                <div style={{
+                  padding: "40px 32px",
+                  borderTop: `2px solid ${col.color}40`,
+                  background: "rgba(255,255,255,0.015)",
+                }}>
+                  <h3 style={{ ...S.serif, fontSize: 22, fontWeight: 400, color: "#e2e8f0", marginBottom: 12 }}>{col.heading}</h3>
+                  <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.7, margin: 0 }}>{col.body}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+
+          <FadeIn delay={0.3}>
+            <div style={{ marginTop: 72, paddingTop: 48, borderTop: "1px solid rgba(255,255,255,0.05)", maxWidth: 640 }}>
+              <p style={{ ...S.serif, fontSize: 22, color: "#94a3b8", lineHeight: 1.5, fontStyle: "italic", margin: 0 }}>
+                Instead of asking: &ldquo;What projects are we running?&rdquo;<br />
+                You can ask: &ldquo;Are we building the organization we need?&rdquo;
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ── 5. How Cairn Works ── */}
+      <section id="audience" style={{ padding: "140px 48px 160px", background: "rgba(255,255,255,0.018)" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <FadeIn>
+            <BarDivider align="left" />
+            <h2 style={{ ...S.serif, fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 400, color: "#f1f5f9", margin: "48px 0 56px", letterSpacing: "-0.02em" }}>
+              The path, made visible.
             </h2>
           </FadeIn>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 56 }}>
             {[
-              { title: "Move a stone. See which paths collapse.", desc: "Drag an activity to a different horizon. Cairn immediately shows which dependencies break and which effects disappear. Consequences are visible before you commit.", tag: "Dependencies" },
-              { title: "Two strategies. One budget. Compare.", desc: "Duplicate a scenario, change the priorities, and see the differences side by side. Which effects do we lose? Which dimensions are covered? Choose with open eyes.", tag: "Scenarios" },
-              { title: "IT has 11 concurrent activities. Do they see it?", desc: "Cairn shows change load per owner. The most common reason transformations fail is not the wrong strategy — it's overload.", tag: "Capacity" },
-              { title: "Maturity now vs. maturity after.", desc: "Toggle simulation to see what the capability map looks like after execution. Each activity has an expected effect. The board can see concretely what the investment delivers.", tag: "Simulation" },
-            ].map((f, i) => (
-              <FadeIn key={f.tag} delay={i * 0.08}>
-                <div style={{
-                  display: "grid", gridTemplateColumns: "140px 1fr", gap: 32, alignItems: "start",
-                  padding: "32px 0", borderTop: "1px solid rgba(255,255,255,0.05)",
-                }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#818cf8", letterSpacing: "0.1em", textTransform: "uppercase", paddingTop: 4 }}>{f.tag}</span>
+              {
+                label: "Start with what matters.",
+                body: "Define your strategic priorities and the capabilities your organization must build. Not lists — direction.",
+                color: "#ef4444",
+              },
+              {
+                label: "Connect work to direction.",
+                body: "Map initiatives to capabilities. Not tasks — strategic moves. Each one justified by where it leads.",
+                color: "#22c55e",
+              },
+              {
+                label: "Read the path, not the plan.",
+                body: "Capability maturity, strategic dependencies, and effects — visible in one place. Not as a snapshot. As a living picture.",
+                color: "#6366f1",
+              },
+            ].map((step, i) => (
+              <FadeIn key={step.label} delay={0.1 * i}>
+                <div style={{ display: "grid", gridTemplateColumns: "4px 1fr", gap: 28, alignItems: "start" }}>
+                  <div style={{ width: 4, height: "100%", minHeight: 60, borderRadius: 2, background: step.color, opacity: 0.5, marginTop: 4 }} />
                   <div>
-                    <h3 style={{ ...S.serif, fontSize: 24, fontWeight: 400, color: "#e8ecf4", marginBottom: 10, lineHeight: 1.3 }}>{f.title}</h3>
-                    <p style={{ fontSize: 15, color: "#5a6577", lineHeight: 1.7, margin: 0, maxWidth: 560 }}>{f.desc}</p>
+                    <h3 style={{ ...S.serif, fontSize: 22, fontWeight: 400, color: "#cbd5e1", marginBottom: 10, lineHeight: 1.3 }}>{step.label}</h3>
+                    <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.75, margin: 0, maxWidth: 520 }}>{step.body}</p>
                   </div>
                 </div>
               </FadeIn>
@@ -310,79 +499,66 @@ export default function CairnLanding() {
         </div>
       </section>
 
-      {/* For whom */}
-      <section id="for-hvem" style={{ padding: "100px 48px 140px", background: "rgba(255,255,255,0.015)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      {/* ── 6. Brand Narrative ── */}
+      <section id="narrative" style={{ padding: "140px 48px 160px" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Same picture, different altitude</p>
-            <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 64, letterSpacing: "-0.01em" }}>
-              The CEO sees the value. The CIO sees the path.<br />
-              <span style={{ color: "#5a6577" }}>Both see the same thing.</span>
+            <h2 style={{ ...S.serif, fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 400, color: "#f1f5f9", marginBottom: 40, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+              When the terrain gets complex,<br />
+              <span style={{ color: "#6366f1" }}>follow the cairns.</span>
             </h2>
           </FadeIn>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
-            {[
-              { role: "CEO / Chair", opens: "the Dashboard", sees: "Effect funnel, dimension health, risk picture. Three sentences that summarise status.", icon: "\u25C9" },
-              { role: "CIO / CDO", opens: "the Strategy Path", sees: "Activities, dependencies, capacity, critical path. Sequence and prioritisation.", icon: "\u25C8" },
-              { role: "Enterprise Architect", opens: "Work mode", sees: "Editing, scenarios, simulation, export. Preparing the next governance meeting.", icon: "\u25C7" },
-            ].map((p, i) => (
-              <FadeIn key={p.role} delay={i * 0.1}>
-                <div style={{
-                  padding: "32px 28px", borderRadius: 10,
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  height: "100%",
-                }}>
-                  <div style={{ fontSize: 28, marginBottom: 16, opacity: 0.3 }}>{p.icon}</div>
-                  <h3 style={{ ...S.serif, fontSize: 20, color: "#e8ecf4", marginBottom: 4, fontWeight: 400 }}>{p.role}</h3>
-                  <p style={{ fontSize: 12, color: "#818cf8", fontWeight: 600, marginBottom: 14 }}>Opens {p.opens}</p>
-                  <p style={{ fontSize: 13, color: "#5a6577", lineHeight: 1.6, margin: 0 }}>{p.sees}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          <FadeIn delay={0.15}>
+            <p style={{ fontSize: 17, lineHeight: 1.85, color: "#475569", margin: "0 0 28px" }}>
+              In mountain landscapes, cairns mark the path when the trail disappears.
+              They don&rsquo;t tell you where to go.
+              They confirm you&rsquo;re still moving in the right direction.
+            </p>
+            <p style={{ fontSize: 17, lineHeight: 1.85, color: "#475569", margin: 0 }}>
+              Cairn does the same for strategy.<br />
+              One stone at a time.
+            </p>
+          </FadeIn>
         </div>
       </section>
 
-      {/* Not / Is */}
-      <section id="om-oss" style={{ padding: "100px 48px 140px" }}>
+      {/* ── What Cairn is / is not ── */}
+      <section style={{ padding: "100px 48px 140px", background: "rgba(255,255,255,0.018)" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <FadeIn>
-            <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 64 }}>
-              What Cairn <span style={{ ...S.serif, fontStyle: "italic", color: "#5a6577" }}>is not</span>.
+            <h2 style={{ ...S.serif, fontSize: 36, fontWeight: 400, color: "#f1f5f9", marginBottom: 60, letterSpacing: "-0.02em" }}>
+              What Cairn <span style={{ ...S.serif, fontStyle: "italic", color: "#3a4558" }}>is not</span>.
             </h2>
           </FadeIn>
-
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
             <FadeIn delay={0.1}>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#5a6577", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Cairn is not</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#3a4558", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 24 }}>Not this</p>
                 {[
-                  "A project tool with Gantt charts and tasks",
+                  "A project tool with Gantt charts",
                   "An EA tool with a modelling language",
-                  "A PowerPoint someone made three months ago",
+                  "A PowerPoint made three months ago",
                   "A dashboard without actionability",
                 ].map(t => (
-                  <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
-                    <span style={{ color: "#ef4444", fontSize: 14, marginTop: 1 }}>✕</span>
-                    <span style={{ fontSize: 14, color: "#5a6577", lineHeight: 1.5 }}>{t}</span>
+                  <div key={t} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
+                    <span style={{ color: "#ef4444", fontSize: 13, marginTop: 1, opacity: 0.7 }}>✕</span>
+                    <span style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>{t}</span>
                   </div>
                 ))}
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#818cf8", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Cairn is</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#6366f1", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 24 }}>This</p>
                 {[
                   "A living strategic roadmap that updates in real time",
                   "Built for the people who fund the transformation",
                   "Intuitive enough to open and present in 30 seconds",
                   "Where strategy and execution meet in one picture",
                 ].map(t => (
-                  <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
-                    <span style={{ color: "#22c55e", fontSize: 14, marginTop: 1 }}>✓</span>
-                    <span style={{ fontSize: 14, color: "#c8d0de", lineHeight: 1.5 }}>{t}</span>
+                  <div key={t} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
+                    <span style={{ color: "#22c55e", fontSize: 13, marginTop: 1, opacity: 0.7 }}>✓</span>
+                    <span style={{ fontSize: 14, color: "#cbd5e1", lineHeight: 1.5 }}>{t}</span>
                   </div>
                 ))}
               </div>
@@ -391,61 +567,54 @@ export default function CairnLanding() {
         </div>
       </section>
 
-      {/* Quote */}
-      <section style={{ padding: "120px 48px", background: "rgba(255,255,255,0.015)" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+      {/* ── 7. CTA ── */}
+      <section style={{ padding: "140px 48px 160px", position: "relative" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 50% 80%, rgba(99,102,241,0.05) 0%, transparent 70%)" }} />
+        <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <FadeIn>
-            <p style={{ ...S.serif, fontSize: 32, fontStyle: "italic", color: "#c8d0de", lineHeight: 1.45, marginBottom: 24 }}>
-              &ldquo;A cairn doesn&rsquo;t need a legend.<br />Neither should your strategy.&rdquo;
-            </p>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section style={{ padding: "120px 48px 140px", position: "relative" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 50% 80%, rgba(99,102,241,0.06) 0%, transparent 70%)" }} />
-
-        <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <FadeIn>
-            <CairnMark size={1.2} />
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 40 }}>
+              <BarDivider />
+            </div>
+            <h2 style={{ ...S.serif, fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 400, color: "#f1f5f9", margin: "0 0 20px", letterSpacing: "-0.02em" }}>
+              Navigate your strategy with clarity.
+            </h2>
           </FadeIn>
           <FadeIn delay={0.15}>
-            <h2 style={{ ...S.serif, fontSize: 44, fontWeight: 400, color: "#e8ecf4", margin: "32px 0 16px", letterSpacing: "-0.02em" }}>
-              Stack the stones.<br />See the path.
-            </h2>
-            <p style={{ fontSize: 16, color: "#5a6577", marginBottom: 40, lineHeight: 1.6 }}>
-              Cairn is free to try. No credit card, no onboarding meeting. Just open and start.
+            <p style={{ fontSize: 16, color: "#475569", marginBottom: 12, lineHeight: 1.7 }}>
+              Cairn is in early access.
+            </p>
+            <p style={{ fontSize: 16, color: "#475569", marginBottom: 48, lineHeight: 1.7 }}>
+              We&rsquo;re working with a small number of leadership teams
+              to shape the product.
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <Link to="/app" style={{
-              display: "inline-block", fontSize: 15, fontWeight: 600, color: "#0a0f1a",
-              background: "#e8ecf4", padding: "14px 36px", borderRadius: 6, cursor: "pointer",
-              transition: "all 0.2s", textDecoration: "none",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#818cf8"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "#e8ecf4"; e.currentTarget.style.color = "#0a0f1a"; e.currentTarget.style.transform = "translateY(0)"; }}
-            >Prøv Cairn gratis</Link>
+            <a
+              href="mailto:hello@cairnpath.io"
+              style={{ ...ctaStyle, fontSize: 15, padding: "14px 36px" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+            >Request early access</a>
+            <p style={{ fontSize: 13, color: "#334155", marginTop: 20, letterSpacing: "0.02em" }}>cairnpath.io</p>
           </FadeIn>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ padding: "48px 48px 40px", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <CairnMark size={0.4} />
-              <span style={{ ...S.serif, fontSize: 16, color: "#5a6577" }}>Cairn</span>
-            </div>
-            <p style={{ fontSize: 11, color: "#3a4558", margin: 0 }}>Navigate the fog. &copy; 2026</p>
+      {/* ── Footer ── */}
+      <footer style={{ padding: "40px 48px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <CairnMark size={0.38} />
+            <span style={{ ...S.serif, fontSize: 15, color: "#334155" }}>Cairn</span>
+            <span style={{ fontSize: 11, color: "#1e293b", marginLeft: 12 }}>&copy; 2026 · navigate the fog</span>
           </div>
-          <div style={{ display: "flex", gap: 24 }}>
+          <div style={{ display: "flex", gap: 28 }}>
             {["Privacy", "Terms", "Contact"].map(item => (
-              <span key={item} style={{ fontSize: 11, color: "#3a4558", cursor: "pointer", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#7a8599")}
-                onMouseLeave={e => (e.currentTarget.style.color = "#3a4558")}
+              <span
+                key={item}
+                style={{ fontSize: 11, color: "#1e293b", cursor: "pointer", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#64748b")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#1e293b")}
               >{item}</span>
             ))}
           </div>
