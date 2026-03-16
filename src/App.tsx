@@ -95,15 +95,15 @@ export default function App() {
 
         {/* Right: Nav + actions */}
         <nav className="flex items-center gap-1">
-          <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
           <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
-          <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
+          <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
           {modules.capabilities && (
             <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
           )}
           {modules.effects && (
             <NavBtn active={view === 'effects'} onClick={() => setView('effects')}>{t('nav.effects')}</NavBtn>
           )}
+          <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
           <NavBtn active={false} onClick={() => setPresentationMode(true)}>{t('nav.presentation')}</NavBtn>
           <div className="w-px h-5 bg-border mx-0.5" />
           {view === 'roadmap' && <FilterDropdown />}
