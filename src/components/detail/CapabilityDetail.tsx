@@ -24,6 +24,10 @@ export function CapabilityDetail({ capability }: Props) {
   const children = capabilities.filter(c => c.parent === capability.id);
   const effects = useStore(s => s.effects);
   const modules = useStore(s => s.modules);
+  const strategies = useStore(s => s.strategies);
+  const updateCapability = useStore(s => s.updateCapability);
+  const roleMode = useStore(s => s.ui.roleMode);
+  const isGovernance = roleMode === 'governance';
 
   const relatedInitiatives = useMemo(() =>
     initiatives.filter(i => i.capabilities.includes(capability.id)),
@@ -109,6 +113,43 @@ export function CapabilityDetail({ capability }: Props) {
             className="text-[10px] text-primary hover:underline">
             {capabilities.find(c => c.id === capability.parent)?.name}
           </button>
+        </div>
+      )}
+
+      {/* Linked strategies */}
+      {strategies.length > 0 && (
+        <div>
+          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('strategy.singular')}</div>
+          <div className="flex flex-wrap gap-1">
+            {strategies.map(s => {
+              const linked = capability.strategyIds?.includes(s.id) ?? false;
+              if (isGovernance && !linked) return null;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => {
+                    if (isGovernance) {
+                      setSelectedItem({ type: 'strategy', id: s.id });
+                      return;
+                    }
+                    const current = capability.strategyIds ?? [];
+                    const next = linked
+                      ? current.filter(id => id !== s.id)
+                      : [...current, s.id];
+                    updateCapability(capability.id, { strategyIds: next });
+                  }}
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium transition-colors ${
+                    linked
+                      ? 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200'
+                      : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
+                  }`}
+                >
+                  {s.name}
+                  {linked && !isGovernance && <span className="text-[8px] leading-none">×</span>}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 

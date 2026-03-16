@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -23,6 +23,11 @@ interface StoreState extends AppState {
   updateInitiative: (id: string, updates: Partial<Initiative>) => void;
   deleteInitiative: (id: string) => void;
   moveInitiative: (id: string, dimension: DimensionKey, horizon: 'near' | 'far', newOrder: number) => void;
+
+  // Strategy CRUD
+  addStrategy: (strategy: Strategy) => void;
+  updateStrategy: (id: string, updates: Partial<Strategy>) => void;
+  deleteStrategy: (id: string) => void;
 
   // Capability CRUD
   addCapability: (capability: Capability) => void;
@@ -203,6 +208,23 @@ export const useStore = create<StoreState>()(
             },
           };
         }),
+
+        // Strategy CRUD
+        addStrategy: (strategy) => set(state => ({
+          strategies: [...state.strategies, strategy],
+        })),
+
+        updateStrategy: (id, updates) => set(state => ({
+          strategies: state.strategies.map(s => s.id === id ? { ...s, ...updates } : s),
+        })),
+
+        deleteStrategy: (id) => set(state => ({
+          strategies: state.strategies.filter(s => s.id !== id),
+          capabilities: state.capabilities.map(c => ({
+            ...c,
+            strategyIds: c.strategyIds?.filter(sid => sid !== id) ?? [],
+          })),
+        })),
 
         // Capability CRUD
         addCapability: (capability) => set(state => ({
@@ -571,6 +593,7 @@ export const useStore = create<StoreState>()(
         ...currentState,
         ...persistedRest,
         modules: (persisted.modules as ModuleSettings | undefined) ?? fallbackModules,
+        strategies: Array.isArray(persisted.strategies) ? persisted.strategies : currentState.strategies,
         effects: Array.isArray(persisted.effects) ? persisted.effects : currentState.effects,
         ui: {
           ...currentState.ui,

@@ -11,6 +11,7 @@ const MAX_MESSAGES = 20;
 function buildChatContext(): string {
   const appState = useStore.getState();
   return buildChatSystemPrompt({
+    strategies: appState.strategies,
     capabilities: appState.capabilities,
     scenarios: appState.scenarios,
     scenarioStates: appState.scenarioStates,
@@ -19,6 +20,7 @@ function buildChatContext(): string {
     valueChains: appState.valueChains,
     effects: appState.effects,
     comments: appState.comments,
+    modules: appState.modules,
     snapshots: [],
   });
 }

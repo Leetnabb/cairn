@@ -4,7 +4,7 @@
     "footer": "A cairn doesn't need a legend. Neither should your strategy."
   },
   "nav": {
-    "roadmap": "Roadmap",
+    "roadmap": "Strategy Path",
     "dashboard": "Dashboard",
     "compare": "Compare",
     "simulation": "Simulation",
@@ -178,7 +178,10 @@
     "warnings": "Actionable Warnings",
     "changes": "Changes since last",
     "capacityThreshold": "Capacity threshold",
-    "scenarioComparison": "Scenario Comparison"
+    "scenarioComparison": "Scenario Comparison",
+    "strategyCoverage": "Strategy coverage",
+    "strategyDriftCount_one": "{{count}} unlinked activity",
+    "strategyDriftCount_other": "{{count}} unlinked activities"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -246,11 +249,13 @@
     "milestone": "Milestone",
     "valuechain": "Value chain",
     "effect": "Effect",
+    "strategy": "Strategy",
     "createEffect": "Create effect",
     "createInitiative": "Create activity",
     "createCapability": "Create capability",
     "createMilestone": "Create milestone",
     "createValueChain": "Create value chain",
+    "createStrategy": "Create strategy",
     "createAndNew": "Create & new",
     "newValueChain": "+ New value chain",
     "valueChainPlaceholder": "Value chain name..."
@@ -294,7 +299,28 @@
     "dimensionNoNear": "{{dimension}} has no near-horizon activities",
     "orphanCapability": "\"{{name}}\" has no activities linked to it",
     "orphanInitiative": "\"{{name}}\" has no capabilities linked to it",
-    "allDimensionsCovered": "All dimensions are covered with activities"
+    "allDimensionsCovered": "All dimensions are covered with activities",
+    "strategyDrift_one": "{{count}} activity not linked to a capability (strategy drift)",
+    "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)"
+  },
+  "strategy": {
+    "title": "Strategies",
+    "singular": "Strategy",
+    "timeHorizon": "Time horizon",
+    "short": "Short term",
+    "medium": "Medium term",
+    "long": "Long term",
+    "priority": "Priority",
+    "linkedCapabilities": "Linked capabilities",
+    "noLinkedCapabilities": "No capabilities linked to this strategy"
+  },
+  "strategicContext": {
+    "title": "Strategic context",
+    "noContext": "No strategy linked",
+    "strategy": "Strategy",
+    "capability": "Capability",
+    "initiative": "Initiative",
+    "effects": "Expected effects"
   },
   "presentation": {
     "slides": {

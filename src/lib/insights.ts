@@ -72,13 +72,13 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
     insights.push({ type: 'warning', message: i18n.t('insights.more', { count: orphanCaps.length - MAX_ORPHAN_DISPLAY }) });
   }
 
-  // Orphan initiatives: initiatives without any linked capabilities
+  // Strategy Drift: initiatives without any linked capabilities
   const orphanInits = initiatives.filter(i => i.capabilities.length === 0);
-  for (const init of orphanInits.slice(0, MAX_ORPHAN_DISPLAY)) {
-    insights.push({ type: 'warning', message: i18n.t('insights.orphanInitiative', { name: init.name }) });
-  }
-  if (orphanInits.length > MAX_ORPHAN_DISPLAY) {
-    insights.push({ type: 'warning', message: i18n.t('insights.more', { count: orphanInits.length - MAX_ORPHAN_DISPLAY }) });
+  if (orphanInits.length > 0) {
+    insights.push({
+      type: 'warning',
+      message: i18n.t('insights.strategyDrift', { count: orphanInits.length }),
+    });
   }
 
   // All dimensions covered

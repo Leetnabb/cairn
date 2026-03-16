@@ -7,6 +7,7 @@ import { EditInitiativeForm } from '../forms/EditInitiativeForm';
 import { Button } from '../ui/Button';
 import { CommentsSection } from './CommentsSection';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
+import { StrategicContextChain } from './StrategicContextChain';
 
 interface Props {
   initiative: Initiative;
@@ -26,6 +27,7 @@ export function InitiativeDetail({ initiative }: Props) {
   const criticalPathEnabled = useStore(s => s.ui.criticalPathEnabled);
   const roleMode = useStore(s => s.ui.roleMode);
   const modules = useStore(s => s.modules);
+  const strategies = useStore(s => s.strategies);
   const isGovernance = roleMode === 'governance';
 
   const isEditing = editingId === initiative.id;
@@ -148,6 +150,17 @@ export function InitiativeDetail({ initiative }: Props) {
           </div>
         )}
       </div>
+
+      {/* Strategic Context Chain */}
+      <StrategicContextChain
+        initiative={initiative}
+        capabilities={capabilities}
+        strategies={strategies}
+        effects={effects}
+        onSelectStrategy={(id) => setSelectedItem({ type: 'strategy', id })}
+        onSelectCapability={(id) => setSelectedItem({ type: 'capability', id })}
+        onSelectEffect={(id) => setSelectedItem({ type: 'effect', id })}
+      />
 
       <div className="px-2 py-1 rounded border border-border">
         <div className="text-[9px] text-text-tertiary uppercase">{t('common.owner')}</div>

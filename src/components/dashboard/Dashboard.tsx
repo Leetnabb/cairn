@@ -45,6 +45,12 @@ export function Dashboard() {
     ? (simulated.reduce((acc, c) => acc + c.simulatedMaturity, 0) / simulated.length).toFixed(1)
     : '0';
 
+  const linkedInitiatives = initiatives.filter(i => i.capabilities.length > 0).length;
+  const strategyCoveragePercent = initiatives.length > 0
+    ? Math.round((linkedInitiatives / initiatives.length) * 100)
+    : 100;
+  const driftCount = initiatives.length - linkedInitiatives;
+
   return (
     <div className="flex-1 overflow-auto p-4">
       {/* 1. Executive Summary */}
@@ -57,11 +63,17 @@ export function Dashboard() {
       <EffectFunnel initiatives={initiatives} capabilities={capabilities} effects={effects} />
 
       {/* KPIs */}
-      <div className="grid grid-cols-4 gap-2 mb-4">
+      <div className="grid grid-cols-5 gap-2 mb-4">
         <KPICard label={t('dashboard.activities')} value={initiatives.length} />
         <KPICard label={t('dashboard.maturityNowTarget')} value={`${avgMaturity} \u2192 ${avgSimMaturity}`} color="#6366f1" />
         <KPICard label={t('dashboard.criticalPath')} value={criticalPath.size} sublabel={t('dashboard.autoManual', { auto: autoCount, manual: manualCount })} />
         <KPICard label={t('dashboard.dependencies')} value={totalDeps} />
+        <KPICard
+          label={t('dashboard.strategyCoverage')}
+          value={`${strategyCoveragePercent}%`}
+          color={strategyCoveragePercent === 100 ? '#22c55e' : strategyCoveragePercent >= 70 ? '#f59e0b' : '#ef4444'}
+          sublabel={driftCount > 0 ? t('dashboard.strategyDriftCount', { count: driftCount }) : undefined}
+        />
       </div>
 
       {/* 4. Two-column grid */}

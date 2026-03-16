@@ -4,7 +4,7 @@
     "footer": "A cairn doesn't need a legend. Neither should your strategy."
   },
   "nav": {
-    "roadmap": "Veikart",
+    "roadmap": "Strategi-sti",
     "dashboard": "Dashbord",
     "compare": "Sammenlign",
     "simulation": "Simulering",
@@ -178,7 +178,10 @@
     "warnings": "Handlingsrettede advarsler",
     "changes": "Endringer siden sist",
     "capacityThreshold": "Kapasitetsgrense",
-    "scenarioComparison": "Scenariosammenligning"
+    "scenarioComparison": "Scenariosammenligning",
+    "strategyCoverage": "Strategidekning",
+    "strategyDriftCount_one": "{{count}} ukoblet aktivitet",
+    "strategyDriftCount_other": "{{count}} ukoblede aktiviteter"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -246,11 +249,13 @@
     "milestone": "Milepæl",
     "valuechain": "Verdikjede",
     "effect": "Effekt",
+    "strategy": "Strategi",
     "createEffect": "Opprett effekt",
     "createInitiative": "Opprett aktivitet",
     "createCapability": "Opprett kapabilitet",
     "createMilestone": "Opprett milepæl",
     "createValueChain": "Opprett verdikjede",
+    "createStrategy": "Opprett strategi",
     "createAndNew": "Opprett og ny",
     "newValueChain": "+ Ny verdikjede",
     "valueChainPlaceholder": "Verdikjedenavn..."
@@ -294,7 +299,28 @@
     "dimensionNoNear": "{{dimension}} har ingen nær-horisont-aktiviteter",
     "orphanCapability": "\"{{name}}\" har ingen aktiviteter knyttet til seg",
     "orphanInitiative": "\"{{name}}\" har ingen kapabiliteter knyttet til seg",
-    "allDimensionsCovered": "Alle dimensjoner er dekket med aktiviteter"
+    "allDimensionsCovered": "Alle dimensjoner er dekket med aktiviteter",
+    "strategyDrift_one": "{{count}} aktivitet ikke koblet til kapabilitet (strategi-drift)",
+    "strategyDrift_other": "{{count}} aktiviteter ikke koblet til kapabilitet (strategi-drift)"
+  },
+  "strategy": {
+    "title": "Strategier",
+    "singular": "Strategi",
+    "timeHorizon": "Tidshorisont",
+    "short": "Kort sikt",
+    "medium": "Mellomlang sikt",
+    "long": "Lang sikt",
+    "priority": "Prioritet",
+    "linkedCapabilities": "Tilknyttede kapabiliteter",
+    "noLinkedCapabilities": "Ingen kapabiliteter koblet til denne strategien"
+  },
+  "strategicContext": {
+    "title": "Strategisk kontekst",
+    "noContext": "Ingen strategi koblet",
+    "strategy": "Strategi",
+    "capability": "Kapabilitet",
+    "initiative": "Initiativ",
+    "effects": "Forventede effekter"
   },
   "presentation": {
     "slides": {
