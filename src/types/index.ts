@@ -22,14 +22,25 @@ export const DIMENSION_MAP: Record<DimensionKey, Dimension> = Object.fromEntries
   DIMENSIONS.map(d => [d.key, d])
 ) as Record<DimensionKey, Dimension>;
 
+export interface Strategy {
+  id: string;
+  name: string;
+  description: string;
+  timeHorizon: 'short' | 'medium' | 'long';
+  priority: 1 | 2 | 3;
+}
+
 export interface Capability {
   id: string;
   name: string;
   level: 1 | 2;
   parent: string | null;
   maturity: 1 | 2 | 3;
+  maturityTarget?: 1 | 2 | 3;
   risk: 1 | 2 | 3;
   description: string;
+  order?: number;
+  strategyIds?: string[];
 }
 
 export interface Initiative {
@@ -82,6 +93,7 @@ export interface Effect {
   indicator?: string;
   baseline?: string;
   target?: string;
+  order?: number;
 }
 
 export const EFFECT_TYPE_COLORS: Record<EffectType, string> = {
@@ -119,7 +131,14 @@ export interface ScenarioState {
   initiatives: Initiative[];
 }
 
+export interface ModuleSettings {
+  roadmap: boolean;
+  capabilities: boolean;
+  effects: boolean;
+}
+
 export interface AppState {
+  strategies: Strategy[];
   capabilities: Capability[];
   scenarios: Scenario[];
   scenarioStates: Record<string, ScenarioState>;
@@ -129,13 +148,15 @@ export interface AppState {
   effects: Effect[];
   comments: Comment[];
   snapshots: Snapshot[];
+  modules: ModuleSettings;
 }
 
-export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities';
+export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects' | 'strategies';
 
 export interface UIState {
-  selectedItem: { type: 'capability' | 'initiative' | 'milestone' | 'effect'; id: string } | null;
+  selectedItem: { type: 'capability' | 'initiative' | 'milestone' | 'effect' | 'strategy'; id: string } | null;
   view: ViewMode;
+  roadmapViewMode: 'dimension' | 'capability';
   capabilityView: 'maturity' | 'risk';
   simulationEnabled: boolean;
   criticalPathEnabled: boolean;
@@ -152,7 +173,7 @@ export interface UIState {
   };
   editingId: string | null;
   addModalOpen: boolean;
-  addModalTab: 'initiative' | 'capability' | 'milestone' | 'valuechain' | 'effect';
+  addModalTab: 'initiative' | 'capability' | 'milestone' | 'valuechain' | 'effect' | 'strategy';
   addModalDefaults: { dimension?: DimensionKey; horizon?: 'near' | 'far' } | null;
   importModalOpen: boolean;
   presentationMode: boolean;

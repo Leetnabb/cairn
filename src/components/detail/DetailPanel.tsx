@@ -3,6 +3,7 @@ import { CapabilityDetail } from './CapabilityDetail';
 import { InitiativeDetail } from './InitiativeDetail';
 import { MilestoneDetail } from './MilestoneDetail';
 import { EffectDetail } from './EffectDetail';
+import { StrategyDetail } from './StrategyDetail';
 
 export function DetailPanel() {
   const selectedItem = useStore(s => s.ui.selectedItem);
@@ -10,9 +11,16 @@ export function DetailPanel() {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const milestones = useStore(s => s.milestones);
   const effects = useStore(s => s.effects);
+  const strategies = useStore(s => s.strategies);
 
   if (!selectedItem) {
     return null;
+  }
+
+  if (selectedItem.type === 'strategy') {
+    const strategy = strategies.find(s => s.id === selectedItem.id);
+    if (!strategy) return null;
+    return <StrategyDetail strategy={strategy} />;
   }
 
   if (selectedItem.type === 'capability') {

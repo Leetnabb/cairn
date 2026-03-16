@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
-import { reorderInitiatives } from '../lib/ordering';
+import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
 
 // One-time migration from old storage key
 const _legacyStorage = localStorage.getItem('ea-light-storage');
@@ -23,6 +23,11 @@ interface StoreState extends AppState {
   updateInitiative: (id: string, updates: Partial<Initiative>) => void;
   deleteInitiative: (id: string) => void;
   moveInitiative: (id: string, dimension: DimensionKey, horizon: 'near' | 'far', newOrder: number) => void;
+
+  // Strategy CRUD
+  addStrategy: (strategy: Strategy) => void;
+  updateStrategy: (id: string, updates: Partial<Strategy>) => void;
+  deleteStrategy: (id: string) => void;
 
   // Capability CRUD
   addCapability: (capability: Capability) => void;
@@ -49,6 +54,10 @@ interface StoreState extends AppState {
   addEffect: (effect: Effect) => void;
   updateEffect: (id: string, updates: Partial<Effect>) => void;
   deleteEffect: (id: string) => void;
+  moveEffect: (id: string, type: EffectType, newOrder: number) => void;
+
+  // Capability move
+  moveCapability: (id: string, newParent: string | null, newOrder: number) => void;
 
   // Comments
   addComment: (comment: Comment) => void;
@@ -62,6 +71,7 @@ interface StoreState extends AppState {
   // UI actions
   setSelectedItem: (item: UIState['selectedItem']) => void;
   setView: (view: ViewMode) => void;
+  setRoadmapViewMode: (mode: 'dimension' | 'capability') => void;
   setCapabilityView: (view: 'maturity' | 'risk') => void;
   toggleSimulation: () => void;
   toggleCriticalPath: () => void;
@@ -84,6 +94,9 @@ interface StoreState extends AppState {
   bulkMoveInitiatives: (ids: string[], dimension: DimensionKey, horizon: 'near' | 'far') => void;
   bulkDeleteInitiatives: (ids: string[]) => void;
 
+  // Modules
+  setModules: (modules: Partial<ModuleSettings>) => void;
+
   // Import
   importState: (state: Partial<AppState>) => void;
 
@@ -95,6 +108,7 @@ interface StoreState extends AppState {
 const defaultUI: UIState = {
   selectedItem: null,
   view: 'roadmap',
+  roadmapViewMode: 'capability',
   capabilityView: 'maturity',
   simulationEnabled: false,
   criticalPathEnabled: false,
@@ -104,7 +118,7 @@ const defaultUI: UIState = {
     owner: '',
     search: '',
     status: '',
-    showMilestones: true,
+    showMilestones: false,
     focusMode: false,
     zoomLevel: 1,
     spotlightValueChain: null,
@@ -196,6 +210,23 @@ export const useStore = create<StoreState>()(
             },
           };
         }),
+
+        // Strategy CRUD
+        addStrategy: (strategy) => set(state => ({
+          strategies: [...state.strategies, strategy],
+        })),
+
+        updateStrategy: (id, updates) => set(state => ({
+          strategies: state.strategies.map(s => s.id === id ? { ...s, ...updates } : s),
+        })),
+
+        deleteStrategy: (id) => set(state => ({
+          strategies: state.strategies.filter(s => s.id !== id),
+          capabilities: state.capabilities.map(c => ({
+            ...c,
+            strategyIds: c.strategyIds?.filter(sid => sid !== id) ?? [],
+          })),
+        })),
 
         // Capability CRUD
         addCapability: (capability) => set(state => ({
@@ -320,6 +351,18 @@ export const useStore = create<StoreState>()(
           ui: { ...state.ui, selectedItem: state.ui.selectedItem?.id === id ? null : state.ui.selectedItem },
         })),
 
+        moveEffect: (id, type, newOrder) => set(state => {
+          const reordered = reorderEffects(state.effects, id, type, newOrder);
+          if (!reordered) return state;
+          return { effects: reordered };
+        }),
+
+        moveCapability: (id, newParent, newOrder) => set(state => {
+          const reordered = reorderCapabilities(state.capabilities, id, newParent, newOrder);
+          if (!reordered) return state;
+          return { capabilities: reordered };
+        }),
+
         // Comments
         addComment: (comment) => set(state => ({
           comments: [...state.comments, comment],
@@ -375,6 +418,9 @@ export const useStore = create<StoreState>()(
         })),
         setView: (view) => set(state => ({
           ui: { ...state.ui, view, compareScenario: view !== 'compare' ? null : state.ui.compareScenario },
+        })),
+        setRoadmapViewMode: (roadmapViewMode) => set(state => ({
+          ui: { ...state.ui, roadmapViewMode },
         })),
         setCapabilityView: (capabilityView) => set(state => ({
           ui: { ...state.ui, capabilityView },
@@ -476,6 +522,11 @@ export const useStore = create<StoreState>()(
           };
         }),
 
+        // Modules
+        setModules: (modules) => set(state => ({
+          modules: { ...state.modules, ...modules },
+        })),
+
         // Import
         importState: (imported) => set(state => {
           // Auto-backup
@@ -538,9 +589,16 @@ export const useStore = create<StoreState>()(
     merge: (persistedState, currentState) => {
       const persisted = (persistedState ?? {}) as Partial<StoreState>;
       const { ui: persistedUI, ...persistedRest } = persisted as Record<string, unknown>;
+      // Existing users who have data but no modules field get all modules enabled (backward compat)
+      const hasExistingData = !!(persisted.capabilities?.length || persisted.effects?.length);
+      const fallbackModules: ModuleSettings = hasExistingData
+        ? { roadmap: true, capabilities: true, effects: true }
+        : currentState.modules;
       return {
         ...currentState,
         ...persistedRest,
+        modules: (persisted.modules as ModuleSettings | undefined) ?? fallbackModules,
+        strategies: Array.isArray(persisted.strategies) ? persisted.strategies : currentState.strategies,
         effects: Array.isArray(persisted.effects) ? persisted.effects : currentState.effects,
         ui: {
           ...currentState.ui,

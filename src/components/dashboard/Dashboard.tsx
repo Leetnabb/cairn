@@ -4,7 +4,6 @@ import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { EFFECT_TYPE_COLORS } from '../../types';
 import type { EffectType } from '../../types';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
-import { simulateMaturity } from '../../lib/simulation';
 import { KPICard } from './KPICard';
 import { OwnerLoad } from './OwnerLoad';
 import { ValueChainView } from './ValueChainView';
@@ -16,11 +15,13 @@ import { MaturityJourney } from './MaturityJourney';
 import { CriticalPathNarrative } from './CriticalPathNarrative';
 import { ActionableWarnings } from './ActionableWarnings';
 import { ChangeIndicators } from './ChangeIndicators';
+import { StrategicBottlenecks } from './StrategicBottlenecks';
 
 export function Dashboard() {
   const { t } = useTranslation();
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const capabilities = useStore(s => s.capabilities);
+  const strategies = useStore(s => s.strategies);
   const valueChains = useStore(s => s.valueChains);
   const effects = useStore(s => s.effects);
   const snapshots = useStore(s => s.snapshots);
@@ -35,20 +36,26 @@ export function Dashboard() {
     return count;
   }, [criticalPath, autoCriticalPath]);
   const autoCount = criticalPath.size - manualCount;
-  const simulated = useMemo(() => simulateMaturity(capabilities, initiatives), [capabilities, initiatives]);
 
   const totalDeps = initiatives.reduce((acc, i) => acc + i.dependsOn.length, 0);
   const avgMaturity = capabilities.length > 0
     ? (capabilities.reduce((acc, c) => acc + c.maturity, 0) / capabilities.length).toFixed(1)
     : '0';
-  const avgSimMaturity = simulated.length > 0
-    ? (simulated.reduce((acc, c) => acc + c.simulatedMaturity, 0) / simulated.length).toFixed(1)
-    : '0';
+  const capsWithTarget = capabilities.filter(c => c.maturityTarget);
+  const avgTargetMaturity = capsWithTarget.length > 0
+    ? (capsWithTarget.reduce((acc, c) => acc + (c.maturityTarget ?? c.maturity), 0) / capsWithTarget.length).toFixed(1)
+    : avgMaturity;
+
+  const linkedInitiatives = initiatives.filter(i => i.capabilities.length > 0).length;
+  const strategyCoveragePercent = initiatives.length > 0
+    ? Math.round((linkedInitiatives / initiatives.length) * 100)
+    : 100;
+  const driftCount = initiatives.length - linkedInitiatives;
 
   return (
     <div className="flex-1 overflow-auto p-4">
       {/* 1. Executive Summary */}
-      <ExecutiveSummary initiatives={initiatives} capabilities={capabilities} effects={effects} />
+      <ExecutiveSummary initiatives={initiatives} capabilities={capabilities} effects={effects} strategies={strategies} />
 
       {/* 2. Change indicators */}
       <ChangeIndicators snapshots={snapshots} initiatives={initiatives} capabilities={capabilities} />
@@ -57,11 +64,17 @@ export function Dashboard() {
       <EffectFunnel initiatives={initiatives} capabilities={capabilities} effects={effects} />
 
       {/* KPIs */}
-      <div className="grid grid-cols-4 gap-2 mb-4">
+      <div className="grid grid-cols-5 gap-2 mb-4">
         <KPICard label={t('dashboard.activities')} value={initiatives.length} />
-        <KPICard label={t('dashboard.maturityNowTarget')} value={`${avgMaturity} \u2192 ${avgSimMaturity}`} color="#6366f1" />
+        <KPICard label={t('dashboard.maturityNowTarget')} value={`${avgMaturity} \u2192 ${avgTargetMaturity}`} color="#6366f1" />
         <KPICard label={t('dashboard.criticalPath')} value={criticalPath.size} sublabel={t('dashboard.autoManual', { auto: autoCount, manual: manualCount })} />
         <KPICard label={t('dashboard.dependencies')} value={totalDeps} />
+        <KPICard
+          label={t('dashboard.strategyCoverage')}
+          value={`${strategyCoveragePercent}%`}
+          color={strategyCoveragePercent === 100 ? '#22c55e' : strategyCoveragePercent >= 70 ? '#f59e0b' : '#ef4444'}
+          sublabel={driftCount > 0 ? t('dashboard.strategyDriftCount', { count: driftCount }) : undefined}
+        />
       </div>
 
       {/* 4. Two-column grid */}
@@ -75,7 +88,7 @@ export function Dashboard() {
         {/* Maturity Journey */}
         <div className="bg-white rounded border border-border p-3">
           <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.maturityJourney')}</h3>
-          <MaturityJourney capabilities={capabilities} initiatives={initiatives} />
+          <MaturityJourney capabilities={capabilities} />
         </div>
 
         {/* Owner Load with threshold */}
@@ -94,6 +107,12 @@ export function Dashboard() {
         <div className="bg-white rounded border border-border p-3">
           <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.warnings')}</h3>
           <ActionableWarnings initiatives={initiatives} capabilities={capabilities} effects={effects} />
+        </div>
+
+        {/* Strategic Bottlenecks */}
+        <div className="bg-white rounded border border-border p-3">
+          <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.strategicBottlenecks')}</h3>
+          <StrategicBottlenecks />
         </div>
 
         {/* Value Chains */}

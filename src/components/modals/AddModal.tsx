@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, InitiativeStatus, EffectType } from '../../types';
+import type { DimensionKey, InitiativeStatus, EffectType, Strategy } from '../../types';
 import { Button } from '../ui/Button';
 import { ColorPalette } from '../ui/ColorPalette';
 import AIFormAssist from '../ai/AIFormAssist';
@@ -13,16 +13,18 @@ export function AddModal() {
   const tab = useStore(s => s.ui.addModalTab);
   const defaults = useStore(s => s.ui.addModalDefaults);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
+  const modules = useStore(s => s.modules);
   const addInitiative = useStore(s => s.addInitiative);
   const addCapability = useStore(s => s.addCapability);
   const addMilestone = useStore(s => s.addMilestone);
   const addValueChain = useStore(s => s.addValueChain);
   const addEffect = useStore(s => s.addEffect);
+  const addStrategy = useStore(s => s.addStrategy);
   const capabilities = useStore(s => s.capabilities);
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const valueChains = useStore(s => s.valueChains);
 
-  const [activeTab, setActiveTab] = useState<'initiative' | 'capability' | 'milestone' | 'valuechain' | 'effect'>(tab);
+  const [activeTab, setActiveTab] = useState<'initiative' | 'capability' | 'milestone' | 'valuechain' | 'effect' | 'strategy'>(tab);
   const [confirmMsg, setConfirmMsg] = useState(false);
 
   // Initiative state
@@ -49,6 +51,7 @@ export function AddModal() {
   const [cLevel, setCLevel] = useState<1 | 2>(1);
   const [cParent, setCParent] = useState('');
   const [cMat, setCMat] = useState<1 | 2 | 3>(1);
+  const [cMatTarget, setCMatTarget] = useState<1 | 2 | 3>(2);
   const [cRisk, setCRisk] = useState<1 | 2 | 3>(2);
 
   // Milestone state
@@ -70,6 +73,12 @@ export function AddModal() {
   const [eTarget, setETarget] = useState('');
   const [eCaps, setECaps] = useState<string[]>([]);
   const [eInits, setEInits] = useState<string[]>([]);
+
+  // Strategy state
+  const [sName, setSName] = useState('');
+  const [sDesc, setSDesc] = useState('');
+  const [sHorizon, setSHorizon] = useState<Strategy['timeHorizon']>('medium');
+  const [sPriority, setSPriority] = useState<Strategy['priority']>(1);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -97,6 +106,7 @@ export function AddModal() {
   const resetMilestoneFields = () => { setMName(''); };
   const resetValueChainFields = () => { setVCName(''); };
   const resetEffectFields = () => { setEName(''); setEDesc(''); setEType('strategic'); setEIndicator(''); setEBaseline(''); setETarget(''); setECaps([]); setEInits([]); };
+  const resetStrategyFields = () => { setSName(''); setSDesc(''); setSHorizon('medium'); setSPriority(1); };
 
   const handleAddInitiative = (keepOpen: boolean) => {
     if (!iName.trim()) return;
@@ -113,7 +123,7 @@ export function AddModal() {
     if (!cName.trim()) return;
     addCapability({
       id: `c_${Date.now()}`, name: cName.trim(), description: cDesc.trim(), level: cLevel,
-      parent: cLevel === 2 ? (cParent || null) : null, maturity: cMat, risk: cRisk,
+      parent: cLevel === 2 ? (cParent || null) : null, maturity: cMat, maturityTarget: cMatTarget, risk: cRisk,
     });
     if (keepOpen) { resetCapabilityFields(); showConfirmation(); } else { setAddModalOpen(false); }
   };
@@ -142,6 +152,18 @@ export function AddModal() {
     if (keepOpen) { resetEffectFields(); showConfirmation(); } else { setAddModalOpen(false); }
   };
 
+  const handleAddStrategy = (keepOpen: boolean) => {
+    if (!sName.trim()) return;
+    addStrategy({
+      id: `strat_${Date.now()}`,
+      name: sName.trim(),
+      description: sDesc.trim(),
+      timeHorizon: sHorizon,
+      priority: sPriority,
+    });
+    if (keepOpen) { resetStrategyFields(); showConfirmation(); } else { setAddModalOpen(false); }
+  };
+
   const handleInlineVCCreate = () => {
     if (!inlineVCName.trim()) return;
     const id = `vc_${Date.now()}`;
@@ -156,6 +178,7 @@ export function AddModal() {
     milestone: t('addModal.milestone'),
     valuechain: t('addModal.valuechain'),
     effect: t('addModal.effect'),
+    strategy: t('addModal.strategy'),
   };
 
   return (
@@ -169,7 +192,11 @@ export function AddModal() {
 
         {/* Tabs */}
         <div className="flex border-b border-border">
-          {(['initiative', 'capability', 'milestone', 'valuechain', 'effect'] as const).map(tb => (
+          {(['initiative', 'capability', 'milestone', 'valuechain', 'effect', 'strategy'] as const).filter(tb => {
+            if (tb === 'capability') return modules.capabilities;
+            if (tb === 'effect') return modules.effects;
+            return true;
+          }).map(tb => (
             <button
               key={tb}
               onClick={() => setActiveTab(tb)}
@@ -270,26 +297,28 @@ export function AddModal() {
                   ))}
                 </div>
               </div>
-              <div>
-                <div className="flex items-center justify-between">
-                  <label className="text-[9px] text-text-tertiary uppercase">{t('forms.capabilities')}</label>
-                  <AutoLinkButton
-                    initiativeName={iName}
-                    initiativeDescription={iDesc}
-                    capabilities={capabilities}
-                    selectedCapIds={iCaps}
-                    onToggleCapability={(capId) => toggleItem(iCaps, capId, setICaps)}
-                  />
+              {modules.capabilities && (
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[9px] text-text-tertiary uppercase">{t('forms.capabilities')}</label>
+                    <AutoLinkButton
+                      initiativeName={iName}
+                      initiativeDescription={iDesc}
+                      capabilities={capabilities}
+                      selectedCapIds={iCaps}
+                      onToggleCapability={(capId) => toggleItem(iCaps, capId, setICaps)}
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
+                    {capabilities.map(c => (
+                      <button key={c.id} onClick={() => toggleItem(iCaps, c.id, setICaps)}
+                        className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
+                          iCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
+                        }`}>{c.name}</button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-                  {capabilities.map(c => (
-                    <button key={c.id} onClick={() => toggleItem(iCaps, c.id, setICaps)}
-                      className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                        iCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
-                      }`}>{c.name}</button>
-                  ))}
-                </div>
-              </div>
+              )}
               <div>
                 <label className="text-[9px] text-text-tertiary uppercase">{t('forms.dependsOn')}</label>
                 <div className="flex flex-wrap gap-1 mt-0.5 max-h-16 overflow-y-auto">
@@ -376,6 +405,15 @@ export function AddModal() {
                 <div>
                   <label className="text-[9px] text-text-tertiary uppercase">{t('forms.maturity')}</label>
                   <select value={cMat} onChange={e => setCMat(Number(e.target.value) as 1|2|3)}
+                    className="w-full px-2 py-1 text-[11px] border border-border rounded">
+                    <option value={1}>{t('labels.maturity.1')}</option>
+                    <option value={2}>{t('labels.maturity.2')}</option>
+                    <option value={3}>{t('labels.maturity.3')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[9px] text-text-tertiary uppercase">{t('forms.maturityTarget')}</label>
+                  <select value={cMatTarget} onChange={e => setCMatTarget(Number(e.target.value) as 1|2|3)}
                     className="w-full px-2 py-1 text-[11px] border border-border rounded">
                     <option value={1}>{t('labels.maturity.1')}</option>
                     <option value={2}>{t('labels.maturity.2')}</option>
@@ -526,6 +564,50 @@ export function AddModal() {
               <div className="flex gap-1 pt-2">
                 <Button variant="primary" size="md" onClick={() => handleAddEffect(false)} disabled={!eName.trim()}>{t('addModal.createEffect')}</Button>
                 <Button size="md" onClick={() => handleAddEffect(true)} disabled={!eName.trim()}>{t('addModal.createAndNew')}</Button>
+                <Button size="md" onClick={() => setAddModalOpen(false)}>{t('common.cancel')}</Button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'strategy' && (
+            <div className="space-y-2">
+              <div>
+                <label className="text-[9px] text-text-tertiary uppercase">{t('forms.nameRequired')}</label>
+                <input value={sName} onChange={e => setSName(e.target.value)}
+                  className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary" />
+              </div>
+              <div>
+                <label className="text-[9px] text-text-tertiary uppercase">{t('common.description')}</label>
+                <textarea value={sDesc} onChange={e => setSDesc(e.target.value)} rows={2}
+                  className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary resize-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[9px] text-text-tertiary uppercase">{t('strategy.timeHorizon')}</label>
+                  <select value={sHorizon} onChange={e => setSHorizon(e.target.value as Strategy['timeHorizon'])}
+                    className="w-full px-2 py-1 text-[11px] border border-border rounded">
+                    <option value="short">{t('strategy.short')}</option>
+                    <option value="medium">{t('strategy.medium')}</option>
+                    <option value="long">{t('strategy.long')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[9px] text-text-tertiary uppercase">{t('strategy.priority')}</label>
+                  <div className="flex mt-0.5 border border-border rounded overflow-hidden">
+                    {([1, 2, 3] as const).map(p => (
+                      <button key={p} onClick={() => setSPriority(p)}
+                        className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
+                          sPriority === p ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                        }`}>
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-1 pt-2">
+                <Button variant="primary" size="md" onClick={() => handleAddStrategy(false)} disabled={!sName.trim()}>{t('addModal.createStrategy')}</Button>
+                <Button size="md" onClick={() => handleAddStrategy(true)} disabled={!sName.trim()}>{t('addModal.createAndNew')}</Button>
                 <Button size="md" onClick={() => setAddModalOpen(false)}>{t('common.cancel')}</Button>
               </div>
             </div>

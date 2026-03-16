@@ -6,6 +6,7 @@ import type { DimensionKey, Initiative } from '../../types';
 import { DropZone } from './DropZone';
 import { MilestoneMarker } from './MilestoneMarker';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
+import { CapabilityPath } from './CapabilityPath';
 
 export function Roadmap() {
   const { t } = useTranslation();
@@ -20,6 +21,8 @@ export function Roadmap() {
   const bulkDeleteInitiatives = useStore(s => s.bulkDeleteInitiatives);
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const roleMode = useStore(s => s.ui.roleMode);
+  const roadmapViewMode = useStore(s => s.ui.roadmapViewMode);
+  const setRoadmapViewMode = useStore(s => s.setRoadmapViewMode);
   const [showMoveDropdown, setShowMoveDropdown] = useState(false);
   const [collapsedDimensions, setCollapsedDimensions] = useState<Set<DimensionKey>>(new Set());
 
@@ -121,8 +124,44 @@ export function Roadmap() {
     }
   };
 
+  if (roadmapViewMode === 'capability') {
+    return (
+      <div className="min-h-full">
+        {/* View toggle */}
+        <div className="flex items-center gap-1 px-3 pt-3 pb-1">
+          <button
+            onClick={() => setRoadmapViewMode('dimension')}
+            className="px-2 py-0.5 rounded text-[10px] border border-border bg-white text-text-secondary hover:bg-gray-50"
+          >
+            {t('strategyPath.dimView')}
+          </button>
+          <button
+            className="px-2 py-0.5 rounded text-[10px] border border-primary bg-primary text-white"
+          >
+            {t('strategyPath.capView')}
+          </button>
+        </div>
+        <CapabilityPath />
+      </div>
+    );
+  }
+
   return (
     <div className={focusMode ? "h-full p-3 flex flex-col" : "min-h-full p-3"} onClick={handleBackgroundClick}>
+      {/* View toggle */}
+      <div className="flex items-center gap-1 mb-2">
+        <button
+          className="px-2 py-0.5 rounded text-[10px] border border-primary bg-primary text-white"
+        >
+          {t('strategyPath.dimView')}
+        </button>
+        <button
+          onClick={() => setRoadmapViewMode('capability')}
+          className="px-2 py-0.5 rounded text-[10px] border border-border bg-white text-text-secondary hover:bg-gray-50"
+        >
+          {t('strategyPath.capView')}
+        </button>
+      </div>
       {/* Column headers */}
       <div className={`grid mb-2 ${focusMode ? 'shrink-0' : ''}`} style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
         <div />

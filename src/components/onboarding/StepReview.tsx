@@ -1,19 +1,22 @@
+import { useTranslation } from 'react-i18next';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { getTemplateById } from '../../data/templates';
 import { useStore } from '../../stores/useStore';
 
 export function StepReview() {
+  const { t } = useTranslation();
   const selectedTemplateId = useOnboardingStore(s => s.selectedTemplateId);
   const suggestedCapabilities = useOnboardingStore(s => s.suggestedCapabilities);
+  const selectedModules = useOnboardingStore(s => s.selectedModules);
   const completeOnboarding = useOnboardingStore(s => s.completeOnboarding);
   const prevStep = useOnboardingStore(s => s.prevStep);
   const loadTemplate = useStore(s => s.loadTemplate);
   const addCapabilities = useStore(s => s.addCapabilities);
+  const setModules = useStore(s => s.setModules);
 
   const template = selectedTemplateId ? getTemplateById(selectedTemplateId) : null;
   const selectedSuggestions = suggestedCapabilities.filter(c => c.selected);
 
-  // Build tree structure for display
   const allCaps = [
     ...(template?.capabilities ?? []),
     ...selectedSuggestions,
@@ -23,23 +26,35 @@ export function StepReview() {
 
   const handleComplete = () => {
     if (template) {
-      loadTemplate(template);
+      // Filter template data to only include selected modules
+      const filteredTemplate = {
+        ...template,
+        capabilities: selectedModules.capabilities ? template.capabilities : [],
+        sampleInitiatives: selectedModules.roadmap
+          ? template.sampleInitiatives.map(i => ({
+              ...i,
+              capabilities: selectedModules.capabilities ? i.capabilities : [],
+            }))
+          : [],
+        effects: selectedModules.effects ? template.effects : [],
+      };
+      loadTemplate(filteredTemplate);
     }
-    if (selectedSuggestions.length > 0) {
-      // Strip the 'reasoning' and 'selected' fields before adding
+    if (selectedModules.capabilities && selectedSuggestions.length > 0) {
       const capsToAdd = selectedSuggestions.map(({ reasoning: _r, selected: _s, ...cap }) => cap);
       addCapabilities(capsToAdd);
     }
+    // Apply the chosen module settings
+    setModules(selectedModules);
     completeOnboarding();
   };
 
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-lg font-bold text-primary">Gjennomgang</h2>
+        <h2 className="text-lg font-bold text-primary">{t('onboarding.reviewTitle')}</h2>
         <p className="text-[12px] text-text-secondary mt-1">
-          Her er det komplette kapabilitetskartet som vil bli opprettet.
-          Trykk &laquo;Fullfør&raquo; for å starte.
+          {t('onboarding.reviewSubtitle')}
         </p>
       </div>
 
@@ -50,7 +65,9 @@ export function StepReview() {
             <div>
               <span className="text-[12px] font-semibold text-primary">{template.name}</span>
               <span className="text-[10px] text-text-tertiary ml-2">
-                {template.capabilities.length} kapabiliteter + {template.sampleInitiatives.length} initiativer
+                {selectedModules.capabilities && `${template.capabilities.length} ${t('onboarding.capabilities')}`}
+                {selectedModules.capabilities && selectedModules.roadmap && ' + '}
+                {selectedModules.roadmap && `${template.sampleInitiatives.length} ${t('onboarding.initiatives')}`}
               </span>
             </div>
           </div>
@@ -60,27 +77,23 @@ export function StepReview() {
       {selectedSuggestions.length > 0 && (
         <div className="p-3 bg-green-50 rounded-lg border border-green-200">
           <span className="text-[11px] font-medium text-green-800">
-            + {selectedSuggestions.length} AI-foreslåtte kapabiliteter
+            + {selectedSuggestions.length} {t('onboarding.aiSuggestedCaps')}
           </span>
         </div>
       )}
 
-      <div className="max-h-[250px] overflow-y-auto space-y-1">
+      <div className="max-h-[220px] overflow-y-auto space-y-1">
         {l1Caps.map(l1 => {
           const children = getChildren(l1.id);
           const isAISuggested = selectedSuggestions.some(s => s.id === l1.id);
           return (
             <div key={l1.id}>
-              <div className={`flex items-center gap-2 px-2 py-1.5 rounded ${
-                isAISuggested ? 'bg-green-50' : 'bg-gray-50'
-              }`}>
+              <div className={`flex items-center gap-2 px-2 py-1.5 rounded ${isAISuggested ? 'bg-green-50' : 'bg-gray-50'}`}>
                 <span className="text-[11px] font-semibold text-text-primary">{l1.name}</span>
                 {isAISuggested && (
                   <span className="text-[8px] px-1 py-0.5 bg-green-200 text-green-800 rounded">AI</span>
                 )}
-                <span className="text-[9px] text-text-tertiary ml-auto">
-                  M:{l1.maturity} R:{l1.risk}
-                </span>
+                <span className="text-[9px] text-text-tertiary ml-auto">M:{l1.maturity} R:{l1.risk}</span>
               </div>
               {children.length > 0 && (
                 <div className="ml-4 space-y-0.5 mt-0.5">
@@ -95,9 +108,7 @@ export function StepReview() {
                         {isChildAI && (
                           <span className="text-[8px] px-1 py-0.5 bg-green-200 text-green-800 rounded">AI</span>
                         )}
-                        <span className="text-[9px] text-text-tertiary ml-auto">
-                          M:{child.maturity} R:{child.risk}
-                        </span>
+                        <span className="text-[9px] text-text-tertiary ml-auto">M:{child.maturity} R:{child.risk}</span>
                       </div>
                     );
                   })}
@@ -113,14 +124,14 @@ export function StepReview() {
           onClick={prevStep}
           className="px-4 py-2 text-[11px] font-medium text-text-secondary hover:bg-gray-100 rounded-lg transition-colors"
         >
-          &larr; Tilbake
+          &larr; {t('common.back')}
         </button>
         <button
           onClick={handleComplete}
           disabled={!template}
           className="px-6 py-2 text-[12px] font-bold bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-40"
         >
-          Fullfør
+          {t('onboarding.complete')}
         </button>
       </div>
     </div>

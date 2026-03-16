@@ -4,7 +4,8 @@
     "footer": "A cairn doesn't need a legend. Neither should your strategy."
   },
   "nav": {
-    "roadmap": "Veikart",
+    "roadmap": "Strategi-sti",
+    "strategies": "Strategier",
     "dashboard": "Dashbord",
     "compare": "Sammenlign",
     "simulation": "Simulering",
@@ -20,7 +21,42 @@
     "capabilityMap": "Kapabilitetskart",
     "roleWork": "Arbeidsmodus",
     "roleGovernance": "Styringsmodus",
-    "getStarted": "Kom i gang"
+    "getStarted": "Kom i gang",
+    "effects": "Effekter"
+  },
+  "effectBoard": {
+    "title": "Effekttavle",
+    "total": "effekter",
+    "empty": "Dra effekter hit",
+    "addEffect": "Ny effekt"
+  },
+  "modules": {
+    "title": "Moduler",
+    "roadmap": "Strategi-sti",
+    "roadmapDesc": "Planlegg og prioriter initiativer – fra strategi til gjennomføring",
+    "capabilities": "Kapabiliteter",
+    "capabilitiesDesc": "Kartlegg organisasjonens evner og modenhetsnivå",
+    "effects": "Effekter",
+    "effectsDesc": "Definer og spor effekter fra strategisk innsats",
+    "recommended": "Anbefalt",
+    "core": "Alltid på",
+    "addLater": "Du kan alltid legge til flere moduler i Innstillinger",
+    "stepTitle": "Velg dine moduler",
+    "stepSubtitle": "Start med det du trenger nå. Utvid når du er klar."
+  },
+  "onboarding": {
+    "stepWelcome": "Velkommen",
+    "stepModules": "Moduler",
+    "stepTemplate": "Mal",
+    "stepAI": "AI-forslag",
+    "stepReview": "Gjennomgang",
+    "reviewTitle": "Gjennomgang",
+    "reviewSubtitle": "Her er det som vil bli opprettet. Klikk Fullfør for å starte.",
+    "capabilities": "kapabiliteter",
+    "initiatives": "initiativer",
+    "aiSuggestedCaps": "AI-foreslåtte kapabiliteter",
+    "complete": "Fullfør",
+    "startNow": "Start nå"
   },
   "capLandscape": {
     "title": "Kapabilitetslandskap",
@@ -56,7 +92,9 @@
     "color": "Farge",
     "level": "Nivå",
     "note": "Notat",
-    "owner": "Eier"
+    "owner": "Eier",
+    "back": "Tilbake",
+    "continue": "Fortsett"
   },
   "labels": {
     "maturity": {
@@ -120,6 +158,12 @@
     "collapsed": "Kollapset",
     "expand": "Utvid"
   },
+  "strategyPath": {
+    "dimView": "Per dimensjon",
+    "capView": "Per kapabilitet",
+    "unlinked": "Ukoblet",
+    "noCaps": "Ingen kapabiliteter definert. Legg til kapabiliteter for å bruke kapabilitetsvisningen."
+  },
   "dashboard": {
     "title": "Dashbord",
     "activities": "Aktiviteter",
@@ -141,7 +185,17 @@
     "warnings": "Handlingsrettede advarsler",
     "changes": "Endringer siden sist",
     "capacityThreshold": "Kapasitetsgrense",
-    "scenarioComparison": "Scenariosammenligning"
+    "scenarioComparison": "Scenariosammenligning",
+    "strategyCoverage": "Strategidekning",
+    "strategyDriftCount_one": "{{count}} ukoblet aktivitet",
+    "strategyDriftCount_other": "{{count}} ukoblede aktiviteter",
+    "strategicBottlenecks": "Strategiske flaskehalser",
+    "bottleneckHighRisk": "Høy risiko, lav modenhet",
+    "bottleneckNoTarget": "Ingen modenhetsmål satt",
+    "bottleneckNoInitiatives": "Ingen koblede aktiviteter",
+    "bottleneckUnderserviced": "Underbemannede kapabiliteter",
+    "bottleneckBlocked": "Blokkerte aktiviteter",
+    "noBottlenecks": "Ingen strategiske flaskehalser oppdaget"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -197,6 +251,7 @@
     "dependsOn": "Avhenger av",
     "valueChains": "Verdikjeder",
     "maturity": "Modenhet",
+    "maturityTarget": "Modenhetsmål",
     "risk": "Risiko",
     "parent": "Forelder",
     "domainL1": "Domene (L1)",
@@ -209,11 +264,13 @@
     "milestone": "Milepæl",
     "valuechain": "Verdikjede",
     "effect": "Effekt",
+    "strategy": "Strategi",
     "createEffect": "Opprett effekt",
     "createInitiative": "Opprett aktivitet",
     "createCapability": "Opprett kapabilitet",
     "createMilestone": "Opprett milepæl",
     "createValueChain": "Opprett verdikjede",
+    "createStrategy": "Opprett strategi",
     "createAndNew": "Opprett og ny",
     "newValueChain": "+ Ny verdikjede",
     "valueChainPlaceholder": "Verdikjedenavn..."
@@ -257,18 +314,51 @@
     "dimensionNoNear": "{{dimension}} har ingen nær-horisont-aktiviteter",
     "orphanCapability": "\"{{name}}\" har ingen aktiviteter knyttet til seg",
     "orphanInitiative": "\"{{name}}\" har ingen kapabiliteter knyttet til seg",
-    "allDimensionsCovered": "Alle dimensjoner er dekket med aktiviteter"
+    "allDimensionsCovered": "Alle dimensjoner er dekket med aktiviteter",
+    "strategyDrift_one": "{{count}} aktivitet ikke koblet til kapabilitet (strategi-drift)",
+    "strategyDrift_other": "{{count}} aktiviteter ikke koblet til kapabilitet (strategi-drift)"
+  },
+  "strategy": {
+    "title": "Strategier",
+    "singular": "Strategi",
+    "timeHorizon": "Tidshorisont",
+    "short": "Kort sikt",
+    "medium": "Mellomlang sikt",
+    "long": "Lang sikt",
+    "priority": "Prioritet",
+    "linkedCapabilities": "Tilknyttede kapabiliteter",
+    "noLinkedCapabilities": "Ingen kapabiliteter koblet til denne strategien",
+    "noStrategies": "Ingen strategier definert ennå.",
+    "noStrategiesHint": "Legg til en strategi via +-knappen for å komme i gang.",
+    "capsProgressing": "kapabiliteter i fremgang",
+    "viewInPath": "Vis i Strategi-sti"
+  },
+  "strategicContext": {
+    "title": "Strategisk kontekst",
+    "noContext": "Ingen strategi koblet",
+    "strategy": "Strategi",
+    "capability": "Kapabilitet",
+    "initiative": "Initiativ",
+    "effects": "Forventede effekter"
   },
   "presentation": {
     "slides": {
       "overview": "Oversikt",
+      "strategies": "Strategier",
+      "capabilityMomentum": "Kapabilitetsfremgang",
+      "portfolio": "Portefølje",
+      "bottlenecks": "Strategiske flaskehalser",
       "capabilities": "Kapabiliteter",
       "effects": "Effektkjede",
       "summary": "Oppsummering"
     },
     "noActivities": "Ingen aktiviteter",
     "summaryTitle": "Oppsummering",
-    "dimensions": "Dimensjoner"
+    "dimensions": "Dimensjoner",
+    "strategiesTitle": "Aktive strategier",
+    "capMomentumTitle": "Kapabilitetsfremgang",
+    "portfolioTitle": "Porteføljeoversikt",
+    "bottlenecksTitle": "Strategiske flaskehalser"
   },
   "effects": {
     "title": "Effektoversikt",

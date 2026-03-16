@@ -4,7 +4,8 @@
     "footer": "A cairn doesn't need a legend. Neither should your strategy."
   },
   "nav": {
-    "roadmap": "Roadmap",
+    "roadmap": "Strategy Path",
+    "strategies": "Strategies",
     "dashboard": "Dashboard",
     "compare": "Compare",
     "simulation": "Simulation",
@@ -20,7 +21,42 @@
     "capabilityMap": "Capability map",
     "roleWork": "Work mode",
     "roleGovernance": "Governance mode",
-    "getStarted": "Get started"
+    "getStarted": "Get started",
+    "effects": "Effects"
+  },
+  "effectBoard": {
+    "title": "Effect Board",
+    "total": "effects",
+    "empty": "Drag effects here",
+    "addEffect": "New effect"
+  },
+  "modules": {
+    "title": "Modules",
+    "roadmap": "Strategy Path",
+    "roadmapDesc": "Plan and prioritize initiatives – from strategy to execution",
+    "capabilities": "Capabilities",
+    "capabilitiesDesc": "Map organizational capabilities and maturity levels",
+    "effects": "Effects",
+    "effectsDesc": "Define and track effects from strategic efforts",
+    "recommended": "Recommended",
+    "core": "Always on",
+    "addLater": "You can always add more modules in Settings",
+    "stepTitle": "Choose your modules",
+    "stepSubtitle": "Start with what you need right now. Expand later."
+  },
+  "onboarding": {
+    "stepWelcome": "Welcome",
+    "stepModules": "Modules",
+    "stepTemplate": "Template",
+    "stepAI": "AI suggestions",
+    "stepReview": "Review",
+    "reviewTitle": "Review",
+    "reviewSubtitle": "Here is what will be created. Click Finish to start.",
+    "capabilities": "capabilities",
+    "initiatives": "initiatives",
+    "aiSuggestedCaps": "AI-suggested capabilities",
+    "complete": "Finish",
+    "startNow": "Start now"
   },
   "capLandscape": {
     "title": "Capability Landscape",
@@ -56,7 +92,9 @@
     "color": "Colour",
     "level": "Level",
     "note": "Note",
-    "owner": "Owner"
+    "owner": "Owner",
+    "back": "Back",
+    "continue": "Continue"
   },
   "labels": {
     "maturity": {
@@ -120,6 +158,12 @@
     "collapsed": "Collapsed",
     "expand": "Expand"
   },
+  "strategyPath": {
+    "dimView": "By dimension",
+    "capView": "By capability",
+    "unlinked": "Unlinked",
+    "noCaps": "No capabilities defined. Add capabilities to use the capability view."
+  },
   "dashboard": {
     "title": "Dashboard",
     "activities": "Activities",
@@ -141,7 +185,17 @@
     "warnings": "Actionable Warnings",
     "changes": "Changes since last",
     "capacityThreshold": "Capacity threshold",
-    "scenarioComparison": "Scenario Comparison"
+    "scenarioComparison": "Scenario Comparison",
+    "strategyCoverage": "Strategy coverage",
+    "strategyDriftCount_one": "{{count}} unlinked activity",
+    "strategyDriftCount_other": "{{count}} unlinked activities",
+    "strategicBottlenecks": "Strategic Bottlenecks",
+    "bottleneckHighRisk": "High risk, low maturity",
+    "bottleneckNoTarget": "No maturity target set",
+    "bottleneckNoInitiatives": "No linked initiatives",
+    "bottleneckUnderserviced": "Underpowered capabilities",
+    "bottleneckBlocked": "Blocked initiatives",
+    "noBottlenecks": "No strategic bottlenecks detected"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -197,6 +251,7 @@
     "dependsOn": "Depends on",
     "valueChains": "Value chains",
     "maturity": "Maturity",
+    "maturityTarget": "Maturity target",
     "risk": "Risk",
     "parent": "Parent",
     "domainL1": "Domain (L1)",
@@ -209,11 +264,13 @@
     "milestone": "Milestone",
     "valuechain": "Value chain",
     "effect": "Effect",
+    "strategy": "Strategy",
     "createEffect": "Create effect",
     "createInitiative": "Create activity",
     "createCapability": "Create capability",
     "createMilestone": "Create milestone",
     "createValueChain": "Create value chain",
+    "createStrategy": "Create strategy",
     "createAndNew": "Create & new",
     "newValueChain": "+ New value chain",
     "valueChainPlaceholder": "Value chain name..."
@@ -257,18 +314,51 @@
     "dimensionNoNear": "{{dimension}} has no near-horizon activities",
     "orphanCapability": "\"{{name}}\" has no activities linked to it",
     "orphanInitiative": "\"{{name}}\" has no capabilities linked to it",
-    "allDimensionsCovered": "All dimensions are covered with activities"
+    "allDimensionsCovered": "All dimensions are covered with activities",
+    "strategyDrift_one": "{{count}} activity not linked to a capability (strategy drift)",
+    "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)"
+  },
+  "strategy": {
+    "title": "Strategies",
+    "singular": "Strategy",
+    "timeHorizon": "Time horizon",
+    "short": "Short term",
+    "medium": "Medium term",
+    "long": "Long term",
+    "priority": "Priority",
+    "linkedCapabilities": "Linked capabilities",
+    "noLinkedCapabilities": "No capabilities linked to this strategy",
+    "noStrategies": "No strategies defined yet.",
+    "noStrategiesHint": "Add a strategy via the + button to get started.",
+    "capsProgressing": "capabilities progressing",
+    "viewInPath": "View in Strategy Path"
+  },
+  "strategicContext": {
+    "title": "Strategic context",
+    "noContext": "No strategy linked",
+    "strategy": "Strategy",
+    "capability": "Capability",
+    "initiative": "Initiative",
+    "effects": "Expected effects"
   },
   "presentation": {
     "slides": {
       "overview": "Overview",
+      "strategies": "Strategies",
+      "capabilityMomentum": "Capability Momentum",
+      "portfolio": "Portfolio",
+      "bottlenecks": "Strategic Bottlenecks",
       "capabilities": "Capabilities",
       "effects": "Effect chain",
       "summary": "Summary"
     },
     "noActivities": "No activities",
     "summaryTitle": "Summary",
-    "dimensions": "Dimensions"
+    "dimensions": "Dimensions",
+    "strategiesTitle": "Active Strategies",
+    "capMomentumTitle": "Capability Momentum",
+    "portfolioTitle": "Portfolio Overview",
+    "bottlenecksTitle": "Strategic Bottlenecks"
   },
   "effects": {
     "title": "Effect overview",

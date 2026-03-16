@@ -23,6 +23,11 @@ export function CapabilityDetail({ capability }: Props) {
   const isEditing = editingId === capability.id;
   const children = capabilities.filter(c => c.parent === capability.id);
   const effects = useStore(s => s.effects);
+  const modules = useStore(s => s.modules);
+  const strategies = useStore(s => s.strategies);
+  const updateCapability = useStore(s => s.updateCapability);
+  const roleMode = useStore(s => s.ui.roleMode);
+  const isGovernance = roleMode === 'governance';
 
   const relatedInitiatives = useMemo(() =>
     initiatives.filter(i => i.capabilities.includes(capability.id)),
@@ -111,7 +116,44 @@ export function CapabilityDetail({ capability }: Props) {
         </div>
       )}
 
-      {relatedInitiatives.length > 0 && (
+      {/* Linked strategies */}
+      {strategies.length > 0 && (
+        <div>
+          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('strategy.singular')}</div>
+          <div className="flex flex-wrap gap-1">
+            {strategies.map(s => {
+              const linked = capability.strategyIds?.includes(s.id) ?? false;
+              if (isGovernance && !linked) return null;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => {
+                    if (isGovernance) {
+                      setSelectedItem({ type: 'strategy', id: s.id });
+                      return;
+                    }
+                    const current = capability.strategyIds ?? [];
+                    const next = linked
+                      ? current.filter(id => id !== s.id)
+                      : [...current, s.id];
+                    updateCapability(capability.id, { strategyIds: next });
+                  }}
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium transition-colors ${
+                    linked
+                      ? 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200'
+                      : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
+                  }`}
+                >
+                  {s.name}
+                  {linked && !isGovernance && <span className="text-[8px] leading-none">×</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {modules.roadmap && relatedInitiatives.length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.relatedActivities')}</div>
           <div className="space-y-0.5">
@@ -127,7 +169,7 @@ export function CapabilityDetail({ capability }: Props) {
       )}
 
       {/* Effects */}
-      {relatedEffects.length > 0 && (
+      {modules.effects && relatedEffects.length > 0 && (
         <div>
           <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('effects.enablesEffects')}</div>
           <div className="space-y-0.5">
