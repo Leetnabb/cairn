@@ -111,7 +111,7 @@ const defaultUI: UIState = {
     owner: '',
     search: '',
     status: '',
-    showMilestones: true,
+    showMilestones: false,
     focusMode: false,
     zoomLevel: 1,
     spotlightValueChain: null,
