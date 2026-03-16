@@ -17,6 +17,7 @@ export function EditCapabilityForm({ capability }: Props) {
   const [name, setName] = useState(capability.name);
   const [description, setDescription] = useState(capability.description);
   const [maturity, setMaturity] = useState(capability.maturity);
+  const [maturityTarget, setMaturityTarget] = useState<1 | 2 | 3>(capability.maturityTarget ?? Math.min(capability.maturity + 1, 3) as 1 | 2 | 3);
   const [risk, setRisk] = useState(capability.risk);
   const [parent, setParent] = useState(capability.parent ?? '');
 
@@ -27,6 +28,7 @@ export function EditCapabilityForm({ capability }: Props) {
       name,
       description,
       maturity: maturity as 1 | 2 | 3,
+      maturityTarget: maturityTarget as 1 | 2 | 3,
       risk: risk as 1 | 2 | 3,
       parent: capability.level === 2 ? (parent || null) : null,
     });
@@ -52,10 +54,18 @@ export function EditCapabilityForm({ capability }: Props) {
           className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary resize-none"
         />
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <div>
           <label className="text-[9px] text-text-tertiary uppercase">{t('forms.maturity')}</label>
           <select value={maturity} onChange={e => setMaturity(Number(e.target.value) as 1|2|3)} className="w-full px-2 py-1 text-[11px] border border-border rounded">
+            <option value={1}>{t('labels.maturity.1')}</option>
+            <option value={2}>{t('labels.maturity.2')}</option>
+            <option value={3}>{t('labels.maturity.3')}</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-[9px] text-text-tertiary uppercase">{t('forms.maturityTarget')}</label>
+          <select value={maturityTarget} onChange={e => setMaturityTarget(Number(e.target.value) as 1|2|3)} className="w-full px-2 py-1 text-[11px] border border-border rounded">
             <option value={1}>{t('labels.maturity.1')}</option>
             <option value={2}>{t('labels.maturity.2')}</option>
             <option value={3}>{t('labels.maturity.3')}</option>

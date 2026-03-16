@@ -157,6 +157,12 @@
     "collapsed": "Kollapset",
     "expand": "Utvid"
   },
+  "strategyPath": {
+    "dimView": "Per dimensjon",
+    "capView": "Per kapabilitet",
+    "unlinked": "Ukoblet",
+    "noCaps": "Ingen kapabiliteter definert. Legg til kapabiliteter for å bruke kapabilitetsvisningen."
+  },
   "dashboard": {
     "title": "Dashbord",
     "activities": "Aktiviteter",
@@ -181,7 +187,11 @@
     "scenarioComparison": "Scenariosammenligning",
     "strategyCoverage": "Strategidekning",
     "strategyDriftCount_one": "{{count}} ukoblet aktivitet",
-    "strategyDriftCount_other": "{{count}} ukoblede aktiviteter"
+    "strategyDriftCount_other": "{{count}} ukoblede aktiviteter",
+    "strategicBottlenecks": "Strategiske flaskehalser",
+    "bottleneckHighRisk": "Høy risiko, lav modenhet",
+    "bottleneckNoTarget": "Ingen modenhetsmål satt",
+    "bottleneckNoInitiatives": "Ingen koblede aktiviteter"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -237,6 +247,7 @@
     "dependsOn": "Avhenger av",
     "valueChains": "Verdikjeder",
     "maturity": "Modenhet",
+    "maturityTarget": "Modenhetsmål",
     "risk": "Risiko",
     "parent": "Forelder",
     "domainL1": "Domene (L1)",
@@ -325,13 +336,21 @@
   "presentation": {
     "slides": {
       "overview": "Oversikt",
+      "strategies": "Strategier",
+      "capabilityMomentum": "Kapabilitetsfremgang",
+      "portfolio": "Portefølje",
+      "bottlenecks": "Strategiske flaskehalser",
       "capabilities": "Kapabiliteter",
       "effects": "Effektkjede",
       "summary": "Oppsummering"
     },
     "noActivities": "Ingen aktiviteter",
     "summaryTitle": "Oppsummering",
-    "dimensions": "Dimensjoner"
+    "dimensions": "Dimensjoner",
+    "strategiesTitle": "Aktive strategier",
+    "capMomentumTitle": "Kapabilitetsfremgang",
+    "portfolioTitle": "Porteføljeoversikt",
+    "bottlenecksTitle": "Strategiske flaskehalser"
   },
   "effects": {
     "title": "Effektoversikt",

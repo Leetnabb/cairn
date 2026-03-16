@@ -71,6 +71,7 @@ interface StoreState extends AppState {
   // UI actions
   setSelectedItem: (item: UIState['selectedItem']) => void;
   setView: (view: ViewMode) => void;
+  setRoadmapViewMode: (mode: 'dimension' | 'capability') => void;
   setCapabilityView: (view: 'maturity' | 'risk') => void;
   toggleSimulation: () => void;
   toggleCriticalPath: () => void;
@@ -107,6 +108,7 @@ interface StoreState extends AppState {
 const defaultUI: UIState = {
   selectedItem: null,
   view: 'roadmap',
+  roadmapViewMode: 'dimension',
   capabilityView: 'maturity',
   simulationEnabled: false,
   criticalPathEnabled: false,
@@ -416,6 +418,9 @@ export const useStore = create<StoreState>()(
         })),
         setView: (view) => set(state => ({
           ui: { ...state.ui, view, compareScenario: view !== 'compare' ? null : state.ui.compareScenario },
+        })),
+        setRoadmapViewMode: (roadmapViewMode) => set(state => ({
+          ui: { ...state.ui, roadmapViewMode },
         })),
         setCapabilityView: (capabilityView) => set(state => ({
           ui: { ...state.ui, capabilityView },

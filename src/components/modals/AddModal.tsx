@@ -51,6 +51,7 @@ export function AddModal() {
   const [cLevel, setCLevel] = useState<1 | 2>(1);
   const [cParent, setCParent] = useState('');
   const [cMat, setCMat] = useState<1 | 2 | 3>(1);
+  const [cMatTarget, setCMatTarget] = useState<1 | 2 | 3>(2);
   const [cRisk, setCRisk] = useState<1 | 2 | 3>(2);
 
   // Milestone state
@@ -122,7 +123,7 @@ export function AddModal() {
     if (!cName.trim()) return;
     addCapability({
       id: `c_${Date.now()}`, name: cName.trim(), description: cDesc.trim(), level: cLevel,
-      parent: cLevel === 2 ? (cParent || null) : null, maturity: cMat, risk: cRisk,
+      parent: cLevel === 2 ? (cParent || null) : null, maturity: cMat, maturityTarget: cMatTarget, risk: cRisk,
     });
     if (keepOpen) { resetCapabilityFields(); showConfirmation(); } else { setAddModalOpen(false); }
   };
@@ -404,6 +405,15 @@ export function AddModal() {
                 <div>
                   <label className="text-[9px] text-text-tertiary uppercase">{t('forms.maturity')}</label>
                   <select value={cMat} onChange={e => setCMat(Number(e.target.value) as 1|2|3)}
+                    className="w-full px-2 py-1 text-[11px] border border-border rounded">
+                    <option value={1}>{t('labels.maturity.1')}</option>
+                    <option value={2}>{t('labels.maturity.2')}</option>
+                    <option value={3}>{t('labels.maturity.3')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[9px] text-text-tertiary uppercase">{t('forms.maturityTarget')}</label>
+                  <select value={cMatTarget} onChange={e => setCMatTarget(Number(e.target.value) as 1|2|3)}
                     className="w-full px-2 py-1 text-[11px] border border-border rounded">
                     <option value={1}>{t('labels.maturity.1')}</option>
                     <option value={2}>{t('labels.maturity.2')}</option>

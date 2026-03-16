@@ -36,6 +36,7 @@ export interface Capability {
   level: 1 | 2;
   parent: string | null;
   maturity: 1 | 2 | 3;
+  maturityTarget?: 1 | 2 | 3;
   risk: 1 | 2 | 3;
   description: string;
   order?: number;
@@ -155,6 +156,7 @@ export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'e
 export interface UIState {
   selectedItem: { type: 'capability' | 'initiative' | 'milestone' | 'effect' | 'strategy'; id: string } | null;
   view: ViewMode;
+  roadmapViewMode: 'dimension' | 'capability';
   capabilityView: 'maturity' | 'risk';
   simulationEnabled: boolean;
   criticalPathEnabled: boolean;

@@ -157,6 +157,12 @@
     "collapsed": "Collapsed",
     "expand": "Expand"
   },
+  "strategyPath": {
+    "dimView": "By dimension",
+    "capView": "By capability",
+    "unlinked": "Unlinked",
+    "noCaps": "No capabilities defined. Add capabilities to use the capability view."
+  },
   "dashboard": {
     "title": "Dashboard",
     "activities": "Activities",
@@ -181,7 +187,11 @@
     "scenarioComparison": "Scenario Comparison",
     "strategyCoverage": "Strategy coverage",
     "strategyDriftCount_one": "{{count}} unlinked activity",
-    "strategyDriftCount_other": "{{count}} unlinked activities"
+    "strategyDriftCount_other": "{{count}} unlinked activities",
+    "strategicBottlenecks": "Strategic Bottlenecks",
+    "bottleneckHighRisk": "High risk, low maturity",
+    "bottleneckNoTarget": "No maturity target set",
+    "bottleneckNoInitiatives": "No linked initiatives"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -237,6 +247,7 @@
     "dependsOn": "Depends on",
     "valueChains": "Value chains",
     "maturity": "Maturity",
+    "maturityTarget": "Maturity target",
     "risk": "Risk",
     "parent": "Parent",
     "domainL1": "Domain (L1)",
@@ -325,13 +336,21 @@
   "presentation": {
     "slides": {
       "overview": "Overview",
+      "strategies": "Strategies",
+      "capabilityMomentum": "Capability Momentum",
+      "portfolio": "Portfolio",
+      "bottlenecks": "Strategic Bottlenecks",
       "capabilities": "Capabilities",
       "effects": "Effect chain",
       "summary": "Summary"
     },
     "noActivities": "No activities",
     "summaryTitle": "Summary",
-    "dimensions": "Dimensions"
+    "dimensions": "Dimensions",
+    "strategiesTitle": "Active Strategies",
+    "capMomentumTitle": "Capability Momentum",
+    "portfolioTitle": "Portfolio Overview",
+    "bottlenecksTitle": "Strategic Bottlenecks"
   },
   "effects": {
     "title": "Effect overview",
