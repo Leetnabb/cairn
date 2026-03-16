@@ -37,16 +37,16 @@ const S: Record<string, CSSProperties> = {
 };
 
 const navItems: { label: string; href: string }[] = [
-  { label: "Produkt", href: "#produkt" },
-  { label: "For hvem", href: "#for-hvem" },
-  { label: "Om oss", href: "#om-oss" },
+  { label: "Product", href: "#produkt" },
+  { label: "For whom", href: "#for-hvem" },
+  { label: "About", href: "#om-oss" },
 ];
 
 const dims = [
-  { label: "Ledelse", color: "#ef4444", desc: "Styringsmodeller, beslutningsstruktur og strategisk forankring" },
-  { label: "Virksomhet", color: "#22c55e", desc: "Prosesser, KPI-er og verdikjeder som driver organisasjonen" },
-  { label: "Organisasjon", color: "#eab308", desc: "Kompetanse, kultur og endringsevne" },
-  { label: "Teknologi", color: "#6366f1", desc: "Plattformer, integrasjoner og digitale kapabiliteter" },
+  { label: "Governance", color: "#ef4444", desc: "Governance models, decision structure, and strategic alignment" },
+  { label: "Business", color: "#22c55e", desc: "Processes, KPIs, and value chains that drive the organisation" },
+  { label: "Organisation", color: "#eab308", desc: "Competence, culture, and capacity for change" },
+  { label: "Technology", color: "#6366f1", desc: "Platforms, integrations, and digital capabilities" },
 ];
 
 export default function CairnLanding() {
@@ -92,7 +92,7 @@ export default function CairnLanding() {
           }}
             onMouseEnter={e => { e.currentTarget.style.background = "#818cf8"; e.currentTarget.style.color = "#fff"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#e8ecf4"; e.currentTarget.style.color = "#0a0f1a"; }}
-          >Kom i gang</Link>
+          >Get started</Link>
         </div>
       </nav>
 
@@ -134,7 +134,7 @@ export default function CairnLanding() {
           </FadeIn>
           <FadeIn delay={0.3}>
             <p style={{ fontSize: 18, lineHeight: 1.65, color: "#7a8599", maxWidth: 540, margin: "0 0 40px", fontWeight: 400 }}>
-              Cairn er det strategiske veikartverktøyet som gir ledere oversikt over hele transformasjonen — uten å kreve et modelleringsspråk.
+              Cairn is the strategic roadmap tool that gives leaders full visibility across the entire transformation — without requiring a modelling language.
             </p>
           </FadeIn>
           <FadeIn delay={0.45}>
@@ -146,11 +146,11 @@ export default function CairnLanding() {
               }}
                 onMouseEnter={e => { e.currentTarget.style.background = "#818cf8"; e.currentTarget.style.color = "#fff"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "#e8ecf4"; e.currentTarget.style.color = "#0a0f1a"; }}
-              >Prøv Cairn gratis</Link>
+              >Try Cairn for free</Link>
               <span style={{ fontSize: 14, color: "#7a8599", cursor: "pointer", padding: "12px 20px", transition: "color 0.2s" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#e8ecf4")}
                 onMouseLeave={e => (e.currentTarget.style.color = "#7a8599")}
-              >Se demo →</span>
+              >See demo →</span>
             </div>
           </FadeIn>
         </div>
@@ -166,17 +166,17 @@ export default function CairnLanding() {
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <FadeIn>
             <p style={{ ...S.serif, fontSize: 42, lineHeight: 1.35, fontWeight: 400, color: "#c8d0de", letterSpacing: "-0.01em", textAlign: "center" }}>
-              Alle har en strategi. Alle har prosjekter.<br />
-              <span style={S.dim}>Ingen har stien mellom dem.</span>
+              Everyone has a strategy. Everyone has projects.<br />
+              <span style={S.dim}>No one has the path between them.</span>
             </p>
           </FadeIn>
 
           <FadeIn delay={0.2}>
             <div style={{ display: "flex", gap: 1, marginTop: 80, justifyContent: "center" }}>
               {[
-                { label: "Strategi", sub: "Vedtatt og forankret", highlight: false },
-                { label: "???", sub: "Det alle mangler", highlight: true },
-                { label: "Eksekvering", sub: "Prosjekter og team", highlight: false },
+                { label: "Strategy", sub: "Decided and anchored", highlight: false },
+                { label: "???", sub: "What everyone lacks", highlight: true },
+                { label: "Execution", sub: "Projects and teams", highlight: false },
               ].map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center" }}>
                   <div style={{
@@ -195,7 +195,7 @@ export default function CairnLanding() {
 
           <FadeIn delay={0.35}>
             <p style={{ textAlign: "center", marginTop: 48, fontSize: 18, color: "#818cf8", fontWeight: 600, ...S.serif, fontStyle: "italic" }}>
-              Cairn er &ldquo;to&rdquo;-en.
+              Cairn is the &ldquo;to&rdquo;.
             </p>
           </FadeIn>
         </div>
@@ -205,9 +205,9 @@ export default function CairnLanding() {
       <section id="produkt" style={{ padding: "100px 48px 140px", position: "relative" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Fire dimensjoner</p>
+            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Four dimensions</p>
             <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 64, letterSpacing: "-0.01em" }}>
-              Transformasjon er aldri bare teknologi.
+              Transformation is never just technology.
             </h2>
           </FadeIn>
 
@@ -239,21 +239,21 @@ export default function CairnLanding() {
       <section style={{ padding: "100px 48px 140px", background: "rgba(255,255,255,0.015)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Effektkjeden</p>
+            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>The effect chain</p>
             <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 16, letterSpacing: "-0.01em" }}>
-              Fra investering til verdi. Synlig.
+              From investment to value. Visible.
             </h2>
             <p style={{ textAlign: "center", color: "#5a6577", fontSize: 16, marginBottom: 72, maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
-              Cairn viser den ubrutte linjen fra det du gjør, via det du bygger, til det du oppnår.
+              Cairn shows the unbroken line from what you do, through what you build, to what you achieve.
             </p>
           </FadeIn>
 
           <FadeIn delay={0.15}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0 }}>
               {[
-                { num: "23", label: "Aktiviteter", sub: "Hva vi gjør", color: "#ef4444" },
-                { num: "12", label: "Kapabilitetsløft", sub: "Hva vi kan", color: "#22c55e" },
-                { num: "7", label: "Effekter", sub: "Hva vi oppnår", color: "#818cf8" },
+                { num: "23", label: "Activities", sub: "What we do", color: "#ef4444" },
+                { num: "12", label: "Capability lifts", sub: "What we can do", color: "#22c55e" },
+                { num: "7", label: "Effects", sub: "What we achieve", color: "#818cf8" },
               ].map((item, i) => (
                 <div key={item.label} style={{ display: "flex", alignItems: "center" }}>
                   <div style={{ textAlign: "center", padding: "36px 40px", minWidth: 180 }}>
@@ -279,19 +279,19 @@ export default function CairnLanding() {
       <section style={{ padding: "100px 48px 140px" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16 }}>Bygget for beslutninger</p>
+            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16 }}>Built for decisions</p>
             <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, color: "#e8ecf4", marginBottom: 72, letterSpacing: "-0.01em" }}>
-              Ikke enda et arkitektverktøy.<br />
-              <span style={{ color: "#5a6577" }}>Et styringsverktøy.</span>
+              Not another architecture tool.<br />
+              <span style={{ color: "#5a6577" }}>A governance tool.</span>
             </h2>
           </FadeIn>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
             {[
-              { title: "Flytt en stein. Se hvilke stier som kollapser.", desc: "Dra en aktivitet til en annen horisont. Cairn viser umiddelbart hvilke avhengigheter som brytes og hvilke effekter som forsvinner. Konsekvensene er synlige før du forplikter deg.", tag: "Avhengigheter" },
-              { title: "To strategier. Ett budsjett. Sammenlikn.", desc: "Dupliser et scenario, endre prioriteringene, og se forskjellene side om side. Hvilke effekter mister vi? Hvilke dimensjoner blir dekket? Velg med åpne øyne.", tag: "Scenarier" },
-              { title: "IT har 11 samtidige aktiviteter. Ser det?", desc: "Cairn viser endringsbelastning per eier. Den vanligste årsaken til at transformasjoner feiler er ikke feil strategi — det er overbelastning.", tag: "Kapasitet" },
-              { title: "Modenhet nå vs. modenhet etter.", desc: "Toggle simulering for å se hva kapabilitetskartet ser ut etter gjennomføring. Hver aktivitet har en forventet effekt. Styringsgruppen ser konkret hva investeringen leverer.", tag: "Simulering" },
+              { title: "Move a stone. See which paths collapse.", desc: "Drag an activity to a different horizon. Cairn immediately shows which dependencies break and which effects disappear. Consequences are visible before you commit.", tag: "Dependencies" },
+              { title: "Two strategies. One budget. Compare.", desc: "Duplicate a scenario, change the priorities, and see the differences side by side. Which effects do we lose? Which dimensions are covered? Choose with open eyes.", tag: "Scenarios" },
+              { title: "IT has 11 concurrent activities. Do they see it?", desc: "Cairn shows change load per owner. The most common reason transformations fail is not the wrong strategy — it's overload.", tag: "Capacity" },
+              { title: "Maturity now vs. maturity after.", desc: "Toggle simulation to see what the capability map looks like after execution. Each activity has an expected effect. The board can see concretely what the investment delivers.", tag: "Simulation" },
             ].map((f, i) => (
               <FadeIn key={f.tag} delay={i * 0.08}>
                 <div style={{
@@ -314,18 +314,18 @@ export default function CairnLanding() {
       <section id="for-hvem" style={{ padding: "100px 48px 140px", background: "rgba(255,255,255,0.015)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <FadeIn>
-            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Samme bilde, ulik høyde</p>
+            <p style={{ ...S.sans, fontSize: 13, fontWeight: 600, color: "#818cf8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>Same picture, different altitude</p>
             <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 64, letterSpacing: "-0.01em" }}>
-              CEO-en ser verdien. CIO-en ser stien.<br />
-              <span style={{ color: "#5a6577" }}>Begge ser det samme.</span>
+              The CEO sees the value. The CIO sees the path.<br />
+              <span style={{ color: "#5a6577" }}>Both see the same thing.</span>
             </h2>
           </FadeIn>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
             {[
-              { role: "CEO / Styreleder", opens: "Dashbordet", sees: "Effekttrakt, dimensjonshelse, risikobilde. Tre setninger som oppsummerer status.", icon: "\u25C9" },
-              { role: "CIO / CDO", opens: "Veikartet", sees: "Aktiviteter, avhengigheter, kapasitet, kritisk sti. Sekvens og prioritering.", icon: "\u25C8" },
-              { role: "Enterprise-arkitekt", opens: "Arbeidsmodus", sees: "Redigering, scenarier, simulering, eksport. Forbereder neste styringsmøte.", icon: "\u25C7" },
+              { role: "CEO / Chair", opens: "the Dashboard", sees: "Effect funnel, dimension health, risk picture. Three sentences that summarise status.", icon: "\u25C9" },
+              { role: "CIO / CDO", opens: "the Strategy Path", sees: "Activities, dependencies, capacity, critical path. Sequence and prioritisation.", icon: "\u25C8" },
+              { role: "Enterprise Architect", opens: "Work mode", sees: "Editing, scenarios, simulation, export. Preparing the next governance meeting.", icon: "\u25C7" },
             ].map((p, i) => (
               <FadeIn key={p.role} delay={i * 0.1}>
                 <div style={{
@@ -336,7 +336,7 @@ export default function CairnLanding() {
                 }}>
                   <div style={{ fontSize: 28, marginBottom: 16, opacity: 0.3 }}>{p.icon}</div>
                   <h3 style={{ ...S.serif, fontSize: 20, color: "#e8ecf4", marginBottom: 4, fontWeight: 400 }}>{p.role}</h3>
-                  <p style={{ fontSize: 12, color: "#818cf8", fontWeight: 600, marginBottom: 14 }}>&Aring;pner {p.opens}</p>
+                  <p style={{ fontSize: 12, color: "#818cf8", fontWeight: 600, marginBottom: 14 }}>Opens {p.opens}</p>
                   <p style={{ fontSize: 13, color: "#5a6577", lineHeight: 1.6, margin: 0 }}>{p.sees}</p>
                 </div>
               </FadeIn>
@@ -350,19 +350,19 @@ export default function CairnLanding() {
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <FadeIn>
             <h2 style={{ ...S.serif, fontSize: 40, fontWeight: 400, textAlign: "center", color: "#e8ecf4", marginBottom: 64 }}>
-              Hva Cairn <span style={{ ...S.serif, fontStyle: "italic", color: "#5a6577" }}>ikke</span> er.
+              What Cairn <span style={{ ...S.serif, fontStyle: "italic", color: "#5a6577" }}>is not</span>.
             </h2>
           </FadeIn>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
             <FadeIn delay={0.1}>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#5a6577", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Cairn er ikke</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#5a6577", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Cairn is not</p>
                 {[
-                  "Et prosjektverktøy med Gantt og oppgaver",
-                  "Et EA-verktøy med modelleringsspråk",
-                  "En PowerPoint noen laget for tre måneder siden",
-                  "Et dashbord uten handlingsevne",
+                  "A project tool with Gantt charts and tasks",
+                  "An EA tool with a modelling language",
+                  "A PowerPoint someone made three months ago",
+                  "A dashboard without actionability",
                 ].map(t => (
                   <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
                     <span style={{ color: "#ef4444", fontSize: 14, marginTop: 1 }}>✕</span>
@@ -373,12 +373,12 @@ export default function CairnLanding() {
             </FadeIn>
             <FadeIn delay={0.2}>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#818cf8", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Cairn er</p>
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#818cf8", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 20 }}>Cairn is</p>
                 {[
-                  "Et levende strategisk veikart som oppdateres i sanntid",
-                  "Bygget for folk som finansierer transformasjonen",
-                  "Intuitivt nok til å åpne og presentere på 30 sekunder",
-                  "Der strategi og eksekvering møtes i samme bilde",
+                  "A living strategic roadmap that updates in real time",
+                  "Built for the people who fund the transformation",
+                  "Intuitive enough to open and present in 30 seconds",
+                  "Where strategy and execution meet in one picture",
                 ].map(t => (
                   <div key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
                     <span style={{ color: "#22c55e", fontSize: 14, marginTop: 1 }}>✓</span>
@@ -415,7 +415,7 @@ export default function CairnLanding() {
               Stack the stones.<br />See the path.
             </h2>
             <p style={{ fontSize: 16, color: "#5a6577", marginBottom: 40, lineHeight: 1.6 }}>
-              Cairn er gratis å prøve. Ingen kredittkort, ingen onboarding-møte. Bare åpne og begynn.
+              Cairn is free to try. No credit card, no onboarding meeting. Just open and start.
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
@@ -442,7 +442,7 @@ export default function CairnLanding() {
             <p style={{ fontSize: 11, color: "#3a4558", margin: 0 }}>Navigate the fog. &copy; 2026</p>
           </div>
           <div style={{ display: "flex", gap: 24 }}>
-            {["Personvern", "Vilkår", "Kontakt"].map(item => (
+            {["Privacy", "Terms", "Contact"].map(item => (
               <span key={item} style={{ fontSize: 11, color: "#3a4558", cursor: "pointer", transition: "color 0.2s" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#7a8599")}
                 onMouseLeave={e => (e.currentTarget.style.color = "#3a4558")}
