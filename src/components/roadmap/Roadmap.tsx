@@ -162,6 +162,14 @@ export function Roadmap() {
           {t('strategyPath.capView')}
         </button>
       </div>
+      {/* Empty state */}
+      {initiatives.length === 0 && !hasActiveFilters && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <p className="text-[13px] font-medium text-text-secondary mb-1">{t('roadmap.emptyTitle')}</p>
+          <p className="text-[11px] text-text-tertiary">{t('roadmap.emptyBody')}</p>
+        </div>
+      )}
+
       {/* Column headers */}
       <div className={`grid mb-2 ${focusMode ? 'shrink-0' : ''}`} style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
         <div />

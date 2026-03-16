@@ -159,12 +159,30 @@ const ctaStyle: CSSProperties = {
 
 export default function CairnLanding() {
   const [scrollY, setScrollY] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const heroFormRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const h = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
+
+  useEffect(() => {
+    const handler = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  const isMobile = windowWidth < 640;
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    setSubmitted(true);
+  };
 
   return (
     <div style={S.page}>
@@ -178,7 +196,7 @@ export default function CairnLanding() {
       {/* ── Nav ── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-        padding: "20px 48px",
+        padding: isMobile ? "16px 20px" : "20px 48px",
         display: "flex", justifyContent: "space-between", alignItems: "center",
         background: scrollY > 60 ? "rgba(10,15,26,0.88)" : "transparent",
         backdropFilter: scrollY > 60 ? "blur(20px)" : "none",
@@ -190,7 +208,7 @@ export default function CairnLanding() {
           <span style={{ ...S.serif, fontSize: 20, color: "#f1f5f9", letterSpacing: "-0.02em" }}>Cairn</span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {[
+          {!isMobile && [
             { label: "Product", href: "#solution" },
             { label: "For whom", href: "#audience" },
             { label: "About", href: "#narrative" },
@@ -203,12 +221,12 @@ export default function CairnLanding() {
               onMouseLeave={e => (e.currentTarget.style.color = "#64748b")}
             >{item.label}</a>
           ))}
-          <a
-            href="mailto:hello@cairnpath.io"
+          <button
+            onClick={() => heroFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
             style={ctaStyle}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
-          >Request early access</a>
+          >Request early access</button>
         </div>
       </nav>
 
@@ -216,7 +234,7 @@ export default function CairnLanding() {
       <section style={{
         minHeight: "100vh",
         display: "flex", flexDirection: "column", justifyContent: "center",
-        padding: "120px 48px 80px",
+        padding: isMobile ? "100px 20px 60px" : "120px 48px 80px",
         position: "relative", overflow: "hidden",
       }}>
         {/* Subtle ambient glow */}
@@ -271,13 +289,35 @@ export default function CairnLanding() {
           </FadeIn>
 
           <FadeIn delay={0.7}>
-            <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
-              <a
-                href="mailto:hello@cairnpath.io"
-                style={{ ...ctaStyle, fontSize: 15, padding: "13px 32px" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
-              >Request early access</a>
+            <div ref={heroFormRef}>
+              {submitted ? (
+                <p style={{ fontSize: 15, color: "#22c55e", fontWeight: 500, marginBottom: 16 }}>
+                  You&rsquo;re on the list — we&rsquo;ll be in touch.
+                </p>
+              ) : (
+                <form onSubmit={handleEmailSubmit} style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16, alignItems: "center" }}>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    required
+                    style={{
+                      fontSize: 14, padding: "12px 16px", borderRadius: 5,
+                      border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)",
+                      color: "#f1f5f9", outline: "none",
+                      fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                      width: isMobile ? "100%" : 220,
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    style={{ ...ctaStyle, fontSize: 15, padding: "13px 32px" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+                  >Request early access</button>
+                </form>
+              )}
               <a
                 href="#solution"
                 style={{ fontSize: 14, color: "#475569", fontWeight: 500, textDecoration: "none", transition: "color 0.2s", letterSpacing: "0.01em" }}
@@ -298,7 +338,7 @@ export default function CairnLanding() {
       </section>
 
       {/* ── 2. The Problem ── */}
-      <section style={{ padding: "140px 48px 160px", position: "relative" }}>
+      <section style={{ padding: isMobile ? "80px 20px 80px" : "140px 48px 160px", position: "relative" }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
           <FadeIn>
             <BarDivider />
@@ -342,7 +382,7 @@ export default function CairnLanding() {
       </section>
 
       {/* ── 3. The Solution ── */}
-      <section id="solution" style={{ padding: "140px 48px 160px", background: "rgba(255,255,255,0.018)", position: "relative" }}>
+      <section id="solution" style={{ padding: isMobile ? "80px 20px 80px" : "140px 48px 160px", background: "rgba(255,255,255,0.018)", position: "relative" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <FadeIn>
             <p style={{ fontSize: 12, fontWeight: 700, color: "#6366f1", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 20 }}>The solution</p>
@@ -401,7 +441,7 @@ export default function CairnLanding() {
       </section>
 
       {/* ── 4. Leadership Value ── */}
-      <section style={{ padding: "140px 48px 160px" }}>
+      <section style={{ padding: isMobile ? "80px 20px 80px" : "140px 48px 160px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
             <p style={{ fontSize: 12, fontWeight: 700, color: "#6366f1", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 20 }}>Leadership value</p>
@@ -415,7 +455,7 @@ export default function CairnLanding() {
             </p>
           </FadeIn>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 1 }}>
             {[
               {
                 heading: "See the path",
@@ -458,7 +498,7 @@ export default function CairnLanding() {
       </section>
 
       {/* ── 5. How Cairn Works ── */}
-      <section id="audience" style={{ padding: "140px 48px 160px", background: "rgba(255,255,255,0.018)" }}>
+      <section id="audience" style={{ padding: isMobile ? "80px 20px 80px" : "140px 48px 160px", background: "rgba(255,255,255,0.018)" }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
           <FadeIn>
             <BarDivider align="left" />
@@ -500,7 +540,7 @@ export default function CairnLanding() {
       </section>
 
       {/* ── 6. Brand Narrative ── */}
-      <section id="narrative" style={{ padding: "140px 48px 160px" }}>
+      <section id="narrative" style={{ padding: isMobile ? "80px 20px 80px" : "140px 48px 160px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <FadeIn>
             <h2 style={{ ...S.serif, fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 400, color: "#f1f5f9", marginBottom: 40, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
@@ -523,14 +563,14 @@ export default function CairnLanding() {
       </section>
 
       {/* ── What Cairn is / is not ── */}
-      <section style={{ padding: "100px 48px 140px", background: "rgba(255,255,255,0.018)" }}>
+      <section style={{ padding: isMobile ? "60px 20px 60px" : "100px 48px 140px", background: "rgba(255,255,255,0.018)" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <FadeIn>
             <h2 style={{ ...S.serif, fontSize: 36, fontWeight: 400, color: "#f1f5f9", marginBottom: 60, letterSpacing: "-0.02em" }}>
               What Cairn <span style={{ ...S.serif, fontStyle: "italic", color: "#3a4558" }}>is not</span>.
             </h2>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 48 }}>
             <FadeIn delay={0.1}>
               <div>
                 <p style={{ fontSize: 11, fontWeight: 700, color: "#3a4558", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 24 }}>Not this</p>
@@ -551,10 +591,10 @@ export default function CairnLanding() {
               <div>
                 <p style={{ fontSize: 11, fontWeight: 700, color: "#6366f1", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 24 }}>This</p>
                 {[
-                  "A living strategic roadmap that updates in real time",
-                  "Built for the people who fund the transformation",
-                  "Intuitive enough to open and present in 30 seconds",
-                  "Where strategy and execution meet in one picture",
+                  "A living strategy path — always current, never a snapshot.",
+                  "Built for the people who fund the transformation.",
+                  "Open it in the meeting. Present it in 30 seconds.",
+                  "Where strategy and execution meet in one path.",
                 ].map(t => (
                   <div key={t} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
                     <span style={{ color: "#22c55e", fontSize: 13, marginTop: 1, opacity: 0.7 }}>✓</span>
@@ -568,7 +608,7 @@ export default function CairnLanding() {
       </section>
 
       {/* ── 7. CTA ── */}
-      <section style={{ padding: "140px 48px 160px", position: "relative" }}>
+      <section style={{ padding: isMobile ? "80px 20px 80px" : "140px 48px 160px", position: "relative" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 50% 80%, rgba(99,102,241,0.05) 0%, transparent 70%)" }} />
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <FadeIn>
@@ -589,19 +629,41 @@ export default function CairnLanding() {
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <a
-              href="mailto:hello@cairnpath.io"
-              style={{ ...ctaStyle, fontSize: 15, padding: "14px 36px" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
-            >Request early access</a>
+            {submitted ? (
+              <p style={{ fontSize: 15, color: "#22c55e", fontWeight: 500, marginBottom: 20 }}>
+                You&rsquo;re on the list — we&rsquo;ll be in touch.
+              </p>
+            ) : (
+              <form onSubmit={handleEmailSubmit} style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  style={{
+                    fontSize: 14, padding: "12px 16px", borderRadius: 5,
+                    border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)",
+                    color: "#f1f5f9", outline: "none",
+                    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                    width: isMobile ? "100%" : 260, textAlign: "center",
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{ ...ctaStyle, fontSize: 15, padding: "14px 36px" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#4f46e5"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#6366f1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+                >Request early access</button>
+              </form>
+            )}
             <p style={{ fontSize: 13, color: "#334155", marginTop: 20, letterSpacing: "0.02em" }}>cairnpath.io</p>
           </FadeIn>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer style={{ padding: "40px 48px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <footer style={{ padding: isMobile ? "32px 20px" : "40px 48px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <CairnMark size={0.38} />

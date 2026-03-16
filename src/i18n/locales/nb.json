@@ -28,7 +28,8 @@
     "title": "Effekttavle",
     "total": "effekter",
     "empty": "Dra effekter hit",
-    "addEffect": "Ny effekt"
+    "addEffect": "Ny effekt",
+    "emptyBoard": "Ingen effekter definert ennå. Legg til en effekt for å komme i gang."
   },
   "modules": {
     "title": "Moduler",
@@ -65,7 +66,8 @@
     "avgMaturity": "Snitt modenhet",
     "activities": "{{count}} aktivitet(er)",
     "noSubCaps": "Ingen sub-kapabiliteter",
-    "simulatedFrom": "{{from}} → {{to}}"
+    "simulatedFrom": "{{from}} → {{to}}",
+    "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang."
   },
   "common": {
     "save": "Lagre",
@@ -156,7 +158,9 @@
   },
   "roadmap": {
     "collapsed": "Kollapset",
-    "expand": "Utvid"
+    "expand": "Utvid",
+    "emptyTitle": "Ingen initiativer ennå",
+    "emptyBody": "Legg til et initiativ for å begynne å bygge din strategisti."
   },
   "strategyPath": {
     "dimView": "Per dimensjon",

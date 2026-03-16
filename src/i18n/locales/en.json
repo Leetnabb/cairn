@@ -28,7 +28,8 @@
     "title": "Effect Board",
     "total": "effects",
     "empty": "Drag effects here",
-    "addEffect": "New effect"
+    "addEffect": "New effect",
+    "emptyBoard": "No effects defined yet. Add an effect to get started."
   },
   "modules": {
     "title": "Modules",
@@ -65,7 +66,8 @@
     "avgMaturity": "Avg. maturity",
     "activities": "{{count}} activity/activities",
     "noSubCaps": "No sub-capabilities",
-    "simulatedFrom": "{{from}} → {{to}}"
+    "simulatedFrom": "{{from}} → {{to}}",
+    "emptyDomains": "No capability domains yet. Add a capability to get started."
   },
   "common": {
     "save": "Save",
@@ -156,7 +158,9 @@
   },
   "roadmap": {
     "collapsed": "Collapsed",
-    "expand": "Expand"
+    "expand": "Expand",
+    "emptyTitle": "No initiatives yet",
+    "emptyBody": "Add an initiative to start building your strategy path."
   },
   "strategyPath": {
     "dimView": "By dimension",
