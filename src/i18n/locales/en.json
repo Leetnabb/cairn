@@ -5,6 +5,7 @@
   },
   "nav": {
     "roadmap": "Strategy Path",
+    "strategies": "Strategies",
     "dashboard": "Dashboard",
     "compare": "Compare",
     "simulation": "Simulation",
@@ -191,7 +192,10 @@
     "strategicBottlenecks": "Strategic Bottlenecks",
     "bottleneckHighRisk": "High risk, low maturity",
     "bottleneckNoTarget": "No maturity target set",
-    "bottleneckNoInitiatives": "No linked initiatives"
+    "bottleneckNoInitiatives": "No linked initiatives",
+    "bottleneckUnderserviced": "Underpowered capabilities",
+    "bottleneckBlocked": "Blocked initiatives",
+    "noBottlenecks": "No strategic bottlenecks detected"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -323,7 +327,11 @@
     "long": "Long term",
     "priority": "Priority",
     "linkedCapabilities": "Linked capabilities",
-    "noLinkedCapabilities": "No capabilities linked to this strategy"
+    "noLinkedCapabilities": "No capabilities linked to this strategy",
+    "noStrategies": "No strategies defined yet.",
+    "noStrategiesHint": "Add a strategy via the + button to get started.",
+    "capsProgressing": "capabilities progressing",
+    "viewInPath": "View in Strategy Path"
   },
   "strategicContext": {
     "title": "Strategic context",

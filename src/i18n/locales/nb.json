@@ -5,6 +5,7 @@
   },
   "nav": {
     "roadmap": "Strategi-sti",
+    "strategies": "Strategier",
     "dashboard": "Dashbord",
     "compare": "Sammenlign",
     "simulation": "Simulering",
@@ -191,7 +192,10 @@
     "strategicBottlenecks": "Strategiske flaskehalser",
     "bottleneckHighRisk": "Høy risiko, lav modenhet",
     "bottleneckNoTarget": "Ingen modenhetsmål satt",
-    "bottleneckNoInitiatives": "Ingen koblede aktiviteter"
+    "bottleneckNoInitiatives": "Ingen koblede aktiviteter",
+    "bottleneckUnderserviced": "Underbemannede kapabiliteter",
+    "bottleneckBlocked": "Blokkerte aktiviteter",
+    "noBottlenecks": "Ingen strategiske flaskehalser oppdaget"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -323,7 +327,11 @@
     "long": "Lang sikt",
     "priority": "Prioritet",
     "linkedCapabilities": "Tilknyttede kapabiliteter",
-    "noLinkedCapabilities": "Ingen kapabiliteter koblet til denne strategien"
+    "noLinkedCapabilities": "Ingen kapabiliteter koblet til denne strategien",
+    "noStrategies": "Ingen strategier definert ennå.",
+    "noStrategiesHint": "Legg til en strategi via +-knappen for å komme i gang.",
+    "capsProgressing": "kapabiliteter i fremgang",
+    "viewInPath": "Vis i Strategi-sti"
   },
   "strategicContext": {
     "title": "Strategisk kontekst",

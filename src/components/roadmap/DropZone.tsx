@@ -18,6 +18,8 @@ interface Props {
 export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight }: Props) {
   const moveInitiative = useStore(s => s.moveInitiative);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
+  const capabilities = useStore(s => s.capabilities);
+  const strategies = useStore(s => s.strategies);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const [hovered, setHovered] = useState(false);
 
@@ -75,6 +77,9 @@ export function DropZone({ dimension, horizon, initiatives, criticalPathIds, cri
             isDependency={selectedDeps?.upstream.has(init.id)}
             isDependent={selectedDeps?.downstream.has(init.id)}
             opacity={filterOpacity ? filterOpacity(init) : 1}
+            strategyNames={strategies.filter(s =>
+              init.capabilities.some(cid => capabilities.find(c => c.id === cid)?.strategyIds?.includes(s.id))
+            ).map(s => s.name)}
           />
         </div>
       ))}

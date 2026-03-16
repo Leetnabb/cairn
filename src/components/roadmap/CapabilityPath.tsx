@@ -11,6 +11,8 @@ export function CapabilityPath() {
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const criticalPathEnabled = useStore(s => s.ui.criticalPathEnabled);
 
+  const strategies = useStore(s => s.strategies);
+
   const l1Caps = useMemo(
     () => capabilities.filter(c => c.level === 1).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
     [capabilities]
@@ -22,13 +24,17 @@ export function CapabilityPath() {
       const childIds = capabilities.filter(c => c.parent === cap.id).map(c => c.id);
       const allIds = new Set([cap.id, ...childIds]);
       const linked = initiatives.filter(i => i.capabilities.some(cid => allIds.has(cid)));
+      const capStrategies = strategies.filter(s => cap.strategyIds?.includes(s.id));
+      const strategyNames = capStrategies.map(s => s.name);
       return {
         cap,
         near: linked.filter(i => i.horizon === 'near').sort((a, b) => a.order - b.order),
         far: linked.filter(i => i.horizon === 'far').sort((a, b) => a.order - b.order),
+        capStrategies,
+        strategyNames,
       };
     });
-  }, [l1Caps, capabilities, initiatives]);
+  }, [l1Caps, capabilities, initiatives, strategies]);
 
   // Unlinked initiatives (no capabilities)
   const unlinked = useMemo(
@@ -60,7 +66,7 @@ export function CapabilityPath() {
       </div>
 
       {/* Capability rows */}
-      {capRows.map(({ cap, near, far }) => (
+      {capRows.map(({ cap, near, far, capStrategies, strategyNames }) => (
         <div key={cap.id} className="grid mb-1" style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
           {/* Capability label */}
           <button
@@ -71,11 +77,27 @@ export function CapabilityPath() {
               className="w-2 h-2 rounded-full shrink-0"
               style={{ backgroundColor: MATURITY_COLORS[cap.maturity] }}
             />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="text-[10px] font-semibold text-text-primary truncate">{cap.name}</div>
               {cap.maturityTarget && cap.maturityTarget !== cap.maturity && (
                 <div className="text-[8px] text-text-tertiary">
                   {cap.maturity} → <span className="text-indigo-500">{cap.maturityTarget}</span>
+                </div>
+              )}
+              {capStrategies.length > 0 && (
+                <div className="flex flex-wrap gap-0.5 mt-0.5">
+                  {capStrategies.slice(0, 2).map(s => (
+                    <span
+                      key={s.id}
+                      className="px-1 py-px text-[7px] rounded bg-indigo-100 text-indigo-700 leading-tight truncate max-w-[70px]"
+                      title={s.name}
+                    >
+                      {s.name}
+                    </span>
+                  ))}
+                  {capStrategies.length > 2 && (
+                    <span className="text-[7px] text-text-tertiary">+{capStrategies.length - 2}</span>
+                  )}
                 </div>
               )}
             </div>
@@ -87,7 +109,7 @@ export function CapabilityPath() {
             style={{ backgroundColor: '#f8f9ff', borderLeft: '3px solid #6366f1' }}
           >
             {near.map(i => (
-              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} />
+              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} strategyNames={strategyNames} />
             ))}
             {near.length === 0 && (
               <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
@@ -100,7 +122,7 @@ export function CapabilityPath() {
             style={{ backgroundColor: '#f0f4ff' }}
           >
             {far.map(i => (
-              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} />
+              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} strategyNames={strategyNames} />
             ))}
             {far.length === 0 && (
               <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>

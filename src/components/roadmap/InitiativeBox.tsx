@@ -10,9 +10,10 @@ interface Props {
   isDependency?: boolean;
   isDependent?: boolean;
   opacity?: number;
+  strategyNames?: string[];
 }
 
-export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1 }: Props) {
+export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1, strategyNames }: Props) {
   const { t } = useTranslation();
   const selectedItem = useStore(s => s.ui.selectedItem);
   const setSelectedItem = useStore(s => s.setSelectedItem);
@@ -98,6 +99,13 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
       {/* Dependency indicator - yellow dot top-right */}
       {hasDeps && (
         <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-yellow-500" />
+      )}
+      {/* Strategy indicator - indigo dot bottom-right, shown when linked to strategy */}
+      {strategyNames && strategyNames.length > 0 && (
+        <div
+          className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-indigo-500"
+          title={strategyNames.join(', ')}
+        />
       )}
       <div className="text-[10px] font-medium leading-tight truncate" title={initiative.name}>{initiative.name}</div>
       <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>

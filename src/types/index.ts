@@ -151,7 +151,7 @@ export interface AppState {
   modules: ModuleSettings;
 }
 
-export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects';
+export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects' | 'strategies';
 
 export interface UIState {
   selectedItem: { type: 'capability' | 'initiative' | 'milestone' | 'effect' | 'strategy'; id: string } | null;

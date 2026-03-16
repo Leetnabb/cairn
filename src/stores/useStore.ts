@@ -108,7 +108,7 @@ interface StoreState extends AppState {
 const defaultUI: UIState = {
   selectedItem: null,
   view: 'roadmap',
-  roadmapViewMode: 'dimension',
+  roadmapViewMode: 'capability',
   capabilityView: 'maturity',
   simulationEnabled: false,
   criticalPathEnabled: false,

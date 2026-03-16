@@ -10,6 +10,7 @@ import { Dashboard } from './components/dashboard/Dashboard';
 import { CompareView } from './components/scenarios/CompareView';
 import { CapabilityLandscape } from './components/capabilities/CapabilityLandscape';
 import { EffectBoard } from './components/effects/EffectBoard';
+import { StrategyOverview } from './components/strategies/StrategyOverview';
 import { CapabilityOverlay } from './components/capabilities/CapabilityOverlay';
 import { AddModal } from './components/modals/AddModal';
 import { ImportModal } from './components/modals/ImportModal';
@@ -95,6 +96,7 @@ export default function App() {
         {/* Right: Nav + actions */}
         <nav className="flex items-center gap-1">
           <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
+          <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
           {modules.capabilities && (
             <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
@@ -126,6 +128,8 @@ export default function App() {
       <div className="flex-1 flex overflow-hidden">
         {view === 'dashboard' ? (
           <Dashboard />
+        ) : view === 'strategies' ? (
+          <StrategyOverview />
         ) : view === 'effects' ? (
           <>
             <main className="flex-1 overflow-auto">
