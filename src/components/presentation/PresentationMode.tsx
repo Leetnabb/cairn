@@ -2,10 +2,11 @@ import { useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS, MATURITY_COLORS, RISK_COLORS } from '../../types';
-import type { Capability, Initiative } from '../../types';
+import type { Capability, Effect, Initiative } from '../../types';
 import { CairnLogo } from '../CairnLogo';
+import { generateNarrative } from '../../lib/narrativeEngine';
 
-const SLIDES = ['overview', 'strategies', 'capabilityMomentum', 'portfolio', 'bottlenecks', 'effects', 'summary'] as const;
+const SLIDES = ['overview', 'strategies', 'capabilityMomentum', 'portfolio', 'bottlenecks', 'effects', 'strategicReading', 'summary'] as const;
 
 function useSlideLabels() {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ function useSlideLabels() {
     t('presentation.slides.portfolio'),
     t('presentation.slides.bottlenecks'),
     t('presentation.slides.effects'),
+    t('presentation.slides.strategicReading'),
     t('presentation.slides.summary'),
   ], [t]);
 }
@@ -75,6 +77,7 @@ export function PresentationMode() {
         {currentSlide === 'portfolio' && <PortfolioSlide initiatives={initiatives} capabilities={capabilities} />}
         {currentSlide === 'bottlenecks' && <BottlenecksSlide capabilities={capabilities} initiatives={initiatives} />}
         {currentSlide === 'effects' && <EffectSummarySlide effects={effects} initiatives={initiatives} />}
+        {currentSlide === 'strategicReading' && <StrategicReadingSlide initiatives={initiatives} capabilities={capabilities} effects={effects} />}
         {currentSlide === 'summary' && <SummarySlide initiatives={initiatives} capabilities={capabilities} />}
       </div>
 
@@ -354,6 +357,69 @@ function EffectSummarySlide({ effects, initiatives }: { effects: ReturnType<type
             ))}
             {effects.length === 0 && <p className="text-[12px] text-white/30 italic">{t('common.none')}</p>}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StrategicReadingSlide({ initiatives, capabilities, effects }: { initiatives: Initiative[]; capabilities: Capability[]; effects: Effect[] }) {
+  const { t } = useTranslation();
+  const narrative = useMemo(
+    () => generateNarrative(initiatives, capabilities, effects),
+    [initiatives, capabilities, effects]
+  );
+
+  // Split narrative into sentences for visual presentation
+  const sentences = useMemo(() => {
+    if (!narrative) return [];
+    return narrative.split(/(?<=\.)\s+/).filter(s => s.trim().length > 0);
+  }, [narrative]);
+
+  // Key stats for visual context
+  const near = initiatives.filter(i => i.horizon === 'near').length;
+  const far = initiatives.filter(i => i.horizon === 'far').length;
+  const confirmed = initiatives.filter(i => i.confidence === 'confirmed').length;
+  const dimCount = new Set(initiatives.map(i => i.dimension)).size;
+
+  return (
+    <div className="w-full max-w-4xl">
+      <h1 className="text-[36px] font-bold text-white mb-10">{t('presentation.strategicReadingTitle')}</h1>
+
+      {/* Narrative text */}
+      <div className="space-y-4 mb-12">
+        {sentences.map((sentence, idx) => (
+          <p
+            key={idx}
+            className="text-[20px] leading-relaxed text-white/90"
+            style={{ textIndent: idx === 0 ? 0 : undefined }}
+          >
+            {sentence}
+          </p>
+        ))}
+      </div>
+
+      {/* Supporting stats bar */}
+      <div className="flex gap-8 pt-6 border-t border-white/10">
+        <div className="text-center">
+          <div className="text-[28px] font-bold text-[#6366f1]">{initiatives.length}</div>
+          <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('dashboard.activities')}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[28px] font-bold text-white/70">{near}/{far}</div>
+          <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('labels.horizon.near')}/{t('labels.horizon.far')}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[28px] font-bold text-[#22c55e]">{capabilities.length}</div>
+          <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('detail.capabilities')}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[28px] font-bold text-[#eab308]">{dimCount}</div>
+          <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('presentation.dimensions')}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[28px] font-bold text-[#a78bfa]">{confirmed}</div>
+          <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('confidence.confirmed')}</div>
         </div>
       </div>
     </div>
