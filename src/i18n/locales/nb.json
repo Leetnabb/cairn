@@ -358,6 +358,7 @@
       "bottlenecks": "Strategiske flaskehalser",
       "capabilities": "Kapabiliteter",
       "effects": "Effektkjede",
+      "strategicReading": "Strategisk lesning",
       "summary": "Oppsummering"
     },
     "noActivities": "Ingen aktiviteter",
@@ -366,7 +367,8 @@
     "strategiesTitle": "Aktive strategier",
     "capMomentumTitle": "Kapabilitetsfremgang",
     "portfolioTitle": "Porteføljeoversikt",
-    "bottlenecksTitle": "Strategiske flaskehalser"
+    "bottlenecksTitle": "Strategiske flaskehalser",
+    "strategicReadingTitle": "Strategisk lesning"
   },
   "effects": {
     "title": "Effektoversikt",
