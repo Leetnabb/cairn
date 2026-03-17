@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { Button } from '../ui/Button';
 import { DIMENSIONS } from '../../types';
-import type { Initiative, DimensionKey, InitiativeStatus } from '../../types';
+import type { Initiative, DimensionKey, InitiativeStatus, ConfidenceLevel } from '../../types';
 
 interface Props {
   initiative: Initiative;
@@ -28,6 +28,7 @@ export function EditInitiativeForm({ initiative }: Props) {
   const [selectedDeps, setSelectedDeps] = useState<string[]>(initiative.dependsOn);
   const [selectedVCs, setSelectedVCs] = useState<string[]>(initiative.valueChains);
   const [status, setStatus] = useState<InitiativeStatus>(initiative.status ?? 'planned');
+  const [confidence, setConfidence] = useState<ConfidenceLevel>(initiative.confidence ?? 'confirmed');
   const [criticalPathOverride, setCriticalPathOverride] = useState<boolean | null>(initiative.criticalPathOverride ?? null);
   const [capSearch, setCapSearch] = useState('');
 
@@ -36,7 +37,7 @@ export function EditInitiativeForm({ initiative }: Props) {
 
   const handleSave = () => {
     updateInitiative(initiative.id, {
-      name, description, dimension, horizon, owner, notes, status,
+      name, description, dimension, horizon, owner, notes, status, confidence,
       capabilities: selectedCaps,
       dependsOn: selectedDeps,
       valueChains: selectedVCs,
@@ -99,6 +100,23 @@ export function EditInitiativeForm({ initiative }: Props) {
             <button key={opt.value} onClick={() => setStatus(opt.value)}
               className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
                 status === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+              }`}>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <label className="text-[9px] text-text-tertiary uppercase">{t('confidence.label')}</label>
+        <div className="flex mt-0.5 border border-border rounded overflow-hidden">
+          {([
+            { value: 'confirmed' as const, label: t('confidence.confirmed') },
+            { value: 'tentative' as const, label: t('confidence.tentative') },
+            { value: 'under_consideration' as const, label: t('confidence.under_consideration') },
+          ]).map(opt => (
+            <button key={opt.value} onClick={() => setConfidence(opt.value)}
+              className={`flex-1 px-1.5 py-1 text-[9px] font-medium transition-colors ${
+                confidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
               }`}>
               {opt.label}
             </button>

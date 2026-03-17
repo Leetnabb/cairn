@@ -481,5 +481,36 @@
     "csvEffFilename": "effekter.csv",
     "pptxFilename": "cairn-presentasjon",
     "effectOverview": "Effektoversikt"
+  },
+  "confidence": {
+    "label": "Beslutningsstatus",
+    "confirmed": "Bekreftet",
+    "tentative": "Tentativ",
+    "under_consideration": "Under vurdering"
+  },
+  "board": {
+    "title": "Styrevisning",
+    "exit": "Avslutt styrevisning",
+    "strategicReading": "Strategisk lesning",
+    "sinceLastMeeting": "Siden siste møte",
+    "noSnapshot": "Inget tidligerer øyeblikksbilde. Dette er første styrereview.",
+    "strategyPath": "Strategisti",
+    "decisionsRequired": "Beslutninger som kreves",
+    "effectsOverview": "Effektoversikt",
+    "noEffects": "Ingen effekter definert.",
+    "noDecisions": "Ingen kritiske beslutninger identifisert.",
+    "noNear": "Ingen initiativer i nærhorisonten",
+    "noFar": "Ingen initiativer i fjernhorisonten",
+    "narrativeEdited": "Redigert for denne sesjonen",
+    "editNarrative": "Rediger narrativ",
+    "saveNarrative": "Lagre",
+    "cancelEdit": "Avbryt",
+    "maturity": "Modenhet",
+    "confidenceLegend": "Beslutningsstatusforklaring",
+    "dataAsOf": "Data oppdatert per",
+    "savePDF": "Lagre som PDF",
+    "onTrack": "På sporet",
+    "atRisk": "I fare",
+    "unsupported": "Uten støtte"
   }
 }

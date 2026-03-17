@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, InitiativeStatus, EffectType, Strategy } from '../../types';
+import type { DimensionKey, InitiativeStatus, EffectType, Strategy, ConfidenceLevel } from '../../types';
 import { Button } from '../ui/Button';
 import { ColorPalette } from '../ui/ColorPalette';
 import AIFormAssist from '../ai/AIFormAssist';
@@ -38,6 +38,7 @@ export function AddModal() {
   const [iVCs, setIVCs] = useState<string[]>([]);
   const [iNotes, setINotes] = useState('');
   const [iStatus, setIStatus] = useState<InitiativeStatus>('planned');
+  const [iConfidence, setIConfidence] = useState<ConfidenceLevel>('confirmed');
   const [iCriticalPathOverride, setICriticalPathOverride] = useState<boolean | null>(null);
 
   // Inline value chain creation
@@ -103,7 +104,7 @@ export function AddModal() {
   }, []);
 
   const resetInitiativeFields = () => {
-    setIName(''); setIDesc(''); setICaps([]); setIDeps([]); setIVCs([]); setINotes(''); setIStatus('planned'); setICriticalPathOverride(null);
+    setIName(''); setIDesc(''); setICaps([]); setIDeps([]); setIVCs([]); setINotes(''); setIStatus('planned'); setIConfidence('confirmed'); setICriticalPathOverride(null);
   };
   const resetCapabilityFields = () => { setCName(''); setCDesc(''); };
   const resetMilestoneFields = () => { setMName(''); };
@@ -117,7 +118,7 @@ export function AddModal() {
     addInitiative({
       id: `i_${Date.now()}`, name: iName.trim(), description: iDesc.trim(), dimension: iDim, horizon: iHorizon,
       order: maxOrder + 1, owner: iOwner.trim(), capabilities: iCaps, dependsOn: iDeps, maturityEffect: {},
-      notes: iNotes.trim(), valueChains: iVCs, status: iStatus, criticalPathOverride: iCriticalPathOverride,
+      notes: iNotes.trim(), valueChains: iVCs, status: iStatus, confidence: iConfidence, criticalPathOverride: iCriticalPathOverride,
     });
     if (keepOpen) { resetInitiativeFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
@@ -277,6 +278,23 @@ export function AddModal() {
                     <button key={opt.value} onClick={() => setIStatus(opt.value)}
                       className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
                         iStatus === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                      }`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-[9px] text-text-tertiary uppercase">{t('confidence.label')}</label>
+                <div className="flex mt-0.5 border border-border rounded overflow-hidden">
+                  {([
+                    { value: 'confirmed' as const, label: t('confidence.confirmed') },
+                    { value: 'tentative' as const, label: t('confidence.tentative') },
+                    { value: 'under_consideration' as const, label: t('confidence.under_consideration') },
+                  ]).map(opt => (
+                    <button key={opt.value} onClick={() => setIConfidence(opt.value)}
+                      className={`flex-1 px-1.5 py-1 text-[9px] font-medium transition-colors ${
+                        iConfidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
                       }`}>
                       {opt.label}
                     </button>

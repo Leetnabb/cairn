@@ -481,5 +481,36 @@
     "csvEffFilename": "effects.csv",
     "pptxFilename": "cairn-presentation",
     "effectOverview": "Effect overview"
+  },
+  "confidence": {
+    "label": "Confidence",
+    "confirmed": "Confirmed",
+    "tentative": "Tentative",
+    "under_consideration": "Under consideration"
+  },
+  "board": {
+    "title": "Board View",
+    "exit": "Exit Board View",
+    "strategicReading": "Strategic reading",
+    "sinceLastMeeting": "Since last meeting",
+    "noSnapshot": "No previous snapshot. This is the first board review.",
+    "strategyPath": "Strategy path",
+    "decisionsRequired": "Decisions required",
+    "effectsOverview": "Effects overview",
+    "noEffects": "No effects defined.",
+    "noDecisions": "No critical decisions identified.",
+    "noNear": "No near-horizon initiatives",
+    "noFar": "No far-horizon initiatives",
+    "narrativeEdited": "Edited for this session",
+    "editNarrative": "Edit narrative",
+    "saveNarrative": "Save",
+    "cancelEdit": "Cancel",
+    "maturity": "Maturity",
+    "confidenceLegend": "Confidence legend",
+    "dataAsOf": "Data current as of",
+    "savePDF": "Save as PDF",
+    "onTrack": "On track",
+    "atRisk": "At risk",
+    "unsupported": "Unsupported"
   }
 }

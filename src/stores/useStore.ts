@@ -87,6 +87,8 @@ interface StoreState extends AppState {
   setFilterDropdownOpen: (open: boolean) => void;
   setCapabilityOverlayOpen: (open: boolean) => void;
   setRoleMode: (mode: 'work' | 'governance') => void;
+  setBoardViewMode: (active: boolean) => void;
+  setBoardSelectedItem: (item: UIState['boardSelectedItem']) => void;
 
   // Bulk operations
   toggleSelectedItem: (id: string) => void;
@@ -136,6 +138,8 @@ const defaultUI: UIState = {
   filterDropdownOpen: false,
   capabilityOverlayOpen: false,
   roleMode: 'work',
+  boardViewMode: false,
+  boardSelectedItem: null,
 };
 
 export const useStore = create<StoreState>()(
@@ -471,6 +475,12 @@ export const useStore = create<StoreState>()(
         })),
         setRoleMode: (mode) => set(state => ({
           ui: { ...state.ui, roleMode: mode },
+        })),
+        setBoardViewMode: (active) => set(state => ({
+          ui: { ...state.ui, boardViewMode: active, boardSelectedItem: null },
+        })),
+        setBoardSelectedItem: (item) => set(state => ({
+          ui: { ...state.ui, boardSelectedItem: item },
         })),
 
         // Bulk operations

@@ -24,6 +24,7 @@ import { InsightsBadge } from './components/header/InsightsBadge';
 import { FilterDropdown } from './components/header/FilterDropdown';
 import { RoleModeToggle } from './components/header/RoleModeToggle';
 import { UndoRedoButtons } from './components/header/UndoRedoButtons';
+import { BoardView } from './components/board/BoardView';
 import i18n from './i18n';
 
 export default function App() {
@@ -42,6 +43,7 @@ export default function App() {
   const openWizard = useOnboardingStore(s => s.openWizard);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
+  const boardViewMode = useStore(s => s.ui.boardViewMode);
   const modules = useStore(s => s.modules);
 
   // Auto-show wizard for first-time users
@@ -76,6 +78,10 @@ export default function App() {
 
   if (presentationMode) {
     return <PresentationMode />;
+  }
+
+  if (boardViewMode) {
+    return <BoardView />;
   }
 
   const showDetailPanel = selectedItem !== null || aiPanelOpen;

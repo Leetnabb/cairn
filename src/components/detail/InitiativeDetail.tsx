@@ -135,13 +135,23 @@ export function InitiativeDetail({ initiative }: Props) {
             <span className="text-[9px] text-text-tertiary">{t(`labels.horizon.${initiative.horizon}`)}</span>
           </div>
           <h3 className="text-[14px] font-semibold">{initiative.name}</h3>
-          <span className={`inline-block mt-0.5 px-1.5 py-0.5 text-[8px] font-medium rounded-full ${
-            initiative.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
-            initiative.status === 'done' ? 'bg-green-100 text-green-700' :
-            'bg-gray-100 text-gray-600'
-          }`}>
-            {t(`labels.status.${initiative.status ?? 'planned'}`)}
-          </span>
+          <div className="flex items-center gap-1 mt-0.5">
+            <span className={`inline-block px-1.5 py-0.5 text-[8px] font-medium rounded-full ${
+              initiative.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+              initiative.status === 'done' ? 'bg-green-100 text-green-700' :
+              'bg-gray-100 text-gray-600'
+            }`}>
+              {t(`labels.status.${initiative.status ?? 'planned'}`)}
+            </span>
+            {(initiative.confidence && initiative.confidence !== 'confirmed') && (
+              <span className={`inline-block px-1.5 py-0.5 text-[8px] font-medium rounded-full ${
+                initiative.confidence === 'tentative' ? 'bg-yellow-100 text-yellow-700 border border-dashed border-yellow-400' :
+                'bg-gray-100 text-gray-500 border border-dotted border-gray-400 italic'
+              }`}>
+                {t(`confidence.${initiative.confidence}`)}
+              </span>
+            )}
+          </div>
         </div>
         {!isGovernance && (
           <div className="flex gap-1">
