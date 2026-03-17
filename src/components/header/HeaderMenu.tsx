@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
 
+
 export function HeaderMenu() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -19,6 +20,7 @@ export function HeaderMenu() {
   const roleMode = useStore(s => s.ui.roleMode);
   const modules = useStore(s => s.modules);
   const setModules = useStore(s => s.setModules);
+  const setSettingsOpen = useStore(s => s.setSettingsOpen);
 
   useEffect(() => {
     if (!open) return;
@@ -38,6 +40,8 @@ export function HeaderMenu() {
     { label: t('nav.importExport'), action: () => setImportModalOpen(true), hide: false },
     { label: t('nav.saveSnapshot'), action: () => saveSnapshot(), hide: roleMode === 'governance' },
     { label: t('nav.getStarted'), action: openWizard, hide: false },
+    { divider: true },
+    { label: t('settings.title'), action: () => setSettingsOpen(true), hide: false },
   ];
 
   return (

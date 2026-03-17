@@ -512,5 +512,94 @@
     "onTrack": "På sporet",
     "atRisk": "I fare",
     "unsupported": "Uten støtte"
+  },
+  "settings": {
+    "title": "Innstillinger",
+    "tabs": {
+      "organisation": "Organisasjon",
+      "team": "Team",
+      "plan": "Plan",
+      "data": "Data"
+    },
+    "org": {
+      "name": "Organisasjonsnavn",
+      "slug": "Slug",
+      "plan": "Plan",
+      "save": "Lagre endringer",
+      "saved": "Lagret"
+    },
+    "team": {
+      "members": "Medlemmer",
+      "inviteMember": "Inviter medlem",
+      "email": "E-postadresse",
+      "role": "Rolle",
+      "invite": "Send invitasjon",
+      "inviteSent": "Invitasjon sendt",
+      "remove": "Fjern",
+      "confirmRemove": "Fjerne dette medlemmet?",
+      "roles": {
+        "OWNER": "Eier",
+        "ADMIN": "Admin",
+        "EDITOR": "Redaktør",
+        "VIEWER": "Leser",
+        "BOARD": "Styre"
+      },
+      "roleDescriptions": {
+        "OWNER": "Full tilgang, fakturering, sletting",
+        "ADMIN": "Administrer team og innstillinger",
+        "EDITOR": "Opprett og rediger innhold",
+        "VIEWER": "Kun lesetilgang",
+        "BOARD": "Kun styrevisning"
+      }
+    },
+    "plan": {
+      "current": "Gjeldende plan",
+      "free": "Gratis",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "upgrade": "Oppgrader plan",
+      "limits": {
+        "scenarios": "Scenarioer",
+        "initiatives": "Initiativer per scenario",
+        "capabilities": "Kapabilitetsmodul",
+        "effects": "Effektmodul",
+        "benchmarks": "Benchmark-tilgang",
+        "auditLog": "Revisjonslogg",
+        "unlimited": "Ubegrenset",
+        "included": "Inkludert",
+        "notIncluded": "Ikke inkludert"
+      }
+    },
+    "data": {
+      "title": "Data og personvern",
+      "export": "Eksporter alle data",
+      "exportDesc": "Last ned en full JSON-eksport av organisasjonens data.",
+      "exportBtn": "Last ned eksport",
+      "danger": "Farlig sone",
+      "deleteOrg": "Slett organisasjon",
+      "deleteDesc": "Slett denne organisasjonen og alle data permanent. En 30-dagers karantenetid gjelder.",
+      "deleteBtn": "Be om sletting",
+      "deletePending": "Sletting planlagt for {{date}}",
+      "cancelDeletion": "Avbryt sletting",
+      "deletionCancelled": "Sletting avbrutt"
+    },
+    "audit": {
+      "title": "Revisjonslogg",
+      "action": "Handling",
+      "entity": "Entitet",
+      "user": "Bruker",
+      "timestamp": "Tidspunkt",
+      "noEvents": "Ingen revisjonslogghendelser funnet.",
+      "enterpriseOnly": "Revisjonslogg er tilgjengelig på Enterprise-planen."
+    }
+  },
+  "migration": {
+    "title": "Importer lokale data",
+    "description": "Vi fant en strategisesjon lagret i denne nettleseren. Vil du importere den til kontoen din?",
+    "import": "Importer som øyeblikksbilde",
+    "skip": "Start på nytt",
+    "importing": "Importerer...",
+    "success": "Importert",
+    "label": "Importert fra lokal sesjon"
   }
 }

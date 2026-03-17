@@ -189,6 +189,7 @@ export interface UIState {
   roleMode: 'work' | 'governance';
   boardViewMode: boolean;
   boardSelectedItem: { type: 'capability' | 'initiative'; id: string } | null;
+  settingsOpen: boolean;
 }
 
 export const MATURITY_COLORS: Record<number, string> = {

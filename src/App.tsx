@@ -25,6 +25,8 @@ import { FilterDropdown } from './components/header/FilterDropdown';
 import { RoleModeToggle } from './components/header/RoleModeToggle';
 import { UndoRedoButtons } from './components/header/UndoRedoButtons';
 import { BoardView } from './components/board/BoardView';
+import { SettingsModal } from './components/settings/SettingsModal';
+import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
 import i18n from './i18n';
 
 export default function App() {
@@ -45,6 +47,8 @@ export default function App() {
   const roleMode = useStore(s => s.ui.roleMode);
   const boardViewMode = useStore(s => s.ui.boardViewMode);
   const modules = useStore(s => s.modules);
+  const settingsOpen = useStore(s => s.ui.settingsOpen);
+  const setSettingsOpen = useStore(s => s.setSettingsOpen);
 
   // Auto-show wizard for first-time users
   useEffect(() => {
@@ -216,7 +220,9 @@ export default function App() {
       {/* Modals */}
       {addModalOpen && <AddModal />}
       {importModalOpen && <ImportModal />}
+      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} />}
       <OnboardingWizard />
+      <LocalStorageMigration />
     </div>
   );
 }

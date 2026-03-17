@@ -512,5 +512,94 @@
     "onTrack": "On track",
     "atRisk": "At risk",
     "unsupported": "Unsupported"
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "organisation": "Organisation",
+      "team": "Team",
+      "plan": "Plan",
+      "data": "Data"
+    },
+    "org": {
+      "name": "Organisation name",
+      "slug": "Slug",
+      "plan": "Plan",
+      "save": "Save changes",
+      "saved": "Saved"
+    },
+    "team": {
+      "members": "Members",
+      "inviteMember": "Invite member",
+      "email": "Email address",
+      "role": "Role",
+      "invite": "Send invite",
+      "inviteSent": "Invite sent",
+      "remove": "Remove",
+      "confirmRemove": "Remove this member?",
+      "roles": {
+        "OWNER": "Owner",
+        "ADMIN": "Admin",
+        "EDITOR": "Editor",
+        "VIEWER": "Viewer",
+        "BOARD": "Board"
+      },
+      "roleDescriptions": {
+        "OWNER": "Full access, billing, deletion",
+        "ADMIN": "Manage team and settings",
+        "EDITOR": "Create and edit content",
+        "VIEWER": "Read-only access",
+        "BOARD": "Board View only"
+      }
+    },
+    "plan": {
+      "current": "Current plan",
+      "free": "Free",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "upgrade": "Upgrade plan",
+      "limits": {
+        "scenarios": "Scenarios",
+        "initiatives": "Initiatives per scenario",
+        "capabilities": "Capabilities module",
+        "effects": "Effects module",
+        "benchmarks": "Benchmark access",
+        "auditLog": "Audit log",
+        "unlimited": "Unlimited",
+        "included": "Included",
+        "notIncluded": "Not included"
+      }
+    },
+    "data": {
+      "title": "Data & Privacy",
+      "export": "Export all data",
+      "exportDesc": "Download a full JSON export of your organisation's data.",
+      "exportBtn": "Download export",
+      "danger": "Danger zone",
+      "deleteOrg": "Delete organisation",
+      "deleteDesc": "Permanently delete this organisation and all its data. A 30-day grace period applies.",
+      "deleteBtn": "Request deletion",
+      "deletePending": "Deletion scheduled for {{date}}",
+      "cancelDeletion": "Cancel deletion",
+      "deletionCancelled": "Deletion cancelled"
+    },
+    "audit": {
+      "title": "Audit log",
+      "action": "Action",
+      "entity": "Entity",
+      "user": "User",
+      "timestamp": "Timestamp",
+      "noEvents": "No audit events found.",
+      "enterpriseOnly": "Audit log is available on Enterprise plan."
+    }
+  },
+  "migration": {
+    "title": "Import your local data",
+    "description": "We found a strategy session saved in this browser. Would you like to import it into your account?",
+    "import": "Import as snapshot",
+    "skip": "Start fresh",
+    "importing": "Importing...",
+    "success": "Imported successfully",
+    "label": "Imported from local session"
   }
 }

@@ -89,6 +89,7 @@ interface StoreState extends AppState {
   setRoleMode: (mode: 'work' | 'governance') => void;
   setBoardViewMode: (active: boolean) => void;
   setBoardSelectedItem: (item: UIState['boardSelectedItem']) => void;
+  setSettingsOpen: (open: boolean) => void;
 
   // Bulk operations
   toggleSelectedItem: (id: string) => void;
@@ -140,6 +141,7 @@ const defaultUI: UIState = {
   roleMode: 'work',
   boardViewMode: false,
   boardSelectedItem: null,
+  settingsOpen: false,
 };
 
 export const useStore = create<StoreState>()(
@@ -481,6 +483,9 @@ export const useStore = create<StoreState>()(
         })),
         setBoardSelectedItem: (item) => set(state => ({
           ui: { ...state.ui, boardSelectedItem: item },
+        })),
+        setSettingsOpen: (open) => set(state => ({
+          ui: { ...state.ui, settingsOpen: open },
         })),
 
         // Bulk operations
