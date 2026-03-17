@@ -22,6 +22,9 @@ CREATE TABLE IF NOT EXISTS tenants (
   schema_name   TEXT NOT NULL UNIQUE,          -- e.g. "tenant_550e8400..."
   -- Application-level encryption key (KDF-derived, base64-encoded)
   enc_key_hash  TEXT,                          -- stored hash only; actual key in vault/env
+  -- Opt-in metadata for benchmark filtering
+  sector        TEXT,                          -- 'public' | 'finance' | 'energy' | 'telecom' | null
+  org_sizeband  TEXT,                          -- 'small' | 'medium' | 'large' | null
   -- GDPR deletion grace period
   deletion_requested_at TIMESTAMPTZ,
   deletion_scheduled_at TIMESTAMPTZ,          -- deletion_requested_at + 30 days
@@ -71,15 +74,30 @@ CREATE TABLE IF NOT EXISTS benchmark_vectors (
   snapshot_hash         TEXT NOT NULL UNIQUE,  -- SHA-256 of snapshot_id + salt
   -- Structural signals
   initiative_count      INTEGER NOT NULL,
+  capability_count      INTEGER NOT NULL DEFAULT 0,
+  effect_count          INTEGER NOT NULL DEFAULT 0,
   near_horizon_pct      NUMERIC(5,2) NOT NULL, -- 0-100
   far_horizon_pct       NUMERIC(5,2) NOT NULL,
   confirmed_pct         NUMERIC(5,2) NOT NULL,
   tentative_pct         NUMERIC(5,2) NOT NULL,
   under_consideration_pct NUMERIC(5,2) NOT NULL,
-  dimension_gini        NUMERIC(6,4) NOT NULL, -- concentration index 0-1
+  dimension_gini        NUMERIC(6,4) NOT NULL, -- concentration index 0-1 (dimensionImbalanceScore)
   capability_coverage   NUMERIC(5,2),          -- % of capabilities with ≥1 initiative
   effect_linkage        NUMERIC(5,2),          -- % of effects with ≥1 initiative
   critical_path_length  INTEGER,
+  -- Enriched signals (Layer 4 spec)
+  initiatives_per_dimension JSONB,             -- {leadership, business, organisation, technology}
+  avg_capability_maturity   NUMERIC(4,2),      -- 1.0–5.0
+  avg_capability_risk       NUMERIC(4,2),      -- 1.0–3.0 (when available)
+  capabilities_with_no_initiatives INTEGER,
+  effects_with_no_initiatives    INTEGER,
+  initiatives_with_no_effects    INTEGER,
+  max_owner_load        INTEGER,               -- highest initiative count per owner
+  scenario_count        INTEGER,
+  effect_type_distribution JSONB,              -- {cost, quality, speed, compliance, strategic}
+  -- Opt-in metadata (provided by tenant, not derived)
+  sector                TEXT,                  -- 'public' | 'finance' | 'energy' | 'telecom' | null
+  org_sizeband          TEXT,                  -- 'small' | 'medium' | 'large' | null
   plan_tier             plan_tier NOT NULL,     -- tier at time of snapshot
   created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -87,6 +105,8 @@ CREATE TABLE IF NOT EXISTS benchmark_vectors (
 CREATE INDEX IF NOT EXISTS bv_initiative_count_idx ON benchmark_vectors(initiative_count);
 CREATE INDEX IF NOT EXISTS bv_plan_tier_idx ON benchmark_vectors(plan_tier);
 CREATE INDEX IF NOT EXISTS bv_tenant_hash_idx ON benchmark_vectors(tenant_hash);
+CREATE INDEX IF NOT EXISTS bv_sector_idx ON benchmark_vectors(sector) WHERE sector IS NOT NULL;
+CREATE INDEX IF NOT EXISTS bv_org_sizeband_idx ON benchmark_vectors(org_sizeband) WHERE org_sizeband IS NOT NULL;
 
 -- Minimum sample size enforced in query layer (not DB constraint)
 -- See: getBenchmarkPercentile(), getBenchmarkDistribution()

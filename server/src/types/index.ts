@@ -26,6 +26,8 @@ export interface Tenant {
   displayName: string;
   plan: PlanTier;
   schemaName: string;
+  sector?: string;
+  orgSizeband?: string;
   deletionRequestedAt?: Date;
   deletionScheduledAt?: Date;
   createdAt: Date;
@@ -171,6 +173,8 @@ export interface BenchmarkVector {
   tenantHash: string;
   snapshotHash: string;
   initiativeCount: number;
+  capabilityCount: number;
+  effectCount: number;
   nearHorizonPct: number;
   farHorizonPct: number;
   confirmedPct: number;
@@ -180,6 +184,17 @@ export interface BenchmarkVector {
   capabilityCoverage?: number;
   effectLinkage?: number;
   criticalPathLength?: number;
+  initiativesPerDimension?: Record<string, number>;
+  avgCapabilityMaturity?: number;
+  avgCapabilityRisk?: number;
+  capabilitiesWithNoInitiatives?: number;
+  effectsWithNoInitiatives?: number;
+  initiativesWithNoEffects?: number;
+  maxOwnerLoad?: number;
+  scenarioCount?: number;
+  effectTypeDistribution?: Record<string, number>;
+  sector?: string;
+  orgSizeband?: string;
   planTier: PlanTier;
   createdAt: Date;
 }
@@ -198,6 +213,13 @@ export interface BenchmarkDistribution {
   p50: number;
   p75: number;
   mean: number;
+  sampleSize: number;
+}
+
+export interface BenchmarkCorrelation {
+  metricA: string;
+  metricB: string;
+  correlation: number;
   sampleSize: number;
 }
 

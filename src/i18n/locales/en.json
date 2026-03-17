@@ -358,6 +358,7 @@
       "bottlenecks": "Strategic Bottlenecks",
       "capabilities": "Capabilities",
       "effects": "Effect chain",
+      "strategicReading": "Strategic Reading",
       "summary": "Summary"
     },
     "noActivities": "No activities",
@@ -366,7 +367,8 @@
     "strategiesTitle": "Active Strategies",
     "capMomentumTitle": "Capability Momentum",
     "portfolioTitle": "Portfolio Overview",
-    "bottlenecksTitle": "Strategic Bottlenecks"
+    "bottlenecksTitle": "Strategic Bottlenecks",
+    "strategicReadingTitle": "Strategic Reading"
   },
   "effects": {
     "title": "Effect overview",

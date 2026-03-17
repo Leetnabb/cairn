@@ -27,6 +27,7 @@ import { UndoRedoButtons } from './components/header/UndoRedoButtons';
 import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
+import { useAuthContext } from './hooks/useAuthContext';
 import i18n from './i18n';
 
 export default function App() {
@@ -49,6 +50,8 @@ export default function App() {
   const modules = useStore(s => s.modules);
   const settingsOpen = useStore(s => s.ui.settingsOpen);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
+  const auth = useAuthContext();
+  const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
 
   // Auto-show wizard for first-time users
   useEffect(() => {
@@ -80,11 +83,12 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  if (presentationMode) {
+  if (presentationMode && !isBoardUser) {
     return <PresentationMode />;
   }
 
-  if (boardViewMode) {
+  // BOARD role users are restricted to Board View only — no app access
+  if (boardViewMode || isBoardUser) {
     return <BoardView />;
   }
 
