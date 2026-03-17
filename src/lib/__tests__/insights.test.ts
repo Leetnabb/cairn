@@ -64,6 +64,7 @@ function makeEffect(id: string, overrides: Partial<Effect> = {}): Effect {
   return {
     id,
     name: id,
+    description: '',
     type: 'cost',
     initiatives: [],
     capabilities: [],

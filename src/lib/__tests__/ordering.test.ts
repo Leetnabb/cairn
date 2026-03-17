@@ -59,24 +59,24 @@ describe('reorderInitiatives', () => {
   it('endrer dimensjon og horisont ved flytting mellom soner', () => {
     const initiatives = [
       makeInit('a', 0),
-      makeInit('b', 0, { dimension: 'prosess', horizon: 'far' }),
+      makeInit('b', 0, { dimension: 'virksomhet', horizon: 'far' }),
     ];
-    const result = reorderInitiatives(initiatives, 'a', 'prosess', 'far', 0);
+    const result = reorderInitiatives(initiatives, 'a', 'virksomhet', 'far', 0);
     expect(result).not.toBeNull();
     const moved = result!.find(i => i.id === 'a');
-    expect(moved?.dimension).toBe('prosess');
+    expect(moved?.dimension).toBe('virksomhet');
     expect(moved?.horizon).toBe('far');
   });
 
   it('berører ikke initiativ i andre soner', () => {
     const initiatives = [
       makeInit('a', 0),
-      makeInit('b', 0, { dimension: 'prosess', horizon: 'far' }),
+      makeInit('b', 0, { dimension: 'virksomhet', horizon: 'far' }),
     ];
     const result = reorderInitiatives(initiatives, 'a', 'ledelse', 'near', 0);
     expect(result).not.toBeNull();
     const other = result!.find(i => i.id === 'b');
-    expect(other?.dimension).toBe('prosess');
+    expect(other?.dimension).toBe('virksomhet');
     expect(other?.horizon).toBe('far');
     expect(other?.order).toBe(0);
   });
