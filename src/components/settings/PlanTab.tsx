@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { useStore } from '../../stores/useStore';
 
 const PLAN_DISPLAY = {
   FREE: { label: 'Free', color: 'text-text-secondary bg-gray-100' },
