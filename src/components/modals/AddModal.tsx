@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, InitiativeStatus, EffectType, Strategy } from '../../types';
+import type { DimensionKey, InitiativeStatus, EffectType, Strategy, ConfidenceLevel } from '../../types';
 import { Button } from '../ui/Button';
 import { ColorPalette } from '../ui/ColorPalette';
 import AIFormAssist from '../ai/AIFormAssist';
@@ -38,6 +38,7 @@ export function AddModal() {
   const [iVCs, setIVCs] = useState<string[]>([]);
   const [iNotes, setINotes] = useState('');
   const [iStatus, setIStatus] = useState<InitiativeStatus>('planned');
+  const [iConfidence, setIConfidence] = useState<ConfidenceLevel>('confirmed');
   const [iCriticalPathOverride, setICriticalPathOverride] = useState<boolean | null>(null);
 
   // Inline value chain creation
@@ -80,6 +81,9 @@ export function AddModal() {
   const [sHorizon, setSHorizon] = useState<Strategy['timeHorizon']>('medium');
   const [sPriority, setSPriority] = useState<Strategy['priority']>(1);
 
+  // Capability search
+  const [capSearch, setCapSearch] = useState('');
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setAddModalOpen(false);
@@ -100,7 +104,7 @@ export function AddModal() {
   }, []);
 
   const resetInitiativeFields = () => {
-    setIName(''); setIDesc(''); setICaps([]); setIDeps([]); setIVCs([]); setINotes(''); setIStatus('planned'); setICriticalPathOverride(null);
+    setIName(''); setIDesc(''); setICaps([]); setIDeps([]); setIVCs([]); setINotes(''); setIStatus('planned'); setIConfidence('confirmed'); setICriticalPathOverride(null);
   };
   const resetCapabilityFields = () => { setCName(''); setCDesc(''); };
   const resetMilestoneFields = () => { setMName(''); };
@@ -114,9 +118,9 @@ export function AddModal() {
     addInitiative({
       id: `i_${Date.now()}`, name: iName.trim(), description: iDesc.trim(), dimension: iDim, horizon: iHorizon,
       order: maxOrder + 1, owner: iOwner.trim(), capabilities: iCaps, dependsOn: iDeps, maturityEffect: {},
-      notes: iNotes.trim(), valueChains: iVCs, status: iStatus, criticalPathOverride: iCriticalPathOverride,
+      notes: iNotes.trim(), valueChains: iVCs, status: iStatus, confidence: iConfidence, criticalPathOverride: iCriticalPathOverride,
     });
-    if (keepOpen) { resetInitiativeFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetInitiativeFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddCapability = (keepOpen: boolean) => {
@@ -125,19 +129,19 @@ export function AddModal() {
       id: `c_${Date.now()}`, name: cName.trim(), description: cDesc.trim(), level: cLevel,
       parent: cLevel === 2 ? (cParent || null) : null, maturity: cMat, maturityTarget: cMatTarget, risk: cRisk,
     });
-    if (keepOpen) { resetCapabilityFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetCapabilityFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddMilestone = (keepOpen: boolean) => {
     if (!mName.trim()) return;
     addMilestone({ id: `m_${Date.now()}`, name: mName.trim(), horizon: mHorizon, position: mPosition, color: mColor });
-    if (keepOpen) { resetMilestoneFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetMilestoneFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddValueChain = (keepOpen: boolean) => {
     if (!vcName.trim()) return;
     addValueChain({ id: `vc_${Date.now()}`, name: vcName.trim(), color: vcColor });
-    if (keepOpen) { resetValueChainFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetValueChainFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddEffect = (keepOpen: boolean) => {
@@ -149,7 +153,7 @@ export function AddModal() {
       baseline: eBaseline.trim() || undefined,
       target: eTarget.trim() || undefined,
     });
-    if (keepOpen) { resetEffectFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetEffectFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddStrategy = (keepOpen: boolean) => {
@@ -161,7 +165,7 @@ export function AddModal() {
       timeHorizon: sHorizon,
       priority: sPriority,
     });
-    if (keepOpen) { resetStrategyFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetStrategyFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleInlineVCCreate = () => {
@@ -281,6 +285,23 @@ export function AddModal() {
                 </div>
               </div>
               <div>
+                <label className="text-[9px] text-text-tertiary uppercase">{t('confidence.label')}</label>
+                <div className="flex mt-0.5 border border-border rounded overflow-hidden">
+                  {([
+                    { value: 'confirmed' as const, label: t('confidence.confirmed') },
+                    { value: 'tentative' as const, label: t('confidence.tentative') },
+                    { value: 'under_consideration' as const, label: t('confidence.under_consideration') },
+                  ]).map(opt => (
+                    <button key={opt.value} onClick={() => setIConfidence(opt.value)}
+                      className={`flex-1 px-1.5 py-1 text-[9px] font-medium transition-colors ${
+                        iConfidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                      }`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
                 <label className="text-[9px] text-text-tertiary uppercase">{t('forms.criticalPath')}</label>
                 <div className="flex mt-0.5 border border-border rounded overflow-hidden">
                   {([
@@ -309,8 +330,16 @@ export function AddModal() {
                       onToggleCapability={(capId) => toggleItem(iCaps, capId, setICaps)}
                     />
                   </div>
+                  {capabilities.length > 5 && (
+                    <input
+                      value={capSearch}
+                      onChange={e => setCapSearch(e.target.value)}
+                      placeholder={t('forms.searchCapabilities')}
+                      className="w-full px-1.5 py-0.5 text-[9px] border border-border rounded mt-0.5 mb-0.5 focus:outline-none focus:border-primary"
+                    />
+                  )}
                   <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-                    {capabilities.map(c => (
+                    {capabilities.filter(c => c.name.toLowerCase().includes(capSearch.toLowerCase())).map(c => (
                       <button key={c.id} onClick={() => toggleItem(iCaps, c.id, setICaps)}
                         className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
                           iCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
@@ -541,8 +570,16 @@ export function AddModal() {
               </div>
               <div>
                 <label className="text-[9px] text-text-tertiary uppercase">{t('effects.linkedCapabilities')}</label>
+                {capabilities.length > 5 && (
+                  <input
+                    value={capSearch}
+                    onChange={e => setCapSearch(e.target.value)}
+                    placeholder={t('forms.searchCapabilities')}
+                    className="w-full px-1.5 py-0.5 text-[9px] border border-border rounded mt-0.5 mb-0.5 focus:outline-none focus:border-primary"
+                  />
+                )}
                 <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-                  {capabilities.map(c => (
+                  {capabilities.filter(c => c.name.toLowerCase().includes(capSearch.toLowerCase())).map(c => (
                     <button key={c.id} onClick={() => toggleItem(eCaps, c.id, setECaps)}
                       className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
                         eCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'

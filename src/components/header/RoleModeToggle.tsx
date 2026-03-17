@@ -3,30 +3,25 @@ import { useStore } from '../../stores/useStore';
 
 export function RoleModeToggle() {
   const { t } = useTranslation();
-  const roleMode = useStore(s => s.ui.roleMode);
-  const setRoleMode = useStore(s => s.setRoleMode);
-
-  const isGovernance = roleMode === 'governance';
+  const boardViewMode = useStore(s => s.ui.boardViewMode);
+  const setBoardViewMode = useStore(s => s.setBoardViewMode);
 
   return (
     <button
-      onClick={() => setRoleMode(isGovernance ? 'work' : 'governance')}
-      className={`w-7 h-7 flex items-center justify-center rounded transition-colors ${
-        isGovernance ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-gray-100'
+      onClick={() => setBoardViewMode(!boardViewMode)}
+      className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium transition-colors ${
+        boardViewMode ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-gray-100'
       }`}
-      title={isGovernance ? t('nav.roleGovernance') : t('nav.roleWork')}
+      title={t('board.title')}
+      aria-label={t('board.title')}
     >
-      {isGovernance ? (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      ) : (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 20h9" />
-          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-        </svg>
-      )}
+      {/* Frame/screen icon — signals "presentation to board", not surveillance */}
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" />
+        <line x1="8" y1="21" x2="16" y2="21" />
+        <line x1="12" y1="17" x2="12" y2="21" />
+      </svg>
+      {t('board.title')}
     </button>
   );
 }

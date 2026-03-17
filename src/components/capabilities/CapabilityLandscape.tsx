@@ -206,6 +206,13 @@ export function CapabilityLandscape() {
         </div>
       </div>
 
+      {/* Empty state */}
+      {l1.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <p className="text-[12px] text-text-tertiary">{t('capLandscape.emptyDomains')}</p>
+        </div>
+      )}
+
       {/* Domain grid */}
       <div
         className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"

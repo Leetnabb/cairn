@@ -26,6 +26,9 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
   const isSelected = selectedItem?.type === 'initiative' && selectedItem.id === initiative.id;
   const isMultiSelected = selectedItems.has(initiative.id);
   const hasDeps = initiative.dependsOn.length > 0;
+  const confidence = initiative.confidence ?? 'confirmed';
+  const isTentative = confidence === 'tentative';
+  const isUnderConsideration = confidence === 'under_consideration';
   const hasNotes = initiative.notes.length > 0;
   const capCount = initiative.capabilities.length;
   const depCount = initiative.dependsOn.length;
@@ -53,7 +56,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
           setSelectedItem({ type: 'initiative', id: initiative.id });
         }
       }}
-      className={`relative min-w-[120px] px-2 py-1.5 rounded cursor-grab active:cursor-grabbing border transition-all duration-150 group ${
+      className={`relative min-w-[120px] px-2 py-1.5 rounded cursor-grab active:cursor-grabbing transition-all duration-150 group border ${
         isMultiSelected
           ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-300'
           : isSelected
@@ -62,12 +65,21 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
           ? 'border-yellow-300 bg-yellow-50'
           : isDependent
           ? 'border-blue-300 bg-blue-50'
+          : isTentative
+          ? 'border-dashed border-border bg-white hover:shadow-hover'
+          : isUnderConsideration
+          ? 'border-dotted border-border bg-white hover:shadow-hover'
           : 'border-border bg-white hover:shadow-hover'
       } ${isOnCriticalPath ? 'ring-2 ring-red-400 shadow-[0_0_8px_rgba(239,68,68,0.2)]' : ''}`}
       style={{
         borderLeftWidth: 3,
+        borderLeftStyle: isTentative ? 'dashed' : isUnderConsideration ? 'dotted' : 'solid',
         borderLeftColor: dim.color,
-        opacity: initiative.status === 'done' ? Math.min(opacity, 0.7) : opacity,
+        opacity: isUnderConsideration
+          ? Math.min(opacity, 0.6)
+          : isTentative
+          ? Math.min(opacity, 0.8)
+          : initiative.status === 'done' ? Math.min(opacity, 0.7) : opacity,
       }}
     >
       {/* Critical path quick-toggle */}
@@ -107,7 +119,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
           title={strategyNames.join(', ')}
         />
       )}
-      <div className="text-[10px] font-medium leading-tight truncate" title={initiative.name}>{initiative.name}</div>
+      <div className={`text-[10px] font-medium leading-tight truncate ${isUnderConsideration ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
       <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
       {/* Compact info line */}
       <div className="text-[8px] text-text-tertiary mt-0.5">

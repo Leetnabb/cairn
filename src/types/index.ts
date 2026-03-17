@@ -1,5 +1,7 @@
 export type InitiativeStatus = 'planned' | 'in_progress' | 'done';
 
+export type ConfidenceLevel = 'confirmed' | 'tentative' | 'under_consideration';
+
 export type DimensionKey = 'ledelse' | 'virksomhet' | 'organisasjon' | 'teknologi';
 
 export interface Dimension {
@@ -58,6 +60,7 @@ export interface Initiative {
   valueChains: string[];
   criticalPathOverride?: boolean | null;
   status?: InitiativeStatus;
+  confidence?: ConfidenceLevel;
 }
 
 export interface Scenario {
@@ -184,6 +187,9 @@ export interface UIState {
   filterDropdownOpen: boolean;
   capabilityOverlayOpen: boolean;
   roleMode: 'work' | 'governance';
+  boardViewMode: boolean;
+  boardSelectedItem: { type: 'capability' | 'initiative'; id: string } | null;
+  settingsOpen: boolean;
 }
 
 export const MATURITY_COLORS: Record<number, string> = {

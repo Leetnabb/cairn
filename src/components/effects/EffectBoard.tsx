@@ -22,13 +22,19 @@ export function EffectBoard() {
         </span>
       </div>
 
-      <div className="flex gap-3 flex-1 overflow-x-auto overflow-y-hidden">
-        {EFFECT_TYPES.map(type => (
-          <div key={type} className="flex flex-col w-[200px] shrink-0">
-            <EffectDropZone type={type} effects={effectsByType[type]} />
-          </div>
-        ))}
-      </div>
+      {effects.length === 0 ? (
+        <div className="flex flex-col items-center justify-center flex-1 text-center">
+          <p className="text-[12px] text-text-tertiary">{t('effectBoard.emptyBoard')}</p>
+        </div>
+      ) : (
+        <div className="flex gap-3 flex-1 overflow-x-auto overflow-y-hidden">
+          {EFFECT_TYPES.map(type => (
+            <div key={type} className="flex flex-col w-[200px] shrink-0">
+              <EffectDropZone type={type} effects={effectsByType[type]} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

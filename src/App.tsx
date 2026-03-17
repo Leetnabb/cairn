@@ -23,6 +23,10 @@ import { ScenarioDropdown } from './components/header/ScenarioDropdown';
 import { InsightsBadge } from './components/header/InsightsBadge';
 import { FilterDropdown } from './components/header/FilterDropdown';
 import { RoleModeToggle } from './components/header/RoleModeToggle';
+import { UndoRedoButtons } from './components/header/UndoRedoButtons';
+import { BoardView } from './components/board/BoardView';
+import { SettingsModal } from './components/settings/SettingsModal';
+import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
 import i18n from './i18n';
 
 export default function App() {
@@ -41,7 +45,10 @@ export default function App() {
   const openWizard = useOnboardingStore(s => s.openWizard);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
+  const boardViewMode = useStore(s => s.ui.boardViewMode);
   const modules = useStore(s => s.modules);
+  const settingsOpen = useStore(s => s.ui.settingsOpen);
+  const setSettingsOpen = useStore(s => s.setSettingsOpen);
 
   // Auto-show wizard for first-time users
   useEffect(() => {
@@ -75,6 +82,10 @@ export default function App() {
 
   if (presentationMode) {
     return <PresentationMode />;
+  }
+
+  if (boardViewMode) {
+    return <BoardView />;
   }
 
   const showDetailPanel = selectedItem !== null || aiPanelOpen;
@@ -112,6 +123,7 @@ export default function App() {
             <ActionBtn onClick={() => setAddModalOpen(true)}>{t('nav.addNew')}</ActionBtn>
           )}
           <HeaderMenu />
+          {roleMode === 'work' && <UndoRedoButtons />}
           <div className="w-px h-5 bg-border mx-0.5" />
           <RoleModeToggle />
           <ToggleBtn active={aiPanelOpen} onClick={() => setAIPanelOpen(!aiPanelOpen)}>AI</ToggleBtn>
@@ -208,7 +220,9 @@ export default function App() {
       {/* Modals */}
       {addModalOpen && <AddModal />}
       {importModalOpen && <ImportModal />}
+      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} />}
       <OnboardingWizard />
+      <LocalStorageMigration />
     </div>
   );
 }

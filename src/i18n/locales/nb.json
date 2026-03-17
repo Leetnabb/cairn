@@ -28,7 +28,8 @@
     "title": "Effekttavle",
     "total": "effekter",
     "empty": "Dra effekter hit",
-    "addEffect": "Ny effekt"
+    "addEffect": "Ny effekt",
+    "emptyBoard": "Ingen effekter definert ennå. Legg til en effekt for å komme i gang."
   },
   "modules": {
     "title": "Moduler",
@@ -65,7 +66,8 @@
     "avgMaturity": "Snitt modenhet",
     "activities": "{{count}} aktivitet(er)",
     "noSubCaps": "Ingen sub-kapabiliteter",
-    "simulatedFrom": "{{from}} → {{to}}"
+    "simulatedFrom": "{{from}} → {{to}}",
+    "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang."
   },
   "common": {
     "save": "Lagre",
@@ -156,7 +158,11 @@
   },
   "roadmap": {
     "collapsed": "Kollapset",
-    "expand": "Utvid"
+    "expand": "Utvid",
+    "emptyTitle": "Ingen initiativer ennå",
+    "emptyBody": "Legg til et initiativ for å begynne å bygge din strategisti.",
+    "dragHint": "Dra aktiviteter hit",
+    "newActivity": "Ny aktivitet"
   },
   "strategyPath": {
     "dimView": "Per dimensjon",
@@ -256,7 +262,8 @@
     "parent": "Forelder",
     "domainL1": "Domene (L1)",
     "subL2": "Under (L2)",
-    "selectParent": "Velg forelder..."
+    "selectParent": "Velg forelder...",
+    "searchCapabilities": "Søk..."
   },
   "addModal": {
     "initiative": "Aktivitet",
@@ -297,6 +304,7 @@
     "confirmDelete": "Slett dette scenarioet?",
     "addNew": "+ Nytt",
     "duplicate": "Dupliser",
+    "rename": "Gi nytt navn",
     "selectCompare": "Velg et scenario å sammenligne med",
     "createToCompare": "Opprett et nytt scenario for å sammenligne",
     "changedPosition": "Endret posisjon",
@@ -473,5 +481,125 @@
     "csvEffFilename": "effekter.csv",
     "pptxFilename": "cairn-presentasjon",
     "effectOverview": "Effektoversikt"
+  },
+  "confidence": {
+    "label": "Beslutningsstatus",
+    "confirmed": "Bekreftet",
+    "tentative": "Tentativ",
+    "under_consideration": "Under vurdering"
+  },
+  "board": {
+    "title": "Styrevisning",
+    "exit": "Avslutt styrevisning",
+    "strategicReading": "Strategisk lesning",
+    "sinceLastMeeting": "Siden siste møte",
+    "noSnapshot": "Inget tidligerer øyeblikksbilde. Dette er første styrereview.",
+    "strategyPath": "Strategisti",
+    "decisionsRequired": "Beslutninger som kreves",
+    "effectsOverview": "Effektoversikt",
+    "noEffects": "Ingen effekter definert.",
+    "noDecisions": "Ingen kritiske beslutninger identifisert.",
+    "noNear": "Ingen initiativer i nærhorisonten",
+    "noFar": "Ingen initiativer i fjernhorisonten",
+    "narrativeEdited": "Redigert for denne sesjonen",
+    "editNarrative": "Rediger narrativ",
+    "saveNarrative": "Lagre",
+    "cancelEdit": "Avbryt",
+    "maturity": "Modenhet",
+    "confidenceLegend": "Beslutningsstatusforklaring",
+    "dataAsOf": "Data oppdatert per",
+    "savePDF": "Lagre som PDF",
+    "onTrack": "På sporet",
+    "atRisk": "I fare",
+    "unsupported": "Uten støtte"
+  },
+  "settings": {
+    "title": "Innstillinger",
+    "tabs": {
+      "organisation": "Organisasjon",
+      "team": "Team",
+      "plan": "Plan",
+      "data": "Data"
+    },
+    "org": {
+      "name": "Organisasjonsnavn",
+      "slug": "Slug",
+      "plan": "Plan",
+      "save": "Lagre endringer",
+      "saved": "Lagret"
+    },
+    "team": {
+      "members": "Medlemmer",
+      "inviteMember": "Inviter medlem",
+      "email": "E-postadresse",
+      "role": "Rolle",
+      "invite": "Send invitasjon",
+      "inviteSent": "Invitasjon sendt",
+      "remove": "Fjern",
+      "confirmRemove": "Fjerne dette medlemmet?",
+      "roles": {
+        "OWNER": "Eier",
+        "ADMIN": "Admin",
+        "EDITOR": "Redaktør",
+        "VIEWER": "Leser",
+        "BOARD": "Styre"
+      },
+      "roleDescriptions": {
+        "OWNER": "Full tilgang, fakturering, sletting",
+        "ADMIN": "Administrer team og innstillinger",
+        "EDITOR": "Opprett og rediger innhold",
+        "VIEWER": "Kun lesetilgang",
+        "BOARD": "Kun styrevisning"
+      }
+    },
+    "plan": {
+      "current": "Gjeldende plan",
+      "free": "Gratis",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "upgrade": "Oppgrader plan",
+      "limits": {
+        "scenarios": "Scenarioer",
+        "initiatives": "Initiativer per scenario",
+        "capabilities": "Kapabilitetsmodul",
+        "effects": "Effektmodul",
+        "benchmarks": "Benchmark-tilgang",
+        "auditLog": "Revisjonslogg",
+        "unlimited": "Ubegrenset",
+        "included": "Inkludert",
+        "notIncluded": "Ikke inkludert"
+      }
+    },
+    "data": {
+      "title": "Data og personvern",
+      "export": "Eksporter alle data",
+      "exportDesc": "Last ned en full JSON-eksport av organisasjonens data.",
+      "exportBtn": "Last ned eksport",
+      "danger": "Farlig sone",
+      "deleteOrg": "Slett organisasjon",
+      "deleteDesc": "Slett denne organisasjonen og alle data permanent. En 30-dagers karantenetid gjelder.",
+      "deleteBtn": "Be om sletting",
+      "deletePending": "Sletting planlagt for {{date}}",
+      "cancelDeletion": "Avbryt sletting",
+      "deletionCancelled": "Sletting avbrutt"
+    },
+    "audit": {
+      "title": "Revisjonslogg",
+      "action": "Handling",
+      "entity": "Entitet",
+      "user": "Bruker",
+      "timestamp": "Tidspunkt",
+      "noEvents": "Ingen revisjonslogghendelser funnet.",
+      "enterpriseOnly": "Revisjonslogg er tilgjengelig på Enterprise-planen."
+    }
+  },
+  "migration": {
+    "title": "Importer lokale data",
+    "description": "Vi fant en strategisesjon lagret i denne nettleseren. Vil du importere den til kontoen din?",
+    "import": "Importer som øyeblikksbilde",
+    "skip": "Start på nytt",
+    "importing": "Importerer...",
+    "success": "Importert",
+    "label": "Importert fra lokal sesjon"
   }
 }

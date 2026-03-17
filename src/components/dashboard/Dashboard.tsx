@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
+import { generateNarrative } from '../../lib/narrativeEngine';
+import { StrategicNarrative } from '../ui/StrategicNarrative';
 import { EFFECT_TYPE_COLORS } from '../../types';
 import type { EffectType } from '../../types';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
@@ -52,8 +54,18 @@ export function Dashboard() {
     : 100;
   const driftCount = initiatives.length - linkedInitiatives;
 
+  const narrative = useMemo(
+    () => generateNarrative(initiatives, capabilities, effects),
+    [initiatives, capabilities, effects]
+  );
+
   return (
     <div className="flex-1 overflow-auto p-4">
+      {/* Strategic Reading */}
+      <div className="mb-4">
+        <StrategicNarrative narrative={narrative} />
+      </div>
+
       {/* 1. Executive Summary */}
       <ExecutiveSummary initiatives={initiatives} capabilities={capabilities} effects={effects} strategies={strategies} />
 

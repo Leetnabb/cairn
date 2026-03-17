@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { DimensionKey, Initiative } from '../../types';
 import { DIMENSION_MAP } from '../../types';
 import { useStore } from '../../stores/useStore';
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight }: Props) {
+  const { t } = useTranslation();
   const moveInitiative = useStore(s => s.moveInitiative);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
   const capabilities = useStore(s => s.capabilities);
@@ -88,7 +90,7 @@ export function DropZone({ dimension, horizon, initiatives, criticalPathIds, cri
       )}
       {sorted.length === 0 && dropIndex === null && (
         <div className="text-[9px] text-text-tertiary italic px-1 py-2">
-          Dra aktiviteter hit
+          {t('roadmap.dragHint')}
         </div>
       )}
       {hovered && (
@@ -96,7 +98,7 @@ export function DropZone({ dimension, horizon, initiatives, criticalPathIds, cri
           onClick={handleQuickAdd}
           className="absolute top-0.5 right-0.5 w-4 h-4 rounded flex items-center justify-center text-[10px] font-bold leading-none opacity-0 group-hover/zone:opacity-100 transition-opacity duration-150 hover:scale-110"
           style={{ backgroundColor: dim.bgColor, color: dim.textColor }}
-          title="Ny aktivitet"
+          title={t('roadmap.newActivity')}
         >
           +
         </button>
