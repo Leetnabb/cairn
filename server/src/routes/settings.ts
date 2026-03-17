@@ -10,13 +10,15 @@ import { PLAN_LIMITS } from '../types/index.js';
 
 const updateOrgSchema = z.object({
   displayName: z.string().min(1).max(200).optional(),
+  sector: z.enum(['public', 'finance', 'energy', 'telecom']).nullable().optional(),
+  orgSizeband: z.enum(['small', 'medium', 'large']).nullable().optional(),
 });
 
 export async function settingsRoutes(app: FastifyInstance) {
   // GET /settings/org — organisation info
   app.get('/settings/org', { preHandler: [authenticate, requireAdmin] }, async (request, reply) => {
     const { rows } = await queryPublic<Record<string, unknown>>(
-      `SELECT id, slug, display_name, plan, created_at FROM cairn_public.tenants WHERE id = $1`,
+      `SELECT id, slug, display_name, plan, sector, org_sizeband, created_at FROM cairn_public.tenants WHERE id = $1`,
       [request.ctx.tenantId]
     );
     if (!rows[0]) return reply.code(404).send({ error: 'Tenant not found' });
@@ -25,13 +27,38 @@ export async function settingsRoutes(app: FastifyInstance) {
     return reply.send({ ...rows[0], limits });
   });
 
-  // PATCH /settings/org — update org name
+  // PATCH /settings/org — update org name, sector, sizeband
   app.patch('/settings/org', { preHandler: [authenticate, requireAdmin] }, async (request, reply) => {
     const data = updateOrgSchema.parse(request.body);
+    const setClauses: string[] = [];
+    const values: unknown[] = [request.ctx.tenantId];
+    let i = 2;
+
+    if (data.displayName !== undefined) {
+      setClauses.push(`display_name = $${i++}`);
+      values.push(data.displayName);
+    }
+    if (data.sector !== undefined) {
+      setClauses.push(`sector = $${i++}`);
+      values.push(data.sector);
+    }
+    if (data.orgSizeband !== undefined) {
+      setClauses.push(`org_sizeband = $${i++}`);
+      values.push(data.orgSizeband);
+    }
+
+    if (setClauses.length === 0) {
+      const { rows } = await queryPublic<Record<string, unknown>>(
+        `SELECT id, slug, display_name, plan, sector, org_sizeband FROM cairn_public.tenants WHERE id = $1`,
+        [request.ctx.tenantId]
+      );
+      return reply.send(rows[0]);
+    }
+
     const { rows } = await queryPublic<Record<string, unknown>>(
-      `UPDATE cairn_public.tenants SET display_name = COALESCE($2, display_name)
-       WHERE id = $1 RETURNING id, slug, display_name, plan`,
-      [request.ctx.tenantId, data.displayName ?? null]
+      `UPDATE cairn_public.tenants SET ${setClauses.join(', ')}
+       WHERE id = $1 RETURNING id, slug, display_name, plan, sector, org_sizeband`,
+      values
     );
     return reply.send(rows[0]);
   });

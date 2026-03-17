@@ -5,6 +5,7 @@ import { SnapshotRepository } from '../repositories/SnapshotRepository.js';
 import { AuditRepository } from '../repositories/AuditRepository.js';
 import { extractBenchmarkVector } from '../services/benchmarkExtractor.js';
 import { BenchmarkRepository } from '../repositories/BenchmarkRepository.js';
+import { queryPublic } from '../db/pool.js';
 
 const createSchema = z.object({
   label: z.string().min(1).max(200),
@@ -52,10 +53,19 @@ export async function snapshotRoutes(app: FastifyInstance) {
         try {
           const vector = extractBenchmarkVector(data.state, request.ctx.plan);
           if (vector) {
+            // Fetch tenant's opt-in sector/sizeband for benchmark filtering
+            const { rows: tenantRows } = await queryPublic<{ sector: string | null; org_sizeband: string | null }>(
+              `SELECT sector, org_sizeband FROM cairn_public.tenants WHERE id = $1`,
+              [request.ctx.tenantId]
+            );
+            const tenant = tenantRows[0];
+
             const benchRepo = new BenchmarkRepository();
             await benchRepo.insert({
               tenantId: request.ctx.tenantId,
               snapshotId: snapshot.id,
+              sector: tenant?.sector ?? undefined,
+              orgSizeband: tenant?.org_sizeband ?? undefined,
               ...vector,
             });
             await repo.markBenchmarked(snapshot.id);

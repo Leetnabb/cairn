@@ -7,6 +7,20 @@ export interface NarrativeSignal {
   text: string;
 }
 
+/**
+ * Benchmark context passed from the UI when available (ENTERPRISE plan + authenticated).
+ * Contains pre-fetched percentile data for key metrics.
+ */
+export interface BenchmarkContext {
+  initiativeCount?: { percentile: number; sampleSize: number };
+  dimensionGini?: { percentile: number; sampleSize: number };
+  capabilityCoverage?: { percentile: number; sampleSize: number };
+  criticalPathLength?: { percentile: number; sampleSize: number };
+  distribution?: {
+    initiativeCount?: { p25: number; p50: number; p75: number; mean: number };
+  };
+}
+
 function dimensionSignal(initiatives: Initiative[]): NarrativeSignal | null {
   if (initiatives.length === 0) return null;
   const counts: Record<string, number> = {};
@@ -141,16 +155,76 @@ function confidenceSignal(initiatives: Initiative[]): NarrativeSignal | null {
   return null;
 }
 
+/**
+ * Generate benchmark-contextualised signals using pre-fetched percentile data.
+ * Returns null if no benchmark context is provided or data is insufficient.
+ */
+function benchmarkSignal(
+  initiatives: Initiative[],
+  benchmark?: BenchmarkContext
+): NarrativeSignal | null {
+  if (!benchmark) return null;
+
+  const total = initiatives.length;
+
+  // Initiative count vs. benchmark
+  if (benchmark.initiativeCount && benchmark.distribution?.initiativeCount) {
+    const { percentile } = benchmark.initiativeCount;
+    const { p50 } = benchmark.distribution.initiativeCount;
+    const median = Math.round(p50);
+
+    if (percentile >= 75) {
+      return {
+        priority: 0,
+        text: `Your strategy path has ${total} initiatives — above the median of ${median} for similar organisations (${percentile}th percentile). This is associated with higher execution risk in the benchmark.`,
+      };
+    }
+
+    if (percentile <= 25) {
+      return {
+        priority: 0,
+        text: `Your strategy path has ${total} initiatives — below the median of ${median} for similar organisations (${percentile}th percentile). Consider whether additional initiatives are needed to address strategic goals.`,
+      };
+    }
+  }
+
+  // Dimension concentration vs. benchmark
+  if (benchmark.dimensionGini) {
+    const { percentile } = benchmark.dimensionGini;
+    if (percentile >= 80) {
+      return {
+        priority: 0,
+        text: `Your initiative distribution across dimensions is more concentrated than ${percentile}% of comparable organisations. Diversifying across dimensions may reduce execution risk.`,
+      };
+    }
+  }
+
+  // Capability coverage vs. benchmark
+  if (benchmark.capabilityCoverage) {
+    const { percentile } = benchmark.capabilityCoverage;
+    if (percentile <= 20) {
+      return {
+        priority: 0,
+        text: `Your capability coverage (initiatives linked to capabilities) is lower than ${100 - percentile}% of comparable organisations. Consider linking more initiatives to capabilities for clearer strategic alignment.`,
+      };
+    }
+  }
+
+  return null;
+}
+
 export function generateNarrative(
   initiatives: Initiative[],
   capabilities: Capability[],
-  effects: Effect[]
+  effects: Effect[],
+  benchmark?: BenchmarkContext
 ): string {
   if (initiatives.length === 0) {
     return 'No initiatives have been added yet. Add initiatives to the strategy path to generate a strategic reading.';
   }
 
   const signals: NarrativeSignal[] = [
+    benchmarkSignal(initiatives, benchmark),
     dimensionSignal(initiatives),
     capabilitySignal(initiatives, capabilities),
     effectSignal(initiatives, effects),
