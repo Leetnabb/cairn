@@ -80,6 +80,9 @@ export function AddModal() {
   const [sHorizon, setSHorizon] = useState<Strategy['timeHorizon']>('medium');
   const [sPriority, setSPriority] = useState<Strategy['priority']>(1);
 
+  // Capability search
+  const [capSearch, setCapSearch] = useState('');
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setAddModalOpen(false);
@@ -116,7 +119,7 @@ export function AddModal() {
       order: maxOrder + 1, owner: iOwner.trim(), capabilities: iCaps, dependsOn: iDeps, maturityEffect: {},
       notes: iNotes.trim(), valueChains: iVCs, status: iStatus, criticalPathOverride: iCriticalPathOverride,
     });
-    if (keepOpen) { resetInitiativeFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetInitiativeFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddCapability = (keepOpen: boolean) => {
@@ -125,19 +128,19 @@ export function AddModal() {
       id: `c_${Date.now()}`, name: cName.trim(), description: cDesc.trim(), level: cLevel,
       parent: cLevel === 2 ? (cParent || null) : null, maturity: cMat, maturityTarget: cMatTarget, risk: cRisk,
     });
-    if (keepOpen) { resetCapabilityFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetCapabilityFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddMilestone = (keepOpen: boolean) => {
     if (!mName.trim()) return;
     addMilestone({ id: `m_${Date.now()}`, name: mName.trim(), horizon: mHorizon, position: mPosition, color: mColor });
-    if (keepOpen) { resetMilestoneFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetMilestoneFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddValueChain = (keepOpen: boolean) => {
     if (!vcName.trim()) return;
     addValueChain({ id: `vc_${Date.now()}`, name: vcName.trim(), color: vcColor });
-    if (keepOpen) { resetValueChainFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetValueChainFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddEffect = (keepOpen: boolean) => {
@@ -149,7 +152,7 @@ export function AddModal() {
       baseline: eBaseline.trim() || undefined,
       target: eTarget.trim() || undefined,
     });
-    if (keepOpen) { resetEffectFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetEffectFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddStrategy = (keepOpen: boolean) => {
@@ -161,7 +164,7 @@ export function AddModal() {
       timeHorizon: sHorizon,
       priority: sPriority,
     });
-    if (keepOpen) { resetStrategyFields(); showConfirmation(); } else { setAddModalOpen(false); }
+    if (keepOpen) { resetStrategyFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleInlineVCCreate = () => {
@@ -309,8 +312,16 @@ export function AddModal() {
                       onToggleCapability={(capId) => toggleItem(iCaps, capId, setICaps)}
                     />
                   </div>
+                  {capabilities.length > 5 && (
+                    <input
+                      value={capSearch}
+                      onChange={e => setCapSearch(e.target.value)}
+                      placeholder={t('forms.searchCapabilities')}
+                      className="w-full px-1.5 py-0.5 text-[9px] border border-border rounded mt-0.5 mb-0.5 focus:outline-none focus:border-primary"
+                    />
+                  )}
                   <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-                    {capabilities.map(c => (
+                    {capabilities.filter(c => c.name.toLowerCase().includes(capSearch.toLowerCase())).map(c => (
                       <button key={c.id} onClick={() => toggleItem(iCaps, c.id, setICaps)}
                         className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
                           iCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'
@@ -541,8 +552,16 @@ export function AddModal() {
               </div>
               <div>
                 <label className="text-[9px] text-text-tertiary uppercase">{t('effects.linkedCapabilities')}</label>
+                {capabilities.length > 5 && (
+                  <input
+                    value={capSearch}
+                    onChange={e => setCapSearch(e.target.value)}
+                    placeholder={t('forms.searchCapabilities')}
+                    className="w-full px-1.5 py-0.5 text-[9px] border border-border rounded mt-0.5 mb-0.5 focus:outline-none focus:border-primary"
+                  />
+                )}
                 <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-                  {capabilities.map(c => (
+                  {capabilities.filter(c => c.name.toLowerCase().includes(capSearch.toLowerCase())).map(c => (
                     <button key={c.id} onClick={() => toggleItem(eCaps, c.id, setECaps)}
                       className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
                         eCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary'

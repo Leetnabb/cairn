@@ -29,8 +29,10 @@ export function EditInitiativeForm({ initiative }: Props) {
   const [selectedVCs, setSelectedVCs] = useState<string[]>(initiative.valueChains);
   const [status, setStatus] = useState<InitiativeStatus>(initiative.status ?? 'planned');
   const [criticalPathOverride, setCriticalPathOverride] = useState<boolean | null>(initiative.criticalPathOverride ?? null);
+  const [capSearch, setCapSearch] = useState('');
 
   const otherInitiatives = initiatives.filter(i => i.id !== initiative.id);
+  const filteredCaps = capabilities.filter(c => c.name.toLowerCase().includes(capSearch.toLowerCase()));
 
   const handleSave = () => {
     updateInitiative(initiative.id, {
@@ -123,8 +125,16 @@ export function EditInitiativeForm({ initiative }: Props) {
       {modules.capabilities && (
         <div>
           <label className="text-[9px] text-text-tertiary uppercase">{t('forms.capabilities')}</label>
+          {capabilities.length > 5 && (
+            <input
+              value={capSearch}
+              onChange={e => setCapSearch(e.target.value)}
+              placeholder={t('forms.searchCapabilities')}
+              className="w-full px-1.5 py-0.5 text-[9px] border border-border rounded mt-0.5 mb-0.5 focus:outline-none focus:border-primary"
+            />
+          )}
           <div className="flex flex-wrap gap-1 mt-0.5 max-h-20 overflow-y-auto">
-            {capabilities.map(c => (
+            {filteredCaps.map(c => (
               <button key={c.id} onClick={() => toggleItem(selectedCaps, c.id, setSelectedCaps)}
                 className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
                   selectedCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary hover:border-gray-300'

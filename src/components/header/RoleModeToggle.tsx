@@ -15,6 +15,7 @@ export function RoleModeToggle() {
         isGovernance ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-gray-100'
       }`}
       title={isGovernance ? t('nav.roleGovernance') : t('nav.roleWork')}
+      aria-label={isGovernance ? t('nav.roleGovernance') : t('nav.roleWork')}
     >
       {isGovernance ? (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

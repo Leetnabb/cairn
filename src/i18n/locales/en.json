@@ -160,7 +160,9 @@
     "collapsed": "Collapsed",
     "expand": "Expand",
     "emptyTitle": "No initiatives yet",
-    "emptyBody": "Add an initiative to start building your strategy path."
+    "emptyBody": "Add an initiative to start building your strategy path.",
+    "dragHint": "Drag activities here",
+    "newActivity": "New activity"
   },
   "strategyPath": {
     "dimView": "By dimension",
@@ -260,7 +262,8 @@
     "parent": "Parent",
     "domainL1": "Domain (L1)",
     "subL2": "Sub (L2)",
-    "selectParent": "Select parent..."
+    "selectParent": "Select parent...",
+    "searchCapabilities": "Search..."
   },
   "addModal": {
     "initiative": "Activity",
@@ -301,6 +304,7 @@
     "confirmDelete": "Delete this scenario?",
     "addNew": "+ New",
     "duplicate": "Duplicate",
+    "rename": "Rename",
     "selectCompare": "Select a scenario to compare with",
     "createToCompare": "Create a new scenario to compare",
     "changedPosition": "Changed position",

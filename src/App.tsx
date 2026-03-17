@@ -23,6 +23,7 @@ import { ScenarioDropdown } from './components/header/ScenarioDropdown';
 import { InsightsBadge } from './components/header/InsightsBadge';
 import { FilterDropdown } from './components/header/FilterDropdown';
 import { RoleModeToggle } from './components/header/RoleModeToggle';
+import { UndoRedoButtons } from './components/header/UndoRedoButtons';
 import i18n from './i18n';
 
 export default function App() {
@@ -112,6 +113,7 @@ export default function App() {
             <ActionBtn onClick={() => setAddModalOpen(true)}>{t('nav.addNew')}</ActionBtn>
           )}
           <HeaderMenu />
+          {roleMode === 'work' && <UndoRedoButtons />}
           <div className="w-px h-5 bg-border mx-0.5" />
           <RoleModeToggle />
           <ToggleBtn active={aiPanelOpen} onClick={() => setAIPanelOpen(!aiPanelOpen)}>AI</ToggleBtn>

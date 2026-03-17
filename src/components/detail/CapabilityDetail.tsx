@@ -65,7 +65,12 @@ export function CapabilityDetail({ capability }: Props) {
         </div>
         <div className="flex gap-1">
           <Button onClick={() => setEditingId(capability.id)}>&#10000;</Button>
-          <Button variant="danger" onClick={handleDelete}>{t('common.delete')}</Button>
+          <Button variant="danger" onClick={handleDelete}>
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" className="inline mr-1" aria-hidden="true">
+              <path d="M6 2h4v1H6V2zM3 4h10v1H3V4zm1 2h8l-.8 9H4.8L4 6zm2 1v7h1V7H6zm3 0v7h1V7H9z"/>
+            </svg>
+            {t('common.delete')}
+          </Button>
         </div>
       </div>
 

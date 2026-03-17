@@ -160,7 +160,9 @@
     "collapsed": "Kollapset",
     "expand": "Utvid",
     "emptyTitle": "Ingen initiativer ennå",
-    "emptyBody": "Legg til et initiativ for å begynne å bygge din strategisti."
+    "emptyBody": "Legg til et initiativ for å begynne å bygge din strategisti.",
+    "dragHint": "Dra aktiviteter hit",
+    "newActivity": "Ny aktivitet"
   },
   "strategyPath": {
     "dimView": "Per dimensjon",
@@ -260,7 +262,8 @@
     "parent": "Forelder",
     "domainL1": "Domene (L1)",
     "subL2": "Under (L2)",
-    "selectParent": "Velg forelder..."
+    "selectParent": "Velg forelder...",
+    "searchCapabilities": "Søk..."
   },
   "addModal": {
     "initiative": "Aktivitet",
@@ -301,6 +304,7 @@
     "confirmDelete": "Slett dette scenarioet?",
     "addNew": "+ Nytt",
     "duplicate": "Dupliser",
+    "rename": "Gi nytt navn",
     "selectCompare": "Velg et scenario å sammenligne med",
     "createToCompare": "Opprett et nytt scenario for å sammenligne",
     "changedPosition": "Endret posisjon",
