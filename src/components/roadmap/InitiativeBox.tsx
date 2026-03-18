@@ -25,11 +25,9 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
   const dim = DIMENSION_MAP[initiative.dimension];
   const isSelected = selectedItem?.type === 'initiative' && selectedItem.id === initiative.id;
   const isMultiSelected = selectedItems.has(initiative.id);
-  const hasDeps = initiative.dependsOn.length > 0;
   const confidence = initiative.confidence ?? 'confirmed';
   const isTentative = confidence === 'tentative';
   const isUnderConsideration = confidence === 'under_consideration';
-  const hasNotes = initiative.notes.length > 0;
   const capCount = initiative.capabilities.length;
   const depCount = initiative.dependsOn.length;
   const override = initiative.criticalPathOverride;
@@ -103,21 +101,6 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
       {/* Multi-select checkbox */}
       {isMultiSelected && (
         <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[8px] z-10">✓</div>
-      )}
-      {/* Notes indicator - blue dot top-left */}
-      {hasNotes && (
-        <div className="absolute -top-1 -left-0.5 w-2 h-2 rounded-full bg-blue-500" />
-      )}
-      {/* Dependency indicator - yellow dot top-right */}
-      {hasDeps && (
-        <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-yellow-500" />
-      )}
-      {/* Strategy indicator - indigo dot bottom-right, shown when linked to strategy */}
-      {strategyNames && strategyNames.length > 0 && (
-        <div
-          className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-indigo-500"
-          title={strategyNames.join(', ')}
-        />
       )}
       <div className={`text-[10px] font-medium leading-tight truncate ${isUnderConsideration ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
       <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
