@@ -33,9 +33,9 @@ Onboarding-wizarden spør om organisasjonsnavn, modulvalg, og slipper brukeren l
 
 Onboarding er ikke "sett opp verktøyet" — det er "forbered neste møte".
 
-**Steg 1 — Kontekst (30 sek)**
-"Beskriv virksomheten din i 2-3 setninger — bransje, størrelse, og hva dere jobber med nå."
-Alternativt: Lim inn fra strategidokument, årsrapport, eller styrepresentasjon.
+**Steg 1 — Kontekst (30 sek–2 min)**
+Primær: Last opp eksisterende dokumentasjon — strategiplaner, kapabilitetsoversikter, initiativlister, styrepresentasjoner, årsrapporter. De fleste organisasjoner har denne informasjonen allerede, men mangler linsen å se den gjennom.
+Sekundær: Beskriv virksomheten i fritekst — bransje, størrelse, og hva dere jobber med nå.
 
 **Steg 2 — AI genererer startpunkt (10 sek)**
 Claude analyserer og foreslår:
@@ -203,9 +203,9 @@ Strategi → Kapabiliteter → Initiativer → Effekter.
 Ett bilde. Levende. For de som leder.
 
 **2. Problemet**
-Alle har en strategi. De fleste kan ikke si om den beveger seg.
-Initiativene lever i prosjektverktøy. Strategien lever i presentasjoner. Kapabilitetene lever ingen steder. Effektene antas, men måles sjelden.
-Gapet mellom strategi og eksekvering er ikke et verktøyproblem. Det er et synlighetsproblem.
+Teknologi endrer seg raskere enn organisasjonen klarer å følge. Regulering strammes til. Geopolitikk skaper usikkerhet. Når alt beveger seg samtidig, blir det vanskelig å se fremover. Tåken.
+Alle har en strategi. De fleste har prosjekter. Men det som mangler er TO-en — koblingen mellom strategy og execution. Initiativene lever i prosjektverktøy. Strategien lever i presentasjoner. Kapabilitetene lever i EA-verktøy som kun arkitekten forstår. Effektene antas, men måles sjelden.
+Her trengs dynamisk strategi — ikke en plan som låses fast, men en levende sti som oppdateres fra varde til varde.
 
 **3. Cairn — se stien**
 Fire dimensjoner. To horisonter. Alle initiativ, kapabiliteter og effekter — koblet sammen i ett bilde.
