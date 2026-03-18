@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
-import { MeetingLens } from '../../types';
+import type { MeetingLens } from '../../types';
 
 const LENS_ORDER: MeetingLens[] = ['narrative', 'path', 'capabilities', 'effects'];
 

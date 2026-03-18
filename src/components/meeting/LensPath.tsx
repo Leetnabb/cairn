@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '../../stores/useStore';
-import { DIMENSIONS, DimensionKey, Initiative } from '../../types';
+import { DIMENSIONS } from '../../types';
+import type { DimensionKey, Initiative } from '../../types';
 
 const DIMENSION_COLORS: Record<DimensionKey, string> = {
   ledelse: '#ef4444',

@@ -1,5 +1,6 @@
 import { useStore } from '../../stores/useStore';
-import { EFFECT_TYPE_COLORS, EffectType } from '../../types';
+import { EFFECT_TYPE_COLORS } from '../../types';
+import type { EffectType } from '../../types';
 
 const EFFECT_TYPES: EffectType[] = ['cost', 'quality', 'speed', 'compliance', 'strategic'];
 

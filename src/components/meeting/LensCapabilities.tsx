@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStore } from '../../stores/useStore';
-import { Capability, Initiative } from '../../types';
+import type { Capability, Initiative } from '../../types';
 
 const MATURITY_COLORS: Record<number, string> = {
   1: '#dc2626',
