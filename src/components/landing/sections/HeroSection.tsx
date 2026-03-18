@@ -1,0 +1,204 @@
+import { useState, useRef, type CSSProperties } from "react";
+import { useTranslation } from "react-i18next";
+import { FadeIn, HeroMark, S, ctaStyle } from "../landingUtils";
+
+interface HeroSectionProps {
+  scrollY: number;
+  isMobile: boolean;
+}
+
+export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
+  const { t } = useTranslation();
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const heroFormRef = useRef<HTMLDivElement | null>(null);
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    setSubmitted(true);
+  };
+
+  return (
+    <section
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: isMobile ? "100px 20px 60px" : "120px 48px 80px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Subtle ambient glow */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse 100% 70% at 50% 100%, rgba(99,102,241,0.06) 0%, transparent 70%)",
+        }}
+      />
+      {/* Fog wisps */}
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            top: `${52 + i * 14}%`,
+            left: `${-10 + i * 10}%`,
+            width: "130%",
+            height: 1,
+            background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,${
+              0.025 - i * 0.006
+            }) 40%, transparent 100%)`,
+            transform: `translateX(${Math.sin(scrollY * 0.0015 + i) * 20}px)`,
+          }}
+        />
+      ))}
+
+      <div style={{ maxWidth: 760, position: "relative", zIndex: 2 }}>
+        {/* Animated logo mark */}
+        <div style={{ marginBottom: 48 }}>
+          <HeroMark />
+        </div>
+
+        <FadeIn delay={0.2}>
+          <h1
+            style={{
+              ...S.serif,
+              fontSize: "clamp(36px, 5.5vw, 62px)",
+              fontWeight: 400,
+              lineHeight: 1.1,
+              margin: "0 0 28px",
+              letterSpacing: "-0.025em",
+              color: "#f1f5f9",
+              fontStyle: "italic",
+            }}
+          >
+            {t("landing.hero.headline")}
+          </h1>
+        </FadeIn>
+
+        <FadeIn delay={0.4}>
+          <p
+            style={{
+              fontSize: 17,
+              lineHeight: 1.6,
+              color: "#64748b",
+              maxWidth: 480,
+              margin: "0 0 8px",
+              fontWeight: 400,
+              letterSpacing: "0.01em",
+            }}
+          >
+            {t("landing.hero.subline1")}
+          </p>
+        </FadeIn>
+
+        <FadeIn delay={0.5}>
+          <p
+            style={{
+              ...S.serif,
+              fontStyle: "italic",
+              fontSize: 16,
+              color: "#3a4558",
+              marginBottom: 44,
+            }}
+          >
+            {t("landing.hero.subline2")}
+          </p>
+        </FadeIn>
+
+        <FadeIn delay={0.7}>
+          <div ref={heroFormRef}>
+            {submitted ? (
+              <p
+                style={{
+                  fontSize: 15,
+                  color: "#22c55e",
+                  fontWeight: 500,
+                  marginBottom: 16,
+                }}
+              >
+                {t("landing.hero.submitted")}
+              </p>
+            ) : (
+              <form
+                onSubmit={handleEmailSubmit}
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  flexWrap: "wrap",
+                  marginBottom: 16,
+                  alignItems: "center",
+                }}
+              >
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t("landing.hero.emailPlaceholder")}
+                  required
+                  style={{
+                    fontSize: 14,
+                    padding: "12px 16px",
+                    borderRadius: 5,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.06)",
+                    color: "#f1f5f9",
+                    outline: "none",
+                    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                    width: isMobile ? "100%" : 220,
+                  } as CSSProperties}
+                />
+                <button
+                  type="submit"
+                  style={{ ...ctaStyle, fontSize: 15, padding: "13px 32px" }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "#4f46e5";
+                    (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "#6366f1";
+                    (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                  }}
+                >
+                  {t("landing.hero.cta")}
+                </button>
+              </form>
+            )}
+          </div>
+        </FadeIn>
+      </div>
+
+      {/* Scroll indicator */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 40,
+          left: "50%",
+          transform: "translateX(-50%)",
+          opacity: scrollY > 80 ? 0 : 0.35,
+          transition: "opacity 0.4s",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 6,
+        }}
+      >
+        <div
+          style={{
+            width: 1,
+            height: 40,
+            background: "linear-gradient(to bottom, transparent, #475569)",
+          }}
+        />
+        <svg width={12} height={8} viewBox="0 0 12 8" fill="none">
+          <path d="M1 1l5 5 5-5" stroke="#475569" strokeWidth={1.5} strokeLinecap="round" />
+        </svg>
+      </div>
+    </section>
+  );
+}
