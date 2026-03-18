@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore } from './stores/useStore';
 import { useAIStore } from './stores/useAIStore';
-import { useOnboardingStore } from './stores/useOnboardingStore';
+// useOnboardingStore auto-opens wizard via its own init logic
 import { Roadmap } from './components/roadmap/Roadmap';
 import { DetailPanel } from './components/detail/DetailPanel';
 import { Dashboard } from './components/dashboard/Dashboard';
@@ -43,11 +43,9 @@ export default function App() {
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
   const selectedItem = useStore(s => s.ui.selectedItem);
   const setSelectedItem = useStore(s => s.setSelectedItem);
-  const setPresentationMode = useStore(s => s.setPresentationMode);
   const enterMeetingMode = useStore(s => s.enterMeetingMode);
   const aiPanelOpen = useAIStore(s => s.panelOpen);
   const setAIPanelOpen = useAIStore(s => s.setPanelOpen);
-  const openWizard = useOnboardingStore(s => s.open);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
   const boardViewMode = useStore(s => s.ui.boardViewMode);

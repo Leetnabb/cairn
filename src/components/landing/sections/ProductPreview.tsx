@@ -270,7 +270,7 @@ interface InitiativeCardProps {
 }
 
 function InitiativeCard({
-  id,
+  id: _id,
   name,
   color,
   selected,

@@ -53,7 +53,7 @@ Respond with ONLY valid JSON matching this schema:
 }`;
 
 export function parseStrategicPicture(text: string): GeneratedStrategicPicture {
-  const parsed = parseJsonObjectFromAI(text) as GeneratedStrategicPicture;
+  const parsed = parseJsonObjectFromAI(text) as unknown as GeneratedStrategicPicture;
 
   if (!parsed.strategies?.length || !parsed.capabilities?.length ||
       !parsed.initiatives?.length || !parsed.effects?.length) {

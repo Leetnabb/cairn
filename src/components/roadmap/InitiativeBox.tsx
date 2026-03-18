@@ -10,10 +10,9 @@ interface Props {
   isDependency?: boolean;
   isDependent?: boolean;
   opacity?: number;
-  strategyNames?: string[];
 }
 
-export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1, strategyNames }: Props) {
+export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1 }: Props) {
   const { t } = useTranslation();
   const selectedItem = useStore(s => s.ui.selectedItem);
   const setSelectedItem = useStore(s => s.setSelectedItem);
