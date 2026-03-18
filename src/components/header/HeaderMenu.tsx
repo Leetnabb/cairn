@@ -24,7 +24,7 @@ export function HeaderMenu() {
   const setModules = useStore(s => s.setModules);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
   const setComplexityLevel = useStore(s => s.setComplexityLevel);
-  const { level } = useComplexityLevel();
+  const { level, isViewVisible } = useComplexityLevel();
 
   useEffect(() => {
     if (!open) return;
@@ -36,7 +36,7 @@ export function HeaderMenu() {
   }, [open]);
 
   const items = [
-    { label: t('nav.compare'), action: () => setView('compare'), hide: false },
+    { label: t('nav.compare'), action: () => setView('compare'), hide: !isViewVisible('compare') },
     { label: t('nav.capabilityMap'), action: () => setCapabilityOverlayOpen(true), hide: !modules.capabilities },
     { label: t('nav.simulation'), action: toggleSimulation, toggle: simulationEnabled, hide: !modules.capabilities },
     { label: t('nav.criticalPath'), action: toggleCriticalPath, toggle: criticalPathEnabled, hide: false },
