@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
+import { useComplexityLevel } from '../../hooks/useComplexityLevel';
+import type { ComplexityLevel } from '../../types';
 
 
 export function HeaderMenu() {
@@ -21,6 +23,8 @@ export function HeaderMenu() {
   const modules = useStore(s => s.modules);
   const setModules = useStore(s => s.setModules);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
+  const setComplexityLevel = useStore(s => s.setComplexityLevel);
+  const { level } = useComplexityLevel();
 
   useEffect(() => {
     if (!open) return;
@@ -73,6 +77,32 @@ export function HeaderMenu() {
               </button>
             );
           })}
+
+          {/* Complexity level section */}
+          <div className="border-t border-border mt-1 pt-1">
+            <div className="px-3 py-1 text-[9px] text-text-tertiary uppercase tracking-wider font-medium">
+              {t('complexity.current')}
+            </div>
+            <div className="px-3 py-1 text-[11px] text-text-secondary">
+              {level === 1 ? t('complexity.level1') : level === 2 ? t('complexity.level2') : t('complexity.level3')}
+            </div>
+            {level < 3 && (
+              <button
+                onClick={() => { setComplexityLevel((level + 1) as ComplexityLevel); setOpen(false); }}
+                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+              >
+                <span>{t('complexity.unlock')} →</span>
+              </button>
+            )}
+            {level > 1 && (
+              <button
+                onClick={() => { setComplexityLevel((level - 1) as ComplexityLevel); setOpen(false); }}
+                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+              >
+                <span>← {t('complexity.simplify')}</span>
+              </button>
+            )}
+          </div>
 
           {/* Module settings section */}
           <div className="border-t border-border mt-1 pt-1">

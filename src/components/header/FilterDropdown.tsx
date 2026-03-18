@@ -4,9 +4,11 @@ import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
 import type { DimensionKey } from '../../types';
 import { Button } from '../ui/Button';
+import { useComplexityLevel } from '../../hooks/useComplexityLevel';
 
 export function FilterDropdown() {
   const { t } = useTranslation();
+  const { isFilterVisible } = useComplexityLevel();
   const ref = useRef<HTMLDivElement>(null);
   const open = useStore(s => s.ui.filterDropdownOpen);
   const setOpen = useStore(s => s.setFilterDropdownOpen);
@@ -81,45 +83,53 @@ export function FilterDropdown() {
           </div>
 
           {/* Horizon toggle */}
-          <div>
-            <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('labels.horizon.label')}</div>
-            <div className="flex gap-0.5">
-              {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['far', t('labels.horizon.far')]].map(([val, label]) => (
-                <button
-                  key={val}
-                  onClick={() => setFilter({ horizon: val as 'all' | 'near' | 'far' })}
-                  className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-                    filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+          {isFilterVisible('horizon') && (
+            <div>
+              <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('labels.horizon.label')}</div>
+              <div className="flex gap-0.5">
+                {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['far', t('labels.horizon.far')]].map(([val, label]) => (
+                  <button
+                    key={val}
+                    onClick={() => setFilter({ horizon: val as 'all' | 'near' | 'far' })}
+                    className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
+                      filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Toggles row */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setFilter({ showMilestones: !filters.showMilestones })}
-              className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-                filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
-              }`}
-            >
-              {t('filters.milestones')}
-            </button>
-            <button
-              onClick={() => setFilter({ focusMode: !filters.focusMode })}
-              className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-                filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
-              }`}
-            >
-              {t('filters.focus')}
-            </button>
-          </div>
+          {(isFilterVisible('milestones') || isFilterVisible('focusMode')) && (
+            <div className="flex gap-2">
+              {isFilterVisible('milestones') && (
+                <button
+                  onClick={() => setFilter({ showMilestones: !filters.showMilestones })}
+                  className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
+                    filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+                  }`}
+                >
+                  {t('filters.milestones')}
+                </button>
+              )}
+              {isFilterVisible('focusMode') && (
+                <button
+                  onClick={() => setFilter({ focusMode: !filters.focusMode })}
+                  className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
+                    filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+                  }`}
+                >
+                  {t('filters.focus')}
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Zoom controls */}
-          {filters.focusMode && (
+          {isFilterVisible('zoomLevel') && filters.focusMode && (
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setFilter({ zoomLevel: Math.max(0.5, (filters.zoomLevel ?? 1) - 0.25) })}
@@ -140,32 +150,36 @@ export function FilterDropdown() {
           )}
 
           {/* Owner dropdown */}
-          <div>
-            <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('common.owner')}</div>
-            <select
-              value={filters.owner}
-              onChange={e => setFilter({ owner: e.target.value })}
-              className="w-full px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
-            >
-              <option value="">{t('filters.allOwners')}</option>
-              {owners.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
-          </div>
+          {isFilterVisible('owner') && (
+            <div>
+              <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('common.owner')}</div>
+              <select
+                value={filters.owner}
+                onChange={e => setFilter({ owner: e.target.value })}
+                className="w-full px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
+              >
+                <option value="">{t('filters.allOwners')}</option>
+                {owners.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </div>
+          )}
 
           {/* Status filter */}
-          <div>
-            <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('labels.status.label')}</div>
-            <select
-              value={filters.status}
-              onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' })}
-              className="w-full px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
-            >
-              <option value="">{t('filters.allStatuses')}</option>
-              <option value="planned">{t('labels.status.planned')}</option>
-              <option value="in_progress">{t('labels.status.in_progress')}</option>
-              <option value="done">{t('labels.status.done')}</option>
-            </select>
-          </div>
+          {isFilterVisible('status') && (
+            <div>
+              <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('labels.status.label')}</div>
+              <select
+                value={filters.status}
+                onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' })}
+                className="w-full px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
+              >
+                <option value="">{t('filters.allStatuses')}</option>
+                <option value="planned">{t('labels.status.planned')}</option>
+                <option value="in_progress">{t('labels.status.in_progress')}</option>
+                <option value="done">{t('labels.status.done')}</option>
+              </select>
+            </div>
+          )}
 
           {/* Search */}
           <input

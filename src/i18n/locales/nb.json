@@ -595,6 +595,14 @@
       "enterpriseOnly": "Revisjonslogg er tilgjengelig på Enterprise-planen."
     }
   },
+  "complexity": {
+    "level1": "Nivå 1: Leder",
+    "level2": "Nivå 2: Strategisk",
+    "level3": "Nivå 3: Ekspert",
+    "unlock": "Lås opp flere verktøy",
+    "simplify": "Forenkle visning",
+    "current": "Kompleksitetsnivå"
+  },
   "migration": {
     "title": "Importer lokale data",
     "description": "Vi fant en strategisesjon lagret i denne nettleseren. Vil du importere den til kontoen din?",

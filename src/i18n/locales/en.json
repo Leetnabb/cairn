@@ -595,6 +595,14 @@
       "enterpriseOnly": "Audit log is available on Enterprise plan."
     }
   },
+  "complexity": {
+    "level1": "Level 1: Leader",
+    "level2": "Level 2: Strategic",
+    "level3": "Level 3: Expert",
+    "unlock": "Unlock more tools",
+    "simplify": "Simplify view",
+    "current": "Complexity level"
+  },
   "migration": {
     "title": "Import your local data",
     "description": "We found a strategy session saved in this browser. Would you like to import it into your account?",

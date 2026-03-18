@@ -28,6 +28,7 @@ import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
 import { useAuthContext } from './hooks/useAuthContext';
+import { useComplexityLevel } from './hooks/useComplexityLevel';
 import i18n from './i18n';
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
   const auth = useAuthContext();
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
+  const { isViewVisible } = useComplexityLevel();
 
   // Auto-show wizard for first-time users
   useEffect(() => {
@@ -110,13 +112,18 @@ export default function App() {
 
         {/* Right: Nav + actions */}
         <nav className="flex items-center gap-1">
-          <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
+          {isViewVisible('strategies') && (
+            <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
+          )}
           <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
-          {modules.capabilities && (
+          {modules.capabilities && isViewVisible('capabilities') && (
             <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
           )}
-          {modules.effects && (
+          {modules.effects && isViewVisible('effects') && (
             <NavBtn active={view === 'effects'} onClick={() => setView('effects')}>{t('nav.effects')}</NavBtn>
+          )}
+          {isViewVisible('compare') && (
+            <NavBtn active={view === 'compare'} onClick={() => setView('compare')}>{t('nav.compare')}</NavBtn>
           )}
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
           <NavBtn active={false} onClick={() => setPresentationMode(true)}>{t('nav.presentation')}</NavBtn>
