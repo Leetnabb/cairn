@@ -28,10 +28,19 @@ export function StepInsights({ onComplete }: StepInsightsProps) {
 
   const handleComplete = onComplete ?? completeOnboarding;
 
+  const handleMeetingCta = () => {
+    handleComplete();
+    // TODO: enterMeetingMode() when meeting mode is implemented (Plan 3)
+  };
+
+  const handleEditCta = () => {
+    handleComplete();
+  };
+
   if (!generatedPicture) {
     return (
       <div className="py-8 text-center text-[12px] text-text-tertiary">
-        Ingen data å vise.
+        {t('onboarding.insights.noData')}
       </div>
     );
   }
@@ -102,20 +111,20 @@ export function StepInsights({ onComplete }: StepInsightsProps) {
           <p className="text-2xl font-bold text-primary">
             {DIMENSIONS.filter(d => dimCounts.find(dc => dc.key === d.key && dc.count > 0)).length}
           </p>
-          <p className="text-[10px] text-text-tertiary mt-0.5">dimensjoner</p>
+          <p className="text-[10px] text-text-tertiary mt-0.5">{t('onboarding.insights.dimCount')}</p>
         </div>
       </div>
 
       {/* CTAs */}
       <div className="space-y-2 pt-1">
         <button
-          onClick={handleComplete}
+          onClick={handleMeetingCta}
           className="w-full px-4 py-2.5 text-[12px] font-medium bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
         >
           {t('onboarding.insights.meetingCta')}
         </button>
         <button
-          onClick={handleComplete}
+          onClick={handleEditCta}
           className="w-full px-4 py-2 text-[11px] font-medium text-text-secondary hover:text-text-primary border border-border rounded-lg hover:bg-surface-hover transition-colors"
         >
           {t('onboarding.insights.editCta')}

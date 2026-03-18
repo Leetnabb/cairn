@@ -47,15 +47,8 @@
   },
   "onboarding": {
     "stepWelcome": "Welcome",
-    "stepModules": "Modules",
-    "stepTemplate": "Template",
-    "stepAI": "AI suggestions",
-    "stepReview": "Review",
-    "reviewTitle": "Review",
-    "reviewSubtitle": "Here is what will be created. Click Finish to start.",
     "capabilities": "capabilities",
     "initiatives": "initiatives",
-    "aiSuggestedCaps": "AI-suggested capabilities",
     "complete": "Finish",
     "startNow": "Start now",
     "upload": {
@@ -68,7 +61,9 @@
       "generating": "Analysing...",
       "error": "Something went wrong. Please try again.",
       "needApiKey": "API key required",
-      "apiKeyPlaceholder": "Enter your Claude API key"
+      "apiKeyPlaceholder": "Enter your Claude API key",
+      "preview": "Preview",
+      "persistKey": "Remember API key between sessions"
     },
     "generated": {
       "title": "Your strategic picture",
@@ -78,7 +73,8 @@
       "initiatives": "Initiatives",
       "effects": "Effects",
       "included": "included",
-      "excluded": "excluded"
+      "excluded": "excluded",
+      "noData": "No data to display. Go back and upload documentation."
     },
     "insights": {
       "title": "What we see",
@@ -87,7 +83,9 @@
       "editCta": "Start editing",
       "dimensions": "Dimension distribution",
       "capCount": "capabilities",
-      "initCount": "initiatives"
+      "initCount": "initiatives",
+      "noData": "No data to display.",
+      "dimCount": "dimensions"
     }
   },
   "capLandscape": {

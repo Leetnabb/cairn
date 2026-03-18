@@ -47,15 +47,8 @@
   },
   "onboarding": {
     "stepWelcome": "Velkommen",
-    "stepModules": "Moduler",
-    "stepTemplate": "Mal",
-    "stepAI": "AI-forslag",
-    "stepReview": "Gjennomgang",
-    "reviewTitle": "Gjennomgang",
-    "reviewSubtitle": "Her er det som vil bli opprettet. Klikk Fullfør for å starte.",
     "capabilities": "kapabiliteter",
     "initiatives": "initiativer",
-    "aiSuggestedCaps": "AI-foreslåtte kapabiliteter",
     "complete": "Fullfør",
     "startNow": "Start nå",
     "upload": {
@@ -68,7 +61,9 @@
       "generating": "Analyserer...",
       "error": "Noe gikk galt. Prøv igjen.",
       "needApiKey": "API-nøkkel kreves",
-      "apiKeyPlaceholder": "Skriv inn din Claude API-nøkkel"
+      "apiKeyPlaceholder": "Skriv inn din Claude API-nøkkel",
+      "preview": "Forhåndsvisning",
+      "persistKey": "Husk API-nøkkel mellom sesjoner"
     },
     "generated": {
       "title": "Ditt strategibilde",
@@ -78,7 +73,8 @@
       "initiatives": "Initiativer",
       "effects": "Effekter",
       "included": "inkludert",
-      "excluded": "ekskludert"
+      "excluded": "ekskludert",
+      "noData": "Ingen data å vise. Gå tilbake og last opp dokumentasjon."
     },
     "insights": {
       "title": "Dette ser vi",
@@ -87,7 +83,9 @@
       "editCta": "Start med å redigere",
       "dimensions": "Dimensjonsfordeling",
       "capCount": "kapabiliteter",
-      "initCount": "initiativer"
+      "initCount": "initiativer",
+      "noData": "Ingen data å vise.",
+      "dimCount": "dimensjoner"
     }
   },
   "capLandscape": {

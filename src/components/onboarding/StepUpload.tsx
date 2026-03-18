@@ -131,7 +131,7 @@ export function StepUpload() {
       {/* Text preview */}
       {uploadedText && (
         <div className="bg-surface-hover rounded-lg p-3">
-          <p className="text-[10px] text-text-tertiary uppercase font-medium mb-1">Forhåndsvisning</p>
+          <p className="text-[10px] text-text-tertiary uppercase font-medium mb-1">{t('onboarding.upload.preview')}</p>
           <p className="text-[11px] text-text-secondary leading-relaxed line-clamp-4">
             {uploadedText.slice(0, 500)}{uploadedText.length > 500 ? '…' : ''}
           </p>
@@ -174,7 +174,7 @@ export function StepUpload() {
               onChange={(e) => setPersistKey(e.target.checked)}
               className="w-3 h-3 accent-primary"
             />
-            <span className="text-[10px] text-text-tertiary">Husk API-nøkkel mellom sesjoner</span>
+            <span className="text-[10px] text-text-tertiary">{t('onboarding.upload.persistKey')}</span>
           </label>
         </div>
       )}

@@ -259,12 +259,13 @@ function StepGeneratedInner({ picture }: StepGeneratedInnerProps) {
 }
 
 export function StepGenerated() {
+  const { t } = useTranslation();
   const generatedPicture = useOnboardingStore(s => s.generatedPicture);
 
   if (!generatedPicture) {
     return (
       <div className="py-8 text-center text-[12px] text-text-tertiary">
-        Ingen data å vise. Gå tilbake og last opp dokumentasjon.
+        {t('onboarding.generated.noData')}
       </div>
     );
   }
