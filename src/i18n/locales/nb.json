@@ -661,5 +661,65 @@
     "importing": "Importerer...",
     "success": "Importert",
     "label": "Importert fra lokal sesjon"
+  },
+  "landing": {
+    "nav": {
+      "earlyAccess": "Early Access",
+      "cta": "Ta kontakt"
+    },
+    "hero": {
+      "headline": "Når tåken legger seg, trenger du ikke et bedre kart. Du trenger en varde.",
+      "subline1": "Strategi → Kapabiliteter → Initiativer → Effekter.",
+      "subline2": "Ett bilde. Levende. For de som leder.",
+      "cta": "Ta kontakt",
+      "emailPlaceholder": "din@epost.no",
+      "submitted": "Du er på listen — vi tar kontakt."
+    },
+    "problem": {
+      "context": "Teknologi endrer seg raskere enn organisasjonen klarer å følge. Regulering strammes til. Geopolitikk skaper usikkerhet. Når alt beveger seg samtidig, blir det vanskelig å se fremover. Tåken.",
+      "headline": "Alle har en strategi. De fleste har prosjekter. Men det som mangler er TO-en — koblingen mellom strategi og eksekusjon.",
+      "body1": "Initiativene lever i prosjektverktøy. Strategien lever i presentasjoner. Kapabilitetene lever i EA-verktøy som kun arkitekten forstår. Effektene antas, men måles sjelden.",
+      "silo1": "Initiativene lever i prosjektverktøy.",
+      "silo2": "Strategien lever i presentasjoner.",
+      "silo3": "Kapabilitetene lever i EA-verktøy som kun arkitekten forstår.",
+      "closing": "Her trengs dynamisk strategi — ikke en plan som låses fast, men en levende sti som oppdateres fra varde til varde."
+    },
+    "product": {
+      "eyebrow": "Produktet",
+      "headline": "Fire dimensjoner. To horisonter. Alle initiativ, kapabiliteter og effekter — koblet i ett bilde.",
+      "body": "Klikk et initiativ — se hvilken kapabilitet det bygger. Se hvilken effekt det driver. Se hva som blokkerer. Ett bilde. Alltid levende.",
+      "nearHorizon": "Nær horisont",
+      "farHorizon": "Lang horisont",
+      "hint": "Klikk et kort for å utforske koblingene."
+    },
+    "insights": {
+      "headline": "Tre ting som endrer samtalen i ledergruppen:",
+      "card1": {
+        "title": "Skjevheten",
+        "body": "12 initiativer. 9 er teknologi. Hvem driver organisasjonsendringen?"
+      },
+      "card2": {
+        "title": "Koblingene",
+        "body": "Tre kapabiliteter blokkerer alt annet. De har ingen eier."
+      },
+      "card3": {
+        "title": "Retningen",
+        "body": "Konkret på kort sikt. Retning på lang sikt. Fra varde til varde."
+      }
+    },
+    "differentiation": {
+      "eyebrow": "Ikke dette",
+      "card1": "PowerPoint-strategien er utdatert dagen etter styremøtet.",
+      "card2": "EA-verktøyet forstås kun av arkitekten.",
+      "card3": "Prosjektverktøyet viser oppgaver, ikke retning.",
+      "closing": "Cairn er verktøyet ledergruppen faktisk åpner mellom møtene."
+    },
+    "cta": {
+      "headline": "Vi er i early access.",
+      "body": "Ta kontakt — så setter vi opp stien sammen.",
+      "button": "Ta kontakt",
+      "emailPlaceholder": "din@epost.no",
+      "submitted": "Du er på listen — vi tar kontakt."
+    }
   }
 }

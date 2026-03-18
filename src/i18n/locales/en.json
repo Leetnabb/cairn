@@ -661,5 +661,65 @@
     "importing": "Importing...",
     "success": "Imported successfully",
     "label": "Imported from local session"
+  },
+  "landing": {
+    "nav": {
+      "earlyAccess": "Early Access",
+      "cta": "Request early access"
+    },
+    "hero": {
+      "headline": "When the fog rolls in, you don't need a better map. You need a cairn.",
+      "subline1": "Strategy → Capabilities → Initiatives → Effects.",
+      "subline2": "One picture. Living. For those who lead.",
+      "cta": "Request early access",
+      "emailPlaceholder": "your@email.com",
+      "submitted": "You're on the list — we'll be in touch."
+    },
+    "problem": {
+      "context": "Technology moves faster than the organisation can follow. Regulation tightens. Geopolitics creates uncertainty. When everything moves at once, it becomes hard to see forward. The fog.",
+      "headline": "Everyone has a strategy. Most have projects. What's missing is the TO — the link between strategy and execution.",
+      "body1": "Initiatives live in project tools. Strategy lives in presentations. Capabilities live in EA tools only the architect understands. Effects are assumed but rarely measured.",
+      "silo1": "Initiatives live in project tools.",
+      "silo2": "Strategy lives in presentations.",
+      "silo3": "Capabilities live in EA tools only the architect understands.",
+      "closing": "What's needed is dynamic strategy — not a plan locked in place, but a living path that updates from cairn to cairn."
+    },
+    "product": {
+      "eyebrow": "The product",
+      "headline": "Four dimensions. Two horizons. All in one picture.",
+      "body": "Click an initiative — see which capability it builds. See which effect it drives. See what's blocking. One picture. Always current.",
+      "nearHorizon": "Near horizon",
+      "farHorizon": "Far horizon",
+      "hint": "Click a card to explore the connections."
+    },
+    "insights": {
+      "headline": "Three things that change the conversation in the leadership team:",
+      "card1": {
+        "title": "The skew",
+        "body": "12 initiatives. 9 are technology. Who's driving the organisational change?"
+      },
+      "card2": {
+        "title": "The connections",
+        "body": "Three capabilities block everything else. They have no owner."
+      },
+      "card3": {
+        "title": "The direction",
+        "body": "Concrete in the near term. Direction in the far term. From cairn to cairn."
+      }
+    },
+    "differentiation": {
+      "eyebrow": "Not this",
+      "card1": "The PowerPoint strategy is outdated the day after the board meeting.",
+      "card2": "The EA tool is understood only by the architect.",
+      "card3": "The project tool shows tasks, not direction.",
+      "closing": "Cairn is the tool the leadership team actually opens between meetings."
+    },
+    "cta": {
+      "headline": "We are in early access.",
+      "body": "Get in touch — and we'll set up the path together.",
+      "button": "Request early access",
+      "emailPlaceholder": "your@email.com",
+      "submitted": "You're on the list — we'll be in touch."
+    }
   }
 }
