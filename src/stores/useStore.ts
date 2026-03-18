@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -90,6 +90,7 @@ interface StoreState extends AppState {
   setBoardViewMode: (active: boolean) => void;
   setBoardSelectedItem: (item: UIState['boardSelectedItem']) => void;
   setSettingsOpen: (open: boolean) => void;
+  setComplexityLevel: (level: ComplexityLevel) => void;
 
   // Bulk operations
   toggleSelectedItem: (id: string) => void;
@@ -111,6 +112,7 @@ interface StoreState extends AppState {
 const defaultUI: UIState = {
   selectedItem: null,
   view: 'roadmap',
+  complexityLevel: 1 as ComplexityLevel,
   roadmapViewMode: 'capability',
   capabilityView: 'maturity',
   simulationEnabled: false,
@@ -487,6 +489,9 @@ export const useStore = create<StoreState>()(
         setSettingsOpen: (open) => set(state => ({
           ui: { ...state.ui, settingsOpen: open },
         })),
+        setComplexityLevel: (level) => set(state => ({
+          ui: { ...state.ui, complexityLevel: level }
+        })),
 
         // Bulk operations
         toggleSelectedItem: (id) => set(state => {
@@ -599,7 +604,7 @@ export const useStore = create<StoreState>()(
     name: 'cairn-storage',
     partialize: (state) => {
       const { ui: _uiPartialize, ...rest } = state;
-      return { ...rest, ui: { filters: state.ui.filters, roleMode: state.ui.roleMode } };
+      return { ...rest, ui: { filters: state.ui.filters, roleMode: state.ui.roleMode, complexityLevel: state.ui.complexityLevel } };
     },
     merge: (persistedState, currentState) => {
       const persisted = (persistedState ?? {}) as Partial<StoreState>;
