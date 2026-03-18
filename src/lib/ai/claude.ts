@@ -15,13 +15,15 @@ export class AIError extends Error {
   }
 }
 
-// Migrate existing key from old storage key to session
-(function migrateApiKey() {
-  const legacy = localStorage.getItem('cairn-ai-key');
-  if (legacy && !sessionStorage.getItem(STORAGE_KEY_SESSION)) {
-    sessionStorage.setItem(STORAGE_KEY_SESSION, legacy);
-  }
-})();
+// Migrate existing key from old storage key to session (browser only)
+if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+  (function migrateApiKey() {
+    const legacy = localStorage.getItem('cairn-ai-key');
+    if (legacy && !sessionStorage.getItem(STORAGE_KEY_SESSION)) {
+      sessionStorage.setItem(STORAGE_KEY_SESSION, legacy);
+    }
+  })();
+}
 
 /** Returns the API key from sessionStorage first, then localStorage (persisted). */
 export function getApiKey(): string | null {

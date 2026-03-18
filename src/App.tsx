@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore } from './stores/useStore';
 import { useAIStore } from './stores/useAIStore';
-import { useOnboardingStore, shouldAutoShowWizard } from './stores/useOnboardingStore';
+// useOnboardingStore auto-opens wizard via its own init logic
 import { Roadmap } from './components/roadmap/Roadmap';
 import { DetailPanel } from './components/detail/DetailPanel';
 import { Dashboard } from './components/dashboard/Dashboard';
@@ -15,6 +15,7 @@ import { CapabilityOverlay } from './components/capabilities/CapabilityOverlay';
 import { AddModal } from './components/modals/AddModal';
 import { ImportModal } from './components/modals/ImportModal';
 import { PresentationMode } from './components/presentation/PresentationMode';
+import MeetingMode from './components/meeting/MeetingMode';
 import AIChatPanel from './components/ai/AIChatPanel';
 import { CairnMark } from './components/CairnLogo';
 import { OnboardingWizard } from './components/onboarding/OnboardingWizard';
@@ -28,22 +29,23 @@ import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
 import { useAuthContext } from './hooks/useAuthContext';
+import { useComplexityLevel } from './hooks/useComplexityLevel';
 import i18n from './i18n';
 
 export default function App() {
   const { t } = useTranslation();
   const view = useStore(s => s.ui.view);
   const presentationMode = useStore(s => s.ui.presentationMode);
+  const meetingMode = useStore(s => s.ui.meetingMode);
   const addModalOpen = useStore(s => s.ui.addModalOpen);
   const importModalOpen = useStore(s => s.ui.importModalOpen);
   const setView = useStore(s => s.setView);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
   const selectedItem = useStore(s => s.ui.selectedItem);
   const setSelectedItem = useStore(s => s.setSelectedItem);
-  const setPresentationMode = useStore(s => s.setPresentationMode);
+  const enterMeetingMode = useStore(s => s.enterMeetingMode);
   const aiPanelOpen = useAIStore(s => s.panelOpen);
   const setAIPanelOpen = useAIStore(s => s.setPanelOpen);
-  const openWizard = useOnboardingStore(s => s.openWizard);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
   const boardViewMode = useStore(s => s.ui.boardViewMode);
@@ -52,13 +54,9 @@ export default function App() {
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
   const auth = useAuthContext();
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
+  const { isViewVisible } = useComplexityLevel();
 
-  // Auto-show wizard for first-time users
-  useEffect(() => {
-    if (shouldAutoShowWizard()) {
-      openWizard();
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Auto-show wizard is handled in onboarding store initialization
 
   // Redirect to roadmap if active view belongs to a disabled module
   useEffect(() => {
@@ -110,16 +108,21 @@ export default function App() {
 
         {/* Right: Nav + actions */}
         <nav className="flex items-center gap-1">
-          <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
+          {isViewVisible('strategies') && (
+            <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
+          )}
           <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
-          {modules.capabilities && (
+          {modules.capabilities && isViewVisible('capabilities') && (
             <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
           )}
-          {modules.effects && (
+          {modules.effects && isViewVisible('effects') && (
             <NavBtn active={view === 'effects'} onClick={() => setView('effects')}>{t('nav.effects')}</NavBtn>
           )}
+          {isViewVisible('compare') && (
+            <NavBtn active={view === 'compare'} onClick={() => setView('compare')}>{t('nav.compare')}</NavBtn>
+          )}
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
-          <NavBtn active={false} onClick={() => setPresentationMode(true)}>{t('nav.presentation')}</NavBtn>
+          <NavBtn active={false} onClick={() => enterMeetingMode()}>{t('nav.presentation')}</NavBtn>
           <div className="w-px h-5 bg-border mx-0.5" />
           {view === 'roadmap' && <FilterDropdown />}
           <InsightsBadge />
@@ -217,6 +220,9 @@ export default function App() {
       <footer className="shrink-0 px-4 py-1 text-center text-[9px] text-text-tertiary border-t border-border bg-white">
         {t('app.footer')}
       </footer>
+
+      {/* Meeting Mode overlay */}
+      {meetingMode && <MeetingMode />}
 
       {/* Capability Overlay */}
       {capabilityOverlayOpen && <CapabilityOverlay />}

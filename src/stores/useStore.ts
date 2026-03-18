@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -90,6 +90,10 @@ interface StoreState extends AppState {
   setBoardViewMode: (active: boolean) => void;
   setBoardSelectedItem: (item: UIState['boardSelectedItem']) => void;
   setSettingsOpen: (open: boolean) => void;
+  setComplexityLevel: (level: ComplexityLevel) => void;
+  enterMeetingMode: () => void;
+  exitMeetingMode: () => void;
+  setMeetingLens: (lens: MeetingLens) => void;
 
   // Bulk operations
   toggleSelectedItem: (id: string) => void;
@@ -111,6 +115,7 @@ interface StoreState extends AppState {
 const defaultUI: UIState = {
   selectedItem: null,
   view: 'roadmap',
+  complexityLevel: 1,
   roadmapViewMode: 'capability',
   capabilityView: 'maturity',
   simulationEnabled: false,
@@ -142,6 +147,8 @@ const defaultUI: UIState = {
   boardViewMode: false,
   boardSelectedItem: null,
   settingsOpen: false,
+  meetingMode: false,
+  meetingLens: 'narrative' as MeetingLens,
 };
 
 export const useStore = create<StoreState>()(
@@ -487,6 +494,18 @@ export const useStore = create<StoreState>()(
         setSettingsOpen: (open) => set(state => ({
           ui: { ...state.ui, settingsOpen: open },
         })),
+        setComplexityLevel: (level) => set(state => ({
+          ui: { ...state.ui, complexityLevel: level }
+        })),
+        enterMeetingMode: () => set(state => ({
+          ui: { ...state.ui, meetingMode: true, meetingLens: 'narrative' }
+        })),
+        exitMeetingMode: () => set(state => ({
+          ui: { ...state.ui, meetingMode: false }
+        })),
+        setMeetingLens: (lens: MeetingLens) => set(state => ({
+          ui: { ...state.ui, meetingLens: lens }
+        })),
 
         // Bulk operations
         toggleSelectedItem: (id) => set(state => {
@@ -599,7 +618,7 @@ export const useStore = create<StoreState>()(
     name: 'cairn-storage',
     partialize: (state) => {
       const { ui: _uiPartialize, ...rest } = state;
-      return { ...rest, ui: { filters: state.ui.filters, roleMode: state.ui.roleMode } };
+      return { ...rest, ui: { filters: state.ui.filters, roleMode: state.ui.roleMode, complexityLevel: state.ui.complexityLevel } };
     },
     merge: (persistedState, currentState) => {
       const persisted = (persistedState ?? {}) as Partial<StoreState>;
@@ -619,6 +638,21 @@ export const useStore = create<StoreState>()(
           ...currentState.ui,
           ...(typeof persistedUI === 'object' && persistedUI !== null ? persistedUI : {}),
           selectedItems: currentState.ui.selectedItems,  // Always keep the Set
+          complexityLevel: (() => {
+            const validLevels = [1, 2, 3];
+            const persistedLevel = (persistedUI as Record<string, unknown> | null)?.complexityLevel;
+            if (validLevels.includes(persistedLevel as number)) {
+              // Persisted state has a valid complexity level — keep it
+              return persistedLevel as ComplexityLevel;
+            }
+            // No valid complexity level in persisted state
+            if (persistedUI !== undefined && persistedUI !== null) {
+              // Existing user from before this feature was introduced — default to expert (3)
+              return 3 as ComplexityLevel;
+            }
+            // No persisted UI state at all — new user, use default (1)
+            return 1 as ComplexityLevel;
+          })(),
         },
       } as StoreState;
     },

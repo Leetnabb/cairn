@@ -1,7 +1,11 @@
 import type { Capability } from '../../types';
-import type { SuggestedCapability } from '../../stores/useOnboardingStore';
 import { AIError } from './claude';
 import { parseJsonArrayFromAI } from './parseJsonResponse';
+
+export interface SuggestedCapability extends Capability {
+  reasoning: string;
+  selected: boolean;
+}
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';

@@ -156,9 +156,32 @@ export interface AppState {
 
 export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects' | 'strategies';
 
+export type MeetingLens = 'narrative' | 'path' | 'capabilities' | 'effects';
+
+export type ComplexityLevel = 1 | 2 | 3;
+
+export const COMPLEXITY_FEATURES = {
+  1: {
+    views: ['roadmap', 'dashboard'] as ViewMode[],
+    filters: ['dimensions', 'search'] as string[],
+    features: ['presentationMode'] as string[],
+  },
+  2: {
+    views: ['roadmap', 'dashboard', 'capabilities', 'effects', 'strategies'] as ViewMode[],
+    filters: ['dimensions', 'search', 'horizon', 'owner', 'status', 'milestones'] as string[],
+    features: ['presentationMode'] as string[],
+  },
+  3: {
+    views: ['roadmap', 'dashboard', 'capabilities', 'effects', 'strategies', 'compare'] as ViewMode[],
+    filters: ['dimensions', 'search', 'horizon', 'owner', 'status', 'milestones', 'focusMode', 'zoomLevel', 'spotlightValueChain'] as string[],
+    features: ['presentationMode', 'simulation', 'criticalPath', 'scenarios', 'benchmarking', 'import', 'export'] as string[],
+  },
+};
+
 export interface UIState {
   selectedItem: { type: 'capability' | 'initiative' | 'milestone' | 'effect' | 'strategy'; id: string } | null;
   view: ViewMode;
+  complexityLevel: ComplexityLevel;
   roadmapViewMode: 'dimension' | 'capability';
   capabilityView: 'maturity' | 'risk';
   simulationEnabled: boolean;
@@ -190,6 +213,8 @@ export interface UIState {
   boardViewMode: boolean;
   boardSelectedItem: { type: 'capability' | 'initiative'; id: string } | null;
   settingsOpen: boolean;
+  meetingMode: boolean;
+  meetingLens: MeetingLens;
 }
 
 export const MATURITY_COLORS: Record<number, string> = {

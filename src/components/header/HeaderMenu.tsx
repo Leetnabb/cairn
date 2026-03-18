@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
+import { useComplexityLevel } from '../../hooks/useComplexityLevel';
+import type { ComplexityLevel } from '../../types';
 
 
 export function HeaderMenu() {
@@ -16,11 +18,14 @@ export function HeaderMenu() {
   const setImportModalOpen = useStore(s => s.setImportModalOpen);
   const saveSnapshot = useStore(s => s.saveSnapshot);
   const setCapabilityOverlayOpen = useStore(s => s.setCapabilityOverlayOpen);
-  const openWizard = useOnboardingStore(s => s.openWizard);
+  const openWizard = useOnboardingStore(s => s.open);
   const roleMode = useStore(s => s.ui.roleMode);
   const modules = useStore(s => s.modules);
   const setModules = useStore(s => s.setModules);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
+  const setPresentationMode = useStore(s => s.setPresentationMode);
+  const setComplexityLevel = useStore(s => s.setComplexityLevel);
+  const { level, isViewVisible } = useComplexityLevel();
 
   useEffect(() => {
     if (!open) return;
@@ -32,10 +37,11 @@ export function HeaderMenu() {
   }, [open]);
 
   const items = [
-    { label: t('nav.compare'), action: () => setView('compare'), hide: false },
+    { label: t('nav.compare'), action: () => setView('compare'), hide: !isViewVisible('compare') },
     { label: t('nav.capabilityMap'), action: () => setCapabilityOverlayOpen(true), hide: !modules.capabilities },
     { label: t('nav.simulation'), action: toggleSimulation, toggle: simulationEnabled, hide: !modules.capabilities },
     { label: t('nav.criticalPath'), action: toggleCriticalPath, toggle: criticalPathEnabled, hide: false },
+    { label: t('meeting.classicSlides'), action: () => setPresentationMode(true), hide: false },
     { divider: true },
     { label: t('nav.importExport'), action: () => setImportModalOpen(true), hide: false },
     { label: t('nav.saveSnapshot'), action: () => saveSnapshot(), hide: roleMode === 'governance' },
@@ -73,6 +79,32 @@ export function HeaderMenu() {
               </button>
             );
           })}
+
+          {/* Complexity level section */}
+          <div className="border-t border-border mt-1 pt-1">
+            <div className="px-3 py-1 text-[9px] text-text-tertiary uppercase tracking-wider font-medium">
+              {t('complexity.current')}
+            </div>
+            <div className="px-3 py-1 text-[11px] text-text-secondary">
+              {level === 1 ? t('complexity.level1') : level === 2 ? t('complexity.level2') : t('complexity.level3')}
+            </div>
+            {level < 3 && (
+              <button
+                onClick={() => { setComplexityLevel((level + 1) as ComplexityLevel); setOpen(false); }}
+                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+              >
+                <span>{t('complexity.unlock')} →</span>
+              </button>
+            )}
+            {level > 1 && (
+              <button
+                onClick={() => { setComplexityLevel((level - 1) as ComplexityLevel); setOpen(false); }}
+                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+              >
+                <span>← {t('complexity.simplify')}</span>
+              </button>
+            )}
+          </div>
 
           {/* Module settings section */}
           <div className="border-t border-border mt-1 pt-1">

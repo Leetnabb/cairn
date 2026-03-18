@@ -47,17 +47,46 @@
   },
   "onboarding": {
     "stepWelcome": "Welcome",
-    "stepModules": "Modules",
-    "stepTemplate": "Template",
-    "stepAI": "AI suggestions",
-    "stepReview": "Review",
-    "reviewTitle": "Review",
-    "reviewSubtitle": "Here is what will be created. Click Finish to start.",
     "capabilities": "capabilities",
     "initiatives": "initiatives",
-    "aiSuggestedCaps": "AI-suggested capabilities",
     "complete": "Finish",
-    "startNow": "Start now"
+    "startNow": "Start now",
+    "upload": {
+      "title": "Upload existing documentation",
+      "subtitle": "Strategy plans, capability maps, initiative lists — most organisations have the docs, but lack the lens",
+      "dropzone": "Drop files here or click to select",
+      "supported": "PDF, Word, PowerPoint, text",
+      "orDescribe": "Or describe your organisation",
+      "generate": "Generate strategic picture",
+      "generating": "Analysing...",
+      "error": "Something went wrong. Please try again.",
+      "needApiKey": "API key required",
+      "apiKeyPlaceholder": "Enter your Claude API key",
+      "preview": "Preview",
+      "persistKey": "Remember API key between sessions"
+    },
+    "generated": {
+      "title": "Your strategic picture",
+      "subtitle": "Review and adjust — remove what doesn't fit, add what's missing",
+      "strategies": "Strategies",
+      "capabilities": "Capabilities",
+      "initiatives": "Initiatives",
+      "effects": "Effects",
+      "included": "included",
+      "excluded": "excluded",
+      "noData": "No data to display. Go back and upload documentation."
+    },
+    "insights": {
+      "title": "What we see",
+      "subtitle": "Insights from your strategic picture",
+      "meetingCta": "Bring this to the next leadership meeting",
+      "editCta": "Start editing",
+      "dimensions": "Dimension distribution",
+      "capCount": "capabilities",
+      "initCount": "initiatives",
+      "noData": "No data to display.",
+      "dimCount": "dimensions"
+    }
   },
   "capLandscape": {
     "title": "Capability Landscape",
@@ -172,6 +201,9 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "layer1Title": "What should you discuss?",
+    "layer2Title": "Strategic health",
+    "layer3Title": "Deep dive",
     "activities": "Activities",
     "maturityNowTarget": "Maturity now / target",
     "criticalPath": "Critical path",
@@ -595,6 +627,32 @@
       "enterpriseOnly": "Audit log is available on Enterprise plan."
     }
   },
+  "complexity": {
+    "level1": "Level 1: Leader",
+    "level2": "Level 2: Strategic",
+    "level3": "Level 3: Expert",
+    "unlock": "Unlock more tools",
+    "simplify": "Simplify view",
+    "current": "Complexity level"
+  },
+  "meeting": {
+    "title": "Meeting Mode",
+    "narrative": "Strategic Reading",
+    "path": "The Path",
+    "capabilities": "Capabilities",
+    "effects": "Effects",
+    "exit": "Exit",
+    "export": "Export",
+    "clickToContinue": "Click to continue",
+    "classicSlides": "Classic slides",
+    "stats": {
+      "initiatives": "initiatives",
+      "near": "near",
+      "far": "far",
+      "capabilities": "capabilities",
+      "dimensions": "dimensions"
+    }
+  },
   "migration": {
     "title": "Import your local data",
     "description": "We found a strategy session saved in this browser. Would you like to import it into your account?",
@@ -603,5 +661,65 @@
     "importing": "Importing...",
     "success": "Imported successfully",
     "label": "Imported from local session"
+  },
+  "landing": {
+    "nav": {
+      "earlyAccess": "Early Access",
+      "cta": "Request early access"
+    },
+    "hero": {
+      "headline": "When the fog rolls in, you don't need a better map. You need a cairn.",
+      "subline1": "Strategy → Capabilities → Initiatives → Effects.",
+      "subline2": "One picture. Living. For those who lead.",
+      "cta": "Request early access",
+      "emailPlaceholder": "your@email.com",
+      "submitted": "You're on the list — we'll be in touch."
+    },
+    "problem": {
+      "context": "Technology moves faster than the organisation can follow. Regulation tightens. Geopolitics creates uncertainty. When everything moves at once, it becomes hard to see forward. The fog.",
+      "headline": "Everyone has a strategy. Most have projects. What's missing is the TO — the link between strategy and execution.",
+      "body1": "Initiatives live in project tools. Strategy lives in presentations. Capabilities live in EA tools only the architect understands. Effects are assumed but rarely measured.",
+      "silo1": "Initiatives live in project tools.",
+      "silo2": "Strategy lives in presentations.",
+      "silo3": "Capabilities live in EA tools only the architect understands.",
+      "closing": "What's needed is dynamic strategy — not a plan locked in place, but a living path that updates from cairn to cairn."
+    },
+    "product": {
+      "eyebrow": "The product",
+      "headline": "Four dimensions. Two horizons. All in one picture.",
+      "body": "Click an initiative — see which capability it builds. See which effect it drives. See what's blocking. One picture. Always current.",
+      "nearHorizon": "Near horizon",
+      "farHorizon": "Far horizon",
+      "hint": "Click a card to explore the connections."
+    },
+    "insights": {
+      "headline": "Three things that change the conversation in the leadership team:",
+      "card1": {
+        "title": "The skew",
+        "body": "12 initiatives. 9 are technology. Who's driving the organisational change?"
+      },
+      "card2": {
+        "title": "The connections",
+        "body": "Three capabilities block everything else. They have no owner."
+      },
+      "card3": {
+        "title": "The direction",
+        "body": "Concrete in the near term. Direction in the far term. From cairn to cairn."
+      }
+    },
+    "differentiation": {
+      "eyebrow": "Not this",
+      "card1": "The PowerPoint strategy is outdated the day after the board meeting.",
+      "card2": "The EA tool is understood only by the architect.",
+      "card3": "The project tool shows tasks, not direction.",
+      "closing": "Cairn is the tool the leadership team actually opens between meetings."
+    },
+    "cta": {
+      "headline": "We are in early access.",
+      "body": "Get in touch — and we'll set up the path together.",
+      "button": "Request early access",
+      "emailPlaceholder": "your@email.com",
+      "submitted": "You're on the list — we'll be in touch."
+    }
   }
 }

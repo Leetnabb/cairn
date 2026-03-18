@@ -25,13 +25,11 @@ export function CapabilityPath() {
       const allIds = new Set([cap.id, ...childIds]);
       const linked = initiatives.filter(i => i.capabilities.some(cid => allIds.has(cid)));
       const capStrategies = strategies.filter(s => cap.strategyIds?.includes(s.id));
-      const strategyNames = capStrategies.map(s => s.name);
       return {
         cap,
         near: linked.filter(i => i.horizon === 'near').sort((a, b) => a.order - b.order),
         far: linked.filter(i => i.horizon === 'far').sort((a, b) => a.order - b.order),
         capStrategies,
-        strategyNames,
       };
     });
   }, [l1Caps, capabilities, initiatives, strategies]);
@@ -66,7 +64,7 @@ export function CapabilityPath() {
       </div>
 
       {/* Capability rows */}
-      {capRows.map(({ cap, near, far, capStrategies, strategyNames }) => (
+      {capRows.map(({ cap, near, far, capStrategies }) => (
         <div key={cap.id} className="grid mb-1" style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
           {/* Capability label */}
           <button
@@ -109,7 +107,7 @@ export function CapabilityPath() {
             style={{ backgroundColor: '#f8f9ff', borderLeft: '3px solid #6366f1' }}
           >
             {near.map(i => (
-              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} strategyNames={strategyNames} />
+              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} />
             ))}
             {near.length === 0 && (
               <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
@@ -122,7 +120,7 @@ export function CapabilityPath() {
             style={{ backgroundColor: '#f0f4ff' }}
           >
             {far.map(i => (
-              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} strategyNames={strategyNames} />
+              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} />
             ))}
             {far.length === 0 && (
               <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
