@@ -23,6 +23,7 @@ export function HeaderMenu() {
   const modules = useStore(s => s.modules);
   const setModules = useStore(s => s.setModules);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
+  const setPresentationMode = useStore(s => s.setPresentationMode);
   const setComplexityLevel = useStore(s => s.setComplexityLevel);
   const { level, isViewVisible } = useComplexityLevel();
 
@@ -40,6 +41,7 @@ export function HeaderMenu() {
     { label: t('nav.capabilityMap'), action: () => setCapabilityOverlayOpen(true), hide: !modules.capabilities },
     { label: t('nav.simulation'), action: toggleSimulation, toggle: simulationEnabled, hide: !modules.capabilities },
     { label: t('nav.criticalPath'), action: toggleCriticalPath, toggle: criticalPathEnabled, hide: false },
+    { label: t('meeting.classicSlides'), action: () => setPresentationMode(true), hide: false },
     { divider: true },
     { label: t('nav.importExport'), action: () => setImportModalOpen(true), hide: false },
     { label: t('nav.saveSnapshot'), action: () => saveSnapshot(), hide: roleMode === 'governance' },

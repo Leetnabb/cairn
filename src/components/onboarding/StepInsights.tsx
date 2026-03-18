@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
+import { useStore } from '../../stores/useStore';
 import { DIMENSIONS, DIMENSION_MAP, type DimensionKey } from '../../types';
 
 interface StepInsightsProps {
@@ -25,12 +26,13 @@ function InsightCard({ text }: { text: string }) {
 export function StepInsights({ onComplete }: StepInsightsProps) {
   const { t } = useTranslation();
   const { generatedPicture, completeOnboarding } = useOnboardingStore();
+  const enterMeetingMode = useStore(s => s.enterMeetingMode);
 
   const handleComplete = onComplete ?? completeOnboarding;
 
   const handleMeetingCta = () => {
     handleComplete();
-    // TODO: enterMeetingMode() when meeting mode is implemented (Plan 3)
+    enterMeetingMode();
   };
 
   const handleEditCta = () => {
