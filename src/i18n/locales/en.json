@@ -635,6 +635,23 @@
     "simplify": "Simplify view",
     "current": "Complexity level"
   },
+  "meeting": {
+    "title": "Meeting Mode",
+    "narrative": "Strategic Reading",
+    "path": "The Path",
+    "capabilities": "Capabilities",
+    "effects": "Effects",
+    "exit": "Exit",
+    "export": "Export",
+    "clickToContinue": "Click to continue",
+    "stats": {
+      "initiatives": "initiatives",
+      "near": "near",
+      "far": "far",
+      "capabilities": "capabilities",
+      "dimensions": "dimensions"
+    }
+  },
   "migration": {
     "title": "Import your local data",
     "description": "We found a strategy session saved in this browser. Would you like to import it into your account?",

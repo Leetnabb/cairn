@@ -635,6 +635,23 @@
     "simplify": "Forenkle visning",
     "current": "Kompleksitetsnivå"
   },
+  "meeting": {
+    "title": "Møtemodus",
+    "narrative": "Strategisk lesning",
+    "path": "Stien",
+    "capabilities": "Evnene",
+    "effects": "Effektene",
+    "exit": "Avslutt",
+    "export": "Eksporter",
+    "clickToContinue": "Klikk for å fortsette",
+    "stats": {
+      "initiatives": "initiativer",
+      "near": "nær",
+      "far": "lang",
+      "capabilities": "kapabiliteter",
+      "dimensions": "dimensjoner"
+    }
+  },
   "migration": {
     "title": "Importer lokale data",
     "description": "Vi fant en strategisesjon lagret i denne nettleseren. Vil du importere den til kontoen din?",
