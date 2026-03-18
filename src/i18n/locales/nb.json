@@ -201,6 +201,9 @@
   },
   "dashboard": {
     "title": "Dashbord",
+    "layer1Title": "Hva bør dere diskutere?",
+    "layer2Title": "Strategisk helse",
+    "layer3Title": "Dypdykk",
     "activities": "Aktiviteter",
     "maturityNowTarget": "Modenhet nå / mål",
     "criticalPath": "Kritisk sti",

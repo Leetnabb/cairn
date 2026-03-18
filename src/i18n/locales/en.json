@@ -201,6 +201,9 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "layer1Title": "What should you discuss?",
+    "layer2Title": "Strategic health",
+    "layer3Title": "Deep dive",
     "activities": "Activities",
     "maturityNowTarget": "Maturity now / target",
     "criticalPath": "Critical path",
