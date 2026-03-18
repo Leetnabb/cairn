@@ -18,7 +18,7 @@ export function HeaderMenu() {
   const setImportModalOpen = useStore(s => s.setImportModalOpen);
   const saveSnapshot = useStore(s => s.saveSnapshot);
   const setCapabilityOverlayOpen = useStore(s => s.setCapabilityOverlayOpen);
-  const openWizard = useOnboardingStore(s => s.openWizard);
+  const openWizard = useOnboardingStore(s => s.open);
   const roleMode = useStore(s => s.ui.roleMode);
   const modules = useStore(s => s.modules);
   const setModules = useStore(s => s.setModules);

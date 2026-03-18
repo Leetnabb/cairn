@@ -57,7 +57,38 @@
     "initiatives": "initiativer",
     "aiSuggestedCaps": "AI-foreslåtte kapabiliteter",
     "complete": "Fullfør",
-    "startNow": "Start nå"
+    "startNow": "Start nå",
+    "upload": {
+      "title": "Last opp eksisterende dokumentasjon",
+      "subtitle": "Strategiplaner, kapabilitetsoversikter, initiativlister — de fleste har dokumentasjonen, men mangler linsen",
+      "dropzone": "Slipp filer her eller klikk for å velge",
+      "supported": "PDF, Word, PowerPoint, tekst",
+      "orDescribe": "Eller beskriv virksomheten din",
+      "generate": "Generer strategibilde",
+      "generating": "Analyserer...",
+      "error": "Noe gikk galt. Prøv igjen.",
+      "needApiKey": "API-nøkkel kreves",
+      "apiKeyPlaceholder": "Skriv inn din Claude API-nøkkel"
+    },
+    "generated": {
+      "title": "Ditt strategibilde",
+      "subtitle": "Gjennomgå og juster — fjern det som ikke stemmer, legg til det som mangler",
+      "strategies": "Strategier",
+      "capabilities": "Kapabiliteter",
+      "initiatives": "Initiativer",
+      "effects": "Effekter",
+      "included": "inkludert",
+      "excluded": "ekskludert"
+    },
+    "insights": {
+      "title": "Dette ser vi",
+      "subtitle": "Innsikter fra ditt strategibilde",
+      "meetingCta": "Ta med dette i neste ledermøte",
+      "editCta": "Start med å redigere",
+      "dimensions": "Dimensjonsfordeling",
+      "capCount": "kapabiliteter",
+      "initCount": "initiativer"
+    }
   },
   "capLandscape": {
     "title": "Kapabilitetslandskap",

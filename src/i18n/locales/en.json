@@ -57,7 +57,38 @@
     "initiatives": "initiatives",
     "aiSuggestedCaps": "AI-suggested capabilities",
     "complete": "Finish",
-    "startNow": "Start now"
+    "startNow": "Start now",
+    "upload": {
+      "title": "Upload existing documentation",
+      "subtitle": "Strategy plans, capability maps, initiative lists — most organisations have the docs, but lack the lens",
+      "dropzone": "Drop files here or click to select",
+      "supported": "PDF, Word, PowerPoint, text",
+      "orDescribe": "Or describe your organisation",
+      "generate": "Generate strategic picture",
+      "generating": "Analysing...",
+      "error": "Something went wrong. Please try again.",
+      "needApiKey": "API key required",
+      "apiKeyPlaceholder": "Enter your Claude API key"
+    },
+    "generated": {
+      "title": "Your strategic picture",
+      "subtitle": "Review and adjust — remove what doesn't fit, add what's missing",
+      "strategies": "Strategies",
+      "capabilities": "Capabilities",
+      "initiatives": "Initiatives",
+      "effects": "Effects",
+      "included": "included",
+      "excluded": "excluded"
+    },
+    "insights": {
+      "title": "What we see",
+      "subtitle": "Insights from your strategic picture",
+      "meetingCta": "Bring this to the next leadership meeting",
+      "editCta": "Start editing",
+      "dimensions": "Dimension distribution",
+      "capCount": "capabilities",
+      "initCount": "initiatives"
+    }
   },
   "capLandscape": {
     "title": "Capability Landscape",

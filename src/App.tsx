@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore } from './stores/useStore';
 import { useAIStore } from './stores/useAIStore';
-import { useOnboardingStore, shouldAutoShowWizard } from './stores/useOnboardingStore';
+import { useOnboardingStore } from './stores/useOnboardingStore';
 import { Roadmap } from './components/roadmap/Roadmap';
 import { DetailPanel } from './components/detail/DetailPanel';
 import { Dashboard } from './components/dashboard/Dashboard';
@@ -44,7 +44,7 @@ export default function App() {
   const setPresentationMode = useStore(s => s.setPresentationMode);
   const aiPanelOpen = useAIStore(s => s.panelOpen);
   const setAIPanelOpen = useAIStore(s => s.setPanelOpen);
-  const openWizard = useOnboardingStore(s => s.openWizard);
+  const openWizard = useOnboardingStore(s => s.open);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
   const boardViewMode = useStore(s => s.ui.boardViewMode);
@@ -55,12 +55,7 @@ export default function App() {
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
 
-  // Auto-show wizard for first-time users
-  useEffect(() => {
-    if (shouldAutoShowWizard()) {
-      openWizard();
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Auto-show wizard is handled in onboarding store initialization
 
   // Redirect to roadmap if active view belongs to a disabled module
   useEffect(() => {
