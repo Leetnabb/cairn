@@ -627,7 +627,17 @@ export const useStore = create<StoreState>()(
           complexityLevel: (() => {
             const validLevels = [1, 2, 3];
             const persistedLevel = (persistedUI as Record<string, unknown> | null)?.complexityLevel;
-            return validLevels.includes(persistedLevel as number) ? persistedLevel as ComplexityLevel : 1;
+            if (validLevels.includes(persistedLevel as number)) {
+              // Persisted state has a valid complexity level — keep it
+              return persistedLevel as ComplexityLevel;
+            }
+            // No valid complexity level in persisted state
+            if (persistedUI !== undefined && persistedUI !== null) {
+              // Existing user from before this feature was introduced — default to expert (3)
+              return 3 as ComplexityLevel;
+            }
+            // No persisted UI state at all — new user, use default (1)
+            return 1 as ComplexityLevel;
           })(),
         },
       } as StoreState;
