@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -91,6 +91,9 @@ interface StoreState extends AppState {
   setBoardSelectedItem: (item: UIState['boardSelectedItem']) => void;
   setSettingsOpen: (open: boolean) => void;
   setComplexityLevel: (level: ComplexityLevel) => void;
+  enterMeetingMode: () => void;
+  exitMeetingMode: () => void;
+  setMeetingLens: (lens: MeetingLens) => void;
 
   // Bulk operations
   toggleSelectedItem: (id: string) => void;
@@ -144,6 +147,8 @@ const defaultUI: UIState = {
   boardViewMode: false,
   boardSelectedItem: null,
   settingsOpen: false,
+  meetingMode: false,
+  meetingLens: 'narrative' as MeetingLens,
 };
 
 export const useStore = create<StoreState>()(
@@ -491,6 +496,15 @@ export const useStore = create<StoreState>()(
         })),
         setComplexityLevel: (level) => set(state => ({
           ui: { ...state.ui, complexityLevel: level }
+        })),
+        enterMeetingMode: () => set(state => ({
+          ui: { ...state.ui, meetingMode: true, meetingLens: 'narrative' }
+        })),
+        exitMeetingMode: () => set(state => ({
+          ui: { ...state.ui, meetingMode: false }
+        })),
+        setMeetingLens: (lens: MeetingLens) => set(state => ({
+          ui: { ...state.ui, meetingLens: lens }
         })),
 
         // Bulk operations

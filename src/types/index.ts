@@ -156,6 +156,8 @@ export interface AppState {
 
 export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects' | 'strategies';
 
+export type MeetingLens = 'narrative' | 'path' | 'capabilities' | 'effects';
+
 export type ComplexityLevel = 1 | 2 | 3;
 
 export const COMPLEXITY_FEATURES = {
@@ -211,6 +213,8 @@ export interface UIState {
   boardViewMode: boolean;
   boardSelectedItem: { type: 'capability' | 'initiative'; id: string } | null;
   settingsOpen: boolean;
+  meetingMode: boolean;
+  meetingLens: MeetingLens;
 }
 
 export const MATURITY_COLORS: Record<number, string> = {
