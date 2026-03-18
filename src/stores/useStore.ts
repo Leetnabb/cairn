@@ -112,7 +112,7 @@ interface StoreState extends AppState {
 const defaultUI: UIState = {
   selectedItem: null,
   view: 'roadmap',
-  complexityLevel: 1 as ComplexityLevel,
+  complexityLevel: 1,
   roadmapViewMode: 'capability',
   capabilityView: 'maturity',
   simulationEnabled: false,
@@ -624,6 +624,11 @@ export const useStore = create<StoreState>()(
           ...currentState.ui,
           ...(typeof persistedUI === 'object' && persistedUI !== null ? persistedUI : {}),
           selectedItems: currentState.ui.selectedItems,  // Always keep the Set
+          complexityLevel: (() => {
+            const validLevels = [1, 2, 3];
+            const persistedLevel = (persistedUI as Record<string, unknown> | null)?.complexityLevel;
+            return validLevels.includes(persistedLevel as number) ? persistedLevel as ComplexityLevel : 1;
+          })(),
         },
       } as StoreState;
     },

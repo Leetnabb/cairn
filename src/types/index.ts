@@ -174,7 +174,7 @@ export const COMPLEXITY_FEATURES = {
     filters: ['dimensions', 'search', 'horizon', 'owner', 'status', 'milestones', 'focusMode', 'zoomLevel', 'spotlightValueChain'] as string[],
     features: ['presentationMode', 'simulation', 'criticalPath', 'scenarios', 'benchmarking', 'import', 'export'] as string[],
   },
-} as const;
+};
 
 export interface UIState {
   selectedItem: { type: 'capability' | 'initiative' | 'milestone' | 'effect' | 'strategy'; id: string } | null;
