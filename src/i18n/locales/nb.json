@@ -720,7 +720,9 @@
       "body": "Ta kontakt — så setter vi opp stien sammen.",
       "button": "Ta kontakt",
       "emailPlaceholder": "din@epost.no",
-      "submitted": "Du er på listen — vi tar kontakt."
+      "submitted": "Du er på listen — vi tar kontakt.",
+      "error": "Noe gikk galt. Prøv igjen.",
+      "sending": "Sender..."
     }
   }
 }

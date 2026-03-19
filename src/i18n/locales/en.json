@@ -720,7 +720,9 @@
       "body": "Get in touch — and we'll set up the path together.",
       "button": "Request early access",
       "emailPlaceholder": "your@email.com",
-      "submitted": "You're on the list — we'll be in touch."
+      "submitted": "You're on the list — we'll be in touch.",
+      "error": "Something went wrong. Try again.",
+      "sending": "Sending..."
     }
   }
 }

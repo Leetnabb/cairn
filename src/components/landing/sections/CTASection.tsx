@@ -10,11 +10,33 @@ export function CTASection({ isMobile }: CTASectionProps) {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-    setSubmitted(true);
+
+    setLoading(true);
+    setError(false);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError(true);
+      }
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -116,18 +138,38 @@ export function CTASection({ isMobile }: CTASectionProps) {
               />
               <button
                 type="submit"
-                style={{ ...ctaStyle, fontSize: 15, padding: "14px 36px" }}
+                disabled={loading}
+                style={{
+                  ...ctaStyle,
+                  fontSize: 15,
+                  padding: "14px 36px",
+                  opacity: loading ? 0.6 : 1,
+                  cursor: loading ? "not-allowed" : "pointer",
+                }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "#4f46e5";
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                  if (!loading) {
+                    (e.currentTarget as HTMLElement).style.background = "#4f46e5";
+                    (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                  }
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLElement).style.background = "#6366f1";
                   (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
                 }}
               >
-                {t("landing.cta.button")}
+                {loading ? t('landing.cta.sending') : t('landing.cta.button')}
               </button>
+              {error && (
+                <p
+                  style={{
+                    fontSize: 14,
+                    color: "#ef4444",
+                    marginTop: 4,
+                  }}
+                >
+                  {t('landing.cta.error')}
+                </p>
+              )}
             </form>
           )}
           <p
