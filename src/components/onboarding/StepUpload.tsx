@@ -9,11 +9,12 @@ export function StepUpload() {
   const { t } = useTranslation();
   const {
     orgDescription,
-    uploadedText,
+    uploadedFiles,
     isGenerating,
     generationError,
     setOrgDescription,
-    setUploadedText,
+    addUploadedFiles,
+    removeUploadedFile,
     setGeneratedPicture,
     setIsGenerating,
     setGenerationError,
@@ -22,35 +23,58 @@ export function StepUpload() {
   } = useOnboardingStore();
 
   const [isDragging, setIsDragging] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [persistKey, setPersistKey] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileProcess = useCallback(async (file: File) => {
-    try {
-      const text = await extractTextFromFile(file);
-      setUploadedText(text);
-      setFileName(file.name);
-    } catch (err) {
-      setGenerationError(err instanceof Error ? err.message : 'Failed to read file');
+  const handleFilesProcess = useCallback(async (files: FileList) => {
+    setGenerationError(null);
+    const maxFiles = 10;
+    const currentCount = useOnboardingStore.getState().uploadedFiles.length;
+    const allowed = Array.from(files).slice(0, maxFiles - currentCount);
+
+    if (allowed.length < files.length) {
+      setGenerationError(t('onboarding.upload.tooManyFiles'));
     }
-  }, [setUploadedText, setGenerationError]);
+
+    const parsed: Array<{ name: string; text: string }> = [];
+    const failed: string[] = [];
+
+    for (const file of allowed) {
+      try {
+        const text = await extractTextFromFile(file);
+        parsed.push({ name: file.name, text });
+      } catch {
+        failed.push(file.name);
+      }
+    }
+
+    if (parsed.length > 0) {
+      addUploadedFiles(parsed);
+    }
+    if (failed.length > 0) {
+      setGenerationError(failed.map(f => t('onboarding.upload.fileError', { filename: f })).join(', '));
+    }
+  }, [addUploadedFiles, setGenerationError, t]);
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFileProcess(file);
-  }, [handleFileProcess]);
+    if (e.dataTransfer.files.length > 0) handleFilesProcess(e.dataTransfer.files);
+  }, [handleFilesProcess]);
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFileProcess(file);
-  }, [handleFileProcess]);
+    if (e.target.files && e.target.files.length > 0) handleFilesProcess(e.target.files);
+  }, [handleFilesProcess]);
 
   const handleGenerate = async () => {
-    const input = uploadedText || orgDescription;
+    const fileParts = uploadedFiles
+      .map(f => `--- [${f.name}] ---\n${f.text}`)
+      .join('\n\n');
+    const descPart = orgDescription.trim()
+      ? `--- Organisasjonsbeskrivelse ---\n${orgDescription.trim()}`
+      : '';
+    const input = [fileParts, descPart].filter(Boolean).join('\n\n');
     if (!input.trim()) return;
 
     let key = getApiKey();
@@ -77,7 +101,8 @@ export function StepUpload() {
     }
   };
 
-  const hasInput = (uploadedText || orgDescription).trim().length > 0;
+  const hasInput = uploadedFiles.length > 0 || orgDescription.trim().length > 0;
+  const totalChars = uploadedFiles.reduce((sum, f) => sum + f.text.length, 0) + orgDescription.length;
   const hasApiKey = !!getApiKey() || apiKeyInput.trim().length > 0;
 
   return (
@@ -103,6 +128,7 @@ export function StepUpload() {
           ref={fileInputRef}
           type="file"
           accept=".txt,.md,.pdf,.docx,.pptx,.json,.csv"
+          multiple
           className="hidden"
           onChange={handleFileChange}
         />
@@ -112,47 +138,51 @@ export function StepUpload() {
             <polyline points="17 8 12 3 7 8" />
             <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
-          {fileName ? (
-            <div>
-              <p className="text-[12px] font-medium text-primary">{fileName}</p>
-              <p className="text-[10px] text-text-tertiary mt-0.5">
-                {uploadedText.slice(0, 60)}...
-              </p>
-            </div>
-          ) : (
-            <div>
-              <p className="text-[12px] text-text-secondary">{t('onboarding.upload.dropzone')}</p>
-              <p className="text-[10px] text-text-tertiary mt-0.5">{t('onboarding.upload.supported')}</p>
-            </div>
-          )}
+          <div>
+            <p className="text-[12px] text-text-secondary">{t('onboarding.upload.dropzone')}</p>
+            <p className="text-[10px] text-text-tertiary mt-0.5">{t('onboarding.upload.supported')}</p>
+          </div>
         </div>
       </div>
 
-      {/* Text preview */}
-      {uploadedText && (
-        <div className="bg-surface-hover rounded-lg p-3">
-          <p className="text-[10px] text-text-tertiary uppercase font-medium mb-1">{t('onboarding.upload.preview')}</p>
-          <p className="text-[11px] text-text-secondary leading-relaxed line-clamp-4">
-            {uploadedText.slice(0, 500)}{uploadedText.length > 500 ? '…' : ''}
-          </p>
+      {/* Uploaded file list */}
+      {uploadedFiles.length > 0 && (
+        <div className="space-y-1">
+          {uploadedFiles.map(f => (
+            <div key={f.name} className="flex items-center justify-between bg-surface-hover rounded px-3 py-1.5">
+              <span className="text-[11px] text-text-secondary truncate">{f.name}</span>
+              <button
+                onClick={() => removeUploadedFile(f.name)}
+                className="ml-2 p-0.5 text-text-tertiary hover:text-red-500 transition-colors shrink-0"
+                aria-label={t('onboarding.upload.removeFile')}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* OR divider */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-border" />
-        <span className="text-[10px] text-text-tertiary uppercase">{t('onboarding.upload.orDescribe')}</span>
-        <div className="flex-1 h-px bg-border" />
-      </div>
+      {/* Soft warning for large input */}
+      {totalChars > 30000 && (
+        <p className="text-[10px] text-amber-600">{t('onboarding.upload.tooMuchText')}</p>
+      )}
 
-      {/* Free text input */}
-      <textarea
-        value={orgDescription}
-        onChange={(e) => setOrgDescription(e.target.value)}
-        placeholder="Vi er en offentlig etat med 500 ansatte som jobber med..."
-        rows={3}
-        className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary resize-none bg-surface text-text-primary placeholder:text-text-tertiary"
-      />
+      {/* Additional description */}
+      <div>
+        <label className="text-[10px] text-text-tertiary font-medium mb-1 block">
+          {t('onboarding.upload.additionalDescription')}
+        </label>
+        <textarea
+          value={orgDescription}
+          onChange={(e) => setOrgDescription(e.target.value)}
+          placeholder="Vi er en offentlig etat med 500 ansatte som jobber med..."
+          rows={3}
+          className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary resize-none bg-surface text-text-primary placeholder:text-text-tertiary"
+        />
+      </div>
 
       {/* API key input (shown if no key stored) */}
       {!getApiKey() && (
