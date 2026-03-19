@@ -11,15 +11,10 @@ type Dimension = "ledelse" | "virksomhet" | "organisasjon" | "teknologi";
 type Horizon = "near" | "far";
 
 const DIMENSION_ORDER: Dimension[] = ["ledelse", "virksomhet", "organisasjon", "teknologi"];
-const DIMENSION_LABELS: Record<Dimension, string> = {
-  ledelse: "Ledelse",
-  virksomhet: "Virksomhet",
-  organisasjon: "Organisasjon",
-  teknologi: "Teknologi",
-};
 
 export function ProductPreview({ isMobile }: ProductPreviewProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language?.startsWith('nb') ? 'nb' : 'en';
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   // Group initiatives by dimension + horizon
@@ -174,7 +169,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                         letterSpacing: "0.02em",
                       }}
                     >
-                      {DIMENSION_LABELS[dim]}
+                      {t(`landing.product.dimensions.${dim}`)}
                     </span>
                   </div>
 
@@ -184,7 +179,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                       <InitiativeCard
                         key={item.id}
                         id={item.id}
-                        name={item.name}
+                        name={item.name[lang]}
                         color={color}
                         selected={selectedId === item.id}
                         animDelay={dimIdx * 0.08 + cardIdx * 0.05}
@@ -211,7 +206,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                       <InitiativeCard
                         key={item.id}
                         id={item.id}
-                        name={item.name}
+                        name={item.name[lang]}
                         color={color}
                         selected={selectedId === item.id}
                         animDelay={dimIdx * 0.08 + cardIdx * 0.05 + 0.15}

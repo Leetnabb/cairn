@@ -685,7 +685,13 @@
       "body": "Click an initiative — see which capability it builds. See which effect it drives. See what's blocking. One picture. Always current.",
       "nearHorizon": "Near horizon",
       "farHorizon": "Far horizon",
-      "hint": "Click a card to explore the connections."
+      "hint": "Click a card to explore the connections.",
+      "dimensions": {
+        "ledelse": "Leadership",
+        "virksomhet": "Business",
+        "organisasjon": "Organisation",
+        "teknologi": "Technology"
+      }
     },
     "insights": {
       "headline": "Three things that change the conversation in the leadership team:",

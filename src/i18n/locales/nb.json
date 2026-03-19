@@ -685,7 +685,13 @@
       "body": "Klikk et initiativ — se hvilken kapabilitet det bygger. Se hvilken effekt det driver. Se hva som blokkerer. Ett bilde. Alltid levende.",
       "nearHorizon": "Nær horisont",
       "farHorizon": "Lang horisont",
-      "hint": "Klikk et kort for å utforske koblingene."
+      "hint": "Klikk et kort for å utforske koblingene.",
+      "dimensions": {
+        "ledelse": "Ledelse",
+        "virksomhet": "Virksomhet",
+        "organisasjon": "Organisasjon",
+        "teknologi": "Teknologi"
+      }
     },
     "insights": {
       "headline": "Tre ting som endrer samtalen i ledergruppen:",
