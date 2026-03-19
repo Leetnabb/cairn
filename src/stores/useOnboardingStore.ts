@@ -5,7 +5,7 @@ interface OnboardingState {
   isOpen: boolean;
   step: number; // 0: Welcome, 1: Upload/Describe, 2: Generated picture, 3: Insights
   orgDescription: string;
-  uploadedText: string;
+  uploadedFiles: Array<{ name: string; text: string }>;
   generatedPicture: GeneratedStrategicPicture | null;
   isGenerating: boolean;
   generationError: string | null;
@@ -16,7 +16,8 @@ interface OnboardingState {
   nextStep: () => void;
   prevStep: () => void;
   setOrgDescription: (desc: string) => void;
-  setUploadedText: (text: string) => void;
+  addUploadedFiles: (files: Array<{ name: string; text: string }>) => void;
+  removeUploadedFile: (name: string) => void;
   setGeneratedPicture: (picture: GeneratedStrategicPicture) => void;
   setIsGenerating: (loading: boolean) => void;
   setGenerationError: (error: string | null) => void;
@@ -28,7 +29,7 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
   isOpen: shouldAutoShowWizard(),
   step: 0,
   orgDescription: '',
-  uploadedText: '',
+  uploadedFiles: [],
   generatedPicture: null,
   isGenerating: false,
   generationError: null,
@@ -39,7 +40,21 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
   nextStep: () => set(s => ({ step: Math.min(s.step + 1, 3) })),
   prevStep: () => set(s => ({ step: Math.max(s.step - 1, 0) })),
   setOrgDescription: (orgDescription) => set({ orgDescription }),
-  setUploadedText: (uploadedText) => set({ uploadedText }),
+  addUploadedFiles: (files) => set((s) => {
+    const updated = [...s.uploadedFiles];
+    for (const file of files) {
+      const idx = updated.findIndex(f => f.name === file.name);
+      if (idx >= 0) {
+        updated[idx] = file;
+      } else {
+        updated.push(file);
+      }
+    }
+    return { uploadedFiles: updated };
+  }),
+  removeUploadedFile: (name) => set((s) => ({
+    uploadedFiles: s.uploadedFiles.filter(f => f.name !== name),
+  })),
   setGeneratedPicture: (generatedPicture) => set({ generatedPicture }),
   setIsGenerating: (isGenerating) => set({ isGenerating }),
   setGenerationError: (generationError) => set({ generationError }),
@@ -48,7 +63,7 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
     set({ hasCompletedOnboarding: true, isOpen: false });
   },
   reset: () => set({
-    step: 0, orgDescription: '', uploadedText: '',
+    step: 0, orgDescription: '', uploadedFiles: [],
     generatedPicture: null, isGenerating: false, generationError: null,
   }),
 }));

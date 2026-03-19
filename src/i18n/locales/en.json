@@ -56,14 +56,17 @@
       "subtitle": "Strategy plans, capability maps, initiative lists — most organisations have the docs, but lack the lens",
       "dropzone": "Drop files here or click to select",
       "supported": "PDF, Word, PowerPoint, text",
-      "orDescribe": "Or describe your organisation",
       "generate": "Generate strategic picture",
       "generating": "Analysing...",
       "error": "Something went wrong. Please try again.",
       "needApiKey": "API key required",
       "apiKeyPlaceholder": "Enter your Claude API key",
-      "preview": "Preview",
-      "persistKey": "Remember API key between sessions"
+      "persistKey": "Remember API key between sessions",
+      "additionalDescription": "Additional description (optional)",
+      "tooMuchText": "A lot of text — results may be less focused.",
+      "removeFile": "Remove file",
+      "fileError": "Could not read {{filename}}",
+      "tooManyFiles": "Maximum 10 files"
     },
     "generated": {
       "title": "Your strategic picture",
