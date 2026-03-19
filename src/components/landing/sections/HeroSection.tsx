@@ -97,20 +97,6 @@ export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
           </p>
         </FadeIn>
 
-        <FadeIn delay={0.5}>
-          <p
-            style={{
-              ...S.serif,
-              fontStyle: "italic",
-              fontSize: 16,
-              color: "#3a4558",
-              marginBottom: 44,
-            }}
-          >
-            {t("landing.hero.subline2")}
-          </p>
-        </FadeIn>
-
         <FadeIn delay={0.7}>
           <div ref={heroFormRef}>
             {submitted ? (

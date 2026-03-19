@@ -49,68 +49,8 @@ export function ProblemSection({ isMobile }: ProblemSectionProps) {
           </h2>
         </FadeIn>
 
+        {/* The conclusion */}
         <FadeIn delay={0.2}>
-          <p
-            style={{
-              fontSize: 16,
-              lineHeight: 1.75,
-              color: "#475569",
-              maxWidth: 600,
-              margin: "0 0 64px",
-              fontWeight: 400,
-            }}
-          >
-            {t("landing.problem.body1")}
-          </p>
-        </FadeIn>
-
-        {/* The three silos */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            maxWidth: 580,
-            marginBottom: 64,
-          }}
-        >
-          {(
-            [
-              { key: "silo1", color: "#eab308" },
-              { key: "silo2", color: "#6366f1" },
-              { key: "silo3", color: "#ef4444" },
-            ] as const
-          ).map(({ key, color }, i) => (
-            <FadeIn key={key} delay={0.1 * i}>
-              <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                <div
-                  style={{
-                    width: 3,
-                    minHeight: 20,
-                    borderRadius: 2,
-                    background: color,
-                    opacity: 0.6,
-                    marginTop: 3,
-                    flexShrink: 0,
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: 15,
-                    color: "#64748b",
-                    lineHeight: 1.6,
-                    fontWeight: 400,
-                  }}
-                >
-                  {t(`landing.problem.${key}`)}
-                </span>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-
-        {/* The conclusion — dynamic strategy */}
-        <FadeIn delay={0.3}>
           <p
             style={{
               ...S.serif,

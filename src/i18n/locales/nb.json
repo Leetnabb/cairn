@@ -669,20 +669,15 @@
     },
     "hero": {
       "headline": "Når tåken legger seg, trenger du ikke et bedre kart. Du trenger en varde.",
-      "subline1": "Strategi → Kapabiliteter → Initiativer → Effekter.",
-      "subline2": "Ett bilde. Levende. For de som leder.",
+      "subline1": "Cairn kobler strategi til gjennomføring — gjennom kapabiliteter, initiativer og effekter — i ett levende bilde.",
       "cta": "Ta kontakt",
       "emailPlaceholder": "din@epost.no",
       "submitted": "Du er på listen — vi tar kontakt."
     },
     "problem": {
-      "context": "Teknologi endrer seg raskere enn organisasjonen klarer å følge. Regulering strammes til. Geopolitikk skaper usikkerhet. Når alt beveger seg samtidig, blir det vanskelig å se fremover. Tåken.",
-      "headline": "Alle har en strategi. De fleste har prosjekter. Men det som mangler er TO-en — koblingen mellom strategi og eksekusjon.",
-      "body1": "Initiativene lever i prosjektverktøy. Strategien lever i presentasjoner. Kapabilitetene lever i EA-verktøy som kun arkitekten forstår. Effektene antas, men måles sjelden.",
-      "silo1": "Initiativene lever i prosjektverktøy.",
-      "silo2": "Strategien lever i presentasjoner.",
-      "silo3": "Kapabilitetene lever i EA-verktøy som kun arkitekten forstår.",
-      "closing": "Her trengs dynamisk strategi — ikke en plan som låses fast, men en levende sti som oppdateres fra varde til varde."
+      "context": "Ledere navigerer konstant endring — i teknologi, regulering og markeder. Jo lenger frem du ser, desto vanskeligere er det å se klart. Det er ikke en svikt i planleggingen. Det er naturen av å lede gjennom kompleksitet.",
+      "headline": "De fleste organisasjoner har en strategi. De fleste har prosjekter. Men koblingen mellom dem — fra strategisk intensjon til faktisk effekt — er usynlig. Initiativene lever i ett verktøy, strategien i et annet, kapabilitetene i et tredje. Ingen ser hele bildet.",
+      "closing": "Cairn gjør sammenhengene synlige — slik at du kan lede, ikke bare planlegge."
     },
     "product": {
       "eyebrow": "Produktet",

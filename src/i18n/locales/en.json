@@ -669,20 +669,15 @@
     },
     "hero": {
       "headline": "When the fog rolls in, you don't need a better map. You need a cairn.",
-      "subline1": "Strategy → Capabilities → Initiatives → Effects.",
-      "subline2": "One picture. Living. For those who lead.",
+      "subline1": "Cairn connects strategy to execution — through capabilities, initiatives, and effects — in one living picture.",
       "cta": "Request early access",
       "emailPlaceholder": "your@email.com",
       "submitted": "You're on the list — we'll be in touch."
     },
     "problem": {
-      "context": "Technology moves faster than the organisation can follow. Regulation tightens. Geopolitics creates uncertainty. When everything moves at once, it becomes hard to see forward. The fog.",
-      "headline": "Everyone has a strategy. Most have projects. What's missing is the TO — the link between strategy and execution.",
-      "body1": "Initiatives live in project tools. Strategy lives in presentations. Capabilities live in EA tools only the architect understands. Effects are assumed but rarely measured.",
-      "silo1": "Initiatives live in project tools.",
-      "silo2": "Strategy lives in presentations.",
-      "silo3": "Capabilities live in EA tools only the architect understands.",
-      "closing": "What's needed is dynamic strategy — not a plan locked in place, but a living path that updates from cairn to cairn."
+      "context": "Leaders navigate constant change — in technology, regulation, and markets. The further ahead you look, the harder it is to see clearly. That's not a failure of planning. It's the nature of leading through complexity.",
+      "headline": "Most organisations have a strategy. Most have projects. But the link between them — from strategic intent to actual impact — is invisible. Initiatives live in one tool, strategy in another, capabilities in a third. No one sees the full picture.",
+      "closing": "Cairn makes the connections visible — so you can lead, not just plan."
     },
     "product": {
       "eyebrow": "The product",
