@@ -28,7 +28,7 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
             style={{
               fontSize: 12,
               fontWeight: 700,
-              color: "#3a4558",
+              color: "#64748b",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               marginBottom: 56,
@@ -52,7 +52,7 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
               <div
                 style={{
                   padding: "32px 24px",
-                  borderTop: "1px solid rgba(255,255,255,0.05)",
+                  borderTop: "1px solid rgba(255,255,255,0.1)",
                   background: "rgba(255,255,255,0.01)",
                 }}
               >
@@ -60,7 +60,7 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
                   style={{
                     fontSize: 13,
                     color: "#ef4444",
-                    opacity: 0.5,
+                    opacity: 1,
                     marginRight: 8,
                   }}
                 >
@@ -69,7 +69,7 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
                 <span
                   style={{
                     fontSize: 14,
-                    color: "#334155",
+                    color: "#94a3b8",
                     lineHeight: 1.6,
                     fontStyle: "italic",
                   }}
