@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApiClient } from '../../hooks/useApiClient';
 
 type TenantRole = 'OWNER' | 'ADMIN' | 'EDITOR' | 'VIEWER' | 'BOARD';
 
@@ -18,8 +17,8 @@ const ROLES: TenantRole[] = ['OWNER', 'ADMIN', 'EDITOR', 'VIEWER', 'BOARD'];
 
 export function TeamTab() {
   const { t } = useTranslation();
-  const api = useApiClient();
-  const [members, setMembers] = useState<Member[]>([]);
+  // TODO: Replace with Supabase client calls
+  const [members, _setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<TenantRole>('EDITOR');
@@ -28,10 +27,8 @@ export function TeamTab() {
 
   const load = () => {
     setLoading(true);
-    api.get<Member[]>('/team').then(data => {
-      setMembers(data);
-      setLoading(false);
-    }).catch(() => setLoading(false));
+    // TODO: Replace with Supabase client calls
+    setLoading(false);
   };
 
   useEffect(() => { load(); }, []);
@@ -40,11 +37,11 @@ export function TeamTab() {
     if (!inviteEmail.trim()) return;
     setInviting(true);
     try {
-      await api.post('/team/invite', { email: inviteEmail.trim(), role: inviteRole });
+      // TODO: Replace with Supabase client calls
+      console.warn('[TeamTab] handleInvite: not yet implemented');
       setInviteSent(true);
       setInviteEmail('');
       setTimeout(() => setInviteSent(false), 3000);
-      load();
     } finally {
       setInviting(false);
     }
@@ -52,8 +49,8 @@ export function TeamTab() {
 
   const handleRemove = async (userId: string) => {
     if (!confirm(t('settings.team.confirmRemove'))) return;
-    await api.delete(`/team/${userId}`);
-    load();
+    // TODO: Replace with Supabase client calls
+    console.warn('[TeamTab] handleRemove: not yet implemented', userId);
   };
 
   if (loading) {

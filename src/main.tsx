@@ -6,15 +6,18 @@ import './index.css'
 import App from './App.tsx'
 import CairnLanding from './components/landing/CairnLanding.tsx'
 import { ErrorBoundary } from './components/ui/ErrorBoundary.tsx'
+import { AuthProvider } from './providers/AuthProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<CairnLanding />} />
-          <Route path="/app/*" element={<App />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<CairnLanding />} />
+            <Route path="/app/*" element={<App />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </ErrorBoundary>
   </StrictMode>,

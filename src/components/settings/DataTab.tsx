@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApiClient } from '../../hooks/useApiClient';
 
 interface Props {
   onClose: () => void;
@@ -8,7 +7,7 @@ interface Props {
 
 export function DataTab({ onClose }: Props) {
   const { t } = useTranslation();
-  const api = useApiClient();
+  // TODO: Replace with Supabase client calls
   const [exporting, setExporting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [requestingDeletion, setRequestingDeletion] = useState(false);
@@ -41,8 +40,8 @@ export function DataTab({ onClose }: Props) {
     if (deleteConfirm !== 'DELETE') return;
     setRequestingDeletion(true);
     try {
-      const data = await api.post<{ scheduledAt: string }>('/settings/data/request-deletion', {});
-      setDeletionScheduled(data.scheduledAt);
+      // TODO: Replace with Supabase client calls
+      console.warn('[DataTab] handleRequestDeletion: not yet implemented');
     } finally {
       setRequestingDeletion(false);
     }
@@ -51,7 +50,8 @@ export function DataTab({ onClose }: Props) {
   const handleCancelDeletion = async () => {
     setCancelling(true);
     try {
-      await api.post('/settings/data/cancel-deletion', {});
+      // TODO: Replace with Supabase client calls
+      console.warn('[DataTab] handleCancelDeletion: not yet implemented');
       setCancelled(true);
       setDeletionScheduled(null);
       setTimeout(() => { setCancelled(false); onClose(); }, 2000);

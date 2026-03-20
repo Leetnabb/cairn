@@ -28,7 +28,7 @@ import { UndoRedoButtons } from './components/header/UndoRedoButtons';
 import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
-import { useAuthContext } from './hooks/useAuthContext';
+import { useAuth } from './providers/AuthProvider';
 import { useComplexityLevel } from './hooks/useComplexityLevel';
 import i18n from './i18n';
 
@@ -52,7 +52,7 @@ export default function App() {
   const modules = useStore(s => s.modules);
   const settingsOpen = useStore(s => s.ui.settingsOpen);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
-  const auth = useAuthContext();
+  const auth = useAuth();
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
 
