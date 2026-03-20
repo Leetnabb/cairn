@@ -724,5 +724,25 @@
       "emailPlaceholder": "your@email.com",
       "submitted": "You're on the list — we'll be in touch."
     }
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Create account",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Name",
+    "consentResearch": "Contribute anonymously to research",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset password",
+    "resetPasswordSent": "Check your email for a reset link",
+    "checkEmail": "Check your email to verify your account",
+    "sessionExpired": "Session expired. Please log in again.",
+    "loginError": "Incorrect email or password",
+    "registerError": "Could not create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "rateLimitExceeded": "You've used all of today's generations. Try again tomorrow.",
+    "userMenu": "My account"
   }
 }

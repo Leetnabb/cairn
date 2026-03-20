@@ -724,5 +724,25 @@
       "emailPlaceholder": "din@epost.no",
       "submitted": "Du er på listen — vi tar kontakt."
     }
+  },
+  "auth": {
+    "login": "Logg inn",
+    "register": "Opprett konto",
+    "logout": "Logg ut",
+    "email": "E-post",
+    "password": "Passord",
+    "displayName": "Navn",
+    "consentResearch": "Bidra anonymt til forskning",
+    "forgotPassword": "Glemt passord?",
+    "resetPassword": "Tilbakestill passord",
+    "resetPasswordSent": "Sjekk eposten din for tilbakestillingslenke",
+    "checkEmail": "Sjekk eposten din for å bekrefte kontoen",
+    "sessionExpired": "Sesjonen utløp. Logg inn på nytt.",
+    "loginError": "Feil e-post eller passord",
+    "registerError": "Kunne ikke opprette konto",
+    "noAccount": "Har du ikke konto?",
+    "hasAccount": "Har du allerede en konto?",
+    "rateLimitExceeded": "Du har brukt opp dagens genereringer. Prøv igjen i morgen.",
+    "userMenu": "Min konto"
   }
 }
