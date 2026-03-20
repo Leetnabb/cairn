@@ -31,6 +31,7 @@ import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
 import { useAuth } from './providers/AuthProvider';
 import { useComplexityLevel } from './hooks/useComplexityLevel';
+import { useSupabaseSync } from './hooks/useSupabaseSync';
 import i18n from './i18n';
 
 export default function App() {
@@ -58,6 +59,7 @@ export default function App() {
   const navigate = useNavigate();
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
+  useSupabaseSync();
 
   // Auto-show wizard is handled in onboarding store initialization
 

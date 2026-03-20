@@ -4,9 +4,11 @@ import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { extractTextFromFile } from '../../lib/documentParser';
 import { generateStrategicPicture } from '../../lib/ai/generateStrategicPicture';
 import { getApiKey, setApiKey } from '../../lib/ai/claude';
+import { useAuth } from '../../providers/AuthProvider';
 
 export function StepUpload() {
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const {
     orgDescription,
     uploadedFiles,
@@ -68,23 +70,33 @@ export function StepUpload() {
   }, [handleFilesProcess]);
 
   const handleGenerate = async () => {
+    const totalBudget = 150_000;
+    const descText = orgDescription.trim();
+    const descBudget = Math.min(descText.length, 10_000);
+    const fileBudget = uploadedFiles.length > 0
+      ? Math.floor((totalBudget - descBudget) / uploadedFiles.length)
+      : 0;
+
     const fileParts = uploadedFiles
-      .map(f => `--- [${f.name}] ---\n${f.text}`)
+      .map(f => `--- [${f.name}] ---\n${f.text.slice(0, fileBudget)}`)
       .join('\n\n');
-    const descPart = orgDescription.trim()
-      ? `--- Organisasjonsbeskrivelse ---\n${orgDescription.trim()}`
+    const descPart = descText
+      ? `--- Organisasjonsbeskrivelse ---\n${descText.slice(0, descBudget)}`
       : '';
     const input = [fileParts, descPart].filter(Boolean).join('\n\n');
     if (!input.trim()) return;
 
-    let key = getApiKey();
-    if (!key) {
-      if (!apiKeyInput.trim()) {
-        setGenerationError(t('onboarding.upload.needApiKey'));
-        return;
+    let key: string | undefined;
+    if (!isAuthenticated) {
+      key = getApiKey() ?? undefined;
+      if (!key) {
+        if (!apiKeyInput.trim()) {
+          setGenerationError(t('onboarding.upload.needApiKey'));
+          return;
+        }
+        key = apiKeyInput.trim();
+        setApiKey(key, persistKey);
       }
-      key = apiKeyInput.trim();
-      setApiKey(key, persistKey);
     }
 
     setIsGenerating(true);
@@ -95,7 +107,11 @@ export function StepUpload() {
       setGeneratedPicture(result);
       nextStep();
     } catch (err) {
-      setGenerationError(err instanceof Error ? err.message : t('onboarding.upload.error'));
+      if (err instanceof Error && err.message === 'RATE_LIMIT') {
+        setGenerationError(t('auth.rateLimitExceeded'));
+      } else {
+        setGenerationError(err instanceof Error ? err.message : t('onboarding.upload.error'));
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -103,7 +119,7 @@ export function StepUpload() {
 
   const hasInput = uploadedFiles.length > 0 || orgDescription.trim().length > 0;
   const totalChars = uploadedFiles.reduce((sum, f) => sum + f.text.length, 0) + orgDescription.length;
-  const hasApiKey = !!getApiKey() || apiKeyInput.trim().length > 0;
+  const hasApiKey = isAuthenticated || !!getApiKey() || apiKeyInput.trim().length > 0;
 
   return (
     <div className="space-y-5">
@@ -185,7 +201,7 @@ export function StepUpload() {
       </div>
 
       {/* API key input (shown if no key stored) */}
-      {!getApiKey() && (
+      {!isAuthenticated && !getApiKey() && (
         <div className="space-y-2">
           <label className="text-[10px] text-text-tertiary uppercase font-medium">
             {t('onboarding.upload.needApiKey')}
