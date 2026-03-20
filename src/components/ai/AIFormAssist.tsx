@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getApiKey, getFormSuggestion, AIError } from '../../lib/ai/claude';
+import { supabase } from '../../lib/supabase';
 import { buildFormSuggestionPrompt } from '../../lib/ai/prompts';
 import { useStore } from '../../stores/useStore';
 
@@ -16,8 +17,8 @@ export default function AIFormAssist({ tabType, onSuggestion }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const handleSuggest = async () => {
-    const apiKey = getApiKey();
-    if (!apiKey) {
+    const apiKey = getApiKey() ?? undefined;
+    if (!apiKey && !supabase) {
       setError(t('ai.ui.noKeyError'));
       return;
     }
@@ -42,7 +43,7 @@ export default function AIFormAssist({ tabType, onSuggestion }: Props) {
       const context = contextLines.join('\n');
 
       const systemPrompt = buildFormSuggestionPrompt(tabType);
-      const result = await getFormSuggestion(text, context, tabType, systemPrompt, apiKey);
+      const result = await getFormSuggestion(text, context, tabType, systemPrompt, apiKey ?? undefined);
       onSuggestion(result);
     } catch (err) {
       if (err instanceof AIError) {

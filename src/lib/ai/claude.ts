@@ -1,4 +1,5 @@
 import { parseJsonObjectFromAI } from './parseJsonResponse';
+import { supabase } from '../supabase';
 
 const STORAGE_KEY_LOCAL = 'cairn-ai-key';
 const STORAGE_KEY_SESSION = 'cairn-ai-key-session';
@@ -62,30 +63,54 @@ interface ChatMessage {
 export async function* streamChatResponse(
   messages: ChatMessage[],
   systemPrompt: string,
-  apiKey: string,
-  signal?: AbortSignal
+  apiKey?: string,
+  signal?: AbortSignal,
 ): AsyncGenerator<string> {
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system: systemPrompt,
-      messages,
-      stream: true,
-    }),
-    signal,
-  });
+  let response: Response;
+
+  if (supabase && !apiKey) {
+    const session = (await supabase.auth.getSession()).data.session;
+    if (!session) throw new AIError('Not authenticated', 401);
+
+    response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ messages, systemPrompt }),
+        signal,
+      }
+    );
+  } else if (apiKey) {
+    response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
+        system: systemPrompt,
+        messages,
+        stream: true,
+      }),
+      signal,
+    });
+  } else {
+    throw new AIError('No API key and no Supabase session', 401);
+  }
+
+  const res = response;
 
   if (!res.ok) {
     throw new AIError(
-      `API error: ${res.status}`,
+      `AI request failed: ${res.status}`,
       res.status
     );
   }
@@ -132,34 +157,62 @@ export async function getFormSuggestion(
   context: string,
   tabType: 'initiative' | 'capability',
   systemPrompt: string,
-  apiKey: string
+  apiKey?: string,
 ): Promise<Record<string, unknown>> {
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
+  const messages = [
+    {
+      role: 'user' as const,
+      content: `Kontekst:\n${context}\n\nBrukerens beskrivelse (${tabType === 'initiative' ? 'aktivitet' : 'kapabilitet'}):\n${description}`,
     },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system: systemPrompt,
-      messages: [
-        {
-          role: 'user',
-          content: `Kontekst:\n${context}\n\nBrukerens beskrivelse (${tabType === 'initiative' ? 'aktivitet' : 'kapabilitet'}):\n${description}`,
-        },
-      ],
-    }),
-  });
+  ];
 
-  if (!res.ok) {
-    throw new AIError(`API error: ${res.status}`, res.status);
+  let aiText: string;
+
+  if (supabase && !apiKey) {
+    const session = (await supabase.auth.getSession()).data.session;
+    if (!session) throw new AIError('Not authenticated', 401);
+
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-form-suggest`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ messages, systemPrompt }),
+      }
+    );
+
+    if (!response.ok) throw new AIError(`AI request failed: ${response.status}`, response.status);
+    const data = await response.json();
+    aiText = data.text;
+  } else if (apiKey) {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
+        system: systemPrompt,
+        messages,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new AIError(`AI request failed: ${res.status}`, res.status);
+    }
+
+    const json = await res.json();
+    aiText = json.content?.[0]?.text || '';
+  } else {
+    throw new AIError('No API key and no Supabase session', 401);
   }
 
-  const json = await res.json();
-  const text: string = json.content?.[0]?.text || '';
-  return parseJsonObjectFromAI(text);
+  return parseJsonObjectFromAI(aiText);
 }
