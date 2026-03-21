@@ -79,6 +79,7 @@ export async function* streamChatResponse(
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({ messages, systemPrompt }),
         signal,
@@ -179,6 +180,7 @@ export async function getFormSuggestion(
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({ messages, systemPrompt }),
       }

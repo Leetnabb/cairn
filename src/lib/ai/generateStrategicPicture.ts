@@ -1,6 +1,6 @@
 import { parseJsonObjectFromAI } from './parseJsonResponse';
 import type { DimensionKey, EffectType } from '../../types';
-import { supabase } from '../supabase';
+
 
 export interface GeneratedStrategicPicture {
   strategies: Array<{
@@ -69,15 +69,14 @@ export function parseStrategicPicture(text: string): GeneratedStrategicPicture {
 
 export async function generateStrategicPicture(
   input: string,
-  apiKey?: string,
+  apiKeyOrToken?: string,
   signal?: AbortSignal,
+  useProxy?: boolean,
 ): Promise<GeneratedStrategicPicture> {
   let text: string;
 
-  if (supabase && !apiKey) {
-    // Proxy mode: call Edge Function
-    const session = (await supabase.auth.getSession()).data.session;
-    if (!session) throw new Error('Not authenticated');
+  if (useProxy && apiKeyOrToken) {
+    // Proxy mode: call Edge Function with access token
 
     const response = await fetch(
       `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-strategic-picture`,
@@ -85,7 +84,8 @@ export async function generateStrategicPicture(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${apiKeyOrToken}`,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({ input, systemPrompt: SYSTEM_PROMPT }),
         signal,
@@ -101,13 +101,13 @@ export async function generateStrategicPicture(
 
     const data = await response.json();
     text = data.text;
-  } else if (apiKey) {
+  } else if (apiKeyOrToken && !useProxy) {
     // Direct mode: call Anthropic API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
+        'x-api-key': apiKeyOrToken,
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true',
       },

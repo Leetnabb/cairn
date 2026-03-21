@@ -32,16 +32,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let mounted = true;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
       setSession(session);
       setIsLoading(false);
+
+      // Create profile on first sign-in (replaces DB trigger)
+      if (event === 'SIGNED_IN' && session?.user && supabase) {
+        const { data } = await supabase.from('profiles').select('id').eq('id', session.user.id).single();
+        if (!data) {
+          const meta = session.user.user_metadata ?? {};
+          await supabase.from('profiles').insert({
+            id: session.user.id,
+            display_name: meta.display_name ?? '',
+            consent_research: meta.consent_research ?? false,
+          });
+        }
+      }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    // onAuthStateChange fires INITIAL_SESSION on setup, which handles the initial load.
+    // Fallback timeout in case it doesn't fire.
+    const timeout = setTimeout(() => {
+      if (mounted) setIsLoading(false);
+    }, 3000);
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const user = session?.user ?? null;

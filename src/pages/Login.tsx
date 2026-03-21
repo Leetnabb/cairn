@@ -43,7 +43,7 @@ export function Login() {
           consent_research: consentResearch,
         });
         if (error) {
-          setError(t('auth.registerError'));
+          setError(error.message);
         } else {
           setMessage(t('auth.checkEmail'));
         }

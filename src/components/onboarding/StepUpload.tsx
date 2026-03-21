@@ -8,7 +8,7 @@ import { useAuth } from '../../providers/AuthProvider';
 
 export function StepUpload() {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, session } = useAuth();
   const {
     orgDescription,
     uploadedFiles,
@@ -103,7 +103,17 @@ export function StepUpload() {
     setGenerationError(null);
 
     try {
-      const result = await generateStrategicPicture(input, key);
+      let token = isAuthenticated ? session?.access_token : undefined;
+      // Fallback: if session from context is stale, try getting it directly
+      if (isAuthenticated && !token) {
+        const { supabase } = await import('../../lib/supabase');
+        if (supabase) {
+          const { data } = await supabase.auth.getSession();
+          token = data.session?.access_token;
+        }
+      }
+      console.log('[StepUpload] isAuthenticated:', isAuthenticated, 'hasToken:', !!token);
+      const result = await generateStrategicPicture(input, token ?? key, undefined, !!token);
       setGeneratedPicture(result);
       nextStep();
     } catch (err) {
