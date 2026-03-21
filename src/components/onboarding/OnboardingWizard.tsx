@@ -46,7 +46,9 @@ function convertToAppState(picture: GeneratedStrategicPicture): Partial<AppState
     horizon: init.horizon,
     order,
     description: init.description,
-    capabilities: [],
+    capabilities: (init.capabilityNames ?? [])
+      .map(name => capIdMap.get(name))
+      .filter((id): id is string => id !== undefined),
     owner: '',
     dependsOn: [],
     maturityEffect: {},

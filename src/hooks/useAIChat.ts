@@ -2,6 +2,7 @@ import { useRef, useCallback } from 'react';
 import { useAIStore } from '../stores/useAIStore';
 import { useStore } from '../stores/useStore';
 import { getApiKey, streamChatResponse, AIError } from '../lib/ai/claude';
+import { supabase } from '../lib/supabase';
 import { buildChatSystemPrompt } from '../lib/ai/prompts';
 import i18n from '../i18n';
 
@@ -41,8 +42,8 @@ export function useAIChat() {
   const abortRef = useRef<AbortController | null>(null);
 
   const sendMessage = useCallback(async (text: string) => {
-    const apiKey = getApiKey();
-    if (!apiKey) {
+    const apiKey = getApiKey() ?? undefined;
+    if (!apiKey && !supabase) {
       useAIStore.getState().setError(i18n.t('ai.ui.noKeyConfigured'));
       useAIStore.getState().setShowApiKeyInput(true);
       return;
@@ -78,7 +79,7 @@ export function useAIChat() {
         recentMessages,
         systemPrompt,
         apiKey,
-        abort.signal
+        abort.signal,
       )) {
         useAIStore.getState().appendStreamingText(chunk);
       }

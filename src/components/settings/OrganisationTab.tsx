@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApiClient } from '../../hooks/useApiClient';
 
 interface OrgData {
   id: string;
@@ -16,8 +15,8 @@ const SIZE_BANDS = ['small', 'medium', 'large'] as const;
 
 export function OrganisationTab() {
   const { t } = useTranslation();
-  const api = useApiClient();
-  const [org, setOrg] = useState<OrgData | null>(null);
+  // TODO: Replace with Supabase client calls
+  const [org, _setOrg] = useState<OrgData | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [sector, setSector] = useState<string | null>(null);
   const [orgSizeband, setOrgSizeband] = useState<string | null>(null);
@@ -26,13 +25,8 @@ export function OrganisationTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<OrgData>('/settings/org').then(data => {
-      setOrg(data);
-      setDisplayName(data.display_name);
-      setSector(data.sector);
-      setOrgSizeband(data.org_sizeband);
-      setLoading(false);
-    }).catch(() => setLoading(false));
+    // TODO: Replace with Supabase client calls
+    setLoading(false);
   }, []);
 
   const hasChanges = org && (
@@ -45,13 +39,8 @@ export function OrganisationTab() {
     if (!org || !hasChanges) return;
     setSaving(true);
     try {
-      const payload: Record<string, unknown> = {};
-      if (displayName !== org.display_name) payload.displayName = displayName;
-      if (sector !== org.sector) payload.sector = sector;
-      if (orgSizeband !== org.org_sizeband) payload.orgSizeband = orgSizeband;
-
-      const updated = await api.patch<OrgData>('/settings/org', payload);
-      setOrg(updated);
+      // TODO: Replace with Supabase client calls
+      console.warn('[OrganisationTab] handleSave: not yet implemented');
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } finally {

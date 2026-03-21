@@ -56,14 +56,17 @@
       "subtitle": "Strategy plans, capability maps, initiative lists — most organisations have the docs, but lack the lens",
       "dropzone": "Drop files here or click to select",
       "supported": "PDF, Word, PowerPoint, text",
-      "orDescribe": "Or describe your organisation",
       "generate": "Generate strategic picture",
       "generating": "Analysing...",
       "error": "Something went wrong. Please try again.",
       "needApiKey": "API key required",
       "apiKeyPlaceholder": "Enter your Claude API key",
-      "preview": "Preview",
-      "persistKey": "Remember API key between sessions"
+      "persistKey": "Remember API key between sessions",
+      "additionalDescription": "Additional description (optional)",
+      "tooMuchText": "A lot of text — results may be less focused.",
+      "removeFile": "Remove file",
+      "fileError": "Could not read {{filename}}",
+      "tooManyFiles": "Maximum 10 files"
     },
     "generated": {
       "title": "Your strategic picture",
@@ -721,5 +724,25 @@
       "emailPlaceholder": "your@email.com",
       "submitted": "You're on the list — we'll be in touch."
     }
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Create account",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Name",
+    "consentResearch": "Contribute anonymously to research",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset password",
+    "resetPasswordSent": "Check your email for a reset link",
+    "checkEmail": "Check your email to verify your account",
+    "sessionExpired": "Session expired. Please log in again.",
+    "loginError": "Incorrect email or password",
+    "registerError": "Could not create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "rateLimitExceeded": "You've used all of today's generations. Try again tomorrow.",
+    "userMenu": "My account"
   }
 }

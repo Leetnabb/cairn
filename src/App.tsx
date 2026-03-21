@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore } from './stores/useStore';
 import { useAIStore } from './stores/useAIStore';
@@ -28,8 +29,9 @@ import { UndoRedoButtons } from './components/header/UndoRedoButtons';
 import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
-import { useAuthContext } from './hooks/useAuthContext';
+import { useAuth } from './providers/AuthProvider';
 import { useComplexityLevel } from './hooks/useComplexityLevel';
+import { useSupabaseSync } from './hooks/useSupabaseSync';
 import i18n from './i18n';
 
 export default function App() {
@@ -52,9 +54,12 @@ export default function App() {
   const modules = useStore(s => s.modules);
   const settingsOpen = useStore(s => s.ui.settingsOpen);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
-  const auth = useAuthContext();
+  const auth = useAuth();
+  const { isAuthenticated, user, signOut } = useAuth();
+  const navigate = useNavigate();
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
+  useSupabaseSync();
 
   // Auto-show wizard is handled in onboarding store initialization
 
@@ -140,6 +145,25 @@ export default function App() {
           >
             {i18n.language === 'nb' ? 'EN' : 'NB'}
           </button>
+          <div className="w-px h-5 bg-border mx-0.5" />
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] text-text-secondary">{user?.email}</span>
+              <button
+                onClick={async () => { await signOut(); navigate('/login'); }}
+                className="text-[10px] text-text-tertiary hover:text-text-primary transition-colors"
+              >
+                {t('auth.logout')}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate('/login')}
+              className="text-[10px] font-medium text-primary hover:underline"
+            >
+              {t('auth.login')}
+            </button>
+          )}
         </nav>
       </header>
 

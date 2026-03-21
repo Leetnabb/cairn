@@ -10,7 +10,8 @@ import { CapabilityPath } from './CapabilityPath';
 
 export function Roadmap() {
   const { t } = useTranslation();
-  const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
+  const activeScenario = useStore(s => s.activeScenario);
+  const initiatives = useStore(s => activeScenario ? s.scenarioStates[activeScenario]?.initiatives ?? EMPTY_INITIATIVES : EMPTY_INITIATIVES);
   const milestones = useStore(s => s.milestones);
   const criticalPathEnabled = useStore(s => s.ui.criticalPathEnabled);
   const selectedItem = useStore(s => s.ui.selectedItem);

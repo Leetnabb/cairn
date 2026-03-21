@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApiClient } from '../../hooks/useApiClient';
 import { useStore } from '../../stores/useStore';
 
 const MIGRATION_DONE_KEY = 'cairn_migration_offered';
@@ -15,7 +14,7 @@ const STORAGE_KEY = 'cairn-storage';
  */
 export function LocalStorageMigration() {
   const { t } = useTranslation();
-  const api = useApiClient();
+  // TODO: Replace with Supabase client calls
   const [show, setShow] = useState(false);
   const [importing, setImporting] = useState(false);
   const [done, setDone] = useState(false);
@@ -37,28 +36,8 @@ export function LocalStorageMigration() {
   const handleImport = async () => {
     setImporting(true);
     try {
-      const rawData = localStorage.getItem(STORAGE_KEY);
-      if (!rawData) return;
-
-      const parsed = JSON.parse(rawData);
-      const state = parsed?.state ?? parsed;
-
-      // Post to server as a snapshot labelled "Imported from local session"
-      // Find the default scenario ID from server (first one)
-      // For now we push the entire state as-is into a snapshot
-      const defaultScenarioId = state?.scenarios?.[0]?.id;
-      if (!defaultScenarioId) {
-        console.warn('[migration] No scenario ID found in local data');
-        dismiss();
-        return;
-      }
-
-      await api.post(`/scenarios/${defaultScenarioId}/snapshots`, {
-        label: t('migration.label'),
-        state: state,
-        submitToBenchmark: false,
-      });
-
+      // TODO: Replace with Supabase client calls
+      console.warn('[migration] handleImport: not yet implemented');
       localStorage.setItem(MIGRATION_DONE_KEY, 'true');
       setDone(true);
       setShow(false);

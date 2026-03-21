@@ -1,6 +1,7 @@
 import { parseJsonObjectFromAI } from './parseJsonResponse';
 import type { DimensionKey, EffectType } from '../../types';
 
+
 export interface GeneratedStrategicPicture {
   strategies: Array<{
     name: string;
@@ -21,6 +22,7 @@ export interface GeneratedStrategicPicture {
     dimension: DimensionKey;
     horizon: 'near' | 'far';
     description: string;
+    capabilityNames?: string[];
   }>;
   effects: Array<{
     name: string;
@@ -36,8 +38,10 @@ Given the input (document text or organization description), generate a COMPLETE
 
 Requirements:
 - 3-5 strategies with clear priorities
-- 6-10 capabilities organized in max 2 levels (level 1 = domain, level 2 = sub-capability with parent referencing a level 1 name)
+- 12-18 capabilities organized in max 2 levels: 4-6 Level 1 capability domains and 2-3 Level 2 sub-capabilities per domain. This forms the organisation's first capability map.
+- Generate capabilities SPECIFIC to this organisation based on the input provided. Do NOT use generic capability names. Level 1 capabilities should reflect the organisation's actual domains (e.g., for a municipality: 'Innbyggertjenester', 'Helse & Omsorg'; for an IT company: 'Produktutvikling', 'Tjenesteleveranse'). Level 2 should be concrete sub-capabilities.
 - 8-15 initiatives distributed across ALL FOUR dimensions: ledelse, virksomhet, organisasjon, teknologi
+- Each initiative MUST reference 1-3 capabilities by name from the capabilities list. Use exact capability names.
 - 3-5 effects with types: cost, quality, speed, compliance, strategic
 - 2-4 insights — observations about balance, gaps, or risks. Write in Norwegian. Be specific and provocative.
 
@@ -47,7 +51,7 @@ Respond with ONLY valid JSON matching this schema:
 {
   "strategies": [{ "name": "", "description": "", "timeHorizon": "short|medium|long", "priority": 1-3 }],
   "capabilities": [{ "name": "", "description": "", "level": 1|2, "parent": null|"parent name", "maturity": 1-3, "risk": 1-3 }],
-  "initiatives": [{ "name": "", "dimension": "ledelse|virksomhet|organisasjon|teknologi", "horizon": "near|far", "description": "" }],
+  "initiatives": [{ "name": "", "dimension": "ledelse|virksomhet|organisasjon|teknologi", "horizon": "near|far", "description": "", "capabilityNames": ["exact name of capability this builds"] }],
   "effects": [{ "name": "", "type": "cost|quality|speed|compliance|strategic", "description": "" }],
   "insights": ["string"]
 }`;
@@ -65,31 +69,66 @@ export function parseStrategicPicture(text: string): GeneratedStrategicPicture {
 
 export async function generateStrategicPicture(
   input: string,
-  apiKey: string,
+  apiKeyOrToken?: string,
   signal?: AbortSignal,
+  useProxy?: boolean,
 ): Promise<GeneratedStrategicPicture> {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: input }],
-    }),
-    signal,
-  });
+  let text: string;
 
-  if (!response.ok) {
-    throw new Error(`AI request failed: ${response.status}`);
+  if (useProxy && apiKeyOrToken) {
+    // Proxy mode: call Edge Function with access token
+
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-strategic-picture`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKeyOrToken}`,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ input, systemPrompt: SYSTEM_PROMPT }),
+        signal,
+      }
+    );
+
+    if (response.status === 429) {
+      throw new Error('RATE_LIMIT');
+    }
+    if (!response.ok) {
+      throw new Error(`AI request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    text = data.text;
+  } else if (apiKeyOrToken && !useProxy) {
+    // Direct mode: call Anthropic API
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKeyOrToken,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: input }],
+      }),
+      signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`AI request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    text = data.content[0].text;
+  } else {
+    throw new Error('No API key and no Supabase session');
   }
 
-  const data = await response.json();
-  const text = data.content[0].text;
   return parseStrategicPicture(text);
 }
