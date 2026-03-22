@@ -1,12 +1,17 @@
 import { create } from 'zustand';
-import type { GeneratedStrategicPicture } from '../lib/ai/generateStrategicPicture';
+import type { AnalysisResult, OnboardingResult, IndustryKey, SizeKey } from '../lib/ai/frameworks/onboardingFramework';
 
 interface OnboardingState {
   isOpen: boolean;
   step: number; // 0: Welcome, 1: Upload/Describe, 2: Generated picture, 3: Insights
   orgDescription: string;
   uploadedFiles: Array<{ name: string; text: string }>;
-  generatedPicture: GeneratedStrategicPicture | null;
+  industry: IndustryKey | '';
+  orgSize: SizeKey | '';
+  analysisResult: AnalysisResult | null;
+  analysisAnswers: Record<string, string>;
+  isAnalyzing: boolean;
+  onboardingResult: OnboardingResult | null;
   isGenerating: boolean;
   generationError: string | null;
   hasCompletedOnboarding: boolean;
@@ -18,7 +23,12 @@ interface OnboardingState {
   setOrgDescription: (desc: string) => void;
   addUploadedFiles: (files: Array<{ name: string; text: string }>) => void;
   removeUploadedFile: (name: string) => void;
-  setGeneratedPicture: (picture: GeneratedStrategicPicture) => void;
+  setIndustry: (industry: IndustryKey | '') => void;
+  setOrgSize: (size: SizeKey | '') => void;
+  setAnalysisResult: (result: AnalysisResult) => void;
+  setAnalysisAnswer: (questionId: string, answer: string) => void;
+  setIsAnalyzing: (loading: boolean) => void;
+  setOnboardingResult: (result: OnboardingResult) => void;
   setIsGenerating: (loading: boolean) => void;
   setGenerationError: (error: string | null) => void;
   completeOnboarding: () => void;
@@ -30,14 +40,19 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
   step: 0,
   orgDescription: '',
   uploadedFiles: [],
-  generatedPicture: null,
+  industry: '',
+  orgSize: '',
+  analysisResult: null,
+  analysisAnswers: {},
+  isAnalyzing: false,
+  onboardingResult: null,
   isGenerating: false,
   generationError: null,
   hasCompletedOnboarding: localStorage.getItem('cairn-onboarding') === 'completed',
 
   open: () => set({ isOpen: true, step: 0 }),
   close: () => set({ isOpen: false }),
-  nextStep: () => set(s => ({ step: Math.min(s.step + 1, 3) })),
+  nextStep: () => set(s => ({ step: Math.min(s.step + 1, 4) })),
   prevStep: () => set(s => ({ step: Math.max(s.step - 1, 0) })),
   setOrgDescription: (orgDescription) => set({ orgDescription }),
   addUploadedFiles: (files) => set((s) => {
@@ -55,7 +70,14 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
   removeUploadedFile: (name) => set((s) => ({
     uploadedFiles: s.uploadedFiles.filter(f => f.name !== name),
   })),
-  setGeneratedPicture: (generatedPicture) => set({ generatedPicture }),
+  setIndustry: (industry) => set({ industry }),
+  setOrgSize: (orgSize) => set({ orgSize }),
+  setAnalysisResult: (analysisResult) => set({ analysisResult }),
+  setAnalysisAnswer: (questionId, answer) => set((s) => ({
+    analysisAnswers: { ...s.analysisAnswers, [questionId]: answer },
+  })),
+  setIsAnalyzing: (isAnalyzing) => set({ isAnalyzing }),
+  setOnboardingResult: (onboardingResult) => set({ onboardingResult }),
   setIsGenerating: (isGenerating) => set({ isGenerating }),
   setGenerationError: (generationError) => set({ generationError }),
   completeOnboarding: () => {
@@ -64,7 +86,9 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
   },
   reset: () => set({
     step: 0, orgDescription: '', uploadedFiles: [],
-    generatedPicture: null, isGenerating: false, generationError: null,
+    industry: '', orgSize: '',
+    analysisResult: null, analysisAnswers: {}, isAnalyzing: false,
+    onboardingResult: null, isGenerating: false, generationError: null,
   }),
 }));
 
