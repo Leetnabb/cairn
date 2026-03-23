@@ -39,7 +39,14 @@ export function StepAnalysis() {
     setGenerationError(null);
 
     try {
-      const token = session?.access_token;
+      let token = session?.access_token;
+      if (!token) {
+        const { supabase } = await import('../../lib/supabase');
+        if (supabase) {
+          const { data } = await supabase.auth.getSession();
+          token = data.session?.access_token;
+        }
+      }
       if (!token) throw new Error('Not authenticated');
 
       const input = buildOnboardingInput(uploadedFiles, orgDescription);
