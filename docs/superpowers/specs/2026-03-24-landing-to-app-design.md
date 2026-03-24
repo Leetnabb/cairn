@@ -17,10 +17,13 @@ Målgruppen (CIO-er, styringsgrupper, enterprise-arkitekter) vil se verdi før d
 **Fil:** `src/main.tsx`
 
 - Fjern `RequireAuth`-wrapperen rundt `/app`-ruten
+- Slett `RequireAuth`-funksjonen (dead code etter endringen, trivielt å gjenskape)
 - `/app` blir tilgjengelig for alle
 - Innloggede brukere får Supabase-sync automatisk (eksisterende logikk)
 - Uinnloggede brukere får localStorage-modus (fungerer allerede)
 - Onboarding-wizarden trigges som før via `shouldAutoShowWizard()`
+- Merk: `App.tsx` bruker `useAuth()` og `auth.role` — begge returnerer safe defaults (`isAuthenticated: false`, `role: null`) for gjester, så ingen endring trengs der
+- Merk: `useSupabaseSync()` er i dag en no-op placeholder og fungerer uendret for gjester
 
 ### 2. Hero-seksjon
 
@@ -55,7 +58,7 @@ Målgruppen (CIO-er, styringsgrupper, enterprise-arkitekter) vil se verdi før d
 ### 5. i18n-nøkler
 
 **Nye/endrede:**
-- `landing.nav.login` — "Logg inn" / "Log in"
+- Nav bruker eksisterende `auth.login`-nøkkel ("Logg inn" / "Log in") — ingen ny nøkkel
 - `landing.nav.cta` — Endres til "Kom i gang" / "Get started"
 - `landing.hero.cta` — Endres til "Kom i gang" / "Get started"
 - `landing.hero.noSignup` — "Ingen registrering nødvendig" / "No signup required"
