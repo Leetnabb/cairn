@@ -25,7 +25,7 @@ function InsightCard({ text }: { text: string }) {
 
 export function StepInsights({ onComplete }: StepInsightsProps) {
   const { t } = useTranslation();
-  const { generatedPicture, completeOnboarding } = useOnboardingStore();
+  const { onboardingResult, completeOnboarding } = useOnboardingStore();
   const enterMeetingMode = useStore(s => s.enterMeetingMode);
 
   const handleComplete = onComplete ?? completeOnboarding;
@@ -39,7 +39,7 @@ export function StepInsights({ onComplete }: StepInsightsProps) {
     handleComplete();
   };
 
-  if (!generatedPicture) {
+  if (!onboardingResult) {
     return (
       <div className="py-8 text-center text-[12px] text-text-tertiary">
         {t('onboarding.insights.noData')}
@@ -47,8 +47,7 @@ export function StepInsights({ onComplete }: StepInsightsProps) {
     );
   }
 
-  const initiatives = generatedPicture.initiatives;
-  const capabilities = generatedPicture.capabilities;
+  const initiatives = onboardingResult.initiatives;
 
   // Dimension distribution
   const dimCounts = (['ledelse', 'virksomhet', 'organisasjon', 'teknologi'] as DimensionKey[]).map(key => ({
@@ -67,9 +66,9 @@ export function StepInsights({ onComplete }: StepInsightsProps) {
       </div>
 
       {/* Insights */}
-      {generatedPicture.insights.length > 0 && (
+      {onboardingResult.insights.length > 0 && (
         <div className="space-y-2">
-          {generatedPicture.insights.map((insight, i) => (
+          {onboardingResult.insights.map((insight, i) => (
             <InsightCard key={i} text={insight} />
           ))}
         </div>
@@ -99,12 +98,8 @@ export function StepInsights({ onComplete }: StepInsightsProps) {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats — 2 columns: initiatives + dimensions */}
       <div className="flex gap-4">
-        <div className="flex-1 bg-surface-hover rounded-lg p-3 text-center">
-          <p className="text-2xl font-bold text-primary">{capabilities.length}</p>
-          <p className="text-[10px] text-text-tertiary mt-0.5">{t('onboarding.insights.capCount')}</p>
-        </div>
         <div className="flex-1 bg-surface-hover rounded-lg p-3 text-center">
           <p className="text-2xl font-bold text-primary">{initiatives.length}</p>
           <p className="text-[10px] text-text-tertiary mt-0.5">{t('onboarding.insights.initCount')}</p>
@@ -116,6 +111,11 @@ export function StepInsights({ onComplete }: StepInsightsProps) {
           <p className="text-[10px] text-text-tertiary mt-0.5">{t('onboarding.insights.dimCount')}</p>
         </div>
       </div>
+
+      {/* Next step prompt */}
+      <p className="text-[11px] text-primary font-medium mt-3">
+        {t('onboarding.generated.nextStepCapabilities')}
+      </p>
 
       {/* CTAs */}
       <div className="space-y-2 pt-1">

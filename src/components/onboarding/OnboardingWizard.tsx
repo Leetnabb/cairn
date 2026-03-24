@@ -3,52 +3,23 @@ import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { useStore } from '../../stores/useStore';
 import { StepWelcome } from './StepWelcome';
 import { StepUpload } from './StepUpload';
+import { StepAnalysis } from './StepAnalysis';
 import { StepGenerated } from './StepGenerated';
 import { StepInsights } from './StepInsights';
-import type { Strategy, Capability, Initiative, Effect, Scenario, AppState } from '../../types';
-import type { GeneratedStrategicPicture } from '../../lib/ai/generateStrategicPicture';
+import type { Initiative, Effect, Scenario, AppState } from '../../types';
+import type { OnboardingResult } from '../../lib/ai/frameworks/onboardingFramework';
 
-function convertToAppState(picture: GeneratedStrategicPicture): Partial<AppState> {
+function convertToAppState(result: OnboardingResult): Partial<AppState> {
   const scenarioId = crypto.randomUUID();
 
-  const strategies: Strategy[] = picture.strategies.map(s => ({
-    id: crypto.randomUUID(),
-    name: s.name,
-    description: s.description,
-    timeHorizon: s.timeHorizon,
-    priority: s.priority,
-  }));
-
-  // Build capability id map (name → id) for parent references
-  const capIdMap = new Map<string, string>();
-  picture.capabilities.forEach(c => {
-    if (!capIdMap.has(c.name)) {
-      capIdMap.set(c.name, crypto.randomUUID());
-    }
-  });
-
-  const capabilities: Capability[] = picture.capabilities.map((c, order) => ({
-    id: capIdMap.get(c.name) ?? crypto.randomUUID(),
-    name: c.name,
-    description: c.description,
-    level: c.level,
-    parent: c.parent ? (capIdMap.get(c.parent) ?? null) : null,
-    maturity: c.maturity,
-    risk: c.risk,
-    order,
-    strategyIds: [],
-  }));
-
-  const initiatives: Initiative[] = picture.initiatives.map((init, order) => ({
+  const initiatives: Initiative[] = result.initiatives.map((init, order) => ({
     id: crypto.randomUUID(),
     name: init.name,
     dimension: init.dimension,
     horizon: init.horizon,
     order,
     description: init.description,
-    capabilities: (init.capabilityNames ?? [])
-      .map(name => capIdMap.get(name))
-      .filter((id): id is string => id !== undefined),
+    capabilities: [],
     owner: '',
     dependsOn: [],
     maturityEffect: {},
@@ -56,7 +27,7 @@ function convertToAppState(picture: GeneratedStrategicPicture): Partial<AppState
     valueChains: [],
   }));
 
-  const effects: Effect[] = picture.effects.map((e, order) => ({
+  const effects: Effect[] = result.effects.map((e, order) => ({
     id: crypto.randomUUID(),
     name: e.name,
     description: e.description,
@@ -73,8 +44,8 @@ function convertToAppState(picture: GeneratedStrategicPicture): Partial<AppState
   };
 
   return {
-    strategies,
-    capabilities,
+    strategies: [],
+    capabilities: [],
     scenarios: [scenario],
     scenarioStates: { [scenarioId]: { initiatives } },
     activeScenario: scenarioId,
@@ -90,7 +61,7 @@ export function OnboardingWizard() {
   const isOpen = useOnboardingStore(s => s.isOpen);
   const step = useOnboardingStore(s => s.step);
   const close = useOnboardingStore(s => s.close);
-  const generatedPicture = useOnboardingStore(s => s.generatedPicture);
+  const onboardingResult = useOnboardingStore(s => s.onboardingResult);
   const completeOnboarding = useOnboardingStore(s => s.completeOnboarding);
 
   const importState = useStore(s => s.importState);
@@ -102,13 +73,14 @@ export function OnboardingWizard() {
   const steps = [
     { label: t('onboarding.stepWelcome') },
     { label: t('onboarding.upload.title') },
+    { label: t('onboarding.analysis.title') },
     { label: t('onboarding.generated.title') },
     { label: t('onboarding.insights.title') },
   ];
 
   const handleComplete = () => {
-    if (generatedPicture) {
-      const appState = convertToAppState(generatedPicture);
+    if (onboardingResult) {
+      const appState = convertToAppState(onboardingResult);
       importState(appState);
       setComplexityLevel(1);
       setModules({ roadmap: true, capabilities: true, effects: true });
@@ -120,8 +92,9 @@ export function OnboardingWizard() {
     switch (step) {
       case 0: return <StepWelcome />;
       case 1: return <StepUpload />;
-      case 2: return <StepGenerated />;
-      case 3: return <StepInsights onComplete={handleComplete} />;
+      case 2: return <StepAnalysis />;
+      case 3: return <StepGenerated />;
+      case 4: return <StepInsights onComplete={handleComplete} />;
       default: return <StepWelcome />;
     }
   };

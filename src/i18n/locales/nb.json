@@ -66,7 +66,40 @@
       "tooMuchText": "Mye tekst — AI-en kan gi mindre fokuserte resultater.",
       "removeFile": "Fjern fil",
       "fileError": "Kunne ikke lese {{filename}}",
-      "tooManyFiles": "Maks 10 filer"
+      "tooManyFiles": "Maks 10 filer",
+      "documentGuidance": "Dokumenter som gir best resultat: strategiplaner, virksomhetsplaner, styrepresentasjoner, årsrapporter",
+      "industry": "Bransje / sektor",
+      "orgSize": "Organisasjonens størrelse",
+      "industryOptions": {
+        "offentlig_forvaltning": "Offentlig forvaltning",
+        "helse": "Helse",
+        "finans": "Finans",
+        "teknologi": "Teknologi",
+        "industri_produksjon": "Industri / Produksjon",
+        "handel_retail": "Handel / Retail",
+        "utdanning": "Utdanning",
+        "annet": "Annet"
+      },
+      "sizeOptions": {
+        "under_50": "Under 50 ansatte",
+        "50_200": "50–200 ansatte",
+        "200_1000": "200–1 000 ansatte",
+        "1000_5000": "1 000–5 000 ansatte",
+        "over_5000": "Over 5 000 ansatte"
+      },
+      "analyze": "Analyser"
+    },
+    "analysis": {
+      "title": "Analyse av dokumentene",
+      "subtitle": "Vi har gjennomgått dokumentene dine og har noen oppfølgingsspørsmål",
+      "foundSummary": "Vi fant {{initiatives}} mulige initiativer og {{effects}} effektmål",
+      "questionsIntro": "{{count}} spørsmål vil gi et vesentlig bedre resultat",
+      "generateNow": "Generer nå",
+      "analyzing": "Analyserer dokumentene...",
+      "noFindings": "Vi kunne ikke trekke ut spesifikke initiativer fra dokumentene. Legg til en beskrivelse eller gå videre for forslag basert på bransje.",
+      "skipToGenerate": "Gå videre",
+      "retryAnalysis": "Prøv igjen",
+      "error": "Analysen feilet. Du kan prøve igjen eller gå direkte til generering."
     },
     "generated": {
       "title": "Ditt strategibilde",
@@ -77,7 +110,10 @@
       "effects": "Effekter",
       "included": "inkludert",
       "excluded": "ekskludert",
-      "noData": "Ingen data å vise. Gå tilbake og last opp dokumentasjon."
+      "noData": "Ingen data å vise. Gå tilbake og last opp dokumentasjon.",
+      "confident": "Basert på dokumentene",
+      "suggested": "Foreslått — trenger bekreftelse",
+      "nextStepCapabilities": "Neste steg: Bygg kapabilitetskartet basert på initiativene dine"
     },
     "insights": {
       "title": "Dette ser vi",
@@ -128,7 +164,8 @@
     "note": "Notat",
     "owner": "Eier",
     "back": "Tilbake",
-    "continue": "Fortsett"
+    "continue": "Fortsett",
+    "select": "Velg"
   },
   "labels": {
     "maturity": {

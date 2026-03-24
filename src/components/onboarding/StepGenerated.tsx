@@ -1,13 +1,35 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
-import type { GeneratedStrategicPicture } from '../../lib/ai/generateStrategicPicture';
+import type { OnboardingResult, OnboardingInitiative, OnboardingEffect } from '../../lib/ai/frameworks/onboardingFramework';
 import { DIMENSION_MAP, type DimensionKey } from '../../types';
 
-type GeneratedItem = { name: string; included: boolean };
+type EditableInitiative = OnboardingInitiative & { included: boolean };
+type EditableEffect = OnboardingEffect & { included: boolean };
 
-function useEditableList<T extends { name: string }>(initial: T[]) {
-  const [items, setItems] = useState(() =>
+function useEditableInitiatives(initial: OnboardingInitiative[]) {
+  const [items, setItems] = useState<EditableInitiative[]>(() =>
+    initial.map((item) => ({ ...item, included: true }))
+  );
+
+  const toggle = (index: number) =>
+    setItems((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, included: !item.included } : item))
+    );
+
+  const rename = (index: number, name: string) =>
+    setItems((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, name } : item))
+    );
+
+  const remove = (index: number) =>
+    setItems((prev) => prev.filter((_, i) => i !== index));
+
+  return { items, toggle, rename, remove };
+}
+
+function useEditableEffects(initial: OnboardingEffect[]) {
+  const [items, setItems] = useState<EditableEffect[]>(() =>
     initial.map((item) => ({ ...item, included: true }))
   );
 
@@ -30,14 +52,14 @@ function useEditableList<T extends { name: string }>(initial: T[]) {
 interface EditableRowProps {
   name: string;
   included: boolean;
+  confidence?: 'high' | 'low';
   onToggle: () => void;
   onRename: (name: string) => void;
   onRemove: () => void;
   accent?: string;
-  badge?: string;
 }
 
-function EditableRow({ name, included, onToggle, onRename, onRemove, accent, badge }: EditableRowProps) {
+function EditableRow({ name, included, confidence, onToggle, onRename, onRemove, accent }: EditableRowProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(name);
 
@@ -46,23 +68,23 @@ function EditableRow({ name, included, onToggle, onRename, onRemove, accent, bad
     setEditing(false);
   };
 
+  const lowConfidence = confidence === 'low';
+
   return (
     <div className={`flex items-center gap-2 py-1.5 px-2 rounded-md group transition-colors ${
       included ? 'hover:bg-surface-hover' : 'opacity-50 hover:bg-surface-hover'
-    }`}>
+    } ${lowConfidence ? 'opacity-60' : ''} ${lowConfidence && included ? 'border-l-2 border-dashed border-border' : ''}`}>
       <input
         type="checkbox"
         checked={included}
         onChange={onToggle}
         className="w-3.5 h-3.5 accent-primary shrink-0 cursor-pointer"
       />
-      {badge && (
+      {accent && (
         <span
-          className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0 text-white"
-          style={{ backgroundColor: accent ?? '#6366f1' }}
-        >
-          {badge}
-        </span>
+          className="w-1.5 h-1.5 rounded-full shrink-0"
+          style={{ backgroundColor: accent }}
+        />
       )}
       {editing ? (
         <input
@@ -112,36 +134,27 @@ function Section({ title, children }: SectionProps) {
 }
 
 interface StepGeneratedInnerProps {
-  picture: GeneratedStrategicPicture;
+  result: OnboardingResult;
 }
 
-function StepGeneratedInner({ picture }: StepGeneratedInnerProps) {
+function StepGeneratedInner({ result }: StepGeneratedInnerProps) {
   const { t } = useTranslation();
-  const { nextStep, prevStep, setGeneratedPicture } = useOnboardingStore();
+  const { nextStep, prevStep, setOnboardingResult } = useOnboardingStore();
 
-  const strategies = useEditableList(picture.strategies);
-  const capabilities = useEditableList(picture.capabilities);
-  const initiatives = useEditableList(picture.initiatives);
-  const effects = useEditableList(picture.effects);
+  const initiatives = useEditableInitiatives(result.initiatives);
+  const effects = useEditableEffects(result.effects);
 
   const handleNext = () => {
-    // Write back any edits to the store before advancing
-    const updatedPicture: GeneratedStrategicPicture = {
-      ...picture,
-      strategies: strategies.items
-        .filter((s) => s.included)
-        .map(({ name, ...rest }) => ({ ...rest, name })),
-      capabilities: capabilities.items
-        .filter((c) => c.included)
-        .map(({ name, ...rest }) => ({ ...rest, name })),
+    const filteredResult: OnboardingResult = {
       initiatives: initiatives.items
-        .filter((i) => i.included)
-        .map(({ name, ...rest }) => ({ ...rest, name })),
+        .filter(i => i.included)
+        .map(({ included: _included, ...rest }) => rest),
       effects: effects.items
-        .filter((e) => e.included)
-        .map(({ name, ...rest }) => ({ ...rest, name })),
+        .filter(e => e.included)
+        .map(({ included: _included, ...rest }) => rest),
+      insights: result.insights,
     };
-    setGeneratedPicture(updatedPicture);
+    setOnboardingResult(filteredResult);
     nextStep();
   };
 
@@ -150,7 +163,7 @@ function StepGeneratedInner({ picture }: StepGeneratedInnerProps) {
     dim,
     items: initiatives.items
       .map((item, index) => ({ item, index }))
-      .filter(({ item }) => (item as GeneratedItem & { dimension: DimensionKey }).dimension === dim),
+      .filter(({ item }) => item.dimension === dim),
   })).filter(({ items }) => items.length > 0);
 
   return (
@@ -160,37 +173,11 @@ function StepGeneratedInner({ picture }: StepGeneratedInnerProps) {
         <p className="text-[12px] text-text-secondary mt-1">{t('onboarding.generated.subtitle')}</p>
       </div>
 
-      {/* Strategies */}
-      <Section title={t('onboarding.generated.strategies')}>
-        {strategies.items.map((item, i) => (
-          <EditableRow
-            key={i}
-            name={item.name}
-            included={item.included}
-            onToggle={() => strategies.toggle(i)}
-            onRename={(name) => strategies.rename(i, name)}
-            onRemove={() => strategies.remove(i)}
-          />
-        ))}
-      </Section>
-
-      {/* Capabilities — show level 1 with their children indented */}
-      <Section title={t('onboarding.generated.capabilities')}>
-        {capabilities.items.map((item, i) => {
-          const cap = item as GeneratedItem & { level: 1 | 2; parent: string | null };
-          return (
-            <div key={i} style={{ paddingLeft: cap.level === 2 ? '16px' : '0' }}>
-              <EditableRow
-                name={item.name}
-                included={item.included}
-                onToggle={() => capabilities.toggle(i)}
-                onRename={(name) => capabilities.rename(i, name)}
-                onRemove={() => capabilities.remove(i)}
-              />
-            </div>
-          );
-        })}
-      </Section>
+      {/* Confidence legend */}
+      <div className="flex items-center gap-4 text-[10px] text-text-tertiary mb-3">
+        <span>{t('onboarding.generated.confident')}</span>
+        <span className="opacity-60 border-b border-dashed border-text-tertiary">{t('onboarding.generated.suggested')}</span>
+      </div>
 
       {/* Initiatives grouped by dimension */}
       <div>
@@ -212,6 +199,7 @@ function StepGeneratedInner({ picture }: StepGeneratedInnerProps) {
                       key={index}
                       name={item.name}
                       included={item.included}
+                      confidence={item.confidence}
                       onToggle={() => initiatives.toggle(index)}
                       onRename={(name) => initiatives.rename(index, name)}
                       onRemove={() => initiatives.remove(index)}
@@ -232,6 +220,7 @@ function StepGeneratedInner({ picture }: StepGeneratedInnerProps) {
             key={i}
             name={item.name}
             included={item.included}
+            confidence={item.confidence}
             onToggle={() => effects.toggle(i)}
             onRename={(name) => effects.rename(i, name)}
             onRemove={() => effects.remove(i)}
@@ -260,9 +249,9 @@ function StepGeneratedInner({ picture }: StepGeneratedInnerProps) {
 
 export function StepGenerated() {
   const { t } = useTranslation();
-  const generatedPicture = useOnboardingStore(s => s.generatedPicture);
+  const onboardingResult = useOnboardingStore(s => s.onboardingResult);
 
-  if (!generatedPicture) {
+  if (!onboardingResult) {
     return (
       <div className="py-8 text-center text-[12px] text-text-tertiary">
         {t('onboarding.generated.noData')}
@@ -270,5 +259,5 @@ export function StepGenerated() {
     );
   }
 
-  return <StepGeneratedInner picture={generatedPicture} />;
+  return <StepGeneratedInner result={onboardingResult} />;
 }
