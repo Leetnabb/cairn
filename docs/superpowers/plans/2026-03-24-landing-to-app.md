@@ -106,20 +106,30 @@ git commit -m "feat: update i18n keys for landing get-started flow"
 
 ### Task 3: Replace Hero email form with "Kom i gang" button
 
+> **Depends on:** Task 2 (requires the `landing.hero.noSignup` i18n key)
+
 **Files:**
 - Modify: `src/components/landing/sections/HeroSection.tsx`
 
-- [ ] **Step 1: Add `useNavigate` import**
+- [ ] **Step 1: Update imports**
 
-Add to imports:
+Replace:
+```tsx
+import { useState, useRef, type CSSProperties } from "react";
+```
+with:
 ```tsx
 import { useNavigate } from "react-router-dom";
 ```
 
+(`useState`, `useRef`, and `CSSProperties` all become unused after the form removal.)
+
 - [ ] **Step 2: Replace email state and form with navigation button**
 
+Add `const navigate = useNavigate();` at the top of the component function.
+
 Remove:
-- `useState` for `email` and `submitted`
+- `email` and `submitted` state declarations
 - `heroFormRef` ref
 - `handleEmailSubmit` function
 
@@ -156,10 +166,6 @@ Replace the `<FadeIn delay={0.7}>` block (the form section) with:
 </FadeIn>
 ```
 
-Add `const navigate = useNavigate();` inside the component function.
-
-Remove unused imports: `useRef` (if no longer needed), remove `type CSSProperties` if no longer needed.
-
 - [ ] **Step 3: Verify build**
 
 Run: `npm run build`
@@ -174,12 +180,15 @@ git commit -m "feat: replace hero email form with get-started button"
 
 ---
 
-### Task 4: Update LandingNav with "Logg inn" + "Kom i gang"
+### Task 4: Update LandingNav + CairnLanding (must be atomic)
+
+> **Note:** LandingNav and CairnLanding share the `onCtaClick` prop — both files must be updated together to avoid build errors.
 
 **Files:**
 - Modify: `src/components/landing/LandingNav.tsx`
+- Modify: `src/components/landing/CairnLanding.tsx`
 
-- [ ] **Step 1: Update imports and props**
+- [ ] **Step 1: Update LandingNav — imports and props**
 
 Add:
 ```tsx
@@ -188,7 +197,7 @@ import { useNavigate } from "react-router-dom";
 
 Remove `onCtaClick` from the `LandingNavProps` interface and the destructured props.
 
-- [ ] **Step 2: Add navigate hook and replace CTA button**
+- [ ] **Step 2: Update LandingNav — add navigate hook and replace CTA button**
 
 Add `const navigate = useNavigate();` inside the component.
 
@@ -237,40 +246,21 @@ Replace the existing CTA button block (`{!isMobile && (` ... `)}`) with:
 )}
 ```
 
-- [ ] **Step 3: Verify build**
-
-Run: `npm run build`
-Expected: Build succeeds.
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add src/components/landing/LandingNav.tsx
-git commit -m "feat: add login link and get-started button to landing nav"
-```
-
----
-
-### Task 5: Clean up CairnLanding parent component
-
-**Files:**
-- Modify: `src/components/landing/CairnLanding.tsx`
-
-- [ ] **Step 1: Remove scroll-to-CTA logic**
+- [ ] **Step 3: Update CairnLanding — remove scroll-to-CTA logic**
 
 Remove:
-- `useRef` import (if only used for `ctaRef`)
+- `useRef` from the React import
 - `ctaRef` declaration (`const ctaRef = useRef<HTMLDivElement | null>(null);`)
 - `scrollToCta` function
 - `onCtaClick={scrollToCta}` prop from `<LandingNav>`
 - `<div ref={ctaRef}>` wrapper around `<CTASection>` — keep `<CTASection>` itself
 
-- [ ] **Step 2: Verify build**
+- [ ] **Step 4: Verify build**
 
 Run: `npm run build`
 Expected: Build succeeds with no errors or warnings.
 
-- [ ] **Step 3: Manual smoke test**
+- [ ] **Step 5: Manual smoke test**
 
 Run: `npm run dev`
 
@@ -284,9 +274,9 @@ Verify:
 7. CTA section at bottom still shows email form
 8. Language toggle works (switches to English text)
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add src/components/landing/CairnLanding.tsx
-git commit -m "feat: remove scroll-to-CTA logic from landing page"
+git add src/components/landing/LandingNav.tsx src/components/landing/CairnLanding.tsx
+git commit -m "feat: update landing nav with login link and get-started button"
 ```
