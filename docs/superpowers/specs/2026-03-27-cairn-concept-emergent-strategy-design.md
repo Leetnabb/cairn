@@ -5,6 +5,10 @@
 **Dato:** 2026-03-27
 **Status:** Utkast
 
+### Forhold til tidligere produktretning
+
+Denne spec-en erstatter den tidligere AI-samtalepivoten (mars 2026) som primær konseptretning. Den tidligere retningen fokuserte på AI-drevet samtale som onboarding-mekanisme ("15-20 minutters samtale som bygger strategisk bilde"). Denne spec-en beholder AI-samtale som inputkanal (se Datainput, fase 2), men reposisjonerer Cairn fundamentalt: fra et verktøy som hjelper deg *formulere* en strategi, til et verktøy som hjelper deg *navigere* mens strategien utfolder seg. AI-ens primærrolle skifter fra samtalepartner i oppstart til løpende strategisk rådgiver som leser og tolker helhetsbildet over tid.
+
 ---
 
 ## Kjernekonsept og filosofi
@@ -49,7 +53,7 @@ Cairn bygger på en alternativ strategitradisjon til den dominerende Porter/Gart
 | Strategisk planlegging | Cascade, Quantive, Workboard | Strategi er deliberate — sett mål, mål fremdrift | Strategi er emergent — se hva som skjer, naviger bevisst |
 | EA/arkitektur | LeanIX, Ardoq | Kartlegg arkitektur, koble til strategi | Kartlegg retning og balanse, ikke arkitektur |
 | Prosjektstyring | Jira, Azure DevOps | Planlegg og lever | Cairn er ikke prosjektstyring |
-| BI/rapportering | Power BI, Tableau | Mål hva som har skjedd | Synliggjør hva som skjer og hva det betyr |
+| BI/rapportering | Power BI, Tableau | Måler operasjonelle metrikker i sanntid | Tolker strategisk koherens — henger det vi gjør sammen med retningen? |
 | Presentasjon | PowerPoint | Strategidokumentet som stillbilde | Levende bilde som oppdateres kontinuerlig |
 
 ### Hva Cairn bevisst ikke er
@@ -145,11 +149,13 @@ AI-en analyserer det samlede bildet og gir løpende diagnostikk:
 
 #### 2. Driftsdeteksjon — "Hvor beveger dere dere?"
 
-AI-en sammenligner den brede strategiske retningen med det som faktisk skjer:
+AI-en sammenligner den brede strategiske retningen med det som faktisk skjer — både mot strategiske rammer (retning) og dimensjonsbalanse. Disse er to uavhengige analyser som sammen gir et komplett bilde: retningsanalysen viser *om* dere går riktig vei, dimensjonsanalysen viser *om transformasjonen er bærekraftig* på veien dit.
 
 - **Retningsdrift:** "Rammene sier 'datadrevet organisasjon', men 80% av nye initiativer handler om prosessoptimalisering. Dere gjør noe annet enn dere sa."
 - **Emergent strategi:** "Det har dukket opp et kluster av initiativer rundt kundedata som ingen besluttet eksplisitt. Det kan være en emergent strategisk retning verdt å anerkjenne."
 - **Gap:** "Dere sa 'digitalisere kundeflaten'. Ingenting av det dere gjør adresserer kundekontaktpunktene direkte."
+- **Effektvurdering:** "Dere forventet at initiativ X, Y, Z skulle øke antall medlemmer. X er stoppet, Y har endret retning, bare Z pågår. Er den forventede effekten fortsatt realistisk?"
+- **Effekt-dimensjon-kobling:** "Dere har 12 initiativer koblet til effekten 'økt kundetilfredshet', men ingen av dem adresserer organisasjonsdimensjonen. Kundetilfredshet krever typisk kompetanseendring i frontlinjen."
 
 #### 3. Sparring — "Hva bør du tenke på?"
 
@@ -183,11 +189,13 @@ AI-innsiktene er ikke noe du må be om. De dukker opp som strategiske varsler �
 - **Kapabiliteter** — hvilke organisatoriske kapabiliteter dette berører eller bygger
 - **Avhengigheter** — dette forutsetter/muliggjør andre initiativer
 - **Status** — enkel: planlagt, pågår, stoppet, fullført, endret retning
-- **Horisont** — nært (pågår nå) vs. fjernere (planlagt fremover)
+- **Horisont** — tre nivåer: nå (pågår aktivt), neste (besluttet, ikke startet), senere (identifisert, usikkert). Gjenspeiler tåke-metaforen: det nære er tydelig, det fjerne er uklart.
 
 ### Kapabiliteter
 
-- **Kapabilitetskart** — hva organisasjonen kan og trenger å kunne
+Kapabiliteter i Cairn er *forretningskapabiliteter* — hva organisasjonen kan gjøre og trenger å kunne gjøre. Eksempler: "digital kundeservice", "datadrevet beslutningsstøtte", "smidig produktutvikling". De er grovkornede (10-30 stykker, ikke hundrevis) og beskriver evner, ikke systemer eller arkitektur. Cairn er ikke et EA-verktøy — det mapper ikke teknisk arkitektur, applikasjonslandskap eller integrasjoner. Kapabiliteter i Cairn svarer på spørsmålet "hva trenger vi å *kunne*?", ikke "hva har vi *bygget*?".
+
+- **Kapabilitetskart** — organisasjonens nøkkelkapabiliteter, grovkornet
 - **Modenhet** — enkel vurdering av nåtilstand
 - **Kobling til initiativer** — hvilke initiativer bygger/endrer denne kapabiliteten
 
@@ -218,4 +226,12 @@ Taktisk nivå registrerer initiativer, kapabiliteter og effekter direkte i Cairn
 AI-samtalen som inputkanal — lederen snakker om hva som skjer, Cairn strukturerer det til initiativer og koblinger. Reduserer friksjon.
 
 ### Fase 3: Integrasjoner
-Cairn henter data fra eksisterende systemer (Jira, Azure DevOps, budsjett, etc.) og aggregerer bildet automatisk. Mest ambisiøst, men gir mest komplett bilde.
+Cairn henter data fra eksisterende systemer (Jira, Azure DevOps, budsjett, etc.) og aggregerer bildet automatisk. Mest ambisiøst, men gir mest komplett bilde. Denne fasen er aspirasjonell og ikke nødvendig for produktets kjerneverdi — fase 1 og 2 skal bære produktet alene. Fase 3 blir relevant når organisasjoner med 50+ initiativer trenger automatisert oppdatering.
+
+---
+
+## Scope og avgrensninger
+
+### Organisasjonsgrenser
+
+Denne spec-en beskriver Cairn for én organisatorisk enhet — en virksomhet, divisjon eller forretningsenhet. Spørsmålet om konsern-/gruppenivå (se på tvers av flere enheter) er en reell utvidelse, men utenfor scope for MVP. Det er en scoping-beslutning som bør tas etter at kjernekonseptet er validert med én organisasjon.
