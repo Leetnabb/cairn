@@ -1,6 +1,7 @@
-import type { Initiative, Capability, Effect, EffectType } from '../types';
+import type { Initiative, Capability, Effect, EffectType, StrategicFrame } from '../types';
 import { DIMENSIONS } from '../types';
 import i18n from '../i18n';
+import { computeStrategicDiagnostics } from './strategicDiagnostics';
 
 export interface Insight {
   type: 'warning' | 'info' | 'positive';
@@ -12,7 +13,7 @@ const OWNER_CAPACITY_THRESHOLD = 4;
 const MAX_ORPHAN_DISPLAY = 3;
 const EFFECT_CONCENTRATION_THRESHOLD = 3;
 
-export function computeInsights(initiatives: Initiative[], capabilities: Capability[], effects: Effect[] = []): Insight[] {
+export function computeInsights(initiatives: Initiative[], capabilities: Capability[], effects: Effect[] = [], strategicFrame?: StrategicFrame): Insight[] {
   const insights: Insight[] = [];
   const capabilityMap = new Map(capabilities.map(c => [c.id, c]));
 
@@ -151,6 +152,11 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
         }
       }
     }
+  }
+
+  const diagnostics = computeStrategicDiagnostics(initiatives, effects, strategicFrame);
+  for (const diag of diagnostics) {
+    insights.push({ type: diag.severity, message: diag.message });
   }
 
   return insights;

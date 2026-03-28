@@ -9,10 +9,11 @@ export function InsightsBar() {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const capabilities = useStore(s => s.capabilities);
   const effects = useStore(s => s.effects);
+  const strategicFrame = useStore(s => s.strategicFrame);
   const expanded = useStore(s => s.ui.insightsExpanded);
   const setInsightsExpanded = useStore(s => s.setInsightsExpanded);
 
-  const insights = useMemo(() => computeInsights(initiatives, capabilities, effects), [initiatives, capabilities, effects, i18n.language]);
+  const insights = useMemo(() => computeInsights(initiatives, capabilities, effects, strategicFrame), [initiatives, capabilities, effects, strategicFrame, i18n.language]);
 
   if (insights.length === 0) return null;
 

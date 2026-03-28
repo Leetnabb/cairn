@@ -97,6 +97,21 @@ export function assessEffectFeasibility(
   return results;
 }
 
+export function computeStrategicDiagnostics(
+  initiatives: Initiative[],
+  effects: Effect[],
+  frame: StrategicFrame | undefined
+): DiagnosticResult[] {
+  // Diagnostics only run when a strategic frame is set
+  if (!frame) return [];
+
+  return [
+    ...detectStrategicDrift(initiatives, frame),
+    ...assessEffectFeasibility(initiatives, effects),
+    ...detectAbsorptionIssues(initiatives),
+  ];
+}
+
 export function detectAbsorptionIssues(initiatives: Initiative[]): DiagnosticResult[] {
   if (initiatives.length < 5) return [];
   const inProgress = initiatives.filter(i => i.status === 'in_progress').length;

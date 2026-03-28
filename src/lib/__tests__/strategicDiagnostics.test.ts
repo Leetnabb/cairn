@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectStrategicDrift, assessEffectFeasibility, detectAbsorptionIssues } from '../strategicDiagnostics';
+import { detectStrategicDrift, assessEffectFeasibility, detectAbsorptionIssues, computeStrategicDiagnostics } from '../strategicDiagnostics';
 import type { Initiative, StrategicFrame, Effect } from '../../types';
 
 const makeInit = (id: string, name: string, dim: string): Initiative => ({
@@ -137,5 +137,35 @@ describe('detectAbsorptionIssues', () => {
     ];
     const result = detectAbsorptionIssues(initiatives);
     expect(result).toHaveLength(0);
+  });
+});
+
+describe('computeStrategicDiagnostics', () => {
+  it('combines all diagnostics', () => {
+    const frame: StrategicFrame = {
+      direction: 'Datadrevet',
+      themes: [{ id: 'st_1', name: 'Kundedata', description: 'Samle data' }],
+    };
+    const initiatives = [
+      { ...makeInit('1', 'Ny kantineløsning', 'virksomhet'), status: 'in_progress' as const },
+      { ...makeInit('2', 'Kantineoppgradering', 'virksomhet'), status: 'in_progress' as const },
+      { ...makeInit('3', 'Kantine-app', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('4', 'Kantineutvidelse', 'virksomhet'), status: 'in_progress' as const },
+      { ...makeInit('5', 'Kantineservice', 'organisasjon'), status: 'in_progress' as const },
+    ];
+    const effects: Effect[] = [{
+      id: 'e1', name: 'Bedre mat', description: '', type: 'quality',
+      capabilities: [], initiatives: ['1', '2'],
+    }];
+    const results = computeStrategicDiagnostics(initiatives, effects, frame);
+    expect(results.length).toBeGreaterThan(0);
+  });
+
+  it('returns empty without strategic frame', () => {
+    const initiatives = [
+      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
+    ];
+    const results = computeStrategicDiagnostics(initiatives, [], undefined);
+    expect(results).toEqual([]);
   });
 });
