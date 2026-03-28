@@ -4,12 +4,13 @@ import { OrganisationTab } from './OrganisationTab';
 import { TeamTab } from './TeamTab';
 import { PlanTab } from './PlanTab';
 import { DataTab } from './DataTab';
+import { StrategicFrameEditor } from '../strategic-frame/StrategicFrameEditor';
 
 interface Props {
   onClose: () => void;
 }
 
-type Tab = 'organisation' | 'team' | 'plan' | 'data';
+type Tab = 'organisation' | 'team' | 'plan' | 'data' | 'strategicFrame';
 
 export function SettingsModal({ onClose }: Props) {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ export function SettingsModal({ onClose }: Props) {
     { key: 'team', label: t('settings.tabs.team') },
     { key: 'plan', label: t('settings.tabs.plan') },
     { key: 'data', label: t('settings.tabs.data') },
+    { key: 'strategicFrame', label: t('settings.tabs.strategicFrame') },
   ];
 
   return (
@@ -62,6 +64,7 @@ export function SettingsModal({ onClose }: Props) {
           {activeTab === 'team' && <TeamTab />}
           {activeTab === 'plan' && <PlanTab />}
           {activeTab === 'data' && <DataTab onClose={onClose} />}
+          {activeTab === 'strategicFrame' && <StrategicFrameEditor />}
         </div>
       </div>
     </div>

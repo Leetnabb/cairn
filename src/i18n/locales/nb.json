@@ -554,13 +554,23 @@
     "atRisk": "I fare",
     "unsupported": "Uten støtte"
   },
+  "strategicFrame": {
+    "title": "Strategiske rammer",
+    "empty": "Ingen strategiske rammer er definert. Sett den brede retningen organisasjonen skal bevege seg i.",
+    "create": "Definer strategisk retning",
+    "direction": "Strategisk retning",
+    "directionPlaceholder": "F.eks. 'Bli en datadrevet og medlemsnær organisasjon'",
+    "themes": "Strategiske temaer",
+    "newThemePlaceholder": "Nytt tema..."
+  },
   "settings": {
     "title": "Innstillinger",
     "tabs": {
       "organisation": "Organisasjon",
       "team": "Team",
       "plan": "Plan",
-      "data": "Data"
+      "data": "Data",
+      "strategicFrame": "Strategiske rammer"
     },
     "org": {
       "name": "Organisasjonsnavn",

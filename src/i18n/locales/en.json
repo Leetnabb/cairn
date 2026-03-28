@@ -554,13 +554,23 @@
     "atRisk": "At risk",
     "unsupported": "Unsupported"
   },
+  "strategicFrame": {
+    "title": "Strategic frame",
+    "empty": "No strategic frame defined. Set the broad direction for the organization.",
+    "create": "Define strategic direction",
+    "direction": "Strategic direction",
+    "directionPlaceholder": "E.g. 'Become a data-driven, member-focused organization'",
+    "themes": "Strategic themes",
+    "newThemePlaceholder": "New theme..."
+  },
   "settings": {
     "title": "Settings",
     "tabs": {
       "organisation": "Organisation",
       "team": "Team",
       "plan": "Plan",
-      "data": "Data"
+      "data": "Data",
+      "strategicFrame": "Strategic frame"
     },
     "org": {
       "name": "Organisation name",
