@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { detectStrategicDrift } from '../strategicDiagnostics';
-import type { Initiative, StrategicFrame } from '../../types';
+import { detectStrategicDrift, assessEffectFeasibility } from '../strategicDiagnostics';
+import type { Initiative, StrategicFrame, Effect } from '../../types';
 
 const makeInit = (id: string, name: string, dim: string): Initiative => ({
   id, name, dimension: dim as any, horizon: 'near', order: 0,
@@ -55,5 +55,52 @@ describe('detectStrategicDrift', () => {
     const unaligned = result.find(r => r.type === 'unaligned_initiatives');
     expect(unaligned).toBeDefined();
     expect(unaligned?.count).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('assessEffectFeasibility', () => {
+  it('returns empty when no effects', () => {
+    expect(assessEffectFeasibility([], [])).toEqual([]);
+  });
+
+  it('warns when effect has all linked initiatives stopped', () => {
+    const initiatives = [
+      { ...makeInit('1', 'A', 'teknologi'), status: 'stopped' as const },
+      { ...makeInit('2', 'B', 'teknologi'), status: 'stopped' as const },
+    ];
+    const effects: Effect[] = [{
+      id: 'e1', name: 'Øke medlemstall', description: '', type: 'strategic',
+      capabilities: [], initiatives: ['1', '2'],
+    }];
+    const result = assessEffectFeasibility(initiatives, effects);
+    expect(result).toHaveLength(1);
+    expect(result[0].type).toBe('effect_at_risk');
+  });
+
+  it('warns when majority of linked initiatives are stopped or changed', () => {
+    const initiatives = [
+      { ...makeInit('1', 'A', 'teknologi'), status: 'stopped' as const },
+      { ...makeInit('2', 'B', 'teknologi'), status: 'changed_direction' as const },
+      { ...makeInit('3', 'C', 'teknologi'), status: 'in_progress' as const },
+    ];
+    const effects: Effect[] = [{
+      id: 'e1', name: 'Øke medlemstall', description: '', type: 'strategic',
+      capabilities: [], initiatives: ['1', '2', '3'],
+    }];
+    const result = assessEffectFeasibility(initiatives, effects);
+    expect(result).toHaveLength(1);
+  });
+
+  it('does not warn when initiatives are healthy', () => {
+    const initiatives = [
+      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'teknologi'), status: 'planned' as const },
+    ];
+    const effects: Effect[] = [{
+      id: 'e1', name: 'Øke medlemstall', description: '', type: 'strategic',
+      capabilities: [], initiatives: ['1', '2'],
+    }];
+    const result = assessEffectFeasibility(initiatives, effects);
+    expect(result).toHaveLength(0);
   });
 });

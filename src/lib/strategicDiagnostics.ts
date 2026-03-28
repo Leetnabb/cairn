@@ -1,4 +1,4 @@
-import type { Initiative, StrategicFrame } from '../types';
+import type { Initiative, StrategicFrame, Effect } from '../types';
 
 export interface DiagnosticResult {
   type: 'unaddressed_theme' | 'unaligned_initiatives' | 'effect_at_risk' | 'absorption_warning';
@@ -65,5 +65,34 @@ export function detectStrategicDrift(
     }
   }
 
+  return results;
+}
+
+export function assessEffectFeasibility(
+  initiatives: Initiative[],
+  effects: Effect[]
+): DiagnosticResult[] {
+  if (effects.length === 0) return [];
+  const results: DiagnosticResult[] = [];
+  const initMap = new Map(initiatives.map(i => [i.id, i]));
+
+  for (const effect of effects) {
+    if (effect.initiatives.length === 0) continue;
+    const linked = effect.initiatives
+      .map(id => initMap.get(id))
+      .filter((i): i is Initiative => i !== undefined);
+    if (linked.length === 0) continue;
+
+    const derailed = linked.filter(i =>
+      i.status === 'stopped' || i.status === 'changed_direction'
+    );
+    if (derailed.length > 0 && derailed.length >= linked.length * 0.5) {
+      results.push({
+        type: 'effect_at_risk',
+        severity: 'warning',
+        message: `Forventet effekt "${effect.name}" er truet: ${derailed.length} av ${linked.length} koblede initiativer er stoppet eller har endret retning.`,
+      });
+    }
+  }
   return results;
 }
