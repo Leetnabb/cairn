@@ -1,4 +1,4 @@
-import type { Initiative, DimensionKey, Effect, EffectType, Capability } from '../types';
+import type { Initiative, DimensionKey, Effect, EffectType, Capability, Horizon } from '../types';
 
 /**
  * Reorders initiatives when one is moved to a new position.
@@ -9,7 +9,7 @@ export function reorderInitiatives(
   initiatives: Initiative[],
   id: string,
   dimension: DimensionKey,
-  horizon: 'near' | 'far',
+  horizon: Horizon,
   newOrder: number,
 ): Initiative[] | null {
   // Apply dimension/horizon change to the moved initiative

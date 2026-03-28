@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FadeIn, S, DIMENSION_COLORS } from "../landingUtils";
 import { landingPreviewData } from "../../../data/landingPreviewData";
+import type { Horizon } from "../../../types";
 
 interface ProductPreviewProps {
   isMobile: boolean;
 }
 
 type Dimension = "ledelse" | "virksomhet" | "organisasjon" | "teknologi";
-type Horizon = "near" | "far";
 
 const DIMENSION_ORDER: Dimension[] = ["ledelse", "virksomhet", "organisasjon", "teknologi"];
 const DIMENSION_LABELS: Record<Dimension, string> = {

@@ -2,7 +2,7 @@ import { useMemo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey } from '../../types';
+import type { DimensionKey, Horizon } from '../../types';
 import { Button } from '../ui/Button';
 import { useComplexityLevel } from '../../hooks/useComplexityLevel';
 
@@ -90,7 +90,7 @@ export function FilterDropdown() {
                 {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['far', t('labels.horizon.far')]].map(([val, label]) => (
                   <button
                     key={val}
-                    onClick={() => setFilter({ horizon: val as 'all' | 'near' | 'far' })}
+                    onClick={() => setFilter({ horizon: val as 'all' | Horizon })}
                     className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
                       filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
                     }`}

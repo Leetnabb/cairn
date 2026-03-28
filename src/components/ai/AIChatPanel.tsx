@@ -4,7 +4,7 @@ import { useAIStore } from '../../stores/useAIStore';
 import { useStore } from '../../stores/useStore';
 import { useAIChat } from '../../hooks/useAIChat';
 import { parseSuggestions, type AISuggestion } from '../../lib/ai/parseSuggestions';
-import type { DimensionKey } from '../../types';
+import type { DimensionKey, Horizon } from '../../types';
 import APIKeyInput from './APIKeyInput';
 
 function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
@@ -42,7 +42,7 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
     if (suggestion.type === 'initiative') {
       const initiatives = scenarioStates[activeScenario]?.initiatives || [];
       const dim = (suggestion.dimension || 'ledelse') as DimensionKey;
-      const hor = (suggestion.horizon === 'far' ? 'far' : 'near') as 'near' | 'far';
+      const hor = (suggestion.horizon === 'far' ? 'far' : 'near') as Horizon;
       const maxOrder = initiatives
         .filter((i) => i.dimension === dim && i.horizon === hor)
         .reduce((max, i) => Math.max(max, i.order), 0);

@@ -1,9 +1,11 @@
 import { createHash } from 'crypto';
 import type { PlanTier } from '../types/index.js';
 
+import type { Horizon } from '../types/index.js';
+
 interface InitiativeState {
   id: string;
-  horizon: 'near' | 'far';
+  horizon: Horizon;
   dimension: string;
   confidence: 'confirmed' | 'tentative' | 'under_consideration';
   capabilities?: string[];

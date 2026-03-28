@@ -1,6 +1,8 @@
-export type InitiativeStatus = 'planned' | 'in_progress' | 'done';
+export type InitiativeStatus = 'planned' | 'in_progress' | 'done' | 'stopped' | 'changed_direction';
 
 export type ConfidenceLevel = 'confirmed' | 'tentative' | 'under_consideration';
+
+export type Horizon = 'near' | 'mid' | 'far';
 
 export type DimensionKey = 'ledelse' | 'virksomhet' | 'organisasjon' | 'teknologi';
 
@@ -32,6 +34,17 @@ export interface Strategy {
   priority: 1 | 2 | 3;
 }
 
+export interface StrategicTheme {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface StrategicFrame {
+  direction: string;
+  themes: StrategicTheme[];
+}
+
 export interface Capability {
   id: string;
   name: string;
@@ -49,7 +62,7 @@ export interface Initiative {
   id: string;
   name: string;
   dimension: DimensionKey;
-  horizon: 'near' | 'far';
+  horizon: Horizon;
   order: number;
   capabilities: string[];
   description: string;
@@ -73,7 +86,7 @@ export interface Scenario {
 export interface Milestone {
   id: string;
   name: string;
-  horizon: 'near' | 'far';
+  horizon: Horizon;
   position: number;
   color: string;
 }
@@ -97,6 +110,7 @@ export interface Effect {
   baseline?: string;
   target?: string;
   order?: number;
+  confidence?: ConfidenceLevel;
 }
 
 export const EFFECT_TYPE_COLORS: Record<EffectType, string> = {
@@ -152,6 +166,7 @@ export interface AppState {
   comments: Comment[];
   snapshots: Snapshot[];
   modules: ModuleSettings;
+  strategicFrame?: StrategicFrame;
 }
 
 export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects' | 'strategies';
@@ -188,7 +203,7 @@ export interface UIState {
   criticalPathEnabled: boolean;
   filters: {
     dimensions: DimensionKey[];
-    horizon: 'all' | 'near' | 'far';
+    horizon: 'all' | Horizon;
     owner: string;
     search: string;
     showMilestones: boolean;
@@ -200,7 +215,7 @@ export interface UIState {
   editingId: string | null;
   addModalOpen: boolean;
   addModalTab: 'initiative' | 'capability' | 'milestone' | 'valuechain' | 'effect' | 'strategy';
-  addModalDefaults: { dimension?: DimensionKey; horizon?: 'near' | 'far' } | null;
+  addModalDefaults: { dimension?: DimensionKey; horizon?: Horizon } | null;
   importModalOpen: boolean;
   presentationMode: boolean;
   presentationSlide: number;

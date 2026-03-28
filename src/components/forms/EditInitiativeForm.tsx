@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { Button } from '../ui/Button';
 import { DIMENSIONS } from '../../types';
-import type { Initiative, DimensionKey, InitiativeStatus, ConfidenceLevel } from '../../types';
+import type { Initiative, DimensionKey, InitiativeStatus, ConfidenceLevel, Horizon } from '../../types';
 
 interface Props {
   initiative: Initiative;
@@ -21,7 +21,7 @@ export function EditInitiativeForm({ initiative }: Props) {
   const [name, setName] = useState(initiative.name);
   const [description, setDescription] = useState(initiative.description);
   const [dimension, setDimension] = useState<DimensionKey>(initiative.dimension);
-  const [horizon, setHorizon] = useState<'near' | 'far'>(initiative.horizon);
+  const [horizon, setHorizon] = useState<Horizon>(initiative.horizon);
   const [owner, setOwner] = useState(initiative.owner);
   const [notes, setNotes] = useState(initiative.notes);
   const [selectedCaps, setSelectedCaps] = useState<string[]>(initiative.capabilities);
@@ -72,7 +72,7 @@ export function EditInitiativeForm({ initiative }: Props) {
         </div>
         <div>
           <label className="text-[9px] text-text-tertiary uppercase">{t('labels.horizon.label')}</label>
-          <select value={horizon} onChange={e => setHorizon(e.target.value as 'near' | 'far')}
+          <select value={horizon} onChange={e => setHorizon(e.target.value as Horizon)}
             className="w-full px-2 py-1 text-[11px] border border-border rounded">
             <option value="near">{t('labels.horizon.near')}</option>
             <option value="far">{t('labels.horizon.far')}</option>

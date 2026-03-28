@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens, Horizon } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -22,7 +22,7 @@ interface StoreState extends AppState {
   addInitiative: (initiative: Initiative) => void;
   updateInitiative: (id: string, updates: Partial<Initiative>) => void;
   deleteInitiative: (id: string) => void;
-  moveInitiative: (id: string, dimension: DimensionKey, horizon: 'near' | 'far', newOrder: number) => void;
+  moveInitiative: (id: string, dimension: DimensionKey, horizon: Horizon, newOrder: number) => void;
 
   // Strategy CRUD
   addStrategy: (strategy: Strategy) => void;
@@ -98,7 +98,7 @@ interface StoreState extends AppState {
   // Bulk operations
   toggleSelectedItem: (id: string) => void;
   clearSelectedItems: () => void;
-  bulkMoveInitiatives: (ids: string[], dimension: DimensionKey, horizon: 'near' | 'far') => void;
+  bulkMoveInitiatives: (ids: string[], dimension: DimensionKey, horizon: Horizon) => void;
   bulkDeleteInitiatives: (ids: string[]) => void;
 
   // Modules

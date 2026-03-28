@@ -5,7 +5,7 @@
 export type PlanTier = 'FREE' | 'PRO' | 'ENTERPRISE';
 export type TenantRole = 'OWNER' | 'ADMIN' | 'EDITOR' | 'VIEWER' | 'BOARD';
 export type ConfidenceLevel = 'confirmed' | 'tentative' | 'under_consideration';
-export type Horizon = 'near' | 'far';
+export type Horizon = 'near' | 'mid' | 'far';
 export type InitiativeStatus = 'not_started' | 'in_progress' | 'done' | 'blocked';
 
 // ── JWT payload ──────────────────────────────────────────

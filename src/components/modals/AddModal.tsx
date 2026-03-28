@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, InitiativeStatus, EffectType, Strategy, ConfidenceLevel } from '../../types';
+import type { DimensionKey, InitiativeStatus, EffectType, Strategy, ConfidenceLevel, Horizon } from '../../types';
 import { Button } from '../ui/Button';
 import { ColorPalette } from '../ui/ColorPalette';
 import AIFormAssist from '../ai/AIFormAssist';
@@ -31,7 +31,7 @@ export function AddModal() {
   const [iName, setIName] = useState('');
   const [iDesc, setIDesc] = useState('');
   const [iDim, setIDim] = useState<DimensionKey>(defaults?.dimension ?? 'ledelse');
-  const [iHorizon, setIHorizon] = useState<'near' | 'far'>(defaults?.horizon ?? 'near');
+  const [iHorizon, setIHorizon] = useState<Horizon>(defaults?.horizon ?? 'near');
   const [iOwner, setIOwner] = useState('');
   const [iCaps, setICaps] = useState<string[]>([]);
   const [iDeps, setIDeps] = useState<string[]>([]);
@@ -57,7 +57,7 @@ export function AddModal() {
 
   // Milestone state
   const [mName, setMName] = useState('');
-  const [mHorizon, setMHorizon] = useState<'near' | 'far'>('near');
+  const [mHorizon, setMHorizon] = useState<Horizon>('near');
   const [mPosition, setMPosition] = useState(0.5);
   const [mColor, setMColor] = useState('#6366f1');
 
@@ -220,7 +220,7 @@ export function AddModal() {
                 if (data.name) setIName(data.name as string);
                 if (data.description) setIDesc(data.description as string);
                 if (data.dimension) setIDim(data.dimension as DimensionKey);
-                if (data.horizon) setIHorizon(data.horizon as 'near' | 'far');
+                if (data.horizon) setIHorizon(data.horizon as Horizon);
                 if (data.owner) setIOwner(data.owner as string);
                 if (data.notes) setINotes(data.notes as string);
                 if (Array.isArray(data.suggestedCapabilities)) {
@@ -250,7 +250,7 @@ export function AddModal() {
                 </div>
                 <div>
                   <label className="text-[9px] text-text-tertiary uppercase">{t('labels.horizon.label')}</label>
-                  <select value={iHorizon} onChange={e => setIHorizon(e.target.value as 'near'|'far')}
+                  <select value={iHorizon} onChange={e => setIHorizon(e.target.value as Horizon)}
                     className="w-full px-2 py-1 text-[11px] border border-border rounded">
                     <option value="near">{t('labels.horizon.near')}</option>
                     <option value="far">{t('labels.horizon.far')}</option>
@@ -487,7 +487,7 @@ export function AddModal() {
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-[9px] text-text-tertiary uppercase">{t('labels.horizon.label')}</label>
-                  <select value={mHorizon} onChange={e => setMHorizon(e.target.value as 'near'|'far')}
+                  <select value={mHorizon} onChange={e => setMHorizon(e.target.value as Horizon)}
                     className="w-full px-2 py-1 text-[11px] border border-border rounded">
                     <option value="near">{t('labels.horizon.near')}</option>
                     <option value="far">{t('labels.horizon.far')}</option>

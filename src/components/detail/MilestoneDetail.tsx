@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
-import type { Milestone } from '../../types';
+import type { Milestone, Horizon } from '../../types';
 import { Button } from '../ui/Button';
 import { ColorPalette } from '../ui/ColorPalette';
 
@@ -93,7 +93,7 @@ function MilestoneEditForm({ milestone }: Props) {
         <label className="block text-[9px] text-text-tertiary uppercase mb-0.5">{t('labels.horizon.label')}</label>
         <select
           value={horizon}
-          onChange={e => setHorizon(e.target.value as 'near' | 'far')}
+          onChange={e => setHorizon(e.target.value as Horizon)}
           className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary"
         >
           <option value="near">{t('labels.horizon.near')}</option>

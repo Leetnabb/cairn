@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, Initiative } from '../../types';
+import type { DimensionKey, Initiative, Horizon } from '../../types';
 
 const DIMENSION_COLORS: Record<DimensionKey, string> = {
   ledelse: '#ef4444',
@@ -158,7 +158,7 @@ export function LensPath() {
 
   const filteredDimensions = DIMENSIONS.filter(d => activeDimensions.has(d.key));
 
-  const getInitiatives = (dimKey: DimensionKey, horizon: 'near' | 'far') =>
+  const getInitiatives = (dimKey: DimensionKey, horizon: Horizon) =>
     initiatives
       .filter(i => i.dimension === dimKey && i.horizon === horizon)
       .sort((a, b) => a.order - b.order);

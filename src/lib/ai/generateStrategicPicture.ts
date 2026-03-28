@@ -1,5 +1,5 @@
 import { parseJsonObjectFromAI } from './parseJsonResponse';
-import type { DimensionKey, EffectType } from '../../types';
+import type { DimensionKey, EffectType, Horizon } from '../../types';
 
 
 export interface GeneratedStrategicPicture {
@@ -20,7 +20,7 @@ export interface GeneratedStrategicPicture {
   initiatives: Array<{
     name: string;
     dimension: DimensionKey;
-    horizon: 'near' | 'far';
+    horizon: Horizon;
     description: string;
     capabilityNames?: string[];
   }>;

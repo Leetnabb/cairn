@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { DimensionKey, Initiative } from '../../types';
+import type { DimensionKey, Initiative, Horizon } from '../../types';
 import { DIMENSION_MAP } from '../../types';
 import { useStore } from '../../stores/useStore';
 import { InitiativeBox } from './InitiativeBox';
 
 interface Props {
   dimension: DimensionKey;
-  horizon: 'near' | 'far';
+  horizon: Horizon;
   initiatives: Initiative[];
   criticalPathIds?: Set<string>;
   criticalPathEnabled?: boolean;

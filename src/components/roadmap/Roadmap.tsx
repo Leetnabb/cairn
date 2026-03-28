@@ -2,7 +2,7 @@ import { useMemo, useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, Initiative } from '../../types';
+import type { DimensionKey, Initiative, Horizon } from '../../types';
 import { DropZone } from './DropZone';
 import { MilestoneMarker } from './MilestoneMarker';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
@@ -65,7 +65,7 @@ export function Roadmap() {
 
   const hasActiveFilters = filters.dimensions.length > 0 || filters.horizon !== 'all' || filters.owner || filters.search || filters.status || !!spotlightValueChain;
 
-  const getInitiativesForZone = (dim: DimensionKey, horizon: 'near' | 'far') =>
+  const getInitiativesForZone = (dim: DimensionKey, horizon: Horizon) =>
     initiatives.filter(i => i.dimension === dim && i.horizon === horizon);
 
   const nearMilestones = milestones.filter(m => m.horizon === 'near');
