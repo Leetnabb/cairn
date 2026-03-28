@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectStrategicDrift, assessEffectFeasibility } from '../strategicDiagnostics';
+import { detectStrategicDrift, assessEffectFeasibility, detectAbsorptionIssues } from '../strategicDiagnostics';
 import type { Initiative, StrategicFrame, Effect } from '../../types';
 
 const makeInit = (id: string, name: string, dim: string): Initiative => ({
@@ -101,6 +101,41 @@ describe('assessEffectFeasibility', () => {
       capabilities: [], initiatives: ['1', '2'],
     }];
     const result = assessEffectFeasibility(initiatives, effects);
+    expect(result).toHaveLength(0);
+  });
+});
+
+describe('detectAbsorptionIssues', () => {
+  it('returns empty when few initiatives', () => {
+    const initiatives = [makeInit('1', 'A', 'teknologi')];
+    expect(detectAbsorptionIssues(initiatives)).toEqual([]);
+  });
+
+  it('warns when many initiatives started but few completed', () => {
+    const initiatives = [
+      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('3', 'C', 'virksomhet'), status: 'in_progress' as const },
+      { ...makeInit('4', 'D', 'organisasjon'), status: 'in_progress' as const },
+      { ...makeInit('5', 'E', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('6', 'F', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('7', 'G', 'teknologi'), status: 'planned' as const },
+      { ...makeInit('8', 'H', 'teknologi'), status: 'done' as const },
+    ];
+    const result = detectAbsorptionIssues(initiatives);
+    expect(result).toHaveLength(1);
+    expect(result[0].type).toBe('absorption_warning');
+  });
+
+  it('does not warn when ratio is healthy', () => {
+    const initiatives = [
+      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'teknologi'), status: 'done' as const },
+      { ...makeInit('3', 'C', 'teknologi'), status: 'done' as const },
+      { ...makeInit('4', 'D', 'teknologi'), status: 'done' as const },
+      { ...makeInit('5', 'E', 'teknologi'), status: 'planned' as const },
+    ];
+    const result = detectAbsorptionIssues(initiatives);
     expect(result).toHaveLength(0);
   });
 });

@@ -96,3 +96,20 @@ export function assessEffectFeasibility(
   }
   return results;
 }
+
+export function detectAbsorptionIssues(initiatives: Initiative[]): DiagnosticResult[] {
+  if (initiatives.length < 5) return [];
+  const inProgress = initiatives.filter(i => i.status === 'in_progress').length;
+  const done = initiatives.filter(i => i.status === 'done').length;
+  const total = initiatives.length;
+
+  if (inProgress >= 5 && (done === 0 || inProgress / Math.max(done, 1) > 3)) {
+    return [{
+      type: 'absorption_warning',
+      severity: 'warning',
+      count: inProgress,
+      message: `${inProgress} av ${total} initiativer pågår, men bare ${done} er fullført. Organisasjonen kan ha kapasitetsproblemer.`,
+    }];
+  }
+  return [];
+}
