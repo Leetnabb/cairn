@@ -239,7 +239,8 @@
     "bottleneckNoInitiatives": "Ingen koblede aktiviteter",
     "bottleneckUnderserviced": "Underbemannede kapabiliteter",
     "bottleneckBlocked": "Blokkerte aktiviteter",
-    "noBottlenecks": "Ingen strategiske flaskehalser oppdaget"
+    "noBottlenecks": "Ingen strategiske flaskehalser oppdaget",
+    "noStrategicFrame": "Definer strategiske rammer i innstillinger"
   },
   "snapshots": {
     "title": "Snapshots",

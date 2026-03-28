@@ -239,7 +239,8 @@
     "bottleneckNoInitiatives": "No linked initiatives",
     "bottleneckUnderserviced": "Underpowered capabilities",
     "bottleneckBlocked": "Blocked initiatives",
-    "noBottlenecks": "No strategic bottlenecks detected"
+    "noBottlenecks": "No strategic bottlenecks detected",
+    "noStrategicFrame": "Define strategic frame in settings"
   },
   "snapshots": {
     "title": "Snapshots",

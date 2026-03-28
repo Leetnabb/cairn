@@ -18,6 +18,7 @@ export function Dashboard() {
   const valueChains = useStore(s => s.valueChains);
   const snapshots = useStore(s => s.snapshots);
   const setSelectedItem = useStore(s => s.setSelectedItem);
+  const strategicFrame = useStore(s => s.strategicFrame);
 
   const narrative = useMemo(
     () => generateNarrative(initiatives, capabilities, effects),
@@ -45,6 +46,29 @@ export function Dashboard() {
 
   return (
     <div className="flex-1 overflow-auto p-4">
+      {/* Strategic frame summary */}
+      <div className="bg-white rounded-lg border border-border p-4 mb-4">
+        {strategicFrame ? (
+          <>
+            <p className="text-lg font-medium text-text-primary mb-2">{strategicFrame.direction}</p>
+            {strategicFrame.themes.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {strategicFrame.themes.map(theme => (
+                  <span
+                    key={theme.id}
+                    className="inline-flex bg-indigo-50 text-indigo-700 rounded-full px-3 py-1 text-xs"
+                  >
+                    {theme.name}
+                  </span>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-sm text-text-secondary">{t('dashboard.noStrategicFrame')}</p>
+        )}
+      </div>
+
       {/* Change indicators */}
       <ChangeIndicators snapshots={snapshots} initiatives={initiatives} capabilities={capabilities} />
 
