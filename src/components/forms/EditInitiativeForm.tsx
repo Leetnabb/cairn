@@ -75,6 +75,7 @@ export function EditInitiativeForm({ initiative }: Props) {
           <select value={horizon} onChange={e => setHorizon(e.target.value as Horizon)}
             className="w-full px-2 py-1 text-[11px] border border-border rounded">
             <option value="near">{t('labels.horizon.near')}</option>
+            <option value="mid">{t('labels.horizon.mid')}</option>
             <option value="far">{t('labels.horizon.far')}</option>
           </select>
         </div>
@@ -96,6 +97,8 @@ export function EditInitiativeForm({ initiative }: Props) {
             { value: 'planned' as const, label: t('labels.status.planned') },
             { value: 'in_progress' as const, label: t('labels.status.in_progress') },
             { value: 'done' as const, label: t('labels.status.done') },
+            { value: 'stopped' as const, label: t('labels.status.stopped') },
+            { value: 'changed_direction' as const, label: t('labels.status.changed_direction') },
           ]).map(opt => (
             <button key={opt.value} onClick={() => setStatus(opt.value)}
               className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${

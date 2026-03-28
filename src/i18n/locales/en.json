@@ -153,12 +153,15 @@
       "label": "Status",
       "planned": "Planned",
       "in_progress": "In progress",
-      "done": "Done"
+      "done": "Done",
+      "stopped": "Stopped",
+      "changed_direction": "Changed direction"
     },
     "horizon": {
       "label": "Horizon",
-      "near": "Near",
-      "far": "Far",
+      "near": "Now",
+      "mid": "Next",
+      "far": "Later",
       "all": "All",
       "nearFull": "Near horizon",
       "farFull": "Far horizon",

@@ -153,12 +153,15 @@
       "label": "Status",
       "planned": "Planlagt",
       "in_progress": "Pågår",
-      "done": "Fullført"
+      "done": "Fullført",
+      "stopped": "Stoppet",
+      "changed_direction": "Endret retning"
     },
     "horizon": {
       "label": "Horisont",
-      "near": "Nær",
-      "far": "Lang",
+      "near": "Nå",
+      "mid": "Neste",
+      "far": "Senere",
       "all": "Alle",
       "nearFull": "Nær horisont",
       "farFull": "Lang horisont",

@@ -54,7 +54,7 @@ export function FilterBar() {
 
       {/* Horizon toggle */}
       <div className="flex gap-0.5">
-        {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['far', t('labels.horizon.far')]] .map(([val, label]) => (
+        {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['mid', t('labels.horizon.mid')], ['far', t('labels.horizon.far')]].map(([val, label]) => (
           <button
             key={val}
             onClick={() => setFilter({ horizon: val as 'all' | Horizon })}
@@ -125,13 +125,15 @@ export function FilterBar() {
       {/* Status filter */}
       <select
         value={filters.status}
-        onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' })}
+        onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' | 'stopped' | 'changed_direction' })}
         className="px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
       >
         <option value="">{t('filters.allStatuses')}</option>
         <option value="planned">{t('labels.status.planned')}</option>
         <option value="in_progress">{t('labels.status.in_progress')}</option>
         <option value="done">{t('labels.status.done')}</option>
+        <option value="stopped">{t('labels.status.stopped')}</option>
+        <option value="changed_direction">{t('labels.status.changed_direction')}</option>
       </select>
 
       {/* Search */}
