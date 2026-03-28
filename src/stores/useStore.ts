@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens, Horizon } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens, Horizon, StrategicFrame, StrategicTheme } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -110,6 +110,14 @@ interface StoreState extends AppState {
   // Template
   loadTemplate: (template: IndustryTemplate) => void;
   addCapabilities: (caps: Capability[]) => void;
+
+  // Strategic Frame
+  setStrategicFrame: (frame: StrategicFrame) => void;
+  updateStrategicDirection: (direction: string) => void;
+  addStrategicTheme: (theme: StrategicTheme) => void;
+  updateStrategicTheme: (id: string, updates: Partial<StrategicTheme>) => void;
+  deleteStrategicTheme: (id: string) => void;
+  clearStrategicFrame: () => void;
 }
 
 const defaultUI: UIState = {
@@ -604,6 +612,36 @@ export const useStore = create<StoreState>()(
         addCapabilities: (caps) => set(state => ({
           capabilities: [...state.capabilities, ...caps],
         })),
+
+        // Strategic Frame
+        setStrategicFrame: (frame) => set({ strategicFrame: frame }),
+        updateStrategicDirection: (direction) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return { strategicFrame: { ...state.strategicFrame, direction } };
+        }),
+        addStrategicTheme: (theme) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return { strategicFrame: { ...state.strategicFrame, themes: [...state.strategicFrame.themes, theme] } };
+        }),
+        updateStrategicTheme: (id, updates) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return {
+            strategicFrame: {
+              ...state.strategicFrame,
+              themes: state.strategicFrame.themes.map((t) => t.id === id ? { ...t, ...updates } : t),
+            },
+          };
+        }),
+        deleteStrategicTheme: (id) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return {
+            strategicFrame: {
+              ...state.strategicFrame,
+              themes: state.strategicFrame.themes.filter((t) => t.id !== id),
+            },
+          };
+        }),
+        clearStrategicFrame: () => set({ strategicFrame: undefined }),
       };
     },
     {
