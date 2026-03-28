@@ -10,9 +10,10 @@ export function NarrativeOpening() {
   const scenarioStates = useStore(s => s.scenarioStates);
   const capabilities = useStore(s => s.capabilities);
   const effects = useStore(s => s.effects);
+  const strategicFrame = useStore(s => s.strategicFrame);
 
   const initiatives = scenarioStates[activeScenario]?.initiatives ?? [];
-  const narrative = generateNarrative(initiatives, capabilities, effects);
+  const narrative = generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame);
 
   // Split narrative into sentences for display
   const sentences = narrative

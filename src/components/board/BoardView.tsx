@@ -539,14 +539,15 @@ export function BoardView() {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const capabilities = useStore(s => s.capabilities);
   const effects = useStore(s => s.effects);
+  const strategicFrame = useStore(s => s.strategicFrame);
 
   const activeScenarioName = scenarios.find(s => s.id === activeScenario)?.name;
   const defaultScenarioName = scenarios[0]?.name;
   const showScenario = activeScenarioName && activeScenarioName !== defaultScenarioName;
 
   const narrative = useMemo(
-    () => generateNarrative(initiatives, capabilities, effects),
-    [initiatives, capabilities, effects]
+    () => generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame),
+    [initiatives, capabilities, effects, strategicFrame]
   );
 
   const now = new Date().toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });

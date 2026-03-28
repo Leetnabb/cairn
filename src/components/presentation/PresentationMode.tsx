@@ -365,9 +365,10 @@ function EffectSummarySlide({ effects, initiatives }: { effects: ReturnType<type
 
 function StrategicReadingSlide({ initiatives, capabilities, effects }: { initiatives: Initiative[]; capabilities: Capability[]; effects: Effect[] }) {
   const { t } = useTranslation();
+  const strategicFrame = useStore(s => s.strategicFrame);
   const narrative = useMemo(
-    () => generateNarrative(initiatives, capabilities, effects),
-    [initiatives, capabilities, effects]
+    () => generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame),
+    [initiatives, capabilities, effects, strategicFrame]
   );
 
   // Split narrative into sentences for visual presentation

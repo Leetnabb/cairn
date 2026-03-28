@@ -21,8 +21,8 @@ export function Dashboard() {
   const strategicFrame = useStore(s => s.strategicFrame);
 
   const narrative = useMemo(
-    () => generateNarrative(initiatives, capabilities, effects),
-    [initiatives, capabilities, effects]
+    () => generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame),
+    [initiatives, capabilities, effects, strategicFrame]
   );
 
   const strategicInsights = useMemo(
