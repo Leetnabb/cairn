@@ -69,6 +69,7 @@ export function Roadmap() {
     initiatives.filter(i => i.dimension === dim && i.horizon === horizon);
 
   const nearMilestones = milestones.filter(m => m.horizon === 'near');
+  const midMilestones = milestones.filter(m => m.horizon === 'mid');
   const farMilestones = milestones.filter(m => m.horizon === 'far');
 
   const setFilter = useStore(s => s.setFilter);
@@ -97,9 +98,11 @@ export function Roadmap() {
   }, [filters.focusMode, filters.zoomLevel, setFilter]);
 
   const focusMode = filters.focusMode;
-  const showNear = !(focusMode && filters.horizon === 'far');
-  const showFar = !(focusMode && filters.horizon === 'near');
-  const gridCols = showNear && showFar ? '120px 1fr 1fr' : '120px 1fr';
+  const showNear = !(focusMode && filters.horizon !== 'near' && filters.horizon !== 'all');
+  const showMid = !(focusMode && filters.horizon !== 'mid' && filters.horizon !== 'all');
+  const showFar = !(focusMode && filters.horizon !== 'far' && filters.horizon !== 'all');
+  const visibleColCount = [showNear, showMid, showFar].filter(Boolean).length;
+  const gridCols = visibleColCount === 3 ? '120px 1fr 1fr 1fr' : visibleColCount === 2 ? '120px 1fr 1fr' : '120px 1fr';
 
   const visibleDimensions = useMemo(
     () => focusMode && filters.dimensions.length > 0
@@ -179,6 +182,11 @@ export function Roadmap() {
             {t('labels.horizon.nearRange')}
           </div>
         )}
+        {showMid && (
+          <div className="text-[10px] font-semibold text-text-secondary text-center px-2 opacity-85">
+            {t('labels.horizon.mid')}
+          </div>
+        )}
         {showFar && (
           <div className="text-[10px] font-semibold text-text-secondary text-center px-2 opacity-70">
             {t('labels.horizon.farRange')}
@@ -213,6 +221,7 @@ export function Roadmap() {
                 <span className="ml-1 text-[8px] opacity-60">({t('roadmap.collapsed')})</span>
               </div>
               {showNear && <div className="rounded" style={{ backgroundColor: dim.bgLight, height: 24 }} />}
+              {showMid && <div className="rounded" style={{ backgroundColor: dim.bgLight, height: 24, opacity: 0.85 }} />}
               {showFar && <div className="rounded" style={{ backgroundColor: dim.bgLight, height: 24, opacity: 0.7 }} />}
             </div>
           );
@@ -274,6 +283,32 @@ export function Roadmap() {
               </div>
             )}
 
+            {/* Mid horizon — medium */}
+            {showMid && (
+              <div
+                className={`relative rounded ${focusMode ? 'h-full overflow-auto' : ''}`}
+                style={{
+                  backgroundColor: dim.bgLight,
+                  opacity: 0.85,
+                  ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
+                }}
+              >
+                {filters.showMilestones && midMilestones.map(m => (
+                  <MilestoneMarker key={m.id} milestone={m} />
+                ))}
+                <DropZone
+                  dimension={dim.key}
+                  horizon="mid"
+                  initiatives={getInitiativesForZone(dim.key, 'mid')}
+                  criticalPathIds={criticalPathIds}
+                  fillHeight={focusMode}
+                  criticalPathEnabled={criticalPathEnabled}
+                  selectedDeps={selectedDeps}
+                  filterOpacity={hasActiveFilters ? getOpacity : undefined}
+                />
+              </div>
+            )}
+
             {/* Far horizon — lighter/dimmer */}
             {showFar && (
               <div
@@ -326,6 +361,12 @@ export function Roadmap() {
                       className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-gray-100"
                     >
                       {t('labels.horizon.near')}
+                    </button>
+                    <button
+                      onClick={() => { bulkMoveInitiatives([...selectedItems], dim.key, 'mid'); setShowMoveDropdown(false); }}
+                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-gray-100"
+                    >
+                      {t('labels.horizon.mid')}
                     </button>
                     <button
                       onClick={() => { bulkMoveInitiatives([...selectedItems], dim.key, 'far'); setShowMoveDropdown(false); }}
