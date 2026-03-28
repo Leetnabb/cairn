@@ -359,7 +359,8 @@
     "orphanInitiative": "\"{{name}}\" har ingen kapabiliteter knyttet til seg",
     "allDimensionsCovered": "Alle dimensjoner er dekket med aktiviteter",
     "strategyDrift_one": "{{count}} aktivitet ikke koblet til kapabilitet (strategi-drift)",
-    "strategyDrift_other": "{{count}} aktiviteter ikke koblet til kapabilitet (strategi-drift)"
+    "strategyDrift_other": "{{count}} aktiviteter ikke koblet til kapabilitet (strategi-drift)",
+    "dimensionImbalance": "{{dimension}} utgjør {{pct}}% av alle initiativer ({{count}} av {{total}}). Transformasjoner tungt vektet mot én dimensjon har høyere risiko for å feile."
   },
   "strategy": {
     "title": "Strategier",

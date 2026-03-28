@@ -62,6 +62,28 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
     }
   }
 
+  // Dimension imbalance: one dimension dominates (>60%)
+  if (initiatives.length >= 5) {
+    const dimCounts: Record<string, number> = {};
+    for (const dim of DIMENSIONS) dimCounts[dim.key] = 0;
+    for (const init of initiatives) dimCounts[init.dimension] = (dimCounts[init.dimension] || 0) + 1;
+
+    for (const dim of DIMENSIONS) {
+      const pct = Math.round((dimCounts[dim.key] / initiatives.length) * 100);
+      if (pct > 60) {
+        insights.push({
+          type: 'warning',
+          message: i18n.t('insights.dimensionImbalance', {
+            dimension: i18n.t(`labels.dimensions.${dim.key}`),
+            pct,
+            count: dimCounts[dim.key],
+            total: initiatives.length,
+          }),
+        });
+      }
+    }
+  }
+
   // Orphan capabilities: capabilities not referenced by any initiative
   const referencedCaps = new Set(initiatives.flatMap(i => i.capabilities));
   const orphanCaps = capabilities.filter(c => c.level === 2 && !referencedCaps.has(c.id));

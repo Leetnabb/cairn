@@ -161,3 +161,20 @@ describe('computeInsights', () => {
     expect(insights.some(i => i.message.includes('effects.initiativeWithoutEffect'))).toBe(true);
   });
 });
+
+describe('dimension imbalance insights', () => {
+  it('warns when one dimension has more than 60% of initiatives', () => {
+    const initiatives = [
+      makeInit('1', { dimension: 'teknologi' }),
+      makeInit('2', { dimension: 'teknologi' }),
+      makeInit('3', { dimension: 'teknologi' }),
+      makeInit('4', { dimension: 'teknologi' }),
+      makeInit('5', { dimension: 'virksomhet' }),
+    ];
+    const insights = computeInsights(initiatives, [], []);
+    const warning = insights.find(i =>
+      i.type === 'warning' && i.message.includes('insights.dimensionImbalance') && i.message.includes('"pct":80')
+    );
+    expect(warning).toBeDefined();
+  });
+});

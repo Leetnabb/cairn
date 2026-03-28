@@ -359,7 +359,8 @@
     "orphanInitiative": "\"{{name}}\" has no capabilities linked to it",
     "allDimensionsCovered": "All dimensions are covered with activities",
     "strategyDrift_one": "{{count}} activity not linked to a capability (strategy drift)",
-    "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)"
+    "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)",
+    "dimensionImbalance": "{{dimension}} accounts for {{pct}}% of all initiatives ({{count}} of {{total}}). Transformations heavily weighted toward one dimension carry higher failure risk."
   },
   "strategy": {
     "title": "Strategies",
