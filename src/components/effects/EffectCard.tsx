@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { Effect } from '../../types';
 import { EFFECT_TYPE_COLORS } from '../../types';
 import { useStore } from '../../stores/useStore';
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export function EffectCard({ effect }: Props) {
+  const { t } = useTranslation();
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const selectedItem = useStore(s => s.ui.selectedItem);
   const isSelected = selectedItem?.type === 'effect' && selectedItem.id === effect.id;
@@ -29,6 +31,9 @@ export function EffectCard({ effect }: Props) {
     >
       <div className="px-2 py-1.5">
         <p className="text-[11px] font-medium leading-tight text-text-primary truncate">{effect.name}</p>
+        {effect.confidence && (
+          <p className="text-xs text-gray-500 mt-0.5">{t(`effects.effectConfidence.${effect.confidence}`)}</p>
+        )}
         {effect.indicator && (
           <p className="text-[9px] text-text-tertiary mt-0.5 truncate">
             {effect.indicator}

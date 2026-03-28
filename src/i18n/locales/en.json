@@ -434,7 +434,13 @@
     "effectsWithoutNearInitiatives": "\"{{name}}\" has no near-horizon activities",
     "initiativeWithoutEffect": "\"{{name}}\" does not contribute to any defined effect",
     "missingEffectTypes": "Portfolio lacks effect type: {{types}}",
-    "effectConcentration": "{{count}} of {{total}} effects depend on \"{{name}}\""
+    "effectConcentration": "{{count}} of {{total}} effects depend on \"{{name}}\"",
+    "effectConfidence": {
+      "label": "Confidence",
+      "confirmed": "Confirmed",
+      "tentative": "Tentative",
+      "under_consideration": "Under consideration"
+    }
   },
   "comments": {
     "title": "Comments",

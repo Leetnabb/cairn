@@ -434,7 +434,13 @@
     "effectsWithoutNearInitiatives": "\"{{name}}\" har ingen nær-horisont-aktiviteter",
     "initiativeWithoutEffect": "\"{{name}}\" bidrar ikke til noen definert effekt",
     "missingEffectTypes": "Porteføljen mangler effekttype: {{types}}",
-    "effectConcentration": "{{count}} av {{total}} effekter avhenger av \"{{name}}\""
+    "effectConcentration": "{{count}} av {{total}} effekter avhenger av \"{{name}}\"",
+    "effectConfidence": {
+      "label": "Konfidens",
+      "confirmed": "Bekreftet",
+      "tentative": "Tentativ",
+      "under_consideration": "Under vurdering"
+    }
   },
   "comments": {
     "title": "Kommentarer",
