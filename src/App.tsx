@@ -32,6 +32,7 @@ import { LocalStorageMigration } from './components/settings/LocalStorageMigrati
 import { useAuth } from './providers/AuthProvider';
 import { useComplexityLevel } from './hooks/useComplexityLevel';
 import { useSupabaseSync } from './hooks/useSupabaseSync';
+import { useMode } from './hooks/useMode';
 import i18n from './i18n';
 
 export default function App() {
@@ -60,6 +61,8 @@ export default function App() {
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
   useSupabaseSync();
+
+  const { mode, transitioning, enterBoardView, exitBoardView } = useMode();
 
   // Auto-show wizard is handled in onboarding store initialization
 
@@ -97,10 +100,51 @@ export default function App() {
 
   const showDetailPanel = selectedItem !== null || aiPanelOpen;
 
+  // Board mode: simplified header + board layout
+  if (mode === 'board') {
+    return (
+      <div className="h-full flex flex-col overflow-hidden bg-bg text-text-primary">
+        {/* Board View header */}
+        <header
+          className="flex items-center justify-between px-4 py-2 border-b shrink-0"
+          style={{ minHeight: 52, background: 'var(--bg-header)', borderColor: 'var(--border-default)' }}
+        >
+          {/* Left: Logo */}
+          <div className="flex items-center gap-3">
+            <CairnMark size={0.45} />
+          </div>
+
+          {/* Centre: Org name + Board View label */}
+          <div className="flex items-center gap-2">
+            <span className="text-[13px] text-text-secondary font-medium">Board View</span>
+          </div>
+
+          {/* Right: Exit link */}
+          <button
+            onClick={exitBoardView}
+            className="text-[13px] text-text-secondary hover:text-text-primary transition-colors"
+          >
+            {t('board.exit', 'Exit Board View')}
+          </button>
+        </header>
+
+        {/* Board content canvas */}
+        <div className={`app-canvas flex-1 flex overflow-hidden ${transitioning ? 'transitioning' : ''}`}>
+          <BoardView />
+        </div>
+
+        {meetingMode && <MeetingMode />}
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ background: 'var(--color-bg)', color: 'var(--color-text-primary)' }}>
+    <div className="h-full flex flex-col overflow-hidden bg-bg text-text-primary">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-2 bg-white border-b border-border shrink-0" style={{ minHeight: 48 }}>
+      <header
+        className="flex items-center justify-between px-4 py-2 border-b border-border shrink-0"
+        style={{ minHeight: 52, background: 'var(--bg-header)' }}
+      >
         {/* Left: Logo */}
         <Link to="/" className="flex items-center gap-3 no-underline">
           <CairnMark size={0.45} />
@@ -138,10 +182,25 @@ export default function App() {
           {roleMode === 'work' && <UndoRedoButtons />}
           <div className="w-px h-5 bg-border mx-0.5" />
           <RoleModeToggle />
+          {/* Board View toggle */}
+          <button
+            onClick={enterBoardView}
+            className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium text-text-secondary hover:bg-[var(--bg-hover)] transition-colors"
+            title={t('board.title')}
+            aria-label={t('board.title')}
+          >
+            {/* Frame icon — signals presentation, not surveillance */}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+            {t('board.title')}
+          </button>
           <ToggleBtn active={aiPanelOpen} onClick={() => setAIPanelOpen(!aiPanelOpen)}>AI</ToggleBtn>
           <button
             onClick={() => i18n.changeLanguage(i18n.language === 'nb' ? 'en' : 'nb')}
-            className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-gray-100 rounded"
+            className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-[var(--bg-hover)] rounded"
           >
             {i18n.language === 'nb' ? 'EN' : 'NB'}
           </button>
@@ -168,7 +227,7 @@ export default function App() {
       </header>
 
       {/* Main content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className={`app-canvas flex-1 flex overflow-hidden ${transitioning ? 'transitioning' : ''}`}>
         {view === 'dashboard' ? (
           <Dashboard />
         ) : view === 'strategies' ? (
@@ -179,9 +238,9 @@ export default function App() {
               <EffectBoard />
             </main>
             {showDetailPanel && (
-              <aside className="shrink-0 border-l border-border bg-white w-[320px] overflow-hidden transition-all duration-200">
+              <aside className="shrink-0 border-l border-border w-[320px] overflow-hidden transition-all duration-200" style={{ background: 'var(--bg-panel)' }}>
                 <div className="flex h-full">
-                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-gray-100 transition-colors" title={t('common.close')}>
+                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-[var(--bg-hover)] transition-colors" title={t('common.close')}>
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
@@ -199,9 +258,9 @@ export default function App() {
               <CapabilityLandscape />
             </main>
             {showDetailPanel && (
-              <aside className="shrink-0 border-l border-border bg-white w-[320px] overflow-hidden transition-all duration-200">
+              <aside className="shrink-0 border-l border-border w-[320px] overflow-hidden transition-all duration-200" style={{ background: 'var(--bg-panel)' }}>
                 <div className="flex h-full">
-                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-gray-100 transition-colors" title={t('common.close')}>
+                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-[var(--bg-hover)] transition-colors" title={t('common.close')}>
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
@@ -225,9 +284,9 @@ export default function App() {
 
             {/* Right sidebar - Detail Panel (only when item selected or AI open) */}
             {showDetailPanel && (
-              <aside className="shrink-0 border-l border-border bg-white w-[320px] overflow-hidden transition-all duration-200 animate-slide-in-right">
+              <aside className="shrink-0 border-l border-border w-[320px] overflow-hidden transition-all duration-200 animate-slide-in-right" style={{ background: 'var(--bg-panel)' }}>
                 <div className="flex h-full">
-                  <button onClick={() => { setSelectedItem(null); setAIPanelOpen(false); }} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-gray-100 transition-colors" title={t('common.close')}>
+                  <button onClick={() => { setSelectedItem(null); setAIPanelOpen(false); }} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-[var(--bg-hover)] transition-colors" title={t('common.close')}>
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
@@ -241,7 +300,7 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="shrink-0 px-4 py-1 text-center text-[9px] text-text-tertiary border-t border-border bg-white">
+      <footer className="shrink-0 px-4 py-1 text-center text-[9px] text-text-tertiary border-t border-border" style={{ background: 'var(--bg-header)' }}>
         {t('app.footer')}
       </footer>
 
@@ -268,7 +327,7 @@ function NavBtn({ active, onClick, children }: { active: boolean; onClick: () =>
       className={`px-3 py-1 text-[11px] font-medium rounded transition-all duration-150 ${
         active
           ? 'bg-primary text-white active:bg-primary-dark'
-          : 'text-text-secondary hover:bg-gray-100 active:bg-gray-200'
+          : 'text-text-secondary hover:bg-[var(--bg-hover)] active:bg-[var(--bg-hover)]'
       }`}
     >
       {children}
@@ -283,7 +342,7 @@ function ToggleBtn({ active, onClick, children }: { active: boolean; onClick: ()
       className={`px-2 py-1 text-[10px] font-medium rounded border transition-all duration-150 ${
         active
           ? 'border-primary bg-primary/10 text-primary active:bg-primary/20'
-          : 'border-border text-text-tertiary hover:border-gray-300 active:bg-gray-200'
+          : 'border-border text-text-tertiary hover:border-border-medium active:bg-[var(--bg-hover)]'
       }`}
     >
       {children}
@@ -295,7 +354,7 @@ function ActionBtn({ onClick, children }: { onClick: () => void; children: React
   return (
     <button
       onClick={onClick}
-      className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-gray-100 active:bg-gray-200 rounded transition-all duration-150"
+      className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-[var(--bg-hover)] active:bg-[var(--bg-hover)] rounded transition-all duration-150"
     >
       {children}
     </button>
