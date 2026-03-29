@@ -32,6 +32,7 @@ import { LocalStorageMigration } from './components/settings/LocalStorageMigrati
 import { useAuth } from './providers/AuthProvider';
 import { useComplexityLevel } from './hooks/useComplexityLevel';
 import { useSupabaseSync } from './hooks/useSupabaseSync';
+import { useTheme } from './hooks/useTheme';
 import i18n from './i18n';
 
 export default function App() {
@@ -59,6 +60,7 @@ export default function App() {
   const navigate = useNavigate();
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
+  const { theme, toggleTheme } = useTheme();
   useSupabaseSync();
 
   // Auto-show wizard is handled in onboarding store initialization
@@ -100,7 +102,7 @@ export default function App() {
   return (
     <div className="h-full flex flex-col overflow-hidden" style={{ background: 'var(--color-bg)', color: 'var(--color-text-primary)' }}>
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-2 bg-white border-b border-border shrink-0" style={{ minHeight: 48 }}>
+      <header className="flex items-center justify-between px-4 py-2 bg-header border-b border-border shrink-0" style={{ minHeight: 48 }}>
         {/* Left: Logo */}
         <Link to="/" className="flex items-center gap-3 no-underline">
           <CairnMark size={0.45} />
@@ -140,8 +142,19 @@ export default function App() {
           <RoleModeToggle />
           <ToggleBtn active={aiPanelOpen} onClick={() => setAIPanelOpen(!aiPanelOpen)}>AI</ToggleBtn>
           <button
+            onClick={toggleTheme}
+            className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-surface-hover rounded transition-colors"
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === 'dark' ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            )}
+          </button>
+          <button
             onClick={() => i18n.changeLanguage(i18n.language === 'nb' ? 'en' : 'nb')}
-            className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-gray-100 rounded"
+            className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-surface-hover rounded transition-colors"
           >
             {i18n.language === 'nb' ? 'EN' : 'NB'}
           </button>
@@ -179,9 +192,9 @@ export default function App() {
               <EffectBoard />
             </main>
             {showDetailPanel && (
-              <aside className="shrink-0 border-l border-border bg-white w-[320px] overflow-hidden transition-all duration-200">
+              <aside className="shrink-0 border-l border-border bg-card w-[320px] overflow-hidden transition-all duration-200">
                 <div className="flex h-full">
-                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-gray-100 transition-colors" title={t('common.close')}>
+                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-surface-hover transition-colors" title={t('common.close')}>
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
@@ -199,9 +212,9 @@ export default function App() {
               <CapabilityLandscape />
             </main>
             {showDetailPanel && (
-              <aside className="shrink-0 border-l border-border bg-white w-[320px] overflow-hidden transition-all duration-200">
+              <aside className="shrink-0 border-l border-border bg-card w-[320px] overflow-hidden transition-all duration-200">
                 <div className="flex h-full">
-                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-gray-100 transition-colors" title={t('common.close')}>
+                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-surface-hover transition-colors" title={t('common.close')}>
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
@@ -225,9 +238,9 @@ export default function App() {
 
             {/* Right sidebar - Detail Panel (only when item selected or AI open) */}
             {showDetailPanel && (
-              <aside className="shrink-0 border-l border-border bg-white w-[320px] overflow-hidden transition-all duration-200 animate-slide-in-right">
+              <aside className="shrink-0 border-l border-border bg-card w-[320px] overflow-hidden transition-all duration-200 animate-slide-in-right">
                 <div className="flex h-full">
-                  <button onClick={() => { setSelectedItem(null); setAIPanelOpen(false); }} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-gray-100 transition-colors" title={t('common.close')}>
+                  <button onClick={() => { setSelectedItem(null); setAIPanelOpen(false); }} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-surface-hover transition-colors" title={t('common.close')}>
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
@@ -241,7 +254,7 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="shrink-0 px-4 py-1 text-center text-[9px] text-text-tertiary border-t border-border bg-white">
+      <footer className="shrink-0 px-4 py-1 text-center text-[9px] text-text-tertiary border-t border-border bg-header">
         {t('app.footer')}
       </footer>
 
@@ -268,7 +281,7 @@ function NavBtn({ active, onClick, children }: { active: boolean; onClick: () =>
       className={`px-3 py-1 text-[11px] font-medium rounded transition-all duration-150 ${
         active
           ? 'bg-primary text-white active:bg-primary-dark'
-          : 'text-text-secondary hover:bg-gray-100 active:bg-gray-200'
+          : 'text-text-secondary hover:bg-surface-hover active:bg-surface-active'
       }`}
     >
       {children}
@@ -283,7 +296,7 @@ function ToggleBtn({ active, onClick, children }: { active: boolean; onClick: ()
       className={`px-2 py-1 text-[10px] font-medium rounded border transition-all duration-150 ${
         active
           ? 'border-primary bg-primary/10 text-primary active:bg-primary/20'
-          : 'border-border text-text-tertiary hover:border-gray-300 active:bg-gray-200'
+          : 'border-border text-text-tertiary hover:border-border active:bg-surface-active'
       }`}
     >
       {children}
@@ -295,7 +308,7 @@ function ActionBtn({ onClick, children }: { onClick: () => void; children: React
   return (
     <button
       onClick={onClick}
-      className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-gray-100 active:bg-gray-200 rounded transition-all duration-150"
+      className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-surface-hover active:bg-surface-active rounded transition-all duration-150"
     >
       {children}
     </button>

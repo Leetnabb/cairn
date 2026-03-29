@@ -64,8 +64,8 @@ export function Login() {
   const isExpired = searchParams.get('expired') === 'true';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-8">
+    <div className="min-h-screen flex items-center justify-center bg-bg" data-theme="dark">
+      <div className="w-full max-w-sm bg-card rounded-xl shadow-lg p-8">
         <h1 className="text-xl font-bold text-text-primary text-center mb-6">
           {mode === 'login' && t('auth.login')}
           {mode === 'register' && t('auth.register')}
