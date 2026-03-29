@@ -2,7 +2,7 @@ export type InitiativeStatus = 'planned' | 'in_progress' | 'done' | 'stopped' | 
 
 export type ConfidenceLevel = 'confirmed' | 'tentative' | 'under_consideration';
 
-export type Horizon = 'near' | 'mid' | 'far';
+export type Horizon = 'near' | 'far';
 
 export type DimensionKey = 'ledelse' | 'virksomhet' | 'organisasjon' | 'teknologi';
 

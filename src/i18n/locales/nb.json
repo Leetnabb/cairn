@@ -160,7 +160,6 @@
     "horizon": {
       "label": "Horisont",
       "near": "Nå",
-      "mid": "Neste",
       "far": "Senere",
       "all": "Alle",
       "nearFull": "Nær horisont",

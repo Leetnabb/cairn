@@ -75,7 +75,6 @@ export function EditInitiativeForm({ initiative }: Props) {
           <select value={horizon} onChange={e => setHorizon(e.target.value as Horizon)}
             className="w-full px-2 py-1 text-[11px] border border-border rounded">
             <option value="near">{t('labels.horizon.near')}</option>
-            <option value="mid">{t('labels.horizon.mid')}</option>
             <option value="far">{t('labels.horizon.far')}</option>
           </select>
         </div>

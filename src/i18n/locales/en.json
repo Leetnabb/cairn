@@ -160,7 +160,6 @@
     "horizon": {
       "label": "Horizon",
       "near": "Now",
-      "mid": "Next",
       "far": "Later",
       "all": "All",
       "nearFull": "Near horizon",

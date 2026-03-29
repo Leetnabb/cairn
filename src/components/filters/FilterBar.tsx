@@ -54,7 +54,7 @@ export function FilterBar() {
 
       {/* Horizon toggle */}
       <div className="flex gap-0.5">
-        {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['mid', t('labels.horizon.mid')], ['far', t('labels.horizon.far')]].map(([val, label]) => (
+        {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['far', t('labels.horizon.far')]].map(([val, label]) => (
           <button
             key={val}
             onClick={() => setFilter({ horizon: val as 'all' | Horizon })}

@@ -21,13 +21,8 @@ describe('Initiative extended statuses', () => {
   });
 });
 
-describe('Initiative three horizons', () => {
-  it('accepts mid as a horizon value', () => {
-    const initiative: Partial<Initiative> = { horizon: 'mid' };
-    expect(initiative.horizon).toBe('mid');
-  });
-
-  it('still accepts near and far for backward compat', () => {
+describe('Initiative horizons', () => {
+  it('still accepts near and far', () => {
     const near: Partial<Initiative> = { horizon: 'near' };
     const far: Partial<Initiative> = { horizon: 'far' };
     expect(near.horizon).toBe('near');
