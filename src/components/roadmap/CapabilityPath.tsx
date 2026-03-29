@@ -28,6 +28,7 @@ export function CapabilityPath() {
       return {
         cap,
         near: linked.filter(i => i.horizon === 'near').sort((a, b) => a.order - b.order),
+        mid: linked.filter(i => i.horizon === 'mid').sort((a, b) => a.order - b.order),
         far: linked.filter(i => i.horizon === 'far').sort((a, b) => a.order - b.order),
         capStrategies,
       };
@@ -48,7 +49,7 @@ export function CapabilityPath() {
     );
   }
 
-  const gridCols = '160px 1fr 1fr';
+  const gridCols = '160px 1fr 1fr 1fr';
 
   return (
     <div className="min-h-full p-3">
@@ -56,15 +57,18 @@ export function CapabilityPath() {
       <div className="grid mb-2" style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
         <div />
         <div className="text-[10px] font-semibold text-text-secondary text-center px-2">
-          {t('labels.horizon.nearRange')}
+          {t('labels.horizon.near')}
+        </div>
+        <div className="text-[10px] font-semibold text-text-secondary text-center px-2 opacity-85">
+          {t('labels.horizon.mid')}
         </div>
         <div className="text-[10px] font-semibold text-text-secondary text-center px-2 opacity-70">
-          {t('labels.horizon.farRange')}
+          {t('labels.horizon.far')}
         </div>
       </div>
 
       {/* Capability rows */}
-      {capRows.map(({ cap, near, far, capStrategies }) => (
+      {capRows.map(({ cap, near, mid, far, capStrategies }) => (
         <div key={cap.id} className="grid mb-1" style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
           {/* Capability label */}
           <button
@@ -114,6 +118,19 @@ export function CapabilityPath() {
             )}
           </div>
 
+          {/* Mid column */}
+          <div
+            className="relative rounded min-h-[48px] p-1.5 flex flex-wrap gap-1 content-start opacity-85"
+            style={{ backgroundColor: '#f4f6ff' }}
+          >
+            {mid.map(i => (
+              <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} />
+            ))}
+            {mid.length === 0 && (
+              <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
+            )}
+          </div>
+
           {/* Far column */}
           <div
             className="relative rounded min-h-[48px] p-1.5 flex flex-wrap gap-1 content-start opacity-70"
@@ -138,7 +155,7 @@ export function CapabilityPath() {
             </span>
           </div>
           <div
-            className="rounded min-h-[48px] p-1.5 flex flex-wrap gap-1 content-start col-span-2"
+            className="rounded min-h-[48px] p-1.5 flex flex-wrap gap-1 content-start col-span-3"
             style={{ backgroundColor: '#fffbeb', borderLeft: '3px solid #f59e0b' }}
           >
             {unlinked.map(i => (
