@@ -14,7 +14,7 @@ export function EffectFunnel({ initiatives, effects }: Props) {
   const touchedCaps = new Set(initiatives.flatMap(i => i.capabilities));
 
   return (
-    <div className="bg-white rounded border border-border p-3 mb-4">
+    <div className="bg-card rounded border border-border p-3 mb-4">
       <h3 className="text-[11px] font-semibold mb-3">{t('dashboard.effectFunnel')}</h3>
       <div className="flex items-center justify-center gap-2">
         {/* Activities */}

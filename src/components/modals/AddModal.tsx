@@ -187,7 +187,7 @@ export function AddModal() {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setAddModalOpen(false)}>
-      <div className="relative bg-white rounded-lg shadow-lg w-[440px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div className="relative bg-card rounded-lg shadow-lg w-[440px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
         {confirmMsg && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-green-600 text-white text-[11px] font-medium px-3 py-1 rounded-full shadow-md z-10 animate-fade-in">
             &#10003; {t('common.created')}
@@ -205,7 +205,7 @@ export function AddModal() {
               key={tb}
               onClick={() => setActiveTab(tb)}
               className={`flex-1 px-3 py-2 text-[11px] font-medium transition-colors ${
-                activeTab === tb ? 'border-b-2 border-primary text-primary' : 'text-text-secondary hover:bg-gray-50'
+                activeTab === tb ? 'border-b-2 border-primary text-primary' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
               }`}
             >
               {tabLabels[tb]}
@@ -277,7 +277,7 @@ export function AddModal() {
                   ]).map(opt => (
                     <button key={opt.value} onClick={() => setIStatus(opt.value)}
                       className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                        iStatus === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                        iStatus === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                       }`}>
                       {opt.label}
                     </button>
@@ -294,7 +294,7 @@ export function AddModal() {
                   ]).map(opt => (
                     <button key={opt.value} onClick={() => setIConfidence(opt.value)}
                       className={`flex-1 px-1.5 py-1 text-[9px] font-medium transition-colors ${
-                        iConfidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                        iConfidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                       }`}>
                       {opt.label}
                     </button>
@@ -311,7 +311,7 @@ export function AddModal() {
                   ] as const).map(opt => (
                     <button key={String(opt.value)} onClick={() => setICriticalPathOverride(opt.value)}
                       className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                        iCriticalPathOverride === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                        iCriticalPathOverride === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                       }`}>
                       {opt.label}
                     </button>
@@ -378,10 +378,10 @@ export function AddModal() {
                     {t('addModal.newValueChain')}
                   </button>
                 ) : (
-                  <div className="mt-1.5 p-2 border border-border rounded bg-gray-50 space-y-1.5">
+                  <div className="mt-1.5 p-2 border border-border rounded bg-[var(--bg-lane)] space-y-1.5">
                     <input value={inlineVCName} onChange={e => setInlineVCName(e.target.value)}
                       placeholder={t('addModal.valueChainPlaceholder')}
-                      className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary bg-white"
+                      className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary bg-card"
                       autoFocus />
                     <ColorPalette value={inlineVCColor} onChange={setInlineVCColor} />
                     <div className="flex gap-1">
@@ -634,7 +634,7 @@ export function AddModal() {
                     {([1, 2, 3] as const).map(p => (
                       <button key={p} onClick={() => setSPriority(p)}
                         className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                          sPriority === p ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                          sPriority === p ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                         }`}>
                         {p}
                       </button>

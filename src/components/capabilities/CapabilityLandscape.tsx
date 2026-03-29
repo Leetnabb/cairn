@@ -190,7 +190,7 @@ export function CapabilityLandscape() {
           <button
             onClick={() => setCapabilityView('maturity')}
             className={`px-2 py-1 text-[10px] rounded transition-colors ${
-              capabilityView === 'maturity' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+              capabilityView === 'maturity' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
             }`}
           >
             {t('labels.maturity.label')}
@@ -198,7 +198,7 @@ export function CapabilityLandscape() {
           <button
             onClick={() => setCapabilityView('risk')}
             className={`px-2 py-1 text-[10px] rounded transition-colors ${
-              capabilityView === 'risk' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+              capabilityView === 'risk' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
             }`}
           >
             {t('labels.risk.label')}
@@ -246,13 +246,13 @@ export function CapabilityLandscape() {
                 <div className="h-0.5 rounded mb-2 bg-primary" />
               )}
               <div
-                className={`bg-white border rounded shadow-card overflow-hidden transition-opacity duration-150 ${
+                className={`bg-card border rounded shadow-card overflow-hidden transition-opacity duration-150 ${
                   isSelected ? 'border-primary shadow-selected' : 'border-border'
                 } ${draggingId === `l1:${domain.id}` ? 'opacity-50' : ''}`}
               >
                 {/* Domain header */}
                 <div
-                  className="flex items-center justify-between px-3 py-2 bg-gray-50 border-b border-border cursor-pointer"
+                  className="flex items-center justify-between px-3 py-2 bg-[var(--bg-lane)] border-b border-border cursor-pointer"
                   onClick={() => setSelectedItem({ type: 'capability', id: domain.id })}
                 >
                   <div className="flex items-center gap-2">
@@ -315,14 +315,14 @@ export function CapabilityLandscape() {
                               className={`px-2 py-1.5 rounded cursor-pointer border transition-all duration-150 ${
                                 isChildSelected
                                   ? 'border-primary shadow-selected'
-                                  : 'border-border bg-white hover:shadow-hover'
+                                  : 'border-border bg-card hover:shadow-hover'
                               } ${draggingId === `l2:${child.id}` ? 'opacity-50' : ''}`}
                             >
                               <div className="flex items-center justify-between gap-1">
                                 <span className="text-[10px] font-medium leading-tight truncate">{child.name}</span>
                                 <div className="flex items-center gap-1 shrink-0">
                                   {count > 0 && (
-                                    <span className="text-[8px] bg-gray-100 text-text-tertiary px-1 py-0.5 rounded-full leading-none">
+                                    <span className="text-[8px] bg-[var(--bg-hover)] text-text-tertiary px-1 py-0.5 rounded-full leading-none">
                                       {count}
                                     </span>
                                   )}

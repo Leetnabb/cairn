@@ -27,7 +27,7 @@ export function FilterBar() {
   };
 
   return (
-    <div className="flex items-center gap-2 px-4 py-1.5 bg-white border-b border-border shrink-0">
+    <div className="flex items-center gap-2 px-4 py-1.5 bg-card border-b border-border shrink-0">
       {/* Dimension toggles */}
       <div className="flex gap-0.5">
         {DIMENSIONS.map(d => (
@@ -59,7 +59,7 @@ export function FilterBar() {
             key={val}
             onClick={() => setFilter({ horizon: val as 'all' | Horizon })}
             className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-              filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+              filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
             }`}
           >
             {label}
@@ -73,7 +73,7 @@ export function FilterBar() {
       <button
         onClick={() => setFilter({ showMilestones: !filters.showMilestones })}
         className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-          filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+          filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
         }`}
       >
         {t('filters.milestones')}
@@ -83,7 +83,7 @@ export function FilterBar() {
       <button
         onClick={() => setFilter({ focusMode: !filters.focusMode })}
         className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-          filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+          filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
         }`}
       >
         {t('filters.focus')}
@@ -94,7 +94,7 @@ export function FilterBar() {
         <div className="flex items-center gap-0.5">
           <button
             onClick={() => setFilter({ zoomLevel: Math.max(0.5, (filters.zoomLevel ?? 1) - 0.25) })}
-            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-gray-100 text-text-tertiary"
+            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-[var(--bg-hover)] text-text-tertiary"
           >
             −
           </button>
@@ -103,7 +103,7 @@ export function FilterBar() {
           </span>
           <button
             onClick={() => setFilter({ zoomLevel: Math.min(3, (filters.zoomLevel ?? 1) + 0.25) })}
-            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-gray-100 text-text-tertiary"
+            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-[var(--bg-hover)] text-text-tertiary"
           >
             +
           </button>

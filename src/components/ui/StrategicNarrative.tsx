@@ -57,7 +57,7 @@ export function StrategicNarrative({ narrative, isEditable = false, onEdit, dark
             onChange={e => setDraft(e.target.value)}
             rows={4}
             className={`w-full px-3 py-2 text-[15px] leading-relaxed rounded border focus:outline-none focus:border-indigo-400 resize-none ${
-              dark ? 'bg-[#1e2a3a] border-[#2d3748] text-[#f1f5f9]' : 'bg-white border-border text-[#1e293b]'
+              dark ? 'bg-[#1e2a3a] border-[#2d3748] text-[#f1f5f9]' : 'bg-card border-border text-[#1e293b]'
             }`}
             style={{ fontFamily: "'Instrument Serif', Georgia, serif", lineHeight: 1.6 }}
             autoFocus
@@ -71,7 +71,7 @@ export function StrategicNarrative({ narrative, isEditable = false, onEdit, dark
             </button>
             <button
               onClick={handleCancel}
-              className="px-3 py-1 text-[11px] text-text-secondary hover:bg-gray-100 rounded transition-colors"
+              className="px-3 py-1 text-[11px] text-text-secondary hover:bg-[var(--bg-hover)] rounded transition-colors"
             >
               {t('board.cancelEdit')}
             </button>

@@ -50,7 +50,7 @@ export function InsightsBadge() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="relative w-7 h-7 flex items-center justify-center text-text-secondary hover:bg-gray-100 rounded transition-colors"
+        className="relative w-7 h-7 flex items-center justify-center text-text-secondary hover:bg-[var(--bg-hover)] rounded transition-colors"
         title={t('header.warnings')}
         aria-label={t('header.warnings')}
       >
@@ -64,7 +64,7 @@ export function InsightsBadge() {
         </span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg py-2 w-[340px] z-50">
+        <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-2 w-[340px] z-50">
           <div className="px-3 pb-1.5 text-[10px] font-semibold text-text-secondary uppercase">
             {t('insights.title')}
           </div>
@@ -76,8 +76,8 @@ export function InsightsBadge() {
                 className={`w-full text-left px-3 py-2 text-[11px] rounded border border-slate-100 border-l-[3px] ${TYPE_COLORS[insight.type]} bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer group`}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-slate-700 leading-snug">{insight.message}</span>
-                  <span className="text-slate-400 group-hover:text-slate-600 shrink-0 mt-0.5">→</span>
+                  <span className="text-text-primary leading-snug">{insight.message}</span>
+                  <span className="text-slate-400 group-hover:text-text-secondary shrink-0 mt-0.5">→</span>
                 </div>
                 {insight.detail && (
                   <div className="text-[10px] text-slate-400 mt-0.5 truncate">{insight.detail}</div>

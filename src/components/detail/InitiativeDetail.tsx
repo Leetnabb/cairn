@@ -139,14 +139,14 @@ export function InitiativeDetail({ initiative }: Props) {
             <span className={`inline-block px-1.5 py-0.5 text-[8px] font-medium rounded-full ${
               initiative.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
               initiative.status === 'done' ? 'bg-green-100 text-green-700' :
-              'bg-gray-100 text-gray-600'
+              'bg-[var(--bg-hover)] text-text-secondary'
             }`}>
               {t(`labels.status.${initiative.status ?? 'planned'}`)}
             </span>
             {(initiative.confidence && initiative.confidence !== 'confirmed') && (
               <span className={`inline-block px-1.5 py-0.5 text-[8px] font-medium rounded-full ${
                 initiative.confidence === 'tentative' ? 'bg-yellow-100 text-yellow-700 border border-dashed border-yellow-400' :
-                'bg-gray-100 text-gray-500 border border-dotted border-gray-400 italic'
+                'bg-[var(--bg-hover)] text-text-secondary border border-dotted border-gray-400 italic'
               }`}>
                 {t(`confidence.${initiative.confidence}`)}
               </span>
@@ -207,10 +207,10 @@ export function InitiativeDetail({ initiative }: Props) {
         }
         if (override === false) {
           return (
-            <div className="px-2 py-1.5 rounded bg-gray-50 border border-gray-200 text-[10px] text-gray-600 flex items-center justify-between">
+            <div className="px-2 py-1.5 rounded bg-[var(--bg-lane)] border border-border text-[10px] text-text-secondary flex items-center justify-between">
               <span>\u26aa {t('detail.criticalPath.excluded')}</span>
               <button onClick={() => updateInitiative(initiative.id, { criticalPathOverride: null })}
-                className="text-[9px] text-gray-500 hover:text-gray-700 font-medium">{t('detail.criticalPath.resetAuto')}</button>
+                className="text-[9px] text-text-secondary hover:text-text-primary font-medium">{t('detail.criticalPath.resetAuto')}</button>
             </div>
           );
         }
@@ -224,10 +224,10 @@ export function InitiativeDetail({ initiative }: Props) {
           );
         }
         return (
-          <div className="px-2 py-1.5 rounded bg-gray-50 border border-gray-200 text-[10px] text-gray-600 flex items-center justify-between">
+          <div className="px-2 py-1.5 rounded bg-[var(--bg-lane)] border border-border text-[10px] text-text-secondary flex items-center justify-between">
             <span>\u26aa {t('detail.criticalPath.notOn')}</span>
             <button onClick={() => updateInitiative(initiative.id, { criticalPathOverride: true })}
-              className="text-[9px] text-gray-500 hover:text-gray-700 font-medium">{t('detail.criticalPath.addTo')}</button>
+              className="text-[9px] text-text-secondary hover:text-text-primary font-medium">{t('detail.criticalPath.addTo')}</button>
           </div>
         );
       })()}
@@ -293,7 +293,7 @@ export function InitiativeDetail({ initiative }: Props) {
             {relatedCaps.map(c => (
               <button key={c.id}
                 onClick={() => setSelectedItem({ type: 'capability', id: c.id })}
-                className="px-1.5 py-0.5 text-[9px] rounded bg-gray-100 text-primary hover:bg-gray-200">
+                className="px-1.5 py-0.5 text-[9px] rounded bg-[var(--bg-hover)] text-primary hover:bg-[var(--bg-hover)]">
                 {c.name}
               </button>
             ))}
@@ -309,7 +309,7 @@ export function InitiativeDetail({ initiative }: Props) {
             {relatedEffects.map(e => (
               <button key={e.id}
                 onClick={() => setSelectedItem({ type: 'effect', id: e.id })}
-                className="flex items-center gap-1.5 w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary">
+                className="flex items-center gap-1.5 w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
                 <span className="px-1 py-0.5 text-[7px] font-medium rounded text-white shrink-0" style={{ backgroundColor: EFFECT_TYPE_COLORS[e.type] }}>
                   {t(`effects.types.${e.type}`)}
                 </span>
@@ -319,7 +319,7 @@ export function InitiativeDetail({ initiative }: Props) {
           </div>
         </div>
       ) : (
-        <div className="px-2 py-1.5 rounded bg-gray-50 border border-gray-200 text-[10px] text-text-tertiary italic">
+        <div className="px-2 py-1.5 rounded bg-[var(--bg-lane)] border border-border text-[10px] text-text-tertiary italic">
           {t('detail.noEffectLink')}
         </div>
       ))}
@@ -346,7 +346,7 @@ export function InitiativeDetail({ initiative }: Props) {
             {overlapping.map(i => (
               <button key={i.id}
                 onClick={() => setSelectedItem({ type: 'initiative', id: i.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary">
+                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
                 {i.name}
               </button>
             ))}

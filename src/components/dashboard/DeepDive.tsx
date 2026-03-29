@@ -50,48 +50,48 @@ export function DeepDive({ initiatives, capabilities, effects, valueChains }: Pr
       {expanded && (
         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* DimensionHealth */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <h3 className="text-[11px] font-semibold mb-2">Dimensjonshelse</h3>
             <DimensionHealth initiatives={initiatives} />
           </div>
 
           {/* MaturityJourney */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <h3 className="text-[11px] font-semibold mb-2">Modenhetreise</h3>
             <MaturityJourney capabilities={capabilities} />
           </div>
 
           {/* OwnerLoad */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <h3 className="text-[11px] font-semibold mb-2">Eierbelastning</h3>
             <OwnerLoad initiatives={initiatives} />
           </div>
 
           {/* CriticalPathNarrative */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <h3 className="text-[11px] font-semibold mb-2">Kritisk sti</h3>
             <CriticalPathNarrative initiatives={initiatives} />
           </div>
 
           {/* StrategicBottlenecks */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <h3 className="text-[11px] font-semibold mb-2">Strategiske flaskehalser</h3>
             <StrategicBottlenecks />
           </div>
 
           {/* ValueChainView */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <h3 className="text-[11px] font-semibold mb-2">Verdikjeder</h3>
             <ValueChainView initiatives={initiatives} valueChains={valueChains} />
           </div>
 
           {/* EffectFunnel */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <EffectFunnel initiatives={initiatives} capabilities={capabilities} effects={effects} />
           </div>
 
           {/* SnapshotList */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <SnapshotList />
           </div>
         </div>

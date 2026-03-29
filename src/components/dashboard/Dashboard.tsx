@@ -47,7 +47,7 @@ export function Dashboard() {
   return (
     <div className="flex-1 overflow-auto p-4">
       {/* Strategic frame summary */}
-      <div className="bg-white rounded-lg border border-border p-4 mb-4">
+      <div className="bg-card rounded-lg border border-border p-4 mb-4">
         {strategicFrame ? (
           <>
             <p className="text-lg font-medium text-text-primary mb-2">{strategicFrame.direction}</p>

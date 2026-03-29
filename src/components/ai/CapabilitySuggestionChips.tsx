@@ -9,7 +9,7 @@ interface Props {
 function confidenceColor(confidence: number): string {
   if (confidence >= 0.8) return 'border-green-400 bg-green-50 text-green-800';
   if (confidence >= 0.5) return 'border-yellow-400 bg-yellow-50 text-yellow-800';
-  return 'border-gray-300 bg-gray-50 text-gray-700';
+  return 'border-border bg-[var(--bg-lane)] text-text-primary';
 }
 
 export function CapabilitySuggestionChips({ suggestions, selectedIds, onToggle }: Props) {

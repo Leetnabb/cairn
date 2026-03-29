@@ -129,7 +129,7 @@ export function OnboardingWizard() {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={close}>
       <div
-        className="bg-white rounded-xl shadow-xl w-[540px] max-h-[88vh] overflow-hidden flex flex-col"
+        className="bg-card rounded-xl shadow-xl w-[540px] max-h-[88vh] overflow-hidden flex flex-col"
         onClick={e => e.stopPropagation()}
       >
         {/* Step indicator */}
@@ -141,7 +141,7 @@ export function OnboardingWizard() {
                   ? 'bg-primary text-white'
                   : i < step
                   ? 'bg-primary/20 text-primary'
-                  : 'bg-gray-100 text-text-tertiary'
+                  : 'bg-[var(--bg-hover)] text-text-tertiary'
               }`}>
                 {i < step ? '✓' : i + 1}
               </div>
@@ -157,7 +157,7 @@ export function OnboardingWizard() {
           ))}
           <button
             onClick={close}
-            className="ml-2 p-1 text-text-tertiary hover:text-text-primary hover:bg-gray-100 rounded transition-colors shrink-0"
+            className="ml-2 p-1 text-text-tertiary hover:text-text-primary hover:bg-[var(--bg-hover)] rounded transition-colors shrink-0"
             title={t('common.close')}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -26,7 +26,7 @@ export function SettingsModal({ onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[85vh] flex flex-col">
+      <div className="bg-card rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[85vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <h2 className="text-[14px] font-semibold text-text-primary">
@@ -34,7 +34,7 @@ export function SettingsModal({ onClose }: Props) {
           </h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center text-text-secondary hover:bg-gray-100 rounded transition-colors text-[16px]"
+            className="w-7 h-7 flex items-center justify-center text-text-secondary hover:bg-[var(--bg-hover)] rounded transition-colors text-[16px]"
             aria-label="Close"
           >
             ×

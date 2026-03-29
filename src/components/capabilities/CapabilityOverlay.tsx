@@ -47,12 +47,12 @@ export function CapabilityOverlay() {
   return (
     <div className="fixed inset-0 z-40 flex">
       {/* Overlay panel */}
-      <div className="w-[340px] h-full bg-white border-r border-border shadow-lg overflow-y-auto animate-slide-in-left">
+      <div className="w-[340px] h-full bg-card border-r border-border shadow-lg overflow-y-auto animate-slide-in-left">
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <h2 className="text-[13px] font-semibold">{t('nav.capabilityMap')}</h2>
           <button
             onClick={() => setCapabilityOverlayOpen(false)}
-            className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100 text-text-tertiary text-[14px]"
+            className="w-6 h-6 flex items-center justify-center rounded hover:bg-[var(--bg-hover)] text-text-tertiary text-[14px]"
           >
             &times;
           </button>
@@ -91,7 +91,7 @@ export function CapabilityOverlay() {
                             setSelectedItem({ type: 'capability', id: child.id });
                             setCapabilityOverlayOpen(false);
                           }}
-                          className="w-full text-left flex items-center justify-between px-1.5 py-0.5 rounded hover:bg-gray-50"
+                          className="w-full text-left flex items-center justify-between px-1.5 py-0.5 rounded hover:bg-[var(--bg-hover)]"
                         >
                           <span className="text-[10px] text-text-secondary">{child.name}</span>
                           <div className="flex items-center gap-1">

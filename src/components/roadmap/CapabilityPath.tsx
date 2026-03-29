@@ -69,7 +69,7 @@ export function CapabilityPath() {
           {/* Capability label */}
           <button
             onClick={() => setSelectedItem({ type: 'capability', id: cap.id })}
-            className="flex items-center gap-2 px-2 py-1.5 rounded bg-gray-50 border border-border text-left hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 px-2 py-1.5 rounded bg-[var(--bg-lane)] border border-border text-left hover:bg-[var(--bg-hover)] transition-colors"
           >
             <div
               className="w-2 h-2 rounded-full shrink-0"

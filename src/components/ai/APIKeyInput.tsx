@@ -61,7 +61,7 @@ export default function APIKeyInput() {
               onChange={(e) => setKey(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSave()}
               placeholder={getApiKey() ? '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022' : 'sk-ant-...'}
-              className="flex-1 px-2 py-1 text-[10px] border border-border rounded bg-white focus:outline-none focus:border-primary"
+              className="flex-1 px-2 py-1 text-[10px] border border-border rounded bg-card focus:outline-none focus:border-primary"
               aria-label={t('ai.ui.apiKeyLabel')}
             />
             <button

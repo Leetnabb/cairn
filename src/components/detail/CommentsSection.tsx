@@ -36,7 +36,7 @@ export function CommentsSection({ itemId }: Props) {
       {comments.length > 0 && (
         <div className="space-y-1.5 mb-2 max-h-40 overflow-y-auto">
           {comments.map(c => (
-            <div key={c.id} className="px-2 py-1 bg-gray-50 rounded text-[10px] group">
+            <div key={c.id} className="px-2 py-1 bg-[var(--bg-lane)] rounded text-[10px] group">
               <div className="flex justify-between items-start">
                 <p className="text-text-primary">{c.text}</p>
                 <button

@@ -62,7 +62,7 @@ export function CapabilityMap() {
           <button
             onClick={() => setCapabilityView('maturity')}
             className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-              capabilityView === 'maturity' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+              capabilityView === 'maturity' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
             }`}
           >
             {t('labels.maturity.label')}
@@ -70,7 +70,7 @@ export function CapabilityMap() {
           <button
             onClick={() => setCapabilityView('risk')}
             className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-              capabilityView === 'risk' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+              capabilityView === 'risk' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
             }`}
           >
             {t('labels.risk.label')}

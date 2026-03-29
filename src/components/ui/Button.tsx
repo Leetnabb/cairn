@@ -13,9 +13,9 @@ export function Button({ variant = 'secondary', size = 'sm', className = '', chi
   };
   const variants = {
     primary: 'bg-primary text-white hover:bg-primary-dark',
-    secondary: 'bg-white border border-border text-text-secondary hover:bg-gray-50',
+    secondary: 'bg-card border border-border text-text-secondary hover:bg-[var(--bg-hover)]',
     danger: 'bg-red-50 border border-red-200 text-red-600 hover:bg-red-100',
-    ghost: 'text-text-secondary hover:bg-gray-100',
+    ghost: 'text-text-secondary hover:bg-[var(--bg-hover)]',
   };
 
   return (

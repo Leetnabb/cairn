@@ -15,7 +15,7 @@ export function StrategicFrameEditor() {
   if (!frame) {
     return (
       <div className="space-y-4">
-        <p className="text-sm text-gray-600">{t('strategicFrame.empty')}</p>
+        <p className="text-sm text-text-secondary">{t('strategicFrame.empty')}</p>
         <button
           onClick={() => setFrame({ direction: '', themes: [] })}
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700"
@@ -35,7 +35,7 @@ export function StrategicFrameEditor() {
   return (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-text-primary mb-1">
           {t('strategicFrame.direction')}
         </label>
         <textarea
@@ -47,7 +47,7 @@ export function StrategicFrameEditor() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-text-primary mb-2">
           {t('strategicFrame.themes')}
         </label>
         <div className="space-y-2">
@@ -77,7 +77,7 @@ export function StrategicFrameEditor() {
           />
           <button
             onClick={handleAddTheme}
-            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm"
+            className="px-3 py-1 bg-[var(--bg-hover)] hover:bg-[var(--bg-hover)] rounded text-sm"
           >
             {t('common.add')}
           </button>

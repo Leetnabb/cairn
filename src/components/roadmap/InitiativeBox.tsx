@@ -63,10 +63,10 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
           : isDependent
           ? 'border-blue-300 bg-blue-50'
           : isTentative
-          ? 'border-dashed border-border bg-white hover:shadow-hover'
+          ? 'border-dashed border-border bg-card hover:shadow-hover'
           : isUnderConsideration
-          ? 'border-dotted border-border bg-white hover:shadow-hover'
-          : 'border-border bg-white hover:shadow-hover'
+          ? 'border-dotted border-border bg-card hover:shadow-hover'
+          : 'border-border bg-card hover:shadow-hover'
       } ${isOnCriticalPath ? 'ring-2 ring-red-400 shadow-[0_0_8px_rgba(239,68,68,0.2)]' : ''}`}
       style={{
         borderLeftWidth: 3,
@@ -89,8 +89,8 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
             override === true
               ? 'bg-red-100 border-red-400 text-red-600'
               : override === false
-              ? 'bg-gray-100 border-gray-400 text-gray-500'
-              : 'bg-white border-gray-300 text-gray-400 hover:border-gray-400'
+              ? 'bg-[var(--bg-hover)] border-gray-400 text-text-secondary'
+              : 'bg-card border-border text-text-tertiary hover:border-gray-400'
           }`}
           title={override === true ? t('detail.criticalPath.pinnedTooltip') : override === false ? t('detail.criticalPath.excludedTooltip') : t('detail.criticalPath.autoTooltip')}
         >

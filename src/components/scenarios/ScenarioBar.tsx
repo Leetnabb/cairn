@@ -49,7 +49,7 @@ export function ScenarioBar() {
   };
 
   return (
-    <div className="flex items-center gap-1 px-4 py-1 bg-white border-b border-border shrink-0">
+    <div className="flex items-center gap-1 px-4 py-1 bg-card border-b border-border shrink-0">
       <span className="text-[9px] text-text-tertiary uppercase mr-1">{t('scenarios.label')}</span>
       {scenarios.map(s => (
         <div key={s.id} className="flex items-center">
@@ -69,7 +69,7 @@ export function ScenarioBar() {
               className={`px-2 py-0.5 text-[10px] font-medium rounded transition-all duration-150 ${
                 activeScenario === s.id
                   ? 'text-white'
-                  : 'text-text-secondary hover:bg-gray-100'
+                  : 'text-text-secondary hover:bg-[var(--bg-hover)]'
               }`}
               style={activeScenario === s.id ? { backgroundColor: s.color } : undefined}
             >

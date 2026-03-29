@@ -27,7 +27,7 @@ export function InsightsBar() {
   const warnings = insights.filter(i => i.type === 'warning');
 
   return (
-    <div className="px-4 py-1 bg-gray-50 border-b border-border shrink-0">
+    <div className="px-4 py-1 bg-[var(--bg-lane)] border-b border-border shrink-0">
       <div className="flex items-center gap-2">
         <button
           onClick={() => setInsightsExpanded(!expanded)}

@@ -20,7 +20,7 @@ export function OwnerLoad({ initiatives }: Props) {
       {sorted.map(([owner, count]) => (
         <div key={owner} className="flex items-center gap-2">
           <span className="text-[10px] text-text-secondary w-24 truncate shrink-0">{owner}</span>
-          <div className="flex-1 h-4 bg-gray-100 rounded overflow-hidden relative">
+          <div className="flex-1 h-4 bg-[var(--bg-hover)] rounded overflow-hidden relative">
             <div
               className="h-full rounded transition-all duration-300"
               style={{

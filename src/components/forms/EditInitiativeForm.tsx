@@ -101,7 +101,7 @@ export function EditInitiativeForm({ initiative }: Props) {
           ]).map(opt => (
             <button key={opt.value} onClick={() => setStatus(opt.value)}
               className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                status === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                status === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
               }`}>
               {opt.label}
             </button>
@@ -118,7 +118,7 @@ export function EditInitiativeForm({ initiative }: Props) {
           ]).map(opt => (
             <button key={opt.value} onClick={() => setConfidence(opt.value)}
               className={`flex-1 px-1.5 py-1 text-[9px] font-medium transition-colors ${
-                confidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                confidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
               }`}>
               {opt.label}
             </button>
@@ -135,7 +135,7 @@ export function EditInitiativeForm({ initiative }: Props) {
           ] as const).map(opt => (
             <button key={String(opt.value)} onClick={() => setCriticalPathOverride(opt.value)}
               className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                criticalPathOverride === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                criticalPathOverride === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
               }`}>
               {opt.label}
             </button>
@@ -157,7 +157,7 @@ export function EditInitiativeForm({ initiative }: Props) {
             {filteredCaps.map(c => (
               <button key={c.id} onClick={() => toggleItem(selectedCaps, c.id, setSelectedCaps)}
                 className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                  selectedCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary hover:border-gray-300'
+                  selectedCaps.includes(c.id) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-tertiary hover:border-[var(--border-medium)]'
                 }`}>
                 {c.name}
               </button>
@@ -171,7 +171,7 @@ export function EditInitiativeForm({ initiative }: Props) {
           {otherInitiatives.map(i => (
             <button key={i.id} onClick={() => toggleItem(selectedDeps, i.id, setSelectedDeps)}
               className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                selectedDeps.includes(i.id) ? 'border-yellow-400 bg-yellow-50 text-yellow-700' : 'border-border text-text-tertiary hover:border-gray-300'
+                selectedDeps.includes(i.id) ? 'border-yellow-400 bg-yellow-50 text-yellow-700' : 'border-border text-text-tertiary hover:border-[var(--border-medium)]'
               }`}>
               {i.name}
             </button>
@@ -185,7 +185,7 @@ export function EditInitiativeForm({ initiative }: Props) {
             {valueChains.map(vc => (
               <button key={vc.id} onClick={() => toggleItem(selectedVCs, vc.id, setSelectedVCs)}
                 className={`px-1.5 py-0.5 text-[9px] rounded border transition-colors ${
-                  selectedVCs.includes(vc.id) ? 'text-white' : 'border-border text-text-tertiary hover:border-gray-300'
+                  selectedVCs.includes(vc.id) ? 'text-white' : 'border-border text-text-tertiary hover:border-[var(--border-medium)]'
                 }`}
                 style={selectedVCs.includes(vc.id) ? { backgroundColor: vc.color, borderColor: vc.color } : undefined}>
                 {vc.name}

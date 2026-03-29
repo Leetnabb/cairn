@@ -23,7 +23,7 @@ export function ValueChainView({ initiatives, valueChains }: Props) {
             </div>
             <div className="flex flex-wrap gap-1 ml-4">
               {related.map(i => (
-                <span key={i.id} className="px-1.5 py-0.5 text-[9px] rounded bg-gray-100 text-text-secondary">
+                <span key={i.id} className="px-1.5 py-0.5 text-[9px] rounded bg-[var(--bg-hover)] text-text-secondary">
                   {i.name}
                 </span>
               ))}

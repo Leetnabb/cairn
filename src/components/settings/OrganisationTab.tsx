@@ -78,7 +78,7 @@ export function OrganisationTab() {
           type="text"
           value={org.slug}
           disabled
-          className="w-full px-3 py-2 text-[12px] border border-border rounded-lg bg-gray-50 text-text-tertiary cursor-not-allowed"
+          className="w-full px-3 py-2 text-[12px] border border-border rounded-lg bg-[var(--bg-lane)] text-text-tertiary cursor-not-allowed"
         />
       </div>
 
@@ -86,7 +86,7 @@ export function OrganisationTab() {
         <label className="block text-[11px] font-medium text-text-secondary mb-1">
           {t('settings.org.plan')}
         </label>
-        <div className="px-3 py-2 text-[12px] border border-border rounded-lg bg-gray-50 text-text-secondary capitalize">
+        <div className="px-3 py-2 text-[12px] border border-border rounded-lg bg-[var(--bg-lane)] text-text-secondary capitalize">
           {org.plan.toLowerCase()}
         </div>
       </div>
@@ -101,7 +101,7 @@ export function OrganisationTab() {
         <select
           value={sector ?? ''}
           onChange={e => setSector(e.target.value || null)}
-          className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary bg-white"
+          className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary bg-card"
         >
           <option value="">{t('settings.org.notSpecified', 'Not specified')}</option>
           {SECTORS.map(s => (
@@ -122,7 +122,7 @@ export function OrganisationTab() {
         <select
           value={orgSizeband ?? ''}
           onChange={e => setOrgSizeband(e.target.value || null)}
-          className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary bg-white"
+          className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary bg-card"
         >
           <option value="">{t('settings.org.notSpecified', 'Not specified')}</option>
           {SIZE_BANDS.map(s => (

@@ -68,7 +68,7 @@ export function TeamTab() {
           {members.map(member => (
             <div
               key={member.id}
-              className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50"
+              className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[var(--bg-hover)]"
             >
               <div className="min-w-0 flex-1">
                 <div className="text-[12px] text-text-primary truncate">
@@ -82,7 +82,7 @@ export function TeamTab() {
                 )}
               </div>
               <div className="flex items-center gap-2 ml-3">
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-text-secondary">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--bg-hover)] text-text-secondary">
                   {t(`settings.team.roles.${member.role}`)}
                 </span>
                 {member.role !== 'OWNER' && (
@@ -116,7 +116,7 @@ export function TeamTab() {
           <select
             value={inviteRole}
             onChange={e => setInviteRole(e.target.value as TenantRole)}
-            className="px-2 py-2 text-[11px] border border-border rounded-lg focus:outline-none focus:border-primary bg-white"
+            className="px-2 py-2 text-[11px] border border-border rounded-lg focus:outline-none focus:border-primary bg-card"
           >
             {ROLES.filter(r => r !== 'OWNER').map(role => (
               <option key={role} value={role}>

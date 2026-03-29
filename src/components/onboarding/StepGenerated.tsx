@@ -71,7 +71,7 @@ function EditableRow({ name, included, onToggle, onRename, onRemove, accent, bad
           onChange={(e) => setDraft(e.target.value)}
           onBlur={commit}
           onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }}
-          className="flex-1 text-[12px] bg-white border border-primary rounded px-1.5 py-0.5 focus:outline-none text-text-primary"
+          className="flex-1 text-[12px] bg-card border border-primary rounded px-1.5 py-0.5 focus:outline-none text-text-primary"
         />
       ) : (
         <span

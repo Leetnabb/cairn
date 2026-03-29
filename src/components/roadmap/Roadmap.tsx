@@ -133,7 +133,7 @@ export function Roadmap() {
         <div className="flex items-center gap-1 px-3 pt-3 pb-1">
           <button
             onClick={() => setRoadmapViewMode('dimension')}
-            className="px-2 py-0.5 rounded text-[10px] border border-border bg-white text-text-secondary hover:bg-gray-50"
+            className="px-2 py-0.5 rounded text-[10px] border border-border bg-card text-text-secondary hover:bg-[var(--bg-hover)]"
           >
             {t('strategyPath.dimView')}
           </button>
@@ -159,7 +159,7 @@ export function Roadmap() {
         </button>
         <button
           onClick={() => setRoadmapViewMode('capability')}
-          className="px-2 py-0.5 rounded text-[10px] border border-border bg-white text-text-secondary hover:bg-gray-50"
+          className="px-2 py-0.5 rounded text-[10px] border border-border bg-card text-text-secondary hover:bg-[var(--bg-hover)]"
         >
           {t('strategyPath.capView')}
         </button>
@@ -306,7 +306,7 @@ export function Roadmap() {
 
       {/* Bulk toolbar */}
       {selectedItems.size > 0 && roleMode === 'work' && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-lg border border-border">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2 bg-card rounded-lg shadow-lg border border-border">
           <span className="text-[11px] font-medium text-text-secondary">
             {t('bulk.selected', { count: selectedItems.size })}
           </span>
@@ -318,19 +318,19 @@ export function Roadmap() {
               {t('bulk.moveTo')}
             </button>
             {showMoveDropdown && (
-              <div className="absolute bottom-full mb-1 left-0 bg-white border border-border rounded shadow-lg p-2 min-w-[160px]">
+              <div className="absolute bottom-full mb-1 left-0 bg-card border border-border rounded shadow-lg p-2 min-w-[160px]">
                 {DIMENSIONS.map(dim => (
                   <div key={dim.key} className="mb-1">
                     <div className="text-[9px] text-text-tertiary uppercase px-1">{t(`labels.dimensions.${dim.key}`)}</div>
                     <button
                       onClick={() => { bulkMoveInitiatives([...selectedItems], dim.key, 'near'); setShowMoveDropdown(false); }}
-                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-gray-100"
+                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-[var(--bg-hover)]"
                     >
                       {t('labels.horizon.near')}
                     </button>
                     <button
                       onClick={() => { bulkMoveInitiatives([...selectedItems], dim.key, 'far'); setShowMoveDropdown(false); }}
-                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-gray-100"
+                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-[var(--bg-hover)]"
                     >
                       {t('labels.horizon.far')}
                     </button>
@@ -351,7 +351,7 @@ export function Roadmap() {
           </button>
           <button
             onClick={() => { clearSelectedItems(); setShowMoveDropdown(false); }}
-            className="px-3 py-1 text-[11px] rounded border border-border hover:bg-gray-50"
+            className="px-3 py-1 text-[11px] rounded border border-border hover:bg-[var(--bg-hover)]"
           >
             {t('bulk.cancel')}
           </button>

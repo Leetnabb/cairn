@@ -44,7 +44,7 @@ export function FilterDropdown() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="relative w-7 h-7 flex items-center justify-center text-text-secondary hover:bg-gray-100 rounded transition-colors"
+        className="relative w-7 h-7 flex items-center justify-center text-text-secondary hover:bg-[var(--bg-hover)] rounded transition-colors"
         title={t('filters.title')}
         aria-label={t('filters.title')}
       >
@@ -56,7 +56,7 @@ export function FilterDropdown() {
         )}
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg p-3 w-[280px] z-50 space-y-3">
+        <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg p-3 w-[280px] z-50 space-y-3">
           {/* Dimension toggles */}
           <div>
             <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('filters.dimension')}</div>
@@ -92,7 +92,7 @@ export function FilterDropdown() {
                     key={val}
                     onClick={() => setFilter({ horizon: val as 'all' | Horizon })}
                     className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-                      filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+                      filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
                     }`}
                   >
                     {label}
@@ -109,7 +109,7 @@ export function FilterDropdown() {
                 <button
                   onClick={() => setFilter({ showMilestones: !filters.showMilestones })}
                   className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-                    filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+                    filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
                   }`}
                 >
                   {t('filters.milestones')}
@@ -119,7 +119,7 @@ export function FilterDropdown() {
                 <button
                   onClick={() => setFilter({ focusMode: !filters.focusMode })}
                   className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-                    filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+                    filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
                   }`}
                 >
                   {t('filters.focus')}
@@ -133,7 +133,7 @@ export function FilterDropdown() {
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setFilter({ zoomLevel: Math.max(0.5, (filters.zoomLevel ?? 1) - 0.25) })}
-                className="px-1.5 py-0.5 text-[9px] rounded hover:bg-gray-100 text-text-tertiary"
+                className="px-1.5 py-0.5 text-[9px] rounded hover:bg-[var(--bg-hover)] text-text-tertiary"
               >
                 -
               </button>
@@ -142,7 +142,7 @@ export function FilterDropdown() {
               </span>
               <button
                 onClick={() => setFilter({ zoomLevel: Math.min(3, (filters.zoomLevel ?? 1) + 0.25) })}
-                className="px-1.5 py-0.5 text-[9px] rounded hover:bg-gray-100 text-text-tertiary"
+                className="px-1.5 py-0.5 text-[9px] rounded hover:bg-[var(--bg-hover)] text-text-tertiary"
               >
                 +
               </button>

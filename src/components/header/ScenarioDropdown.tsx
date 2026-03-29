@@ -66,14 +66,14 @@ export function ScenarioDropdown() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2.5 py-1 rounded hover:bg-gray-100 transition-colors"
+        className="flex items-center gap-1.5 px-2.5 py-1 rounded hover:bg-[var(--bg-hover)] transition-colors"
       >
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: active?.color ?? '#8b5cf6' }} />
         <span className="text-[11px] font-medium text-text-primary">{active?.name ?? 'Scenario'}</span>
         <span className="text-[9px] text-text-tertiary">{open ? '\u25B4' : '\u25BE'}</span>
       </button>
       {open && (
-        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 bg-white border border-border rounded-lg shadow-lg py-1 min-w-[200px] z-50">
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-1 min-w-[200px] z-50">
           {scenarios.map(s => (
             <div key={s.id} className="flex items-center px-2 py-0.5 group">
               {renamingId === s.id ? (
@@ -90,7 +90,7 @@ export function ScenarioDropdown() {
                   onClick={() => { setActiveScenario(s.id); setOpen(false); }}
                   onDoubleClick={() => handleStartRename(s.id)}
                   className={`flex-1 text-left px-2 py-1 text-[10px] rounded transition-colors ${
-                    activeScenario === s.id ? 'font-semibold text-primary' : 'text-text-secondary hover:bg-gray-50'
+                    activeScenario === s.id ? 'font-semibold text-primary' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
@@ -104,7 +104,7 @@ export function ScenarioDropdown() {
                   onClick={() => handleStartRename(s.id)}
                   title={t('scenarios.rename')}
                   aria-label={t('scenarios.rename')}
-                  className="opacity-0 group-hover:opacity-100 ml-0.5 w-5 h-5 flex items-center justify-center text-text-tertiary hover:text-primary transition-opacity rounded hover:bg-gray-100"
+                  className="opacity-0 group-hover:opacity-100 ml-0.5 w-5 h-5 flex items-center justify-center text-text-tertiary hover:text-primary transition-opacity rounded hover:bg-[var(--bg-hover)]"
                 >
                   <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
@@ -122,10 +122,10 @@ export function ScenarioDropdown() {
             </div>
           ))}
           <div className="border-t border-border mt-1 pt-1 px-2 flex gap-1">
-            <button onClick={handleCreate} className="flex-1 px-2 py-1 text-[9px] text-text-secondary hover:bg-gray-50 rounded">
+            <button onClick={handleCreate} className="flex-1 px-2 py-1 text-[9px] text-text-secondary hover:bg-[var(--bg-hover)] rounded">
               {t('scenarios.addNew')}
             </button>
-            <button onClick={handleDuplicate} className="flex-1 px-2 py-1 text-[9px] text-text-secondary hover:bg-gray-50 rounded">
+            <button onClick={handleDuplicate} className="flex-1 px-2 py-1 text-[9px] text-text-secondary hover:bg-[var(--bg-hover)] rounded">
               {t('scenarios.duplicate')}
             </button>
           </div>
