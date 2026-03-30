@@ -46,7 +46,7 @@ export function PresentationMode() {
   const currentSlide = SLIDES[slide];
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" style={{ backgroundColor: '#0f172a' }}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-[var(--bg-app)]" data-mode="board">
       {/* Navigation dots */}
       <div className="flex items-center justify-center gap-2 py-3">
         {SLIDES.map((_, idx) => (
@@ -403,7 +403,7 @@ function StrategicReadingSlide({ initiatives, capabilities, effects }: { initiat
       {/* Supporting stats bar */}
       <div className="flex gap-8 pt-6 border-t border-white/10">
         <div className="text-center">
-          <div className="text-[28px] font-bold text-[#6366f1]">{initiatives.length}</div>
+          <div className="text-[28px] font-bold text-accent">{initiatives.length}</div>
           <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('dashboard.activities')}</div>
         </div>
         <div className="text-center">
@@ -436,7 +436,7 @@ function SummarySlide({ initiatives, capabilities }: { initiatives: Initiative[]
       <h1 className="text-[42px] font-bold text-white mb-10">{t('presentation.summaryTitle')}</h1>
       <div className="grid grid-cols-4 gap-6 mb-10">
         <div>
-          <div className="text-[48px] font-bold text-[#6366f1]">{initiatives.length}</div>
+          <div className="text-[48px] font-bold text-accent">{initiatives.length}</div>
           <div className="text-[13px] text-white/50">{t('dashboard.activities')}</div>
         </div>
         <div>

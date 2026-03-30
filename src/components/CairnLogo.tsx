@@ -49,9 +49,9 @@ export function CairnLogo({
       <CairnMark size={size} dark={dark} />
       <div>
         <div
+          className="font-serif"
           style={{
             fontSize: 28 * size,
-            fontFamily: "'Instrument Serif', Georgia, serif",
             color: fg,
             letterSpacing: "-0.02em",
             lineHeight: 1,
@@ -61,9 +61,9 @@ export function CairnLogo({
         </div>
         {showTagline && (
           <div
+            className="font-body"
             style={{
               fontSize: 11.5 * size,
-              fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
               color: sub,
               fontWeight: 400,
               marginTop: 2 * size,

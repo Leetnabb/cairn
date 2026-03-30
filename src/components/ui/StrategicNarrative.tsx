@@ -39,8 +39,8 @@ export function StrategicNarrative({ narrative, isEditable = false, onEdit, dark
       style={{ borderLeftColor: '#6366f1' }}
     >
       <div
-        className="text-[11px] uppercase tracking-wider mb-2 font-medium"
-        style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", color: '#94a3b8' }}
+        className="text-[11px] uppercase tracking-wider mb-2 font-medium font-body"
+        style={{ color: '#94a3b8' }}
       >
         {t('board.strategicReading')}
         {edited && (
@@ -56,10 +56,10 @@ export function StrategicNarrative({ narrative, isEditable = false, onEdit, dark
             value={draft}
             onChange={e => setDraft(e.target.value)}
             rows={4}
-            className={`w-full px-3 py-2 text-[15px] leading-relaxed rounded border focus:outline-none focus:border-indigo-400 resize-none ${
+            className={`font-serif w-full px-3 py-2 text-[15px] leading-relaxed rounded border focus:outline-none focus:border-indigo-400 resize-none ${
               dark ? 'bg-[#1e2a3a] border-[#2d3748] text-[#f1f5f9]' : 'bg-card border-border text-[#1e293b]'
             }`}
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif", lineHeight: 1.6 }}
+            style={{ lineHeight: 1.6 }}
             autoFocus
           />
           <div className="flex gap-2">
@@ -80,8 +80,8 @@ export function StrategicNarrative({ narrative, isEditable = false, onEdit, dark
       ) : (
         <div className="group relative">
           <p
+            className="font-serif"
             style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
               fontSize: 18,
               lineHeight: 1.6,
               color: dark ? '#f1f5f9' : '#1e293b',
