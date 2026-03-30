@@ -24,7 +24,6 @@ import { HeaderMenu } from './components/header/HeaderMenu';
 import { ScenarioDropdown } from './components/header/ScenarioDropdown';
 import { InsightsBadge } from './components/header/InsightsBadge';
 import { FilterDropdown } from './components/header/FilterDropdown';
-import { RoleModeToggle } from './components/header/RoleModeToggle';
 import { UndoRedoButtons } from './components/header/UndoRedoButtons';
 import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
@@ -94,7 +93,7 @@ export default function App() {
   }
 
   // BOARD role users are restricted to Board View only — no app access
-  if (boardViewMode || isBoardUser) {
+  if (isBoardUser) {
     return <BoardView />;
   }
 
@@ -181,7 +180,6 @@ export default function App() {
           <HeaderMenu />
           {roleMode === 'work' && <UndoRedoButtons />}
           <div className="w-px h-5 bg-border mx-0.5" />
-          <RoleModeToggle />
           {/* Board View toggle */}
           <button
             onClick={enterBoardView}
