@@ -14,9 +14,13 @@ interface Props {
   selectedDeps?: { upstream: Set<string>; downstream: Set<string> };
   filterOpacity?: (i: Initiative) => number;
   fillHeight?: boolean;
+  cardRefs?: React.MutableRefObject<Map<string, HTMLElement>>;
+  onHoverStart?: (id: string) => void;
+  onHoverEnd?: () => void;
+  chainIds?: Set<string> | null;
 }
 
-export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight }: Props) {
+export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight, cardRefs, onHoverStart, onHoverEnd, chainIds }: Props) {
   const { t } = useTranslation();
   const moveInitiative = useStore(s => s.moveInitiative);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
@@ -71,12 +75,21 @@ export function DropZone({ dimension, horizon, initiatives, criticalPathIds, cri
             <div className="w-0.5 h-8 rounded mr-0.5 shrink-0" style={{ backgroundColor: dim.color }} />
           )}
           <InitiativeBox
+            ref={(el: HTMLDivElement | null) => {
+              if (cardRefs) {
+                if (el) cardRefs.current.set(init.id, el);
+                else cardRefs.current.delete(init.id);
+              }
+            }}
             initiative={init}
             isOnCriticalPath={criticalPathIds?.has(init.id)}
             criticalPathEnabled={criticalPathEnabled}
             isDependency={selectedDeps?.upstream.has(init.id)}
             isDependent={selectedDeps?.downstream.has(init.id)}
             opacity={filterOpacity ? filterOpacity(init) : 1}
+            fadedOut={chainIds != null && !chainIds.has(init.id)}
+            onHoverStart={onHoverStart}
+            onHoverEnd={onHoverEnd}
           />
         </div>
       ))}

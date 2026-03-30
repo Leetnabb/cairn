@@ -7,6 +7,7 @@ import { DropZone } from './DropZone';
 import { MilestoneMarker } from './MilestoneMarker';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
 import { CapabilityPath } from './CapabilityPath';
+import { DependencyOverlay } from './DependencyOverlay';
 
 export function Roadmap() {
   const { t } = useTranslation();
@@ -26,6 +27,9 @@ export function Roadmap() {
   const setRoadmapViewMode = useStore(s => s.setRoadmapViewMode);
   const [showMoveDropdown, setShowMoveDropdown] = useState(false);
   const [collapsedDimensions, setCollapsedDimensions] = useState<Set<DimensionKey>>(new Set());
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const cardRefs = useRef(new Map<string, HTMLElement>());
+  const roadmapContainerRef = useRef<HTMLDivElement>(null);
 
   const criticalPathIds = useMemo(() => {
     if (!criticalPathEnabled) return new Set<string>();
@@ -44,6 +48,57 @@ export function Roadmap() {
     );
     return { upstream, downstream };
   }, [selectedItem, initiatives]);
+
+  // Build init map for dependency traversal
+  const initMap = useMemo(() => {
+    const map = new Map<string, Initiative>();
+    for (const init of initiatives) map.set(init.id, init);
+    return map;
+  }, [initiatives]);
+
+  // Dependency thread connections on hover
+  const depConnections = useMemo(() => {
+    if (!hoveredId) return [];
+    const conns: { fromId: string; toId: string }[] = [];
+    // Walk upstream
+    const visited = new Set<string>();
+    const queue = [hoveredId];
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (visited.has(current)) continue;
+      visited.add(current);
+      const init = initMap.get(current);
+      if (init) {
+        for (const depId of init.dependsOn) {
+          conns.push({ fromId: depId, toId: current });
+          queue.push(depId);
+        }
+      }
+    }
+    // Walk downstream
+    const downVisited = new Set<string>();
+    const downQueue = [hoveredId];
+    while (downQueue.length > 0) {
+      const current = downQueue.shift()!;
+      if (downVisited.has(current)) continue;
+      downVisited.add(current);
+      for (const init of initiatives) {
+        if (init.dependsOn.includes(current)) {
+          conns.push({ fromId: current, toId: init.id });
+          downQueue.push(init.id);
+        }
+      }
+    }
+    return conns;
+  }, [hoveredId, initiatives, initMap]);
+
+  const chainIds = useMemo(() => {
+    if (!hoveredId) return null;
+    const ids = new Set<string>();
+    depConnections.forEach(c => { ids.add(c.fromId); ids.add(c.toId); });
+    ids.add(hoveredId);
+    return ids;
+  }, [hoveredId, depConnections]);
 
   // Value chain spotlight
   const spotlightValueChain = filters.spotlightValueChain;
@@ -171,7 +226,16 @@ export function Roadmap() {
   }
 
   return (
-    <div ref={roadmapRef} className={focusMode ? "h-full p-3 flex flex-col" : "min-h-full p-3"} onClick={handleBackgroundClick}>
+    <div ref={(el) => {
+      (roadmapRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+      (roadmapContainerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    }} className={focusMode ? "relative h-full p-3 flex flex-col" : "relative min-h-full p-3"} onClick={handleBackgroundClick}>
+      {/* Dependency thread SVG overlay */}
+      <DependencyOverlay
+        connections={depConnections}
+        cardRefs={cardRefs.current}
+        containerRef={roadmapContainerRef}
+      />
       {/* View toggle */}
       <div className="flex items-center gap-1 mb-2">
         <button
@@ -291,6 +355,10 @@ export function Roadmap() {
                   criticalPathEnabled={criticalPathEnabled}
                   selectedDeps={selectedDeps}
                   filterOpacity={hasActiveFilters ? getOpacity : undefined}
+                  cardRefs={cardRefs}
+                  onHoverStart={setHoveredId}
+                  onHoverEnd={() => setHoveredId(null)}
+                  chainIds={chainIds}
                 />
               </div>
             )}
@@ -316,6 +384,10 @@ export function Roadmap() {
                   criticalPathEnabled={criticalPathEnabled}
                   selectedDeps={selectedDeps}
                   filterOpacity={hasActiveFilters ? getOpacity : undefined}
+                  cardRefs={cardRefs}
+                  onHoverStart={setHoveredId}
+                  onHoverEnd={() => setHoveredId(null)}
+                  chainIds={chainIds}
                 />
               </div>
             )}

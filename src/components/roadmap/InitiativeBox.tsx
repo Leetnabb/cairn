@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
 import { DIMENSION_MAP } from '../../types';
@@ -10,9 +11,12 @@ interface Props {
   isDependency?: boolean;
   isDependent?: boolean;
   opacity?: number;
+  fadedOut?: boolean;
+  onHoverStart?: (id: string) => void;
+  onHoverEnd?: () => void;
 }
 
-export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1 }: Props) {
+export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1, fadedOut, onHoverStart, onHoverEnd }, ref) {
   const { t } = useTranslation();
   const selectedItem = useStore(s => s.ui.selectedItem);
   const setSelectedItem = useStore(s => s.setSelectedItem);
@@ -60,15 +64,26 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
       : 'border-border bg-card hover:shadow-hover'
   } ${isOnCriticalPath ? 'ring-2 ring-red-400 shadow-[0_0_8px_rgba(239,68,68,0.2)]' : ''}`;
 
-  const baseStyle = {
+  const computedOpacity = fadedOut
+    ? 0.3
+    : isUnderConsideration
+    ? Math.min(opacity, 0.6)
+    : isTentative
+    ? Math.min(opacity, 0.8)
+    : initiative.status === 'done' ? Math.min(opacity, 0.7) : opacity;
+
+  const baseStyle: React.CSSProperties = {
     borderLeftWidth: 3,
     borderLeftStyle: (isTentative ? 'dashed' : isUnderConsideration ? 'dotted' : 'solid') as React.CSSProperties['borderLeftStyle'],
     borderLeftColor: dim.color,
-    opacity: isUnderConsideration
-      ? Math.min(opacity, 0.6)
-      : isTentative
-      ? Math.min(opacity, 0.8)
-      : initiative.status === 'done' ? Math.min(opacity, 0.7) : opacity,
+    opacity: computedOpacity,
+    filter: fadedOut ? 'grayscale(0.5)' : 'none',
+    transition: 'opacity 150ms, filter 150ms',
+  };
+
+  const hoverHandlers = {
+    onMouseEnter: onHoverStart ? () => onHoverStart(initiative.id) : undefined,
+    onMouseLeave: onHoverEnd,
   };
 
   const statusColorMap: Record<string, string> = {
@@ -83,6 +98,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
   if (isMinimalist) {
     return (
       <div
+        ref={ref}
         draggable={!isGovernance}
         onDragStart={(e) => {
           e.dataTransfer.setData('text/plain', initiative.id);
@@ -95,6 +111,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
             setSelectedItem({ type: 'initiative', id: initiative.id });
           }
         }}
+        {...hoverHandlers}
         className={`relative min-w-[80px] px-2 py-1 rounded cursor-grab active:cursor-grabbing transition-all duration-150 group border ${borderClasses}`}
         style={baseStyle}
       >
@@ -113,6 +130,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
     const status = initiative.status ?? 'planned';
     return (
       <div
+        ref={ref}
         draggable={!isGovernance}
         onDragStart={(e) => {
           e.dataTransfer.setData('text/plain', initiative.id);
@@ -125,6 +143,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
             setSelectedItem({ type: 'initiative', id: initiative.id });
           }
         }}
+        {...hoverHandlers}
         className={`relative min-w-[120px] px-2 py-2 rounded cursor-grab active:cursor-grabbing transition-all duration-150 group border ${borderClasses}`}
         style={baseStyle}
       >
@@ -194,6 +213,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
   // Level 2 - Standard (default, current view)
   return (
     <div
+      ref={ref}
       draggable={!isGovernance}
       onDragStart={(e) => {
         e.dataTransfer.setData('text/plain', initiative.id);
@@ -206,6 +226,7 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
           setSelectedItem({ type: 'initiative', id: initiative.id });
         }
       }}
+      {...hoverHandlers}
       className={`relative min-w-[120px] px-2 py-1.5 rounded cursor-grab active:cursor-grabbing transition-all duration-150 group border ${borderClasses}`}
       style={baseStyle}
     >
@@ -241,4 +262,4 @@ export function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnable
       </div>
     </div>
   );
-}
+});
