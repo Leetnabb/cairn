@@ -535,6 +535,10 @@
     "tentative": "Tentativ",
     "under_consideration": "Under vurdering"
   },
+  "zoom": {
+    "openDetails": "Åpne detaljer",
+    "indicator": "Zoom: {{level}}%"
+  },
   "board": {
     "title": "Styrevisning",
     "exit": "Avslutt styrevisning",

@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useCallback } from 'react';
+import { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
@@ -73,20 +73,28 @@ export function Roadmap() {
 
   const setFilter = useStore(s => s.setFilter);
 
-  // Keyboard shortcuts for zoom (only in focus mode)
+  const ZOOM_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+
+  const stepZoom = useCallback((direction: 'in' | 'out') => {
+    const current = filters.zoomLevel ?? 1;
+    const currentIdx = ZOOM_STEPS.findIndex(s => s >= current);
+    const idx = direction === 'in'
+      ? Math.min((currentIdx === -1 ? ZOOM_STEPS.length - 1 : currentIdx) + 1, ZOOM_STEPS.length - 1)
+      : Math.max((currentIdx === -1 ? 0 : currentIdx) - 1, 0);
+    setFilter({ zoomLevel: ZOOM_STEPS[idx] });
+  }, [filters.zoomLevel, setFilter]);
+
+  // Keyboard shortcuts for zoom (works always in roadmap view)
   useEffect(() => {
-    if (!filters.focusMode) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
       if (!mod) return;
       if (e.key === '=' || e.key === '+') {
         e.preventDefault();
-        const current = filters.zoomLevel ?? 1;
-        setFilter({ zoomLevel: Math.min(current + 0.1, 2) });
+        stepZoom('in');
       } else if (e.key === '-') {
         e.preventDefault();
-        const current = filters.zoomLevel ?? 1;
-        setFilter({ zoomLevel: Math.max(current - 0.1, 0.5) });
+        stepZoom('out');
       } else if (e.key === '0') {
         e.preventDefault();
         setFilter({ zoomLevel: 1 });
@@ -94,7 +102,21 @@ export function Roadmap() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [filters.focusMode, filters.zoomLevel, setFilter]);
+  }, [stepZoom, setFilter]);
+
+  // Ctrl+Scroll zoom handler
+  const roadmapRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        stepZoom(e.deltaY < 0 ? 'in' : 'out');
+      }
+    };
+    const el = roadmapRef.current;
+    if (el) el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el?.removeEventListener('wheel', handleWheel);
+  }, [stepZoom]);
 
   const focusMode = filters.focusMode;
   const showNear = !(focusMode && filters.horizon !== 'near' && filters.horizon !== 'all');
@@ -149,7 +171,7 @@ export function Roadmap() {
   }
 
   return (
-    <div className={focusMode ? "h-full p-3 flex flex-col" : "min-h-full p-3"} onClick={handleBackgroundClick}>
+    <div ref={roadmapRef} className={focusMode ? "h-full p-3 flex flex-col" : "min-h-full p-3"} onClick={handleBackgroundClick}>
       {/* View toggle */}
       <div className="flex items-center gap-1 mb-2">
         <button
@@ -238,7 +260,6 @@ export function Roadmap() {
               style={{
                 backgroundColor: dim.bgColor,
                 color: dim.textColor,
-                ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
               }}
               onClick={() => toggleCollapse(dim.key)}
               onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && toggleCollapse(dim.key)}
@@ -256,7 +277,6 @@ export function Roadmap() {
                 style={{
                   backgroundColor: dim.bgColor,
                   borderLeft: `3px solid ${dim.color}`,
-                  ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
                 }}
               >
                 {filters.showMilestones && nearMilestones.map(m => (
@@ -282,7 +302,6 @@ export function Roadmap() {
                 style={{
                   backgroundColor: dim.bgLight,
                   opacity: 0.7,
-                  ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
                 }}
               >
                 {filters.showMilestones && farMilestones.map(m => (
@@ -355,6 +374,13 @@ export function Roadmap() {
           >
             {t('bulk.cancel')}
           </button>
+        </div>
+      )}
+
+      {/* Zoom indicator */}
+      {zoomLevel !== 1 && (
+        <div className="fixed bottom-4 right-4 bg-card border border-border rounded-md px-3 py-1.5 text-[11px] text-text-secondary shadow-md z-20">
+          {t('zoom.indicator', { level: Math.round(zoomLevel * 100) })}
         </div>
       )}
     </div>

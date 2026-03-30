@@ -535,6 +535,10 @@
     "tentative": "Tentative",
     "under_consideration": "Under consideration"
   },
+  "zoom": {
+    "openDetails": "Open details",
+    "indicator": "Zoom: {{level}}%"
+  },
   "board": {
     "title": "Board View",
     "exit": "Exit Board View",
