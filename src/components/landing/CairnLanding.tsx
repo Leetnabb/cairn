@@ -35,7 +35,7 @@ export default function CairnLanding() {
   };
 
   return (
-    <div style={S.page}>
+    <div data-mode="board" style={S.page}>
       {/* Noise grain overlay */}
       <div
         style={{

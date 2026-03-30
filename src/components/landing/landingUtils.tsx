@@ -128,15 +128,15 @@ export function HeroMark() {
 
 export const S: Record<string, CSSProperties> = {
   page: {
-    background: "#0a0f1a",
-    color: "#f1f5f9",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    background: "var(--bg-app)",
+    color: "var(--text-primary)",
+    fontFamily: "var(--font-body)",
     overflowX: "hidden",
   },
-  serif: { fontFamily: "'Instrument Serif', Georgia, serif" },
-  muted: { color: "#94a3b8" },
-  dim: { color: "#3a4558" },
-  accent: { color: "#6366f1" },
+  serif: { fontFamily: "var(--font-serif)" },
+  muted: { color: "var(--text-secondary)" },
+  dim: { color: "var(--text-tertiary)" },
+  accent: { color: "var(--accent)" },
 };
 
 export const ctaStyle: CSSProperties = {
@@ -144,7 +144,7 @@ export const ctaStyle: CSSProperties = {
   fontSize: 14,
   fontWeight: 600,
   color: "#fff",
-  background: "#6366f1",
+  background: "var(--accent)",
   padding: "12px 28px",
   borderRadius: 5,
   cursor: "pointer",
@@ -152,7 +152,7 @@ export const ctaStyle: CSSProperties = {
   letterSpacing: "0.01em",
   transition: "all 0.2s",
   border: "none",
-  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+  fontFamily: "var(--font-body)",
 };
 
 export const DIMENSION_COLORS: Record<string, string> = {

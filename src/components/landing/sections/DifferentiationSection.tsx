@@ -9,9 +9,9 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
   const { t } = useTranslation();
 
   const cards = [
-    { key: "landing.differentiation.card1", color: "#3a4558" },
-    { key: "landing.differentiation.card2", color: "#3a4558" },
-    { key: "landing.differentiation.card3", color: "#3a4558" },
+    { key: "landing.differentiation.card1" },
+    { key: "landing.differentiation.card2" },
+    { key: "landing.differentiation.card3" },
   ];
 
   return (
@@ -28,7 +28,7 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
             style={{
               fontSize: 12,
               fontWeight: 700,
-              color: "#3a4558",
+              color: "var(--text-tertiary)",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               marginBottom: 56,
@@ -69,7 +69,7 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
                 <span
                   style={{
                     fontSize: 14,
-                    color: "#334155",
+                    color: "var(--text-tertiary)",
                     lineHeight: 1.6,
                     fontStyle: "italic",
                   }}
@@ -95,7 +95,7 @@ export function DifferentiationSection({ isMobile }: DifferentiationSectionProps
                 ...S.serif,
                 fontSize: "clamp(22px, 3vw, 34px)",
                 fontWeight: 400,
-                color: "#f1f5f9",
+                color: "var(--text-primary)",
                 lineHeight: 1.35,
                 margin: 0,
                 letterSpacing: "-0.02em",

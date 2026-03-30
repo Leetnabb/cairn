@@ -22,7 +22,7 @@ export function ProblemSection({ isMobile }: ProblemSectionProps) {
             style={{
               fontSize: 15,
               lineHeight: 1.8,
-              color: "#475569",
+              color: "var(--text-tertiary)",
               maxWidth: 620,
               margin: "0 0 56px",
               fontWeight: 400,
@@ -39,7 +39,7 @@ export function ProblemSection({ isMobile }: ProblemSectionProps) {
               fontSize: "clamp(26px, 3.8vw, 42px)",
               fontWeight: 400,
               lineHeight: 1.2,
-              color: "#cbd5e1",
+              color: "var(--text-primary)",
               letterSpacing: "-0.02em",
               margin: "0 0 24px",
               fontStyle: "italic",
@@ -54,7 +54,7 @@ export function ProblemSection({ isMobile }: ProblemSectionProps) {
             style={{
               fontSize: 16,
               lineHeight: 1.75,
-              color: "#475569",
+              color: "var(--text-tertiary)",
               maxWidth: 600,
               margin: "0 0 64px",
               fontWeight: 400,
@@ -97,7 +97,7 @@ export function ProblemSection({ isMobile }: ProblemSectionProps) {
                 <span
                   style={{
                     fontSize: 15,
-                    color: "#64748b",
+                    color: "var(--text-secondary)",
                     lineHeight: 1.6,
                     fontWeight: 400,
                   }}
@@ -116,7 +116,7 @@ export function ProblemSection({ isMobile }: ProblemSectionProps) {
               ...S.serif,
               fontSize: "clamp(20px, 2.8vw, 28px)",
               fontStyle: "italic",
-              color: "#94a3b8",
+              color: "var(--text-secondary)",
               lineHeight: 1.45,
               maxWidth: 620,
               margin: 0,

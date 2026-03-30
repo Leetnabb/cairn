@@ -73,7 +73,7 @@ export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
               lineHeight: 1.1,
               margin: "0 0 28px",
               letterSpacing: "-0.025em",
-              color: "#f1f5f9",
+              color: "var(--text-primary)",
               fontStyle: "italic",
             }}
           >
@@ -86,7 +86,7 @@ export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
             style={{
               fontSize: 17,
               lineHeight: 1.6,
-              color: "#64748b",
+              color: "var(--text-secondary)",
               maxWidth: 480,
               margin: "0 0 8px",
               fontWeight: 400,
@@ -103,7 +103,7 @@ export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
               ...S.serif,
               fontStyle: "italic",
               fontSize: 16,
-              color: "#3a4558",
+              color: "var(--text-tertiary)",
               marginBottom: 44,
             }}
           >
@@ -147,9 +147,9 @@ export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
                     borderRadius: 5,
                     border: "1px solid rgba(255,255,255,0.12)",
                     background: "rgba(255,255,255,0.06)",
-                    color: "#f1f5f9",
+                    color: "var(--text-primary)",
                     outline: "none",
-                    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                    fontFamily: "var(--font-body)",
                     width: isMobile ? "100%" : 220,
                   } as CSSProperties}
                 />
@@ -157,11 +157,11 @@ export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
                   type="submit"
                   style={{ ...ctaStyle, fontSize: 15, padding: "13px 32px" }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "#4f46e5";
+                    (e.currentTarget as HTMLElement).style.background = "var(--accent-hover)";
                     (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "#6366f1";
+                    (e.currentTarget as HTMLElement).style.background = "var(--accent)";
                     (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
                   }}
                 >

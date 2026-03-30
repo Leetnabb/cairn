@@ -49,7 +49,7 @@ export function TestimonialSection({
             style={{
               ...S.serif,
               fontSize: 80,
-              color: "#1e293b",
+              color: "var(--text-tertiary)",
               lineHeight: 0.6,
               marginBottom: 32,
               fontStyle: "italic",
@@ -65,7 +65,7 @@ export function TestimonialSection({
               fontSize: "clamp(20px, 2.8vw, 28px)",
               fontWeight: 400,
               fontStyle: "italic",
-              color: "#94a3b8",
+              color: "var(--text-secondary)",
               lineHeight: 1.55,
               margin: "0 0 40px",
               letterSpacing: "-0.01em",
@@ -83,11 +83,11 @@ export function TestimonialSection({
                 marginBottom: 12,
               }}
             />
-            <span style={{ fontSize: 14, color: "#475569", fontWeight: 600 }}>
+            <span style={{ fontSize: 14, color: "var(--text-tertiary)", fontWeight: 600 }}>
               — {author}
             </span>
             {(title || org) && (
-              <span style={{ fontSize: 13, color: "#334155" }}>
+              <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
                 {title && org ? `${title}, ${org}` : title || org}
               </span>
             )}

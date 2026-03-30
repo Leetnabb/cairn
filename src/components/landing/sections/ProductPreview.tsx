@@ -47,7 +47,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
             style={{
               fontSize: 12,
               fontWeight: 700,
-              color: "#6366f1",
+              color: "var(--accent)",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               marginBottom: 20,
@@ -60,7 +60,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
               ...S.serif,
               fontSize: "clamp(26px, 3.8vw, 42px)",
               fontWeight: 400,
-              color: "#f1f5f9",
+              color: "var(--text-primary)",
               marginBottom: 16,
               letterSpacing: "-0.02em",
             }}
@@ -71,7 +71,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
             style={{
               fontSize: 16,
               lineHeight: 1.7,
-              color: "#475569",
+              color: "var(--text-tertiary)",
               maxWidth: 560,
               margin: "0 0 60px",
             }}
@@ -107,7 +107,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: "#3a4558",
+                  color: "var(--text-tertiary)",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                   textAlign: "center",
@@ -119,7 +119,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: "#3a4558",
+                  color: "var(--text-tertiary)",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                   textAlign: "center",
@@ -169,7 +169,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                     <span
                       style={{
                         fontSize: 12,
-                        color: "#64748b",
+                        color: "var(--text-secondary)",
                         fontWeight: 600,
                         letterSpacing: "0.02em",
                       }}
@@ -242,7 +242,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
           <p
             style={{
               fontSize: 13,
-              color: "#334155",
+              color: "var(--text-tertiary)",
               textAlign: "center",
               marginTop: 20,
               letterSpacing: "0.02em",
@@ -321,7 +321,7 @@ function InitiativeCard({
       <span
         style={{
           fontSize: 12,
-          color: selected ? "#e2e8f0" : "#64748b",
+          color: selected ? "var(--text-primary)" : "var(--text-secondary)",
           fontWeight: selected ? 600 : 400,
           whiteSpace: "nowrap",
           transition: "color 0.2s",

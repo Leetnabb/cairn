@@ -62,7 +62,7 @@ function RetningDots() {
             height: 12,
             borderRadius: "50%",
             background: f ? "#22c55e" : "transparent",
-            border: `1.5px solid ${f ? "#22c55e" : "#3a4558"}`,
+            border: `1.5px solid ${f ? "#22c55e" : "var(--text-tertiary)"}`,
             opacity: f ? 0.8 : 0.5,
           }}
         />
@@ -109,7 +109,7 @@ export function InsightsSection({ isMobile }: InsightsSectionProps) {
               ...S.serif,
               fontSize: "clamp(24px, 3.5vw, 38px)",
               fontWeight: 400,
-              color: "#f1f5f9",
+              color: "var(--text-primary)",
               marginBottom: 64,
               letterSpacing: "-0.02em",
             }}
@@ -141,7 +141,7 @@ export function InsightsSection({ isMobile }: InsightsSectionProps) {
                     ...S.serif,
                     fontSize: 22,
                     fontWeight: 400,
-                    color: "#e2e8f0",
+                    color: "var(--text-primary)",
                     marginBottom: 12,
                     lineHeight: 1.3,
                   }}
@@ -151,7 +151,7 @@ export function InsightsSection({ isMobile }: InsightsSectionProps) {
                 <p
                   style={{
                     fontSize: 14,
-                    color: "#475569",
+                    color: "var(--text-tertiary)",
                     lineHeight: 1.7,
                     margin: 0,
                   }}

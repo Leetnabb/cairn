@@ -28,7 +28,7 @@ export function LandingNav({ scrollY, isMobile, onCtaClick }: LandingNavProps) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        background: scrolled ? "rgba(10,15,26,0.88)" : "transparent",
+        background: scrolled ? "rgba(10,15,26,0.88)" : "transparent", // intentional alpha overlay, not a token
         backdropFilter: scrolled ? "blur(20px)" : "none",
         borderBottom: scrolled
           ? "1px solid rgba(255,255,255,0.05)"
@@ -41,9 +41,9 @@ export function LandingNav({ scrollY, isMobile, onCtaClick }: LandingNavProps) {
         <CairnMark size={0.5} />
         <span
           style={{
-            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontFamily: "var(--font-serif)",
             fontSize: 20,
-            color: "#f1f5f9",
+            color: "var(--text-primary)",
             letterSpacing: "-0.02em",
           }}
         >
@@ -58,7 +58,7 @@ export function LandingNav({ scrollY, isMobile, onCtaClick }: LandingNavProps) {
           style={{
             fontSize: 11,
             fontWeight: 700,
-            color: "#6366f1",
+            color: "var(--accent)",
             letterSpacing: "0.1em",
             textTransform: "uppercase",
             background: "rgba(99,102,241,0.1)",
@@ -77,22 +77,22 @@ export function LandingNav({ scrollY, isMobile, onCtaClick }: LandingNavProps) {
           style={{
             fontSize: 12,
             fontWeight: 600,
-            color: "#64748b",
+            color: "var(--text-secondary)",
             background: "transparent",
             border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: 4,
             padding: "5px 10px",
             cursor: "pointer",
-            fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+            fontFamily: "var(--font-body)",
             transition: "color 0.2s, border-color 0.2s",
             letterSpacing: "0.05em",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.color = "#f1f5f9";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
             (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.2)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.color = "#64748b";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
             (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
           }}
         >
@@ -105,11 +105,11 @@ export function LandingNav({ scrollY, isMobile, onCtaClick }: LandingNavProps) {
             onClick={onCtaClick}
             style={ctaStyle}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "#4f46e5";
+              (e.currentTarget as HTMLElement).style.background = "var(--accent-hover)";
               (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "#6366f1";
+              (e.currentTarget as HTMLElement).style.background = "var(--accent)";
               (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
             }}
           >
