@@ -9,7 +9,7 @@ export default function MeetingMode() {
   const meetingLens = useStore(s => s.ui.meetingLens);
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0f172a] overflow-auto">
+    <div className="fixed inset-0 z-50 overflow-auto" data-mode="board" style={{ backgroundColor: 'var(--bg-app)' }}>
       {meetingLens === 'narrative' && <NarrativeOpening />}
       {meetingLens === 'path' && <LensPath />}
       {meetingLens === 'capabilities' && <LensCapabilities />}

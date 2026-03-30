@@ -23,7 +23,7 @@ function InitiativeCard({ initiative, isHighlighted, onClick }: InitiativeCardPr
     <div
       className="rounded-lg p-3 cursor-pointer transition-all duration-150"
       style={{
-        backgroundColor: '#1e293b',
+        backgroundColor: 'var(--bg-hover)',
         border: isHighlighted
           ? `2px solid ${dimColor}`
           : '2px solid transparent',
@@ -39,11 +39,11 @@ function InitiativeCard({ initiative, isHighlighted, onClick }: InitiativeCardPr
           style={{ backgroundColor: dimColor }}
         />
         <div>
-          <p className="text-lg font-medium leading-snug" style={{ color: '#f1f5f9' }}>
+          <p className="text-lg font-medium leading-snug" style={{ color: 'var(--text-primary)' }}>
             {initiative.name}
           </p>
           {initiative.owner && (
-            <p className="text-base mt-0.5" style={{ color: '#94a3b8' }}>
+            <p className="text-base mt-0.5" style={{ color: 'var(--text-secondary)' }}>
               {initiative.owner}
             </p>
           )}
@@ -66,12 +66,12 @@ function CapabilityOverlay({ initiative, capabilities, onClose }: CapabilityOver
   return (
     <div
       className="fixed inset-0 flex items-center justify-center z-50"
-      style={{ backgroundColor: '#0f172a99' }}
+      style={{ backgroundColor: 'color-mix(in srgb, var(--bg-app) 60%, transparent)' }}
       onClick={onClose}
     >
       <div
         className="rounded-xl p-8 max-w-lg w-full mx-4 shadow-2xl"
-        style={{ backgroundColor: '#1e293b', border: `2px solid ${dimColor}` }}
+        style={{ backgroundColor: 'var(--bg-hover)', border: `2px solid ${dimColor}` }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-start gap-3 mb-6">
@@ -79,26 +79,26 @@ function CapabilityOverlay({ initiative, capabilities, onClose }: CapabilityOver
             className="mt-1.5 shrink-0 w-3 h-3 rounded-full"
             style={{ backgroundColor: dimColor }}
           />
-          <h2 className="text-2xl font-medium" style={{ color: '#f1f5f9' }}>
+          <h2 className="text-2xl font-medium" style={{ color: 'var(--text-primary)' }}>
             {initiative.name}
           </h2>
         </div>
 
         {initiative.owner && (
-          <p className="text-base mb-4" style={{ color: '#94a3b8' }}>
+          <p className="text-base mb-4" style={{ color: 'var(--text-secondary)' }}>
             Owner: {initiative.owner}
           </p>
         )}
 
         {initiative.description && (
-          <p className="text-base mb-6 leading-relaxed" style={{ color: '#cbd5e1' }}>
+          <p className="text-base mb-6 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
             {initiative.description}
           </p>
         )}
 
         {linked.length > 0 && (
           <div>
-            <p className="text-sm uppercase tracking-wider mb-3" style={{ color: '#64748b' }}>
+            <p className="text-sm uppercase tracking-wider mb-3" style={{ color: 'var(--text-secondary)' }}>
               Capabilities
             </p>
             <div className="flex flex-wrap gap-2">
@@ -106,7 +106,7 @@ function CapabilityOverlay({ initiative, capabilities, onClose }: CapabilityOver
                 <span
                   key={cap.id}
                   className="px-3 py-1 rounded-full text-sm"
-                  style={{ backgroundColor: '#0f172a', color: '#94a3b8', border: '1px solid #334155' }}
+                  style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
                 >
                   {cap.name}
                 </span>
@@ -117,7 +117,7 @@ function CapabilityOverlay({ initiative, capabilities, onClose }: CapabilityOver
 
         <button
           className="mt-6 px-4 py-2 rounded text-sm transition-colors"
-          style={{ backgroundColor: '#0f172a', color: '#64748b', border: '1px solid #334155' }}
+          style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
           onClick={onClose}
         >
           Close
@@ -166,30 +166,30 @@ export function LensPath() {
   return (
     <div
       className="fixed inset-0 overflow-auto pb-24"
-      style={{ backgroundColor: '#0f172a' }}
+      style={{ backgroundColor: 'var(--bg-app)' }}
     >
       {/* Dimension filter */}
-      <div className="sticky top-0 z-10 px-8 py-4 flex items-center gap-3" style={{ backgroundColor: '#0f172acc', backdropFilter: 'blur(8px)' }}>
+      <div className="sticky top-0 z-10 px-8 py-4 flex items-center gap-3" style={{ backgroundColor: 'color-mix(in srgb, var(--bg-app) 80%, transparent)', backdropFilter: 'blur(8px)' }}>
         {DIMENSIONS.map(dim => (
           <button
             key={dim.key}
             onClick={() => toggleDimension(dim.key)}
             className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all"
             style={{
-              backgroundColor: activeDimensions.has(dim.key) ? `${dim.color}22` : '#1e293b',
-              color: activeDimensions.has(dim.key) ? dim.color : '#64748b',
-              border: `2px solid ${activeDimensions.has(dim.key) ? dim.color : '#334155'}`,
+              backgroundColor: activeDimensions.has(dim.key) ? `${dim.color}22` : 'var(--bg-hover)',
+              color: activeDimensions.has(dim.key) ? dim.color : 'var(--text-secondary)',
+              border: `2px solid ${activeDimensions.has(dim.key) ? dim.color : 'var(--border-medium)'}`,
             }}
           >
             <span
               className="w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: activeDimensions.has(dim.key) ? dim.color : '#334155' }}
+              style={{ backgroundColor: activeDimensions.has(dim.key) ? dim.color : 'var(--border-medium)' }}
             />
             {dim.label}
           </button>
         ))}
 
-        <div className="ml-auto flex gap-6 text-sm font-medium" style={{ color: '#475569' }}>
+        <div className="ml-auto flex gap-6 text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>
           <span>Near horizon</span>
           <span>Far horizon</span>
         </div>
@@ -224,7 +224,7 @@ export function LensPath() {
                 {/* Near */}
                 <div
                   className="flex-1 px-4 py-3 min-h-20"
-                  style={{ borderRight: '1px solid #1e293b' }}
+                  style={{ borderRight: '1px solid var(--border-default)' }}
                 >
                   {nearInits.length > 0 ? (
                     <div className="space-y-2">
@@ -239,7 +239,7 @@ export function LensPath() {
                     </div>
                   ) : (
                     <div className="h-16 flex items-center justify-center">
-                      <span className="text-sm" style={{ color: '#334155' }}>—</span>
+                      <span className="text-sm" style={{ color: 'var(--border-medium)' }}>—</span>
                     </div>
                   )}
                 </div>
@@ -259,7 +259,7 @@ export function LensPath() {
                     </div>
                   ) : (
                     <div className="h-16 flex items-center justify-center">
-                      <span className="text-sm" style={{ color: '#334155' }}>—</span>
+                      <span className="text-sm" style={{ color: 'var(--border-medium)' }}>—</span>
                     </div>
                   )}
                 </div>

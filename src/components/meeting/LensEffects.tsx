@@ -29,11 +29,11 @@ export function LensEffects() {
   return (
     <div
       className="fixed inset-0 overflow-auto pb-24"
-      style={{ backgroundColor: '#0f172a' }}
+      style={{ backgroundColor: 'var(--bg-app)' }}
     >
       <div className="px-8 pt-8">
         {columns.length === 0 ? (
-          <div className="text-center py-20" style={{ color: '#475569' }}>
+          <div className="text-center py-20" style={{ color: 'var(--text-tertiary)' }}>
             No effects defined.
           </div>
         ) : (
@@ -59,7 +59,7 @@ export function LensEffects() {
                     >
                       {typeLabel}
                     </span>
-                    <span className="text-sm" style={{ color: '#64748b' }}>
+                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                       {typeEffects.length}
                     </span>
                   </div>
@@ -75,17 +75,17 @@ export function LensEffects() {
                           key={effect.id}
                           className="rounded-lg p-4"
                           style={{
-                            backgroundColor: '#1e293b',
-                            border: '1px solid #334155',
+                            backgroundColor: 'var(--bg-hover)',
+                            border: '1px solid var(--border-medium)',
                             borderLeft: `4px solid ${typeColor}`,
                           }}
                         >
-                          <p className="text-lg font-medium leading-snug mb-2" style={{ color: '#f1f5f9' }}>
+                          <p className="text-lg font-medium leading-snug mb-2" style={{ color: 'var(--text-primary)' }}>
                             {effect.name}
                           </p>
 
                           {linkedCount > 0 && (
-                            <p className="text-sm mb-2" style={{ color: '#64748b' }}>
+                            <p className="text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
                               {linkedCount} {linkedCount === 1 ? 'initiative' : 'initiatives'}
                             </p>
                           )}
@@ -93,13 +93,13 @@ export function LensEffects() {
                           {hasMetrics && (
                             <div
                               className="flex items-center gap-2 mt-3 pt-3 text-sm"
-                              style={{ borderTop: '1px solid #334155' }}
+                              style={{ borderTop: '1px solid var(--border-medium)' }}
                             >
                               {effect.baseline && (
-                                <span style={{ color: '#94a3b8' }}>{effect.baseline}</span>
+                                <span style={{ color: 'var(--text-secondary)' }}>{effect.baseline}</span>
                               )}
                               {effect.baseline && effect.target && (
-                                <span style={{ color: '#475569' }}>→</span>
+                                <span style={{ color: 'var(--text-tertiary)' }}>→</span>
                               )}
                               {effect.target && (
                                 <span style={{ color: '#22c55e' }}>{effect.target}</span>
@@ -108,7 +108,7 @@ export function LensEffects() {
                           )}
 
                           {effect.indicator && (
-                            <p className="text-xs mt-2" style={{ color: '#475569' }}>
+                            <p className="text-xs mt-2" style={{ color: 'var(--text-tertiary)' }}>
                               {effect.indicator}
                             </p>
                           )}

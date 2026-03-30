@@ -84,22 +84,21 @@ export function MeetingNav() {
       <div
         className="flex items-center justify-between px-8 min-h-14"
         style={{
-          backgroundColor: 'rgb(15 23 42 / 0.9)',
+          backgroundColor: 'color-mix(in srgb, var(--bg-app) 90%, transparent)',
           backdropFilter: 'blur(12px)',
-          borderTop: '1px solid #1e293b',
+          borderTop: '1px solid var(--border-default)',
         }}
       >
         {/* Left: Logo + mode label */}
         <div className="flex items-center gap-3 min-w-[160px]">
           <span
-            className="font-semibold text-base tracking-tight"
-            style={{ color: '#f1f5f9' }}
+            className="font-semibold text-base tracking-tight text-text-primary"
           >
             Cairn
           </span>
           <span
             className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider"
-            style={{ backgroundColor: '#1e293b', color: '#64748b', border: '1px solid #334155' }}
+            style={{ backgroundColor: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
           >
             {t('meeting.title')}
           </span>
@@ -115,8 +114,8 @@ export function MeetingNav() {
                 onClick={() => setMeetingLens(lens)}
                 className="relative px-5 py-2 text-sm font-medium rounded transition-colors min-h-10"
                 style={{
-                  color: isActive ? '#e2e8f0' : '#64748b',
-                  backgroundColor: isActive ? '#1e293b' : 'transparent',
+                  color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  backgroundColor: isActive ? 'var(--bg-hover)' : 'transparent',
                 }}
                 title={`${lensLabels[lens]} (${idx + 1})`}
               >
@@ -124,7 +123,7 @@ export function MeetingNav() {
                 {isActive && (
                   <span
                     className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full"
-                    style={{ backgroundColor: '#6366f1' }}
+                    style={{ backgroundColor: 'var(--accent)' }}
                   />
                 )}
               </button>
@@ -137,9 +136,9 @@ export function MeetingNav() {
           <button
             className="px-4 py-2 text-sm rounded transition-colors min-h-10"
             style={{
-              backgroundColor: '#1e293b',
-              color: '#94a3b8',
-              border: '1px solid #334155',
+              backgroundColor: 'var(--bg-hover)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border-medium)',
             }}
           >
             {t('meeting.export')}
@@ -149,9 +148,9 @@ export function MeetingNav() {
             onClick={exitMeetingMode}
             className="flex items-center gap-1.5 px-4 py-2 text-sm rounded transition-colors min-h-10"
             style={{
-              backgroundColor: '#1e293b',
-              color: '#94a3b8',
-              border: '1px solid #334155',
+              backgroundColor: 'var(--bg-hover)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border-medium)',
             }}
             title={`${t('meeting.exit')} (Esc)`}
           >
