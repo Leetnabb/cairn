@@ -7,12 +7,12 @@ export const frivilligTemplate: IndustryTemplate = {
   icon: '🤝',
   capabilities: [
     // L1 domains
-    { id: 'c1', name: 'Medlemshåndtering', level: 1, parent: null, maturity: 2, risk: 3, description: 'Håndtering av medlemsdata, registrering og segmentering.' },
-    { id: 'c2', name: 'Økonomi & Regnskap', level: 1, parent: null, maturity: 3, risk: 2, description: 'Fakturering, budsjett og finansiell rapportering.' },
-    { id: 'c3', name: 'Kommunikasjon', level: 1, parent: null, maturity: 1, risk: 3, description: 'Nettsted, nyhetsbrev og sosiale medier.' },
-    { id: 'c4', name: 'HR & Personal', level: 1, parent: null, maturity: 2, risk: 2, description: 'Rekruttering, kompetanseutvikling og lønn.' },
-    { id: 'c5', name: 'Arrangementer', level: 1, parent: null, maturity: 1, risk: 2, description: 'Booking, påmelding og kalenderadministrasjon.' },
-    { id: 'c6', name: 'Data & Analyse', level: 1, parent: null, maturity: 1, risk: 3, description: 'Dataintegrasjon, dashbord og datakvalitet.' },
+    { id: 'c1', name: 'Medlemshåndtering', level: 1, parent: null, maturity: 2, risk: 3, description: 'Håndtering av medlemsdata, registrering og segmentering.', capabilityType: 'core' },
+    { id: 'c2', name: 'Økonomi & Regnskap', level: 1, parent: null, maturity: 3, risk: 2, description: 'Fakturering, budsjett og finansiell rapportering.', capabilityType: 'support' },
+    { id: 'c3', name: 'Kommunikasjon', level: 1, parent: null, maturity: 1, risk: 3, description: 'Nettsted, nyhetsbrev og sosiale medier.', capabilityType: 'core' },
+    { id: 'c4', name: 'HR & Personal', level: 1, parent: null, maturity: 2, risk: 2, description: 'Rekruttering, kompetanseutvikling og lønn.', capabilityType: 'support' },
+    { id: 'c5', name: 'Arrangementer', level: 1, parent: null, maturity: 1, risk: 2, description: 'Booking, påmelding og kalenderadministrasjon.', capabilityType: 'core' },
+    { id: 'c6', name: 'Data & Analyse', level: 1, parent: null, maturity: 1, risk: 3, description: 'Dataintegrasjon, dashbord og datakvalitet.', capabilityType: 'support' },
     // L2 sub-capabilities
     { id: 'c1.1', name: 'Registrering', level: 2, parent: 'c1', maturity: 2, risk: 3, description: 'Registrering og vedlikehold av medlemsdata.' },
     { id: 'c1.2', name: 'Kontaktinfo', level: 2, parent: 'c1', maturity: 2, risk: 2, description: 'Administrasjon av kontaktinformasjon.' },

@@ -7,12 +7,12 @@ export const kommuneTemplate: IndustryTemplate = {
   icon: '🏛️',
   capabilities: [
     // L1 domains
-    { id: 'k1', name: 'Innbyggertjenester', level: 1, parent: null, maturity: 2, risk: 3, description: 'Digitale tjenester mot innbyggere og næringsliv.' },
-    { id: 'k2', name: 'Plan & Bygg', level: 1, parent: null, maturity: 2, risk: 2, description: 'Arealplanlegging, byggesak og geodata.' },
-    { id: 'k3', name: 'Helse & Omsorg', level: 1, parent: null, maturity: 1, risk: 3, description: 'Helsetjenester, eldreomsorg og velferdsteknologi.' },
-    { id: 'k4', name: 'Oppvekst & Utdanning', level: 1, parent: null, maturity: 2, risk: 2, description: 'Barnehage, skole og oppveksttjenester.' },
-    { id: 'k5', name: 'Økonomi & Styring', level: 1, parent: null, maturity: 2, risk: 2, description: 'Budsjett, regnskap og virksomhetsstyring.' },
-    { id: 'k6', name: 'Digital Infrastruktur', level: 1, parent: null, maturity: 1, risk: 3, description: 'IT-drift, integrasjon, informasjonssikkerhet og felleskomponenter.' },
+    { id: 'k1', name: 'Innbyggertjenester', level: 1, parent: null, maturity: 2, risk: 3, description: 'Digitale tjenester mot innbyggere og næringsliv.', capabilityType: 'core' },
+    { id: 'k2', name: 'Plan & Bygg', level: 1, parent: null, maturity: 2, risk: 2, description: 'Arealplanlegging, byggesak og geodata.', capabilityType: 'core' },
+    { id: 'k3', name: 'Helse & Omsorg', level: 1, parent: null, maturity: 1, risk: 3, description: 'Helsetjenester, eldreomsorg og velferdsteknologi.', capabilityType: 'core' },
+    { id: 'k4', name: 'Oppvekst & Utdanning', level: 1, parent: null, maturity: 2, risk: 2, description: 'Barnehage, skole og oppveksttjenester.', capabilityType: 'core' },
+    { id: 'k5', name: 'Økonomi & Styring', level: 1, parent: null, maturity: 2, risk: 2, description: 'Budsjett, regnskap og virksomhetsstyring.', capabilityType: 'support' },
+    { id: 'k6', name: 'Digital Infrastruktur', level: 1, parent: null, maturity: 1, risk: 3, description: 'IT-drift, integrasjon, informasjonssikkerhet og felleskomponenter.', capabilityType: 'support' },
     // L2 sub-capabilities
     { id: 'k1.1', name: 'Selvbetjening', level: 2, parent: 'k1', maturity: 2, risk: 3, description: 'Digitale selvbetjeningsløsninger for innbyggere.' },
     { id: 'k1.2', name: 'Saksbehandling', level: 2, parent: 'k1', maturity: 2, risk: 2, description: 'Digital saksbehandling og dokumenthåndtering.' },

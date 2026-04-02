@@ -99,7 +99,21 @@
     "activities": "{{count}} activity/activities",
     "noSubCaps": "No sub-capabilities",
     "simulatedFrom": "{{from}} → {{to}}",
-    "emptyDomains": "No capability domains yet. Add a capability to get started."
+    "emptyDomains": "No capability domains yet. Add a capability to get started.",
+    "coreSection": "Core Value Streams",
+    "supportSection": "Foundation & Support"
+  },
+  "capabilityType": {
+    "label": "Type",
+    "core": "Core",
+    "support": "Support",
+    "coreDesc": "Directly creates value for end user",
+    "supportDesc": "Enables value creation"
+  },
+  "maturityChevron": {
+    "establish": "Establish",
+    "optimize": "Optimize",
+    "innovate": "Innovate"
   },
   "common": {
     "save": "Save",

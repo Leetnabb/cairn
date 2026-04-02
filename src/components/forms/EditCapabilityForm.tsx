@@ -20,6 +20,7 @@ export function EditCapabilityForm({ capability }: Props) {
   const [maturityTarget, setMaturityTarget] = useState<1 | 2 | 3>(capability.maturityTarget ?? Math.min(capability.maturity + 1, 3) as 1 | 2 | 3);
   const [risk, setRisk] = useState(capability.risk);
   const [parent, setParent] = useState(capability.parent ?? '');
+  const [capabilityType, setCapabilityType] = useState<'core' | 'support'>(capability.capabilityType ?? 'core');
 
   const l1Caps = capabilities.filter(c => c.level === 1 && c.id !== capability.id);
 
@@ -31,6 +32,7 @@ export function EditCapabilityForm({ capability }: Props) {
       maturityTarget: maturityTarget as 1 | 2 | 3,
       risk: risk as 1 | 2 | 3,
       parent: capability.level === 2 ? (parent || null) : null,
+      ...(capability.level === 1 ? { capabilityType } : {}),
     });
     setEditingId(null);
   };
@@ -80,6 +82,37 @@ export function EditCapabilityForm({ capability }: Props) {
           </select>
         </div>
       </div>
+      {capability.level === 1 && (
+        <div>
+          <label className="text-[9px] text-text-tertiary uppercase">{t('capabilityType.label')}</label>
+          <div className="flex gap-1 mt-0.5">
+            <button
+              type="button"
+              onClick={() => setCapabilityType('core')}
+              className={`flex-1 px-2 py-1.5 text-[10px] rounded border transition-colors ${
+                capabilityType === 'core'
+                  ? 'border-primary bg-primary/10 text-primary font-medium'
+                  : 'border-border text-text-tertiary hover:bg-[var(--bg-hover)]'
+              }`}
+            >
+              <div>{t('capabilityType.core')}</div>
+              <div className="text-[8px] opacity-70 mt-0.5">{t('capabilityType.coreDesc')}</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setCapabilityType('support')}
+              className={`flex-1 px-2 py-1.5 text-[10px] rounded border transition-colors ${
+                capabilityType === 'support'
+                  ? 'border-primary bg-primary/10 text-primary font-medium'
+                  : 'border-border text-text-tertiary hover:bg-[var(--bg-hover)]'
+              }`}
+            >
+              <div>{t('capabilityType.support')}</div>
+              <div className="text-[8px] opacity-70 mt-0.5">{t('capabilityType.supportDesc')}</div>
+            </button>
+          </div>
+        </div>
+      )}
       {capability.level === 2 && (
         <div>
           <label className="text-[9px] text-text-tertiary uppercase">{t('forms.parent')}</label>

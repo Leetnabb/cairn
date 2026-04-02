@@ -99,7 +99,21 @@
     "activities": "{{count}} aktivitet(er)",
     "noSubCaps": "Ingen sub-kapabiliteter",
     "simulatedFrom": "{{from}} → {{to}}",
-    "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang."
+    "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang.",
+    "coreSection": "Verdiskapende kapabiliteter",
+    "supportSection": "Støttende kapabiliteter"
+  },
+  "capabilityType": {
+    "label": "Type",
+    "core": "Verdiskapende",
+    "support": "Støttende",
+    "coreDesc": "Direkte verdiskapende for sluttbruker",
+    "supportDesc": "Støttefunksjon som muliggjør verdiskaping"
+  },
+  "maturityChevron": {
+    "establish": "Etablere",
+    "optimize": "Optimalisere",
+    "innovate": "Innovasjon"
   },
   "common": {
     "save": "Lagre",

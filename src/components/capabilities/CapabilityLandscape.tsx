@@ -4,6 +4,7 @@ import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { simulateMaturity } from '../../lib/simulation';
 import { MATURITY_COLORS, RISK_COLORS } from '../../types';
 import type { Capability } from '../../types';
+import { MaturityChevron } from './MaturityChevron';
 
 export function CapabilityLandscape() {
   const { t } = useTranslation();
@@ -22,6 +23,8 @@ export function CapabilityLandscape() {
   const [dropL2, setDropL2] = useState<{ domainId: string; index: number } | null>(null);
   // Track what is being dragged: 'l1:id' or 'l2:id'
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  // Track which section is being dragged into for L1
+  const [dropSection, setDropSection] = useState<'core' | 'support' | null>(null);
 
   const simulated = useMemo(() => {
     if (!simulationEnabled) return null;
@@ -31,6 +34,16 @@ export function CapabilityLandscape() {
   const l1 = useMemo(
     () => [...capabilities.filter(c => c.level === 1)].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
     [capabilities]
+  );
+
+  // Split L1 into core and support
+  const coreDomains = useMemo(
+    () => l1.filter(c => c.capabilityType === 'core' || c.capabilityType === undefined),
+    [l1]
+  );
+  const supportDomains = useMemo(
+    () => l1.filter(c => c.capabilityType === 'support'),
+    [l1]
   );
 
   const l2ByParent = useMemo(() => {
@@ -80,13 +93,6 @@ export function CapabilityLandscape() {
     ? (capabilities.reduce((sum, c) => sum + c.maturity, 0) / capabilities.length).toFixed(1)
     : '0';
 
-  const getIndicatorColor = (cap: Capability, simMat?: number) => {
-    if (capabilityView === 'maturity') {
-      return MATURITY_COLORS[simMat ?? cap.maturity];
-    }
-    return RISK_COLORS[cap.risk];
-  };
-
   const getDomainIndicator = (domainId: string) => {
     const children = l2ByParent[domainId] ?? [];
     const domain = capabilities.find(c => c.id === domainId);
@@ -110,11 +116,12 @@ export function CapabilityLandscape() {
     setDraggingId(`l1:${id}`);
   };
 
-  const handleL1DragOver = (e: React.DragEvent, idx: number) => {
+  const handleL1DragOver = (e: React.DragEvent, idx: number, section: 'core' | 'support') => {
     if (!draggingId?.startsWith('l1:')) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     setDropDomainIndex(idx);
+    setDropSection(section);
   };
 
   const handleL1Drop = (e: React.DragEvent) => {
@@ -125,11 +132,13 @@ export function CapabilityLandscape() {
     }
     setDropDomainIndex(null);
     setDraggingId(null);
+    setDropSection(null);
   };
 
   const handleGridDragLeave = (e: React.DragEvent) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
       setDropDomainIndex(null);
+      setDropSection(null);
     }
   };
 
@@ -170,6 +179,135 @@ export function CapabilityLandscape() {
     setDraggingId(null);
     setDropDomainIndex(null);
     setDropL2(null);
+    setDropSection(null);
+  };
+
+  const renderDomainRow = (domain: Capability, domainIdx: number, section: 'core' | 'support') => {
+    const children = l2ByParent[domain.id] ?? [];
+    const domainColor = getDomainIndicator(domain.id);
+    const domainSim = getSimData(domain.id);
+    const isSelected = selectedItem?.type === 'capability' && selectedItem.id === domain.id;
+    const isDomainDropTarget = dropDomainIndex === domainIdx && dropSection === section && draggingId?.startsWith('l1:');
+
+    return (
+      <div
+        key={domain.id}
+        draggable
+        onDragStart={(e) => handleL1DragStart(e, domain.id)}
+        onDragEnd={handleDragEnd}
+        onDragOver={(e) => {
+          if (draggingId?.startsWith('l1:')) handleL1DragOver(e, domainIdx, section);
+        }}
+      >
+        {isDomainDropTarget && (
+          <div className="h-0.5 rounded mb-2 bg-primary" />
+        )}
+        <div
+          className={`flex items-stretch border rounded shadow-card overflow-hidden transition-opacity duration-150 bg-card ${
+            isSelected ? 'border-primary shadow-selected' : 'border-border'
+          } ${draggingId === `l1:${domain.id}` ? 'opacity-50' : ''}`}
+        >
+          {/* Sticky domain name column */}
+          <div
+            className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-lane)] border-r border-border cursor-pointer shrink-0 w-[180px] min-w-[180px]"
+            style={{ position: 'sticky', left: 0, zIndex: 10 }}
+            onClick={() => setSelectedItem({ type: 'capability', id: domain.id })}
+          >
+            <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: domainColor ?? '#94a3b8' }} />
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-semibold text-text-primary truncate">{domain.name}</span>
+              <div className="flex items-center gap-1">
+                {activityCount[domain.id] > 0 && (
+                  <span
+                    className="text-[8px] bg-gray-200 text-text-secondary px-1 py-0.5 rounded-full"
+                    title={activityNames[domain.id]?.join(', ')}
+                  >
+                    {activityCount[domain.id]}
+                  </span>
+                )}
+                {domainSim?.improved && (
+                  <span className="text-[8px] text-green-600 font-medium">
+                    {domain.maturity} → {domainSim.simulatedMaturity}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Maturity chevron with L2 children */}
+          <div
+            className="flex-1 min-w-0 transition-colors duration-150"
+            style={{
+              backgroundColor: dropL2?.domainId === domain.id ? '#f0f4ff' : 'transparent',
+            }}
+            onDragOver={(e) => handleL2DragOver(e, domain.id, children.length)}
+            onDrop={(e) => handleL2Drop(e, domain.id)}
+            onDragLeave={(e) => handleL2DragLeave(e, domain.id)}
+          >
+            {children.length === 0 && !(dropL2?.domainId === domain.id) ? (
+              <div className="flex items-center h-full px-3">
+                <p className="text-[9px] text-text-tertiary italic">{t('capLandscape.noSubCaps')}</p>
+              </div>
+            ) : (
+              <div className="p-1">
+                <MaturityChevron
+                  domain={domain}
+                  children={children}
+                  activityCount={activityCount}
+                  activityNames={activityNames}
+                  viewMode={capabilityView}
+                  selectedItemId={selectedItem?.type === 'capability' ? selectedItem.id : null}
+                  onSelectItem={(id) => setSelectedItem({ type: 'capability', id })}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSection = (
+    domains: Capability[],
+    sectionKey: 'core' | 'support',
+    titleKey: string,
+    bgClass: string,
+  ) => {
+    if (domains.length === 0 && l1.length > 0) return null;
+
+    return (
+      <div className={`rounded-lg ${bgClass} p-3 mb-4`}>
+        {/* Section header */}
+        <div className="flex items-center gap-2 mb-3 pl-1 border-l-[3px]"
+          style={{ borderLeftColor: sectionKey === 'core' ? 'var(--color-primary, #6366f1)' : 'var(--border-default, #d1d5db)' }}
+        >
+          <h2 className="text-[12px] font-semibold text-text-primary">
+            {t(titleKey)}
+          </h2>
+          <span className="text-[10px] text-text-tertiary">
+            {domains.length} {t('capLandscape.domains')}
+          </span>
+        </div>
+
+        {/* Domain rows */}
+        <div
+          className="flex flex-col gap-2"
+          onDragOver={(e) => {
+            if (draggingId?.startsWith('l1:')) {
+              e.preventDefault();
+              handleL1DragOver(e, domains.length, sectionKey);
+            }
+          }}
+          onDrop={handleL1Drop}
+          onDragLeave={handleGridDragLeave}
+        >
+          {domains.map((domain, idx) => renderDomainRow(domain, idx, sectionKey))}
+          {dropDomainIndex === domains.length && dropSection === sectionKey && draggingId?.startsWith('l1:') && (
+            <div className="h-0.5 rounded bg-primary" />
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -213,143 +351,21 @@ export function CapabilityLandscape() {
         </div>
       )}
 
-      {/* Domain grid */}
-      <div
-        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
-        onDragOver={(e) => {
-          if (draggingId?.startsWith('l1:')) {
-            e.preventDefault();
-            handleL1DragOver(e, l1.length);
-          }
-        }}
-        onDrop={handleL1Drop}
-        onDragLeave={handleGridDragLeave}
-      >
-        {l1.map((domain, domainIdx) => {
-          const children = l2ByParent[domain.id] ?? [];
-          const domainColor = getDomainIndicator(domain.id);
-          const domainSim = getSimData(domain.id);
-          const isSelected = selectedItem?.type === 'capability' && selectedItem.id === domain.id;
-          const isDomainDropTarget = dropDomainIndex === domainIdx && draggingId?.startsWith('l1:');
+      {/* Core Value Streams section */}
+      {renderSection(
+        coreDomains,
+        'core',
+        'capLandscape.coreSection',
+        'bg-[var(--bg-app)]',
+      )}
 
-          return (
-            <div
-              key={domain.id}
-              draggable
-              onDragStart={(e) => handleL1DragStart(e, domain.id)}
-              onDragEnd={handleDragEnd}
-              onDragOver={(e) => {
-                if (draggingId?.startsWith('l1:')) handleL1DragOver(e, domainIdx);
-              }}
-            >
-              {isDomainDropTarget && (
-                <div className="h-0.5 rounded mb-2 bg-primary" />
-              )}
-              <div
-                className={`bg-card border rounded shadow-card overflow-hidden transition-opacity duration-150 ${
-                  isSelected ? 'border-primary shadow-selected' : 'border-border'
-                } ${draggingId === `l1:${domain.id}` ? 'opacity-50' : ''}`}
-              >
-                {/* Domain header */}
-                <div
-                  className="flex items-center justify-between px-3 py-2 bg-[var(--bg-lane)] border-b border-border cursor-pointer"
-                  onClick={() => setSelectedItem({ type: 'capability', id: domain.id })}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: domainColor ?? '#94a3b8' }} />
-                    <span className="text-[12px] font-semibold text-text-primary">{domain.name}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    {activityCount[domain.id] > 0 && (
-                      <span
-                        className="text-[9px] bg-gray-200 text-text-secondary px-1.5 py-0.5 rounded-full"
-                        title={activityNames[domain.id]?.join(', ')}
-                      >
-                        {activityCount[domain.id]}
-                      </span>
-                    )}
-                    {domainSim?.improved && (
-                      <span className="text-[9px] text-green-600 font-medium">
-                        {domain.maturity} → {domainSim.simulatedMaturity}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Sub-capabilities */}
-                <div
-                  className="p-2 min-h-[40px] transition-colors duration-150"
-                  style={{
-                    backgroundColor: dropL2?.domainId === domain.id ? '#f0f4ff' : 'transparent',
-                  }}
-                  onDragOver={(e) => handleL2DragOver(e, domain.id, children.length)}
-                  onDrop={(e) => handleL2Drop(e, domain.id)}
-                  onDragLeave={(e) => handleL2DragLeave(e, domain.id)}
-                >
-                  {children.length === 0 && !(dropL2?.domainId === domain.id) ? (
-                    <p className="text-[9px] text-text-tertiary italic px-1 py-2">{t('capLandscape.noSubCaps')}</p>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {children.map((child, childIdx) => {
-                        const childSim = getSimData(child.id);
-                        const isChildSelected = selectedItem?.type === 'capability' && selectedItem.id === child.id;
-                        const indicatorColor = getIndicatorColor(child, childSim?.simulatedMaturity);
-                        const count = activityCount[child.id] ?? 0;
-                        const isDropTarget =
-                          dropL2?.domainId === domain.id && dropL2.index === childIdx;
-
-                        return (
-                          <div
-                            key={child.id}
-                            onDragOver={(e) => handleL2DragOver(e, domain.id, childIdx)}
-                          >
-                            {isDropTarget && (
-                              <div className="h-0.5 rounded mb-1 bg-primary" />
-                            )}
-                            <div
-                              draggable
-                              onDragStart={(e) => handleL2DragStart(e, child.id)}
-                              onDragEnd={handleDragEnd}
-                              onClick={() => setSelectedItem({ type: 'capability', id: child.id })}
-                              title={activityNames[child.id]?.join(', ')}
-                              className={`px-2 py-1.5 rounded cursor-pointer border transition-all duration-150 ${
-                                isChildSelected
-                                  ? 'border-primary shadow-selected'
-                                  : 'border-border bg-card hover:shadow-hover'
-                              } ${draggingId === `l2:${child.id}` ? 'opacity-50' : ''}`}
-                            >
-                              <div className="flex items-center justify-between gap-1">
-                                <span className="text-[10px] font-medium leading-tight truncate">{child.name}</span>
-                                <div className="flex items-center gap-1 shrink-0">
-                                  {count > 0 && (
-                                    <span className="text-[8px] bg-[var(--bg-hover)] text-text-tertiary px-1 py-0.5 rounded-full leading-none">
-                                      {count}
-                                    </span>
-                                  )}
-                                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: indicatorColor }} />
-                                  {childSim?.improved && (
-                                    <span className="text-[9px] text-green-600">▲</span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                      {dropL2?.domainId === domain.id && dropL2.index === children.length && (
-                        <div className="col-span-2 h-0.5 rounded bg-primary" />
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-        {dropDomainIndex === l1.length && draggingId?.startsWith('l1:') && (
-          <div className="h-0.5 rounded col-span-full bg-primary" />
-        )}
-      </div>
+      {/* Foundation & Support section */}
+      {renderSection(
+        supportDomains,
+        'support',
+        'capLandscape.supportSection',
+        'bg-[var(--bg-lane)]',
+      )}
     </div>
   );
 }

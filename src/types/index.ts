@@ -56,6 +56,7 @@ export interface Capability {
   description: string;
   order?: number;
   strategyIds?: string[];
+  capabilityType?: 'core' | 'support';
 }
 
 export interface Initiative {
