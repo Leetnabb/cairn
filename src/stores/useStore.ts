@@ -694,17 +694,20 @@ export const useStore = create<StoreState>()(
         },
       };
 
-      // Migrate capabilityType for existing data that predates the field
+      // Migrate capabilityType for L1 capabilities that lack it
       const caps = merged.capabilities as Capability[] | undefined;
-      if (caps && caps.length > 0 && !caps.some((c: Capability) => c.capabilityType)) {
-        const supportPatterns = ['økonomi', 'hr', 'data', 'infrastruktur', 'plattform', 'personal'];
-        merged.capabilities = caps.map((c: Capability) => {
-          if (c.level === 1 && !c.capabilityType) {
-            const isSupport = supportPatterns.some(p => c.name.toLowerCase().includes(p));
-            return { ...c, capabilityType: isSupport ? 'support' as const : 'core' as const };
-          }
-          return c;
-        });
+      if (caps && caps.length > 0) {
+        const l1WithoutType = caps.filter((c: Capability) => c.level === 1 && !c.capabilityType);
+        if (l1WithoutType.length > 0) {
+          const supportPatterns = ['økonomi', 'hr', 'data', 'infrastruktur', 'plattform', 'personal'];
+          merged.capabilities = caps.map((c: Capability) => {
+            if (c.level === 1 && !c.capabilityType) {
+              const isSupport = supportPatterns.some(p => c.name.toLowerCase().includes(p));
+              return { ...c, capabilityType: isSupport ? 'support' as const : 'core' as const };
+            }
+            return c;
+          });
+        }
       }
 
       return merged as StoreState;
