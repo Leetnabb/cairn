@@ -13,12 +13,31 @@ export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
     const capMap = new Map<string, Capability>();
     for (const cap of capabilities) capMap.set(cap.id, cap);
 
+    // Build L1 → L2 children map for resolving resourceLoad
+    const childrenOf = new Map<string, Capability[]>();
+    for (const cap of capabilities) {
+      if (cap.level === 2 && cap.parent) {
+        const children = childrenOf.get(cap.parent) ?? [];
+        children.push(cap);
+        childrenOf.set(cap.parent, children);
+      }
+    }
+
     const loads: number[] = [];
     for (const init of initiatives) {
       for (const capId of init.capabilities) {
         const cap = capMap.get(capId);
-        if (cap?.resourceLoad != null) {
+        if (!cap) continue;
+        if (cap.resourceLoad != null) {
           loads.push(cap.resourceLoad);
+        } else if (cap.level === 1) {
+          // L1 cap without resourceLoad — aggregate from L2 children
+          const children = childrenOf.get(cap.id) ?? [];
+          for (const child of children) {
+            if (child.resourceLoad != null) {
+              loads.push(child.resourceLoad);
+            }
+          }
         }
       }
     }
