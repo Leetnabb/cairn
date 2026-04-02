@@ -59,6 +59,7 @@ export interface Capability {
   strategyIds?: string[];
   capabilityType?: 'core' | 'support';
   providesFoundationFor?: string[];
+  resourceLoad?: number;  // 0.0-1.0, current resource load on this capability
 }
 
 export interface Initiative {
@@ -201,7 +202,7 @@ export interface UIState {
   view: ViewMode;
   complexityLevel: ComplexityLevel;
   roadmapViewMode: 'dimension' | 'capability';
-  capabilityView: 'maturity' | 'risk';
+  capabilityView: 'maturity' | 'risk' | 'resource';
   simulationEnabled: boolean;
   criticalPathEnabled: boolean;
   filters: {

@@ -72,7 +72,7 @@ interface StoreState extends AppState {
   setSelectedItem: (item: UIState['selectedItem']) => void;
   setView: (view: ViewMode) => void;
   setRoadmapViewMode: (mode: 'dimension' | 'capability') => void;
-  setCapabilityView: (view: 'maturity' | 'risk') => void;
+  setCapabilityView: (view: 'maturity' | 'risk' | 'resource') => void;
   toggleSimulation: () => void;
   toggleCriticalPath: () => void;
   setFilter: (filters: Partial<UIState['filters']>) => void;

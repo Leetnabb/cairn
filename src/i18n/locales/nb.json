@@ -115,7 +115,8 @@
     "establish": "Etablere",
     "optimize": "Optimalisere",
     "innovate": "Innovasjon",
-    "strategicGap": "Strategisk gap"
+    "strategicGap": "Strategisk gap",
+    "gapTooltip": "Ingen initiativer adresserer dette modenhetsnivået"
   },
   "common": {
     "save": "Lagre",
@@ -152,6 +153,9 @@
       "1": "Lav",
       "2": "Medium",
       "3": "Høy"
+    },
+    "resource": {
+      "label": "Ressurser"
     },
     "risk": {
       "label": "Risiko",

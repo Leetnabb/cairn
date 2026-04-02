@@ -282,6 +282,11 @@ export function CapabilityLandscape() {
       const avg = allCaps.reduce((s, c) => s + c.maturity, 0) / allCaps.length;
       const level = avg < 1.5 ? 1 : avg < 2.5 ? 2 : 3;
       return MATURITY_COLORS[level];
+    } else if (capabilityView === 'resource') {
+      const l2Caps = allCaps.filter(c => c.level === 2 && c.resourceLoad !== undefined);
+      if (l2Caps.length === 0) return '#94a3b8';
+      const avgLoad = l2Caps.reduce((s, c) => s + (c.resourceLoad ?? 0), 0) / l2Caps.length;
+      return avgLoad > 0.8 ? '#ef4444' : avgLoad >= 0.5 ? '#f59e0b' : '#22c55e';
     } else {
       const maxRisk = Math.max(...allCaps.map(c => c.risk));
       return RISK_COLORS[maxRisk];
@@ -404,7 +409,7 @@ export function CapabilityLandscape() {
             style={{ position: 'sticky', left: 0, zIndex: 10 }}
             onClick={() => setSelectedItem({ type: 'capability', id: domain.id })}
           >
-            <div className={`rounded-full shrink-0 ${isHeatmap ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} style={{ backgroundColor: domainColor ?? '#94a3b8' }} />
+            <div className={`rounded-full shrink-0 ${isHeatmap ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} style={{ backgroundColor: domainColor ?? '#94a3b8', transition: 'background-color 200ms ease' }} />
             {!isHeatmap && (
               <div className="flex flex-col min-w-0">
                 <span className="text-[11px] font-semibold text-text-primary truncate">{domain.name}</span>
@@ -423,6 +428,30 @@ export function CapabilityLandscape() {
                     </span>
                   )}
                 </div>
+                {/* Maturity Progress Meter */}
+                {(() => {
+                  const target = domain.maturityTarget ?? 3;
+                  const progress = Math.min((domain.maturity / target) * 100, 100);
+                  const gap = target - domain.maturity;
+                  const barColor = gap <= 0 ? '#22c55e' : gap === 1 ? '#f59e0b' : '#ef4444';
+                  return (
+                    <div className="flex flex-col gap-0.5 mt-0.5">
+                      <div className="w-[40px] h-[6px] bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${progress}%`,
+                            backgroundColor: barColor,
+                            transition: 'width 200ms ease, background-color 200ms ease',
+                          }}
+                        />
+                      </div>
+                      <span className="text-[7px] text-text-tertiary leading-none">
+                        {domain.maturity} → {target}
+                      </span>
+                    </div>
+                  );
+                })()}
               </div>
             )}
             {isHeatmap && (
@@ -564,6 +593,14 @@ export function CapabilityLandscape() {
             }`}
           >
             {t('labels.risk.label')}
+          </button>
+          <button
+            onClick={() => setCapabilityView('resource')}
+            className={`px-2 py-1 text-[10px] rounded transition-colors ${
+              capabilityView === 'resource' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
+            }`}
+          >
+            {t('labels.resource.label')}
           </button>
         </div>
       </div>

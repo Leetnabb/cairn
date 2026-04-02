@@ -115,7 +115,8 @@
     "establish": "Establish",
     "optimize": "Optimize",
     "innovate": "Innovate",
-    "strategicGap": "Strategic Gap"
+    "strategicGap": "Strategic Gap",
+    "gapTooltip": "No initiatives address this maturity level"
   },
   "common": {
     "save": "Save",
@@ -152,6 +153,9 @@
       "1": "Low",
       "2": "Medium",
       "3": "High"
+    },
+    "resource": {
+      "label": "Resources"
     },
     "risk": {
       "label": "Risk",
