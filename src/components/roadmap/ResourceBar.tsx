@@ -7,13 +7,19 @@ interface ResourceBarProps {
 }
 
 export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
-  const { avgLoad, color, bgColor } = useMemo(() => {
-    if (initiatives.length === 0) return { avgLoad: 0, color: '#64748b', bgColor: '#f1f5f9' };
+  const { load, pct, color, bgColor, activeCount, totalCount } = useMemo(() => {
+    if (initiatives.length === 0) return { load: 0, pct: 0, color: '#64748b', bgColor: '#f1f5f9', activeCount: 0, totalCount: 0 };
 
+    const active = initiatives.filter(i =>
+      i.status === 'in_progress' || (!i.status && i.horizon === 'near')
+    );
+    const total = initiatives.length;
+    const activeN = active.length;
+
+    // Also factor in capability resourceLoad for linked caps
     const capMap = new Map<string, Capability>();
     for (const cap of capabilities) capMap.set(cap.id, cap);
 
-    // Build L1 → L2 children map for resolving resourceLoad
     const childrenOf = new Map<string, Capability[]>();
     for (const cap of capabilities) {
       if (cap.level === 2 && cap.parent) {
@@ -23,58 +29,66 @@ export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
       }
     }
 
-    const loads: number[] = [];
+    // Collect resourceLoad from all caps touched by these initiatives
+    const capLoads: number[] = [];
+    const seenCaps = new Set<string>();
     for (const init of initiatives) {
       for (const capId of init.capabilities) {
+        if (seenCaps.has(capId)) continue;
+        seenCaps.add(capId);
         const cap = capMap.get(capId);
         if (!cap) continue;
         if (cap.resourceLoad != null) {
-          loads.push(cap.resourceLoad);
+          capLoads.push(cap.resourceLoad);
         } else if (cap.level === 1) {
-          const children = childrenOf.get(cap.id) ?? [];
-          for (const child of children) {
-            if (child.resourceLoad != null) {
-              loads.push(child.resourceLoad);
+          for (const child of (childrenOf.get(cap.id) ?? [])) {
+            if (!seenCaps.has(child.id) && child.resourceLoad != null) {
+              seenCaps.add(child.id);
+              capLoads.push(child.resourceLoad);
             }
           }
         }
       }
     }
 
-    if (loads.length === 0) return { avgLoad: 0, color: '#64748b', bgColor: '#f1f5f9' };
+    // Combine: initiative activity ratio + avg capability load
+    const activityRatio = total > 0 ? activeN / Math.max(total, 3) : 0; // normalized: 3+ active = high
+    const avgCapLoad = capLoads.length > 0
+      ? capLoads.reduce((s, l) => s + l, 0) / capLoads.length
+      : 0.5; // default medium if no cap data
 
-    const avg = loads.reduce((sum, l) => sum + l, 0) / loads.length;
-    const c = avg > 0.9 ? '#dc2626' : avg >= 0.7 ? '#f59e0b' : '#22c55e';
-    const bg = avg > 0.9 ? '#fef2f2' : avg >= 0.7 ? '#fffbeb' : '#f0fdf4';
-    return { avgLoad: avg, color: c, bgColor: bg };
+    // Weighted: 40% activity density, 60% capability load
+    const combined = capLoads.length > 0
+      ? activityRatio * 0.4 + avgCapLoad * 0.6
+      : activityRatio;
+
+    const clamped = Math.min(combined, 1);
+    const p = Math.round(clamped * 100);
+    const c = clamped > 0.8 ? '#dc2626' : clamped >= 0.6 ? '#f59e0b' : '#22c55e';
+    const bg = clamped > 0.8 ? '#fef2f2' : clamped >= 0.6 ? '#fffbeb' : '#f0fdf4';
+
+    return { load: clamped, pct: p, color: c, bgColor: bg, activeCount: activeN, totalCount: total };
   }, [initiatives, capabilities]);
 
   if (initiatives.length === 0) return null;
 
-  const pct = Math.round(avgLoad * 100);
-
   return (
     <div className="relative w-full mt-2 px-1">
-      {/* Background track */}
       <div
         className="h-3 w-full rounded-full border overflow-hidden"
         style={{ backgroundColor: bgColor, borderColor: `${color}33` }}
       >
-        {/* Fill bar */}
         <div
           className="h-full rounded-full transition-all duration-300"
-          style={{
-            width: `${pct}%`,
-            backgroundColor: color,
-            opacity: 0.8,
-          }}
+          style={{ width: `${pct}%`, backgroundColor: color, opacity: 0.8 }}
         />
       </div>
-      {/* Label */}
       <div className="flex justify-between items-center mt-0.5 px-0.5">
-        <span className="text-[8px] text-text-tertiary">Kapasitet</span>
+        <span className="text-[8px] text-text-tertiary">
+          {activeCount} aktive / {totalCount} totalt
+        </span>
         <span className="text-[8px] font-medium" style={{ color }}>
-          {pct > 0 ? `${pct}%` : '–'}
+          {pct}%
         </span>
       </div>
     </div>
