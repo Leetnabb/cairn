@@ -428,26 +428,37 @@ export function CapabilityLandscape() {
                     </span>
                   )}
                 </div>
-                {/* Maturity Progress Meter */}
+                {/* Maturity Progress Ring */}
                 {(() => {
                   const target = domain.maturityTarget ?? 3;
-                  const progress = Math.min((domain.maturity / target) * 100, 100);
+                  const progress = domain.maturity / target;
                   const gap = target - domain.maturity;
-                  const barColor = gap <= 0 ? '#22c55e' : gap === 1 ? '#f59e0b' : '#ef4444';
+                  const ringColor = gap <= 0 ? '#22c55e' : gap === 1 ? '#f59e0b' : '#ef4444';
+                  const size = 28;
+                  const stroke = 3;
+                  const radius = (size - stroke) / 2;
+                  const circumference = 2 * Math.PI * radius;
+                  const offset = circumference * (1 - Math.min(progress, 1));
                   return (
-                    <div className="flex flex-col gap-0.5 mt-0.5">
-                      <div className="w-[40px] h-[6px] bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${progress}%`,
-                            backgroundColor: barColor,
-                            transition: 'width 200ms ease, background-color 200ms ease',
-                          }}
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <svg width={size} height={size} className="shrink-0" style={{ transform: 'rotate(-90deg)' }}>
+                        <circle
+                          cx={size / 2} cy={size / 2} r={radius}
+                          fill="none" stroke="var(--border-default, #e2e8f0)"
+                          strokeWidth={stroke}
                         />
-                      </div>
-                      <span className="text-[7px] text-text-tertiary leading-none">
-                        {domain.maturity} → {target}
+                        <circle
+                          cx={size / 2} cy={size / 2} r={radius}
+                          fill="none" stroke={ringColor}
+                          strokeWidth={stroke}
+                          strokeDasharray={circumference}
+                          strokeDashoffset={offset}
+                          strokeLinecap="round"
+                          style={{ transition: 'stroke-dashoffset 300ms ease, stroke 200ms ease' }}
+                        />
+                      </svg>
+                      <span className="text-[8px] font-medium text-text-secondary leading-none">
+                        {domain.maturity}/{target}
                       </span>
                     </div>
                   );
