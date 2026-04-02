@@ -51,6 +51,7 @@ export function createDefaultState(): {
   valueChains: ValueChain[];
   effects: Effect[];
   modules: ModuleSettings;
+  strategicFrame: StrategicFrame;
 } {
   return {
     strategies: defaultStrategies,
@@ -64,5 +65,6 @@ export function createDefaultState(): {
     valueChains: defaultValueChains,
     effects: defaultEffects,
     modules: defaultModules,
+    strategicFrame: defaultStrategicFrame,
   };
 }
