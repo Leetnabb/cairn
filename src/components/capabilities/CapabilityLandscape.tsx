@@ -9,6 +9,14 @@ import { MaturityChevron } from './MaturityChevron';
 export function CapabilityLandscape() {
   const { t } = useTranslation();
   const capabilities = useStore(s => s.capabilities);
+
+  // TEMPORARY DEBUG — trace Core/Support data flow
+  const _debugL1 = capabilities.filter(c => c.level === 1);
+  console.log('=== CapabilityLandscape Debug ===');
+  console.log('All L1 caps:', _debugL1.map(c => ({ name: c.name, type: c.capabilityType })));
+  console.log('Core count:', _debugL1.filter(c => c.capabilityType === 'core' || c.capabilityType === undefined).length);
+  console.log('Support count:', _debugL1.filter(c => c.capabilityType === 'support').length);
+  console.log('Raw capabilityType values:', _debugL1.map(c => c.capabilityType));
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const simulationEnabled = useStore(s => s.ui.simulationEnabled);
   const selectedItem = useStore(s => s.ui.selectedItem);
@@ -60,6 +68,10 @@ export function CapabilityLandscape() {
       }),
     [l1]
   );
+
+  // TEMPORARY DEBUG — confirm useMemo splits
+  console.log('coreDomains:', coreDomains.map(c => c.name));
+  console.log('supportDomains:', supportDomains.map(c => c.name));
 
   const l2ByParent = useMemo(() => {
     const map: Record<string, Capability[]> = {};
@@ -406,7 +418,7 @@ export function CapabilityLandscape() {
     domains: Capability[],
     sectionKey: 'core' | 'support',
     titleKey: string,
-    bgClass: string,
+    _bgClass: string,
   ) => {
     if (domains.length === 0 && l1.length > 0) return null;
 
@@ -414,23 +426,30 @@ export function CapabilityLandscape() {
 
     return (
       <div
-        className={`rounded-lg ${bgClass} p-3 mb-4`}
+        className={`rounded-2xl p-4 mb-4 ${
+          isCore
+            ? 'bg-slate-50/50 border-l-4 border-indigo-500'
+            : 'bg-white border border-slate-200'
+        }`}
         style={isCore
-          ? { boxShadow: '0 2px 6px -1px rgba(0,0,0,0.08)' }
-          : { boxShadow: 'inset 0 4px 6px -4px rgba(0,0,0,0.06)' }
+          ? { boxShadow: '0 2px 8px -1px rgba(99,102,241,0.10)' }
+          : {}
         }
       >
         {/* Sticky section header */}
         <div
-          className="flex items-center gap-2 mb-3 pl-1 border-l-[3px] bg-inherit"
+          className="flex items-center gap-2 mb-3 pl-2"
           style={{
             position: 'sticky',
             top: 0,
             zIndex: 15,
-            borderLeftColor: isCore ? 'var(--color-primary, #6366f1)' : 'var(--border-default, #d1d5db)',
           }}
         >
-          <h2 className="text-[12px] font-semibold text-text-primary">
+          <h2 className={`text-xs tracking-widest uppercase ${
+            isCore
+              ? 'font-black text-indigo-900'
+              : 'font-bold text-slate-400'
+          }`}>
             {t(titleKey)}
           </h2>
           <span className="text-[10px] text-text-tertiary">
@@ -505,17 +524,18 @@ export function CapabilityLandscape() {
         coreDomains,
         'core',
         'capLandscape.coreSection',
-        'bg-[var(--bg-app)]',
+        '',
       )}
 
-      {/* Divider: "STRATEGISK FUNDAMENT" */}
+      {/* Strategic divider between Core and Support */}
       {coreDomains.length > 0 && supportDomains.length > 0 && (
-        <div className="flex items-center gap-3 py-3 px-4">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-[9px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
-            {t('capLandscape.strategicFoundation')}
-          </span>
-          <div className="flex-1 h-px bg-border" />
+        <div className="py-6">
+          <div className="relative flex items-center justify-center">
+            <div className="absolute inset-x-0 border-t-2 border-dashed border-slate-300" />
+            <span className="relative bg-[var(--bg-app,#f8fafc)] px-4 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest text-slate-500 border border-slate-300">
+              {t('capLandscape.strategicFoundation')}
+            </span>
+          </div>
         </div>
       )}
 
@@ -524,7 +544,7 @@ export function CapabilityLandscape() {
         supportDomains,
         'support',
         'capLandscape.supportSection',
-        'bg-[var(--bg-lane)]',
+        '',
       )}
 
       {/* Zoom indicator */}
