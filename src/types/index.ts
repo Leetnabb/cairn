@@ -60,6 +60,7 @@ export interface Capability {
   capabilityType?: 'core' | 'support';
   providesFoundationFor?: string[];
   resourceLoad?: number;  // 0.0-1.0, current resource load on this capability
+  effortEstimate?: 'high' | 'medium' | 'low';
 }
 
 export interface Initiative {

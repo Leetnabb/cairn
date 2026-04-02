@@ -40,6 +40,7 @@ export function MaturityChevron({
 }: Props) {
   const { t } = useTranslation();
   const [hoveredGapStep, setHoveredGapStep] = useState<number | null>(null);
+  const [hoveredResourceChip, setHoveredResourceChip] = useState<string | null>(null);
 
   const stepLabels = [
     t('maturityChevron.establish'),
@@ -111,15 +112,15 @@ export function MaturityChevron({
   }, [childrenByStep]);
 
   const getResourceColor = (load: number) => {
-    if (load > 0.8) return '#ef4444';
-    if (load >= 0.5) return '#f59e0b';
-    return '#22c55e';
+    if (load > 0.9) return '#dc2626';
+    if (load >= 0.7) return '#f59e0b';
+    return '#64748b';
   };
 
   const getResourceBg = (load: number) => {
-    if (load > 0.8) return 'rgba(239, 68, 68, 0.15)';
-    if (load >= 0.5) return 'rgba(245, 158, 11, 0.15)';
-    return 'rgba(34, 197, 94, 0.15)';
+    if (load > 0.9) return 'rgba(220, 38, 38, 0.15)';
+    if (load >= 0.7) return 'rgba(245, 158, 11, 0.15)';
+    return 'rgba(100, 116, 139, 0.15)';
   };
 
   const getStepStyle = (step: number) => {
@@ -264,8 +265,8 @@ export function MaturityChevron({
                           className="absolute left-0 bottom-full mb-1 z-30 bg-gray-900 text-white text-[9px] px-2 py-1.5 rounded shadow-lg whitespace-nowrap pointer-events-none"
                           style={{ minWidth: '180px' }}
                         >
-                          <div>{t('maturityChevron.gapTooltip')}</div>
-                          <div className="text-gray-300 mt-0.5">{domain.name} → {t('labels.maturity.label')} {step}</div>
+                          <div>{t('maturityChevron.gapTooltip', { target: step })}</div>
+                          <div className="text-gray-300 mt-0.5">{domain.name}</div>
                         </div>
                       )}
                     </div>
@@ -292,12 +293,12 @@ export function MaturityChevron({
                           : undefined;
 
                         return (
+                          <div key={child.id} className="relative">
                           <button
-                            key={child.id}
                             ref={chipRef(child.id)}
                             onClick={() => onSelectItem(child.id)}
-                            onMouseEnter={() => onL2Hover?.(child.id)}
-                            onMouseLeave={() => onL2Hover?.(null)}
+                            onMouseEnter={() => { onL2Hover?.(child.id); if (viewMode === 'resource') setHoveredResourceChip(child.id); }}
+                            onMouseLeave={() => { onL2Hover?.(null); setHoveredResourceChip(null); }}
                             title={activityNames[child.id]?.join(', ') || child.description}
                             className={`inline-flex flex-col gap-0.5 px-1.5 py-0.5 rounded text-[9px] border text-left ${
                               isSelected
@@ -359,6 +360,19 @@ export function MaturityChevron({
                               </div>
                             )}
                           </button>
+                          {/* Resource tooltip */}
+                          {viewMode === 'resource' && hoveredResourceChip === child.id && child.resourceLoad !== undefined && (
+                            <div
+                              className="absolute left-0 bottom-full mb-1 z-30 bg-gray-900 text-white text-[9px] px-2 py-1.5 rounded shadow-lg whitespace-nowrap pointer-events-none"
+                              style={{ minWidth: '160px' }}
+                            >
+                              {t('maturityChevron.resourceTooltip', {
+                                load: Math.round(child.resourceLoad * 100),
+                                effort: child.effortEstimate ?? '—',
+                              })}
+                            </div>
+                          )}
+                          </div>
                         );
                       })}
                     </div>

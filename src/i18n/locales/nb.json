@@ -116,7 +116,8 @@
     "optimize": "Optimalisere",
     "innovate": "Innovasjon",
     "strategicGap": "Strategisk gap",
-    "gapTooltip": "Ingen initiativer adresserer dette modenhetsnivået"
+    "gapTooltip": "Ambisjon er satt til {{target}}, men ingen initiativer er planlagt i denne fasen",
+    "resourceTooltip": "Belastning: {{load}}% | Innsats: {{effort}}"
   },
   "common": {
     "save": "Lagre",

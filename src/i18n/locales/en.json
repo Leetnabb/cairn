@@ -116,7 +116,8 @@
     "optimize": "Optimize",
     "innovate": "Innovate",
     "strategicGap": "Strategic Gap",
-    "gapTooltip": "No initiatives address this maturity level"
+    "gapTooltip": "Ambition is set to {{target}}, but no initiatives are planned for this phase",
+    "resourceTooltip": "Load: {{load}}% | Effort: {{effort}}"
   },
   "common": {
     "save": "Save",
