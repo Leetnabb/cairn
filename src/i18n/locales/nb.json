@@ -225,6 +225,9 @@
     "unlinked": "Ukoblet",
     "noCaps": "Ingen kapabiliteter definert. Legg til kapabiliteter for å bruke kapabilitetsvisningen."
   },
+  "capPath": {
+    "maturityGoal": "Mål: {{target}}"
+  },
   "dashboard": {
     "title": "Dashbord",
     "layer1Title": "Hva bør dere diskutere?",

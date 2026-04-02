@@ -18,9 +18,11 @@ interface Props {
   onHoverStart?: (id: string) => void;
   onHoverEnd?: () => void;
   chainIds?: Set<string> | null;
+  onChainLock?: (id: string) => void;
+  lockedChainId?: string | null;
 }
 
-export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight, cardRefs, onHoverStart, onHoverEnd, chainIds }: Props) {
+export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight, cardRefs, onHoverStart, onHoverEnd, chainIds, onChainLock, lockedChainId }: Props) {
   const { t } = useTranslation();
   const moveInitiative = useStore(s => s.moveInitiative);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
@@ -90,6 +92,8 @@ export function DropZone({ dimension, horizon, initiatives, criticalPathIds, cri
             fadedOut={chainIds != null && !chainIds.has(init.id)}
             onHoverStart={onHoverStart}
             onHoverEnd={onHoverEnd}
+            onChainLock={onChainLock}
+            isChainLocked={lockedChainId === init.id}
           />
         </div>
       ))}

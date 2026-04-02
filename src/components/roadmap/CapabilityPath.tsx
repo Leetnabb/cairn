@@ -13,6 +13,15 @@ export function CapabilityPath() {
 
   const strategies = useStore(s => s.strategies);
 
+  const maturityLabel = (level: number): string => {
+    const labels: Record<number, string> = {
+      1: t('maturityChevron.establish'),
+      2: t('maturityChevron.optimize'),
+      3: t('maturityChevron.innovate'),
+    };
+    return labels[level] ?? `${level}`;
+  };
+
   const l1Caps = useMemo(
     () => capabilities.filter(c => c.level === 1).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
     [capabilities]
@@ -119,10 +128,18 @@ export function CapabilityPath() {
             className="relative rounded min-h-[48px] p-1.5 flex flex-wrap gap-1 content-start opacity-70"
             style={{ backgroundColor: '#f0f4ff' }}
           >
+            {cap.maturityTarget != null && cap.maturityTarget > cap.maturity && (
+              <div className="absolute top-1 right-1 text-[8px] px-1.5 py-0.5 rounded-full border border-dashed border-accent text-accent bg-accent/5 z-10 whitespace-nowrap">
+                {t('capPath.maturityGoal', { target: maturityLabel(cap.maturityTarget) })}
+              </div>
+            )}
             {far.map(i => (
               <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} />
             ))}
-            {far.length === 0 && (
+            {far.length === 0 && !cap.maturityTarget && (
+              <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
+            )}
+            {far.length === 0 && cap.maturityTarget != null && !(cap.maturityTarget > cap.maturity) && (
               <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
             )}
           </div>

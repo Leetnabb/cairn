@@ -225,6 +225,9 @@
     "unlinked": "Unlinked",
     "noCaps": "No capabilities defined. Add capabilities to use the capability view."
   },
+  "capPath": {
+    "maturityGoal": "Goal: {{target}}"
+  },
   "dashboard": {
     "title": "Dashboard",
     "layer1Title": "What should you discuss?",

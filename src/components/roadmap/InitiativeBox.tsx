@@ -14,9 +14,11 @@ interface Props {
   fadedOut?: boolean;
   onHoverStart?: (id: string) => void;
   onHoverEnd?: () => void;
+  onChainLock?: (id: string) => void;
+  isChainLocked?: boolean;
 }
 
-export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1, fadedOut, onHoverStart, onHoverEnd }, ref) {
+export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function InitiativeBox({ initiative, isOnCriticalPath, criticalPathEnabled, isDependency, isDependent, opacity = 1, fadedOut, onHoverStart, onHoverEnd, onChainLock, isChainLocked }, ref) {
   const { t } = useTranslation();
   const selectedItem = useStore(s => s.ui.selectedItem);
   const setSelectedItem = useStore(s => s.setSelectedItem);
@@ -109,12 +111,16 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
             toggleSelectedItem(initiative.id);
           } else {
             setSelectedItem({ type: 'initiative', id: initiative.id });
+            onChainLock?.(initiative.id);
           }
         }}
         {...hoverHandlers}
         className={`relative min-w-[80px] px-2 py-1 rounded cursor-grab active:cursor-grabbing transition-all duration-150 group border ${borderClasses}`}
         style={baseStyle}
       >
+        {isChainLocked && (
+          <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-[8px] z-10" title="Chain locked">&#x1f512;</div>
+        )}
         {isMultiSelected && (
           <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[8px] z-10">✓</div>
         )}
@@ -141,12 +147,17 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
             toggleSelectedItem(initiative.id);
           } else {
             setSelectedItem({ type: 'initiative', id: initiative.id });
+            onChainLock?.(initiative.id);
           }
         }}
         {...hoverHandlers}
         className={`relative min-w-[120px] px-2 py-2 rounded cursor-grab active:cursor-grabbing transition-all duration-150 group border ${borderClasses}`}
         style={baseStyle}
       >
+        {/* Chain lock indicator */}
+        {isChainLocked && (
+          <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-[8px] z-10" title="Chain locked">&#x1f512;</div>
+        )}
         {/* Critical path quick-toggle */}
         {criticalPathEnabled && (
           <button
@@ -224,12 +235,17 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
           toggleSelectedItem(initiative.id);
         } else {
           setSelectedItem({ type: 'initiative', id: initiative.id });
+          onChainLock?.(initiative.id);
         }
       }}
       {...hoverHandlers}
       className={`relative min-w-[120px] px-2 py-1.5 rounded cursor-grab active:cursor-grabbing transition-all duration-150 group border ${borderClasses}`}
       style={baseStyle}
     >
+      {/* Chain lock indicator */}
+      {isChainLocked && (
+        <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center text-[8px] z-10" title="Chain locked">&#x1f512;</div>
+      )}
       {/* Critical path quick-toggle */}
       {criticalPathEnabled && (
         <button

@@ -5,6 +5,7 @@ import { DIMENSIONS } from '../../types';
 import type { DimensionKey, Initiative, Horizon } from '../../types';
 import { DropZone } from './DropZone';
 import { MilestoneMarker } from './MilestoneMarker';
+import { ResourceBar } from './ResourceBar';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
 import { CapabilityPath } from './CapabilityPath';
 import { DependencyOverlay } from './DependencyOverlay';
@@ -23,12 +24,14 @@ export function Roadmap() {
   const bulkDeleteInitiatives = useStore(s => s.bulkDeleteInitiatives);
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const roleMode = useStore(s => s.ui.roleMode);
+  const capabilities = useStore(s => s.capabilities);
   const roadmapViewMode = useStore(s => s.ui.roadmapViewMode);
   const setRoadmapViewMode = useStore(s => s.setRoadmapViewMode);
   const [showMoveDropdown, setShowMoveDropdown] = useState(false);
   const [switching, setSwitching] = useState(false);
   const [collapsedDimensions, setCollapsedDimensions] = useState<Set<DimensionKey>>(new Set());
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [lockedChainId, setLockedChainId] = useState<string | null>(null);
   const cardRefs = useRef(new Map<string, HTMLElement>());
   const roadmapContainerRef = useRef<HTMLDivElement>(null);
 
@@ -57,13 +60,16 @@ export function Roadmap() {
     return map;
   }, [initiatives]);
 
-  // Dependency thread connections on hover
+  // Active chain ID: locked takes precedence over hover
+  const activeChainId = lockedChainId ?? hoveredId;
+
+  // Dependency thread connections on hover/lock
   const depConnections = useMemo(() => {
-    if (!hoveredId) return [];
+    if (!activeChainId) return [];
     const conns: { fromId: string; toId: string }[] = [];
     // Walk upstream
     const visited = new Set<string>();
-    const queue = [hoveredId];
+    const queue = [activeChainId];
     while (queue.length > 0) {
       const current = queue.shift()!;
       if (visited.has(current)) continue;
@@ -78,7 +84,7 @@ export function Roadmap() {
     }
     // Walk downstream
     const downVisited = new Set<string>();
-    const downQueue = [hoveredId];
+    const downQueue = [activeChainId];
     while (downQueue.length > 0) {
       const current = downQueue.shift()!;
       if (downVisited.has(current)) continue;
@@ -91,15 +97,15 @@ export function Roadmap() {
       }
     }
     return conns;
-  }, [hoveredId, initiatives, initMap]);
+  }, [activeChainId, initiatives, initMap]);
 
   const chainIds = useMemo(() => {
-    if (!hoveredId) return null;
+    if (!activeChainId) return null;
     const ids = new Set<string>();
     depConnections.forEach(c => { ids.add(c.fromId); ids.add(c.toId); });
-    ids.add(hoveredId);
+    ids.add(activeChainId);
     return ids;
-  }, [hoveredId, depConnections]);
+  }, [activeChainId, depConnections]);
 
   // Value chain spotlight
   const spotlightValueChain = filters.spotlightValueChain;
@@ -201,6 +207,7 @@ export function Roadmap() {
   const handleBackgroundClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       setSelectedItem(null);
+      setLockedChainId(null);
     }
   };
 
@@ -372,7 +379,10 @@ export function Roadmap() {
                   onHoverStart={setHoveredId}
                   onHoverEnd={() => setHoveredId(null)}
                   chainIds={chainIds}
+                  onChainLock={setLockedChainId}
+                  lockedChainId={lockedChainId}
                 />
+                <ResourceBar initiatives={getInitiativesForZone(dim.key, 'near')} capabilities={capabilities} />
               </div>
             )}
 
@@ -401,7 +411,10 @@ export function Roadmap() {
                   onHoverStart={setHoveredId}
                   onHoverEnd={() => setHoveredId(null)}
                   chainIds={chainIds}
+                  onChainLock={setLockedChainId}
+                  lockedChainId={lockedChainId}
                 />
+                <ResourceBar initiatives={getInitiativesForZone(dim.key, 'far')} capabilities={capabilities} />
               </div>
             )}
           </div>
