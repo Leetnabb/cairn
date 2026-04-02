@@ -67,7 +67,6 @@ export default function App() {
 
   // Redirect to roadmap if active view belongs to a disabled module
   useEffect(() => {
-    if (view === 'capabilities' && !modules.capabilities) setView('roadmap');
     if (view === 'effects' && !modules.effects) setView('roadmap');
   }, [modules, view, setView]);
 
