@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MATURITY_COLORS, RISK_COLORS } from '../../types';
 import type { Capability, Initiative } from '../../types';
@@ -14,6 +14,10 @@ interface Props {
   zoomLevel?: number;
   initiatives?: Initiative[];
   elevated?: boolean;
+  registerChipRef?: (id: string, el: HTMLElement | null) => void;
+  hoveredL2Id?: string | null;
+  synergyTargets?: Set<string> | null;
+  onL2Hover?: (id: string | null) => void;
 }
 
 const STEPS = [1, 2, 3] as const;
@@ -29,6 +33,10 @@ export function MaturityChevron({
   zoomLevel = 1,
   initiatives = [],
   elevated = false,
+  registerChipRef,
+  hoveredL2Id,
+  synergyTargets,
+  onL2Hover,
 }: Props) {
   const { t } = useTranslation();
 
@@ -77,6 +85,18 @@ export function MaturityChevron({
   const currentMaturity = domain.maturity;
   const targetMaturity = domain.maturityTarget ?? currentMaturity;
 
+  // Determine if a step is a strategic gap (only in maturity mode)
+  const isStrategicGap = useCallback((step: number): boolean => {
+    if (viewMode !== 'maturity') return false;
+    if (!domain.maturityTarget) return false;
+    if (step > domain.maturityTarget) return false;
+    if (step <= currentMaturity) return false;
+    // Check: no L2 children have maturity at this step level AND no L2 children placed in this step
+    const hasChildAtLevel = children.some(c => c.maturity >= step);
+    const hasChildInStep = childrenByStep[step]?.length > 0;
+    return !hasChildAtLevel && !hasChildInStep;
+  }, [viewMode, domain.maturityTarget, currentMaturity, children, childrenByStep]);
+
   const getStepStyle = (step: number) => {
     const colors = viewMode === 'maturity' ? MATURITY_COLORS : RISK_COLORS;
 
@@ -116,12 +136,18 @@ export function MaturityChevron({
     return RISK_COLORS[cap.risk];
   };
 
+  // Callback ref for chip registration
+  const chipRef = useCallback((id: string) => (el: HTMLElement | null) => {
+    registerChipRef?.(id, el);
+  }, [registerChipRef]);
+
   return (
     <div className="flex items-stretch gap-0 min-w-0 flex-1">
       {STEPS.map((step, idx) => {
         const style = getStepStyle(step);
         const capsInStep = childrenByStep[step];
         const initCount = initiativesByStep[step];
+        const gap = isStrategicGap(step);
 
         return (
           <div
@@ -134,12 +160,13 @@ export function MaturityChevron({
               className={`h-full flex flex-col gap-1 ${isHeatmap ? 'min-h-[28px] px-1 py-1' : elevated ? 'min-h-[64px] px-3 py-2' : 'min-h-[56px] px-3 py-2'}`}
               style={{
                 backgroundColor: style.variant === 'filled' ? `${style.borderColor}${isHeatmap ? '60' : '10'}` : style.backgroundColor,
-                borderWidth: style.variant === 'target' ? '2px' : '1px',
-                borderStyle: style.variant === 'target' ? 'dashed' : 'solid',
-                borderColor: style.borderColor,
+                borderWidth: gap ? '2px' : style.variant === 'target' ? '2px' : '1px',
+                borderStyle: gap ? 'dashed' : style.variant === 'target' ? 'dashed' : 'solid',
+                borderColor: gap ? '#f87171' : style.borderColor,
                 borderRadius: idx === 0 ? '6px 0 0 6px' : idx === 2 ? '0 6px 6px 0' : '0',
-                borderLeftWidth: idx === 0 ? '1px' : '0',
+                borderLeftWidth: idx === 0 ? (gap ? '2px' : '1px') : '0',
                 opacity: style.opacity,
+                animation: gap ? 'pulse-gap 2s ease-in-out infinite' : undefined,
                 clipPath: idx < 2
                   ? 'polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%' + (idx > 0 ? ', 12px 50%)' : ')')
                   : (idx > 0 ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%, 12px 50%)' : undefined),
@@ -160,6 +187,19 @@ export function MaturityChevron({
                     )}
                   </div>
 
+                  {/* Strategic Gap indicator */}
+                  {gap && capsInStep.length === 0 && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <svg width="12" height="12" viewBox="0 0 20 20" fill="none" className="shrink-0">
+                        <path d="M10 2L18 17H2L10 2Z" stroke="#f87171" strokeWidth="1.5" fill="#f8717120" />
+                        <text x="10" y="14" textAnchor="middle" fontSize="10" fill="#f87171" fontWeight="bold">!</text>
+                      </svg>
+                      <span className="text-[8px] text-text-tertiary italic">
+                        {t('maturityChevron.strategicGap')}
+                      </span>
+                    </div>
+                  )}
+
                   {/* L2 chips */}
                   {capsInStep.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-0.5">
@@ -169,16 +209,35 @@ export function MaturityChevron({
                         const color = getIndicatorColor(child);
                         const linkedNames = isExpanded ? (initiativeNamesForCap[child.id] ?? []) : [];
 
+                        // Synergy styling
+                        const isSynergySource = hoveredL2Id === child.id;
+                        const isSynergyTarget = synergyTargets?.has(child.id) ?? false;
+                        const isSynergyActive = hoveredL2Id !== null && synergyTargets !== null;
+                        const isFadedBySynergy = isSynergyActive && !isSynergySource && !isSynergyTarget;
+
                         return (
                           <button
                             key={child.id}
+                            ref={chipRef(child.id)}
                             onClick={() => onSelectItem(child.id)}
+                            onMouseEnter={() => onL2Hover?.(child.id)}
+                            onMouseLeave={() => onL2Hover?.(null)}
                             title={activityNames[child.id]?.join(', ') || child.description}
-                            className={`inline-flex flex-col gap-0.5 px-1.5 py-0.5 rounded text-[9px] border transition-all text-left ${
+                            className={`inline-flex flex-col gap-0.5 px-1.5 py-0.5 rounded text-[9px] border text-left ${
                               isSelected
                                 ? 'border-primary shadow-selected bg-white'
                                 : 'border-border/50 bg-white/80 hover:shadow-hover'
                             }`}
+                            style={{
+                              transition: 'all 200ms ease',
+                              opacity: isFadedBySynergy ? 0.3 : 1,
+                              transform: isSynergyTarget ? 'scale(1.05)' : undefined,
+                              boxShadow: isSynergyTarget
+                                ? '0 0 12px rgba(234, 179, 8, 0.4)'
+                                : isSynergySource
+                                  ? '0 0 8px rgba(234, 179, 8, 0.3)'
+                                  : undefined,
+                            }}
                           >
                             <div className="flex items-center gap-1">
                               <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
