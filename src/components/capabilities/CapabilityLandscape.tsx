@@ -440,7 +440,11 @@ export function CapabilityLandscape() {
                   const circumference = 2 * Math.PI * radius;
                   const offset = circumference * (1 - Math.min(progress, 1));
                   return (
-                    <div className="flex items-center gap-1 mt-0.5">
+                    <button
+                      className="flex items-center gap-1 mt-0.5 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={(e) => { e.stopPropagation(); setSelectedItem({ type: 'capability', id: domain.id }); }}
+                      title={t('capLandscape.clickToViewDetails', `${domain.maturity}/${target} — ${t('common.clickForDetails', 'Klikk for detaljer')}`)}
+                    >
                       <svg width={size} height={size} className="shrink-0" style={{ transform: 'rotate(-90deg)' }}>
                         <circle
                           cx={size / 2} cy={size / 2} r={radius}
@@ -460,7 +464,7 @@ export function CapabilityLandscape() {
                       <span className="text-[8px] font-medium text-text-secondary leading-none">
                         {domain.maturity}/{target}
                       </span>
-                    </div>
+                    </button>
                   );
                 })()}
               </div>
