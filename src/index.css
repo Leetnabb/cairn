@@ -173,13 +173,17 @@
 
 /* ───────────────────────────────────────────────
    Global mode transition rules
+   Only apply mode transitions when actively switching
    ─────────────────────────────────────────────── */
-*, *::before, *::after {
+.mode-transitioning,
+.mode-transitioning *,
+.mode-transitioning *::before,
+.mode-transitioning *::after {
   transition:
     background-color var(--transition-mode),
     border-color var(--transition-mode),
     color var(--transition-mode),
-    box-shadow var(--transition-mode);
+    box-shadow var(--transition-mode) !important;
 }
 
 .no-mode-transition {

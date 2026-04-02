@@ -184,9 +184,9 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
         <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
         {/* Compact info line */}
         <div className="text-[8px] text-text-tertiary mt-0.5">
-          {capCount > 0 && <span>{capCount} kap</span>}
+          {capCount > 0 && <span>{capCount} {t('initBox.cap')}</span>}
           {capCount > 0 && depCount > 0 && <span> &middot; </span>}
-          {depCount > 0 && <span>{depCount} dep</span>}
+          {depCount > 0 && <span>{depCount} {t('initBox.dep')}</span>}
         </div>
         {/* Deep dive extras */}
         <div className="flex flex-wrap gap-1 mt-1">
@@ -272,9 +272,9 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
       <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
       {/* Compact info line */}
       <div className="text-[8px] text-text-tertiary mt-0.5">
-        {capCount > 0 && <span>{capCount} kap</span>}
+        {capCount > 0 && <span>{capCount} {t('initBox.cap')}</span>}
         {capCount > 0 && depCount > 0 && <span> &middot; </span>}
-        {depCount > 0 && <span>{depCount} dep</span>}
+        {depCount > 0 && <span>{depCount} {t('initBox.dep')}</span>}
       </div>
     </div>
   );

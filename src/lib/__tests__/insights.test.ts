@@ -145,7 +145,7 @@ describe('computeInsights', () => {
   it('gir advarsel for initiativ uten kapabilitetstilknytning', () => {
     const init = makeInit('lonely', { capabilities: [] });
     const insights = computeInsights([init], []);
-    expect(insights.some(i => i.message.includes('insights.orphanInitiative'))).toBe(true);
+    expect(insights.some(i => i.message.includes('insights.strategyDrift'))).toBe(true);
   });
 
   it('gir advarsel for effekt uten near-initiativ', () => {

@@ -262,7 +262,7 @@ export function MaturityChevron({
                       {/* Hover tooltip */}
                       {hoveredGapStep === step && (
                         <div
-                          className="absolute left-0 bottom-full mb-1 z-30 bg-gray-900 text-white text-[9px] px-2 py-1.5 rounded shadow-lg whitespace-nowrap pointer-events-none"
+                          className="absolute left-0 bottom-full mb-1 z-30 bg-[var(--bg-app)] text-white text-[9px] px-2 py-1.5 rounded shadow-lg whitespace-nowrap pointer-events-none"
                           style={{ minWidth: '180px' }}
                         >
                           <div>{t('maturityChevron.gapTooltip', { target: step })}</div>
@@ -302,8 +302,8 @@ export function MaturityChevron({
                             title={activityNames[child.id]?.join(', ') || child.description}
                             className={`inline-flex flex-col gap-0.5 px-1.5 py-0.5 rounded text-[9px] border text-left ${
                               isSelected
-                                ? 'border-primary shadow-selected bg-white'
-                                : 'border-border/50 bg-white/80 hover:shadow-hover'
+                                ? 'border-primary shadow-selected bg-card'
+                                : 'border-border/50 bg-card/80 hover:shadow-hover'
                             }`}
                             style={{
                               transition: 'all 200ms ease, background-color 200ms ease',
@@ -363,7 +363,7 @@ export function MaturityChevron({
                           {/* Resource tooltip */}
                           {viewMode === 'resource' && hoveredResourceChip === child.id && child.resourceLoad !== undefined && (
                             <div
-                              className="absolute left-0 bottom-full mb-1 z-30 bg-gray-900 text-white text-[9px] px-2 py-1.5 rounded shadow-lg whitespace-nowrap pointer-events-none"
+                              className="absolute left-0 bottom-full mb-1 z-30 bg-[var(--bg-app)] text-white text-[9px] px-2 py-1.5 rounded shadow-lg whitespace-nowrap pointer-events-none"
                               style={{ minWidth: '160px' }}
                             >
                               {t('maturityChevron.resourceTooltip', {

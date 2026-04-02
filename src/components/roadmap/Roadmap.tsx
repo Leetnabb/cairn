@@ -35,6 +35,26 @@ export function Roadmap() {
   const cardRefs = useRef(new Map<string, HTMLElement>());
   const roadmapContainerRef = useRef<HTMLDivElement>(null);
 
+  // Build init map for dependency traversal
+  const initMap = useMemo(() => {
+    const map = new Map<string, Initiative>();
+    for (const init of initiatives) map.set(init.id, init);
+    return map;
+  }, [initiatives]);
+
+  // Pre-compute reverse deps: who depends on each initiative
+  const dependedOnBy = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const init of initiatives) {
+      for (const depId of init.dependsOn) {
+        const list = map.get(depId) ?? [];
+        list.push(init.id);
+        map.set(depId, list);
+      }
+    }
+    return map;
+  }, [initiatives]);
+
   // Cross-dimension demand: count inbound dependencies from other dimensions
   const crossDimDemand = useMemo(() => {
     const demand: Record<string, number> = {};
@@ -42,14 +62,14 @@ export function Roadmap() {
 
     for (const init of initiatives) {
       for (const depId of init.dependsOn) {
-        const dep = initiatives.find(i => i.id === depId);
+        const dep = initMap.get(depId);
         if (dep && dep.dimension !== init.dimension) {
           demand[dep.dimension] = (demand[dep.dimension] || 0) + 1;
         }
       }
     }
     return demand;
-  }, [initiatives]);
+  }, [initiatives, initMap]);
 
   const criticalPathIds = useMemo(() => {
     if (!criticalPathEnabled) return new Set<string>();
@@ -68,13 +88,6 @@ export function Roadmap() {
     );
     return { upstream, downstream };
   }, [selectedItem, initiatives]);
-
-  // Build init map for dependency traversal
-  const initMap = useMemo(() => {
-    const map = new Map<string, Initiative>();
-    for (const init of initiatives) map.set(init.id, init);
-    return map;
-  }, [initiatives]);
 
   // Active chain ID: locked takes precedence over hover
   const activeChainId = lockedChainId ?? hoveredId;
@@ -105,15 +118,13 @@ export function Roadmap() {
       const current = downQueue.shift()!;
       if (downVisited.has(current)) continue;
       downVisited.add(current);
-      for (const init of initiatives) {
-        if (init.dependsOn.includes(current)) {
-          conns.push({ fromId: current, toId: init.id });
-          downQueue.push(init.id);
-        }
+      for (const childId of (dependedOnBy.get(current) ?? [])) {
+        conns.push({ fromId: current, toId: childId });
+        downQueue.push(childId);
       }
     }
     return conns;
-  }, [activeChainId, initiatives, initMap]);
+  }, [activeChainId, initMap, dependedOnBy]);
 
   const chainIds = useMemo(() => {
     if (!activeChainId) return null;

@@ -10,13 +10,6 @@ export function CapabilityLandscape() {
   const { t } = useTranslation();
   const capabilities = useStore(s => s.capabilities);
 
-  // TEMPORARY DEBUG — trace Core/Support data flow
-  const _debugL1 = capabilities.filter(c => c.level === 1);
-  console.log('=== CapabilityLandscape Debug ===');
-  console.log('All L1 caps:', _debugL1.map(c => ({ name: c.name, type: c.capabilityType })));
-  console.log('Core count:', _debugL1.filter(c => c.capabilityType === 'core' || c.capabilityType === undefined).length);
-  console.log('Support count:', _debugL1.filter(c => c.capabilityType === 'support').length);
-  console.log('Raw capabilityType values:', _debugL1.map(c => c.capabilityType));
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const simulationEnabled = useStore(s => s.ui.simulationEnabled);
   const selectedItem = useStore(s => s.ui.selectedItem);
@@ -120,10 +113,6 @@ export function CapabilityLandscape() {
       }),
     [l1]
   );
-
-  // TEMPORARY DEBUG — confirm useMemo splits
-  console.log('coreDomains:', coreDomains.map(c => c.name));
-  console.log('supportDomains:', supportDomains.map(c => c.name));
 
   const l2ByParent = useMemo(() => {
     const map: Record<string, Capability[]> = {};
@@ -528,8 +517,8 @@ export function CapabilityLandscape() {
       <div
         className={`rounded-2xl p-4 mb-4 ${
           isCore
-            ? 'bg-slate-50/50 border-l-4 border-indigo-500'
-            : 'bg-white border border-slate-200'
+            ? 'bg-[var(--bg-lane)] border-l-4 border-primary'
+            : 'bg-card border border-border'
         }`}
         style={isCore
           ? { boxShadow: '0 2px 8px -1px rgba(99,102,241,0.10)' }
@@ -547,8 +536,8 @@ export function CapabilityLandscape() {
         >
           <h2 className={`text-xs tracking-widest uppercase ${
             isCore
-              ? 'font-black text-indigo-900'
-              : 'font-bold text-slate-400'
+              ? 'font-black text-primary'
+              : 'font-bold text-text-tertiary'
           }`}>
             {t(titleKey)}
           </h2>
@@ -639,8 +628,8 @@ export function CapabilityLandscape() {
       {coreDomains.length > 0 && supportDomains.length > 0 && (
         <div className="py-6">
           <div className="relative flex items-center justify-center">
-            <div className="absolute inset-x-0 border-t-2 border-dashed border-slate-300" />
-            <span className="relative bg-[var(--bg-app,#f8fafc)] px-4 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest text-slate-500 border border-slate-300">
+            <div className="absolute inset-x-0 border-t-2 border-dashed border-border" />
+            <span className="relative bg-[var(--bg-app,#f8fafc)] px-4 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest text-text-secondary border border-border">
               {t('capLandscape.strategicFoundation')}
             </span>
           </div>

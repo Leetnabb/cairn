@@ -91,6 +91,14 @@
       "dimCount": "dimensions"
     }
   },
+  "resourceBar": {
+    "summary": "{{active}} active / {{total}} total"
+  },
+  "initBox": {
+    "cap": "cap",
+    "dep": "dep",
+    "act": "act."
+  },
   "capLandscape": {
     "title": "Capability Landscape",
     "domains": "domains",
@@ -383,7 +391,6 @@
     "ownerCapacity": "{{owner}} has {{count}} activities \u2014 capacity risk",
     "dimensionNoNear": "{{dimension}} has no near-horizon activities",
     "orphanCapability": "\"{{name}}\" has no activities linked to it",
-    "orphanInitiative": "\"{{name}}\" has no capabilities linked to it",
     "allDimensionsCovered": "All dimensions are covered with activities",
     "strategyDrift_one": "{{count}} activity not linked to a capability (strategy drift)",
     "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)",

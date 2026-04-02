@@ -91,6 +91,14 @@
       "dimCount": "dimensjoner"
     }
   },
+  "resourceBar": {
+    "summary": "{{active}} aktive / {{total}} totalt"
+  },
+  "initBox": {
+    "cap": "kap",
+    "dep": "dep",
+    "act": "akt."
+  },
   "capLandscape": {
     "title": "Kapabilitetslandskap",
     "domains": "domener",
@@ -383,7 +391,6 @@
     "ownerCapacity": "{{owner}} har {{count}} aktiviteter \u2014 kapasitetsrisiko",
     "dimensionNoNear": "{{dimension}} har ingen nær-horisont-aktiviteter",
     "orphanCapability": "\"{{name}}\" har ingen aktiviteter knyttet til seg",
-    "orphanInitiative": "\"{{name}}\" har ingen kapabiliteter knyttet til seg",
     "allDimensionsCovered": "Alle dimensjoner er dekket med aktiviteter",
     "strategyDrift_one": "{{count}} aktivitet ikke koblet til kapabilitet (strategi-drift)",
     "strategyDrift_other": "{{count}} aktiviteter ikke koblet til kapabilitet (strategi-drift)",

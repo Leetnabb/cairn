@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Initiative, Capability } from '../../types';
 
 interface ResourceBarProps {
@@ -7,6 +8,7 @@ interface ResourceBarProps {
 }
 
 export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
+  const { t } = useTranslation();
   const { load, pct, color, bgColor, activeCount, totalCount } = useMemo(() => {
     if (initiatives.length === 0) return { load: 0, pct: 0, color: '#64748b', bgColor: '#f1f5f9', activeCount: 0, totalCount: 0 };
 
@@ -85,7 +87,7 @@ export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
       </div>
       <div className="flex justify-between items-center mt-0.5 px-0.5">
         <span className="text-[8px] text-text-tertiary">
-          {activeCount} aktive / {totalCount} totalt
+          {t('resourceBar.summary', { active: activeCount, total: totalCount })}
         </span>
         <span className="text-[8px] font-medium" style={{ color }}>
           {pct}%

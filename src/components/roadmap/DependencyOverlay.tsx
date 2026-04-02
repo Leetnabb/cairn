@@ -61,15 +61,23 @@ export function DependencyOverlay({ connections, cardRefs, containerRef }: Depen
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const update = () => setTick(t => t + 1);
-    const ro = new ResizeObserver(update);
+    let rafId: number | null = null;
+    const throttledUpdate = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        setTick(t => t + 1);
+        rafId = null;
+      });
+    };
+    const ro = new ResizeObserver(throttledUpdate);
     ro.observe(container);
-    container.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update, { passive: true });
+    container.addEventListener('scroll', throttledUpdate, { passive: true });
+    window.addEventListener('resize', throttledUpdate, { passive: true });
     return () => {
       ro.disconnect();
-      container.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
+      container.removeEventListener('scroll', throttledUpdate);
+      window.removeEventListener('resize', throttledUpdate);
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, [containerRef]);
 
