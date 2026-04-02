@@ -55,6 +55,7 @@ export interface Capability {
   risk: 1 | 2 | 3;
   description: string;
   order?: number;
+  priorityWeight?: number;  // 1-10, for sorting within Core/Support sections
   strategyIds?: string[];
   capabilityType?: 'core' | 'support';
 }

@@ -100,8 +100,9 @@
     "noSubCaps": "No sub-capabilities",
     "simulatedFrom": "{{from}} → {{to}}",
     "emptyDomains": "No capability domains yet. Add a capability to get started.",
-    "coreSection": "Core Value Streams",
-    "supportSection": "Foundation & Support"
+    "coreSection": "Core Business & Value Creation",
+    "supportSection": "Support & Foundation",
+    "strategicFoundation": "Strategic Foundation"
   },
   "capabilityType": {
     "label": "Type",

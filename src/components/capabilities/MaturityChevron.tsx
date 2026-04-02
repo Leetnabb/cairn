@@ -13,6 +13,7 @@ interface Props {
   onSelectItem: (id: string) => void;
   zoomLevel?: number;
   initiatives?: Initiative[];
+  elevated?: boolean;
 }
 
 const STEPS = [1, 2, 3] as const;
@@ -27,6 +28,7 @@ export function MaturityChevron({
   onSelectItem,
   zoomLevel = 1,
   initiatives = [],
+  elevated = false,
 }: Props) {
   const { t } = useTranslation();
 
@@ -80,10 +82,12 @@ export function MaturityChevron({
 
     if (step <= currentMaturity) {
       // Completed / current: filled
+      // elevated (core section): full opacity for all filled steps; standard: 0.6 for non-current
+      const filledOpacity = elevated ? 1 : (step === currentMaturity ? 1 : 0.6);
       return {
         backgroundColor: colors[step],
         borderColor: colors[step],
-        opacity: step === currentMaturity ? 1 : 0.6,
+        opacity: filledOpacity,
         variant: 'filled' as const,
       };
     }
@@ -127,7 +131,7 @@ export function MaturityChevron({
           >
             {/* Chevron shape via clip-path */}
             <div
-              className={`h-full flex flex-col gap-1 ${isHeatmap ? 'min-h-[28px] px-1 py-1' : 'min-h-[56px] px-3 py-2'}`}
+              className={`h-full flex flex-col gap-1 ${isHeatmap ? 'min-h-[28px] px-1 py-1' : elevated ? 'min-h-[64px] px-3 py-2' : 'min-h-[56px] px-3 py-2'}`}
               style={{
                 backgroundColor: style.variant === 'filled' ? `${style.borderColor}${isHeatmap ? '60' : '10'}` : style.backgroundColor,
                 borderWidth: style.variant === 'target' ? '2px' : '1px',
@@ -146,7 +150,7 @@ export function MaturityChevron({
                 <>
                   {/* Step label */}
                   <div className="flex items-center justify-between gap-1">
-                    <span className="text-[9px] font-semibold text-text-secondary uppercase tracking-wide">
+                    <span className={`text-[9px] uppercase tracking-wide ${elevated ? 'font-bold text-text-primary' : 'font-semibold text-text-secondary'}`}>
                       {stepLabels[idx]}
                     </span>
                     {initCount > 0 && (

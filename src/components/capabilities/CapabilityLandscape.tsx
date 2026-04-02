@@ -41,13 +41,23 @@ export function CapabilityLandscape() {
     [capabilities]
   );
 
-  // Split L1 into core and support
+  // Split L1 into core and support, sorted by priorityWeight desc then order asc
   const coreDomains = useMemo(
-    () => l1.filter(c => c.capabilityType === 'core' || c.capabilityType === undefined),
+    () => l1
+      .filter(c => c.capabilityType === 'core' || c.capabilityType === undefined)
+      .sort((a, b) => {
+        const pw = (b.priorityWeight ?? 0) - (a.priorityWeight ?? 0);
+        return pw !== 0 ? pw : (a.order ?? 0) - (b.order ?? 0);
+      }),
     [l1]
   );
   const supportDomains = useMemo(
-    () => l1.filter(c => c.capabilityType === 'support'),
+    () => l1
+      .filter(c => c.capabilityType === 'support')
+      .sort((a, b) => {
+        const pw = (b.priorityWeight ?? 0) - (a.priorityWeight ?? 0);
+        return pw !== 0 ? pw : (a.order ?? 0) - (b.order ?? 0);
+      }),
     [l1]
   );
 
@@ -382,6 +392,7 @@ export function CapabilityLandscape() {
                   onSelectItem={(id) => setSelectedItem({ type: 'capability', id })}
                   zoomLevel={zoomLevel}
                   initiatives={initiatives}
+                  elevated={section === 'core'}
                 />
               </div>
             )}
@@ -399,11 +410,25 @@ export function CapabilityLandscape() {
   ) => {
     if (domains.length === 0 && l1.length > 0) return null;
 
+    const isCore = sectionKey === 'core';
+
     return (
-      <div className={`rounded-lg ${bgClass} p-3 mb-4`}>
-        {/* Section header */}
-        <div className="flex items-center gap-2 mb-3 pl-1 border-l-[3px]"
-          style={{ borderLeftColor: sectionKey === 'core' ? 'var(--color-primary, #6366f1)' : 'var(--border-default, #d1d5db)' }}
+      <div
+        className={`rounded-lg ${bgClass} p-3 mb-4`}
+        style={isCore
+          ? { boxShadow: '0 2px 6px -1px rgba(0,0,0,0.08)' }
+          : { boxShadow: 'inset 0 4px 6px -4px rgba(0,0,0,0.06)' }
+        }
+      >
+        {/* Sticky section header */}
+        <div
+          className="flex items-center gap-2 mb-3 pl-1 border-l-[3px] bg-inherit"
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 15,
+            borderLeftColor: isCore ? 'var(--color-primary, #6366f1)' : 'var(--border-default, #d1d5db)',
+          }}
         >
           <h2 className="text-[12px] font-semibold text-text-primary">
             {t(titleKey)}
@@ -475,7 +500,7 @@ export function CapabilityLandscape() {
         </div>
       )}
 
-      {/* Core Value Streams section */}
+      {/* Core Business & Value Creation section */}
       {renderSection(
         coreDomains,
         'core',
@@ -483,7 +508,18 @@ export function CapabilityLandscape() {
         'bg-[var(--bg-app)]',
       )}
 
-      {/* Foundation & Support section */}
+      {/* Divider: "STRATEGISK FUNDAMENT" */}
+      {coreDomains.length > 0 && supportDomains.length > 0 && (
+        <div className="flex items-center gap-3 py-3 px-4">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-[9px] font-medium uppercase tracking-[0.1em] text-text-tertiary">
+            {t('capLandscape.strategicFoundation')}
+          </span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+      )}
+
+      {/* Support & Foundation section */}
       {renderSection(
         supportDomains,
         'support',

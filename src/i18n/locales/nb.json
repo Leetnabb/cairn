@@ -100,8 +100,9 @@
     "noSubCaps": "Ingen sub-kapabiliteter",
     "simulatedFrom": "{{from}} → {{to}}",
     "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang.",
-    "coreSection": "Verdiskapende kapabiliteter",
-    "supportSection": "Støttende kapabiliteter"
+    "coreSection": "Kjernevirksomhet & Verdiskaping",
+    "supportSection": "Støttefunksjoner & Fundament",
+    "strategicFoundation": "Strategisk fundament"
   },
   "capabilityType": {
     "label": "Type",
