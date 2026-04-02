@@ -387,7 +387,9 @@
     "allDimensionsCovered": "All dimensions are covered with activities",
     "strategyDrift_one": "{{count}} activity not linked to a capability (strategy drift)",
     "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)",
-    "dimensionImbalance": "{{dimension}} accounts for {{pct}}% of all initiatives ({{count}} of {{total}}). Transformations heavily weighted toward one dimension carry higher failure risk."
+    "dimensionImbalance": "{{dimension}} accounts for {{pct}}% of all initiatives ({{count}} of {{total}}). Transformations heavily weighted toward one dimension carry higher failure risk.",
+    "crossDimensionDemand": "← {{count}} demands",
+    "crossDimensionTooltip": "{{count}} initiatives in other dimensions depend on this one"
   },
   "strategy": {
     "title": "Strategies",

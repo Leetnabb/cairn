@@ -1,4 +1,5 @@
 import type { Initiative, StrategicFrame, Effect } from '../types';
+import { DIMENSIONS } from '../types';
 
 export interface DiagnosticResult {
   type: 'unaddressed_theme' | 'unaligned_initiatives' | 'effect_at_risk' | 'absorption_warning';
@@ -109,7 +110,49 @@ export function computeStrategicDiagnostics(
     ...detectStrategicDrift(initiatives, frame),
     ...assessEffectFeasibility(initiatives, effects),
     ...detectAbsorptionIssues(initiatives),
+    ...detectCrossDimensionGaps(initiatives),
   ];
+}
+
+export function detectCrossDimensionGaps(initiatives: Initiative[]): DiagnosticResult[] {
+  const results: DiagnosticResult[] = [];
+  const initMap = new Map(initiatives.map(i => [i.id, i]));
+
+  const dimStats: Record<string, { own: number; inbound: number; sources: Set<string> }> = {};
+  for (const dim of DIMENSIONS) {
+    dimStats[dim.key] = { own: 0, inbound: 0, sources: new Set() };
+  }
+
+  // Count own active per dimension
+  for (const init of initiatives) {
+    const isActive = init.status === 'in_progress' || (!init.status && init.horizon === 'near');
+    if (isActive) dimStats[init.dimension].own++;
+  }
+
+  // Count inbound cross-dimension deps
+  for (const init of initiatives) {
+    for (const depId of init.dependsOn) {
+      const dep = initMap.get(depId);
+      if (dep && dep.dimension !== init.dimension) {
+        dimStats[dep.dimension].inbound++;
+        dimStats[dep.dimension].sources.add(init.dimension);
+      }
+    }
+  }
+
+  // Generate warnings
+  for (const dim of DIMENSIONS) {
+    const stats = dimStats[dim.key];
+    if (stats.inbound >= 3 && stats.inbound > stats.own * 2) {
+      results.push({
+        type: 'absorption_warning',
+        severity: 'warning',
+        message: `${dim.label} har ${stats.own} egne aktive initiativer, men ${stats.inbound} initiativer i andre dimensjoner avhenger av denne. Endringsarbeidet kan bli en flaskehals.`,
+      });
+    }
+  }
+
+  return results;
 }
 
 export function detectAbsorptionIssues(initiatives: Initiative[]): DiagnosticResult[] {

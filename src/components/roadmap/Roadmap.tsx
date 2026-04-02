@@ -35,6 +35,22 @@ export function Roadmap() {
   const cardRefs = useRef(new Map<string, HTMLElement>());
   const roadmapContainerRef = useRef<HTMLDivElement>(null);
 
+  // Cross-dimension demand: count inbound dependencies from other dimensions
+  const crossDimDemand = useMemo(() => {
+    const demand: Record<string, number> = {};
+    for (const dim of DIMENSIONS) demand[dim.key] = 0;
+
+    for (const init of initiatives) {
+      for (const depId of init.dependsOn) {
+        const dep = initiatives.find(i => i.id === depId);
+        if (dep && dep.dimension !== init.dimension) {
+          demand[dep.dimension] = (demand[dep.dimension] || 0) + 1;
+        }
+      }
+    }
+    return demand;
+  }, [initiatives]);
+
   const criticalPathIds = useMemo(() => {
     if (!criticalPathEnabled) return new Set<string>();
     const { merged } = getMergedCriticalPath(initiatives);
@@ -317,6 +333,18 @@ export function Roadmap() {
               >
                 <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} aria-hidden="true" />
                 {t(`labels.dimensions.${dim.key}`)}
+                {crossDimDemand[dim.key] >= 2 && (
+                  <span
+                    className={`ml-1 px-1 py-0.5 rounded text-[8px] font-medium whitespace-nowrap border ${
+                      crossDimDemand[dim.key] >= 4
+                        ? 'bg-red-50 text-red-600 border-red-200'
+                        : 'bg-amber-50 text-amber-600 border-amber-200'
+                    }`}
+                    title={t('insights.crossDimensionTooltip', { count: crossDimDemand[dim.key] })}
+                  >
+                    {t('insights.crossDimensionDemand', { count: crossDimDemand[dim.key] })}
+                  </span>
+                )}
                 <span className="ml-1 text-[8px] opacity-60">({t('roadmap.collapsed')})</span>
               </div>
               {showNear && <div className="rounded" style={{ backgroundColor: dim.bgLight, height: 24 }} />}
@@ -351,7 +379,19 @@ export function Roadmap() {
               aria-expanded={true}
             >
               <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} aria-hidden="true" />
-              {t(`labels.dimensions.${dim.key}`)}
+              <span className="truncate">{t(`labels.dimensions.${dim.key}`)}</span>
+              {crossDimDemand[dim.key] >= 2 && (
+                <span
+                  className={`ml-1 px-1 py-0.5 rounded text-[8px] font-medium whitespace-nowrap border ${
+                    crossDimDemand[dim.key] >= 4
+                      ? 'bg-red-50 text-red-600 border-red-200'
+                      : 'bg-amber-50 text-amber-600 border-amber-200'
+                  }`}
+                  title={t('insights.crossDimensionTooltip', { count: crossDimDemand[dim.key] })}
+                >
+                  {t('insights.crossDimensionDemand', { count: crossDimDemand[dim.key] })}
+                </span>
+              )}
             </div>
 
             {/* Near horizon — stronger colors */}

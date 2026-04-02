@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectStrategicDrift, assessEffectFeasibility, detectAbsorptionIssues, computeStrategicDiagnostics } from '../strategicDiagnostics';
+import { detectStrategicDrift, assessEffectFeasibility, detectAbsorptionIssues, detectCrossDimensionGaps, computeStrategicDiagnostics } from '../strategicDiagnostics';
 import type { Initiative, StrategicFrame, Effect } from '../../types';
 
 const makeInit = (id: string, name: string, dim: string): Initiative => ({
@@ -167,5 +167,56 @@ describe('computeStrategicDiagnostics', () => {
     ];
     const results = computeStrategicDiagnostics(initiatives, [], undefined);
     expect(results).toEqual([]);
+  });
+});
+
+describe('detectCrossDimensionGaps', () => {
+  it('warns when dimension has many inbound deps but few own initiatives', () => {
+    const inits = [
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['5'], status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'teknologi'), dependsOn: ['5'], status: 'in_progress' as const },
+      { ...makeInit('3', 'C', 'ledelse'), dependsOn: ['5'], status: 'in_progress' as const },
+      { ...makeInit('4', 'D', 'virksomhet'), dependsOn: ['5'], status: 'in_progress' as const },
+      { ...makeInit('5', 'E', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
+    ];
+    const result = detectCrossDimensionGaps(inits);
+    expect(result).toHaveLength(1);
+    expect(result[0].type).toBe('absorption_warning');
+    expect(result[0].message).toContain('Organisasjon');
+    expect(result[0].message).toContain('flaskehals');
+  });
+
+  it('does not warn when inbound deps are below threshold', () => {
+    const inits = [
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['3'], status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'ledelse'), dependsOn: ['3'], status: 'in_progress' as const },
+      { ...makeInit('3', 'C', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
+    ];
+    const result = detectCrossDimensionGaps(inits);
+    expect(result).toHaveLength(0);
+  });
+
+  it('does not warn when dimension has enough own active initiatives', () => {
+    const inits = [
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['4'], status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'ledelse'), dependsOn: ['4'], status: 'in_progress' as const },
+      { ...makeInit('3', 'C', 'virksomhet'), dependsOn: ['4'], status: 'in_progress' as const },
+      { ...makeInit('4', 'D', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
+      { ...makeInit('5', 'E', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
+    ];
+    // inbound=3, own=2, 3 > 2*2=4 is false, so no warning
+    const result = detectCrossDimensionGaps(inits);
+    expect(result).toHaveLength(0);
+  });
+
+  it('does not count same-dimension dependencies', () => {
+    const inits = [
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['2'], status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'teknologi'), dependsOn: [], status: 'in_progress' as const },
+      { ...makeInit('3', 'C', 'teknologi'), dependsOn: ['2'], status: 'in_progress' as const },
+      { ...makeInit('4', 'D', 'teknologi'), dependsOn: ['2'], status: 'in_progress' as const },
+    ];
+    const result = detectCrossDimensionGaps(inits);
+    expect(result).toHaveLength(0);
   });
 });
