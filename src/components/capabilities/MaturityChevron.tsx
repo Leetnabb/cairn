@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MATURITY_COLORS, RISK_COLORS } from '../../types';
-import type { Capability } from '../../types';
+import type { Capability, Initiative } from '../../types';
 
 interface Props {
   domain: Capability;
@@ -11,6 +11,8 @@ interface Props {
   viewMode: 'maturity' | 'risk';
   selectedItemId: string | null;
   onSelectItem: (id: string) => void;
+  zoomLevel?: number;
+  initiatives?: Initiative[];
 }
 
 const STEPS = [1, 2, 3] as const;
@@ -23,6 +25,8 @@ export function MaturityChevron({
   viewMode,
   selectedItemId,
   onSelectItem,
+  zoomLevel = 1,
+  initiatives = [],
 }: Props) {
   const { t } = useTranslation();
 
@@ -51,6 +55,22 @@ export function MaturityChevron({
     }
     return map;
   }, [childrenByStep, activityCount]);
+
+  const isHeatmap = zoomLevel <= 0.75;
+  const isExpanded = zoomLevel >= 1.25;
+
+  // Expanded zoom: linked initiative names per L2 cap
+  const initiativeNamesForCap = useMemo(() => {
+    if (!isExpanded) return {} as Record<string, string[]>;
+    const map: Record<string, string[]> = {};
+    for (const init of initiatives) {
+      for (const capId of init.capabilities) {
+        if (!map[capId]) map[capId] = [];
+        map[capId].push(init.name);
+      }
+    }
+    return map;
+  }, [isExpanded, initiatives]);
 
   const currentMaturity = domain.maturity;
   const targetMaturity = domain.maturityTarget ?? currentMaturity;
@@ -102,14 +122,14 @@ export function MaturityChevron({
         return (
           <div
             key={step}
-            className="flex-1 min-w-[120px] relative"
+            className={`flex-1 relative ${isHeatmap ? 'min-w-[40px]' : 'min-w-[120px]'}`}
             style={{ zIndex: 3 - idx }}
           >
             {/* Chevron shape via clip-path */}
             <div
-              className="h-full min-h-[56px] px-3 py-2 flex flex-col gap-1"
+              className={`h-full flex flex-col gap-1 ${isHeatmap ? 'min-h-[28px] px-1 py-1' : 'min-h-[56px] px-3 py-2'}`}
               style={{
-                backgroundColor: style.variant === 'filled' ? `${style.borderColor}10` : style.backgroundColor,
+                backgroundColor: style.variant === 'filled' ? `${style.borderColor}${isHeatmap ? '60' : '10'}` : style.backgroundColor,
                 borderWidth: style.variant === 'target' ? '2px' : '1px',
                 borderStyle: style.variant === 'target' ? 'dashed' : 'solid',
                 borderColor: style.borderColor,
@@ -121,48 +141,78 @@ export function MaturityChevron({
                   : (idx > 0 ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%, 12px 50%)' : undefined),
               }}
             >
-              {/* Step label */}
-              <div className="flex items-center justify-between gap-1">
-                <span className="text-[9px] font-semibold text-text-secondary uppercase tracking-wide">
-                  {stepLabels[idx]}
-                </span>
-                {initCount > 0 && (
-                  <span className="text-[8px] bg-white/60 text-text-tertiary px-1 py-0.5 rounded-full leading-none">
-                    {initCount}
-                  </span>
-                )}
-              </div>
+              {/* Heatmap mode: no text, no chips — just the colored block */}
+              {!isHeatmap && (
+                <>
+                  {/* Step label */}
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[9px] font-semibold text-text-secondary uppercase tracking-wide">
+                      {stepLabels[idx]}
+                    </span>
+                    {initCount > 0 && (
+                      <span className="text-[8px] bg-white/60 text-text-tertiary px-1 py-0.5 rounded-full leading-none">
+                        {initCount}
+                      </span>
+                    )}
+                  </div>
 
-              {/* L2 chips */}
-              {capsInStep.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-0.5">
-                  {capsInStep.map(child => {
-                    const isSelected = selectedItemId === child.id;
-                    const count = activityCount[child.id] ?? 0;
-                    const color = getIndicatorColor(child);
+                  {/* L2 chips */}
+                  {capsInStep.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-0.5">
+                      {capsInStep.map(child => {
+                        const isSelected = selectedItemId === child.id;
+                        const count = activityCount[child.id] ?? 0;
+                        const color = getIndicatorColor(child);
+                        const linkedNames = isExpanded ? (initiativeNamesForCap[child.id] ?? []) : [];
 
-                    return (
-                      <button
-                        key={child.id}
-                        onClick={() => onSelectItem(child.id)}
-                        title={activityNames[child.id]?.join(', ') || child.description}
-                        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] border transition-all ${
-                          isSelected
-                            ? 'border-primary shadow-selected bg-white'
-                            : 'border-border/50 bg-white/80 hover:shadow-hover'
-                        }`}
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                        <span className="truncate max-w-[80px]">{child.name}</span>
-                        {count > 0 && (
-                          <span className="text-[7px] bg-[var(--bg-hover)] text-text-tertiary px-0.5 rounded-full leading-none">
-                            {count}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
+                        return (
+                          <button
+                            key={child.id}
+                            onClick={() => onSelectItem(child.id)}
+                            title={activityNames[child.id]?.join(', ') || child.description}
+                            className={`inline-flex flex-col gap-0.5 px-1.5 py-0.5 rounded text-[9px] border transition-all text-left ${
+                              isSelected
+                                ? 'border-primary shadow-selected bg-white'
+                                : 'border-border/50 bg-white/80 hover:shadow-hover'
+                            }`}
+                          >
+                            <div className="flex items-center gap-1">
+                              <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                              <span className="truncate max-w-[80px]">{child.name}</span>
+                              {count > 0 && !isExpanded && (
+                                <span className="text-[7px] bg-[var(--bg-hover)] text-text-tertiary px-0.5 rounded-full leading-none">
+                                  {count}
+                                </span>
+                              )}
+                              {/* Expanded: show risk dot alongside maturity dot */}
+                              {isExpanded && (
+                                <span className="text-[7px] text-text-tertiary ml-0.5">
+                                  M{child.maturity} R{child.risk}
+                                </span>
+                              )}
+                            </div>
+                            {/* Expanded: show description */}
+                            {isExpanded && child.description && (
+                              <span className="text-[7px] text-text-tertiary leading-tight max-w-[120px] whitespace-normal line-clamp-2">
+                                {child.description}
+                              </span>
+                            )}
+                            {/* Expanded: show linked initiative names */}
+                            {isExpanded && linkedNames.length > 0 && (
+                              <div className="flex flex-wrap gap-0.5 mt-0.5">
+                                {linkedNames.map(name => (
+                                  <span key={name} className="text-[7px] bg-primary/10 text-primary px-1 rounded-full leading-none">
+                                    {name}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

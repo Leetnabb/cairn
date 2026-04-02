@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { simulateMaturity } from '../../lib/simulation';
@@ -16,6 +16,11 @@ export function CapabilityLandscape() {
   const setCapabilityView = useStore(s => s.setCapabilityView);
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const moveCapability = useStore(s => s.moveCapability);
+  const zoomLevel = useStore(s => s.ui.filters.zoomLevel ?? 1);
+  const setFilter = useStore(s => s.setFilter);
+
+  // Hovered L1 domain id for cross-domain dependency highlighting
+  const [hoveredCapId, setHoveredCapId] = useState<string | null>(null);
 
   // Drag state for L1 domain reordering
   const [dropDomainIndex, setDropDomainIndex] = useState<number | null>(null);
@@ -82,6 +87,106 @@ export function CapabilityLandscape() {
     }
     return names;
   }, [initiatives]);
+
+  // --- Semantic zoom ---
+  const ZOOM_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+  const stepZoom = useCallback((direction: 'in' | 'out') => {
+    const currentIdx = ZOOM_STEPS.findIndex(s => s >= zoomLevel);
+    const idx = direction === 'in'
+      ? Math.min((currentIdx === -1 ? ZOOM_STEPS.length - 1 : currentIdx) + 1, ZOOM_STEPS.length - 1)
+      : Math.max((currentIdx === -1 ? 0 : currentIdx) - 1, 0);
+    setFilter({ zoomLevel: ZOOM_STEPS[idx] });
+  }, [zoomLevel, setFilter]);
+
+  const landscapeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        stepZoom(e.deltaY < 0 ? 'in' : 'out');
+      }
+    };
+    const el = landscapeRef.current;
+    if (el) el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el?.removeEventListener('wheel', handleWheel);
+  }, [stepZoom]);
+
+  // Derived zoom tiers
+  const isHeatmap = zoomLevel <= 0.75;
+  const isExpanded = zoomLevel >= 1.25;
+
+  // --- Cross-domain dependency highlighting ---
+  // For each L1 domain, collect all L2 cap ids under it (including itself)
+  const capIdsForDomain = useMemo(() => {
+    const map: Record<string, Set<string>> = {};
+    for (const domain of l1) {
+      const children = l2ByParent[domain.id] ?? [];
+      map[domain.id] = new Set([domain.id, ...children.map(c => c.id)]);
+    }
+    return map;
+  }, [l1, l2ByParent]);
+
+  // For each L1 domain, collect initiative ids linked to it
+  const initiativeIdsForDomain = useMemo(() => {
+    const map: Record<string, Set<string>> = {};
+    for (const domain of l1) {
+      map[domain.id] = new Set<string>();
+      const capIds = capIdsForDomain[domain.id];
+      for (const init of initiatives) {
+        if (init.capabilities.some(c => capIds.has(c))) {
+          map[domain.id].add(init.id);
+        }
+      }
+    }
+    return map;
+  }, [l1, capIdsForDomain, initiatives]);
+
+  // Build initiative id -> dependsOn map
+  const initDepsMap = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const init of initiatives) map.set(init.id, init.dependsOn);
+    return map;
+  }, [initiatives]);
+
+  // When hovering an L1 domain, find all connected L1 domains (shared initiatives or dep-linked)
+  const connectedDomainIds = useMemo((): Set<string> | null => {
+    if (!hoveredCapId) return null;
+    const hoveredInitIds = initiativeIdsForDomain[hoveredCapId] ?? new Set<string>();
+    const connected = new Set<string>();
+
+    for (const domain of l1) {
+      if (domain.id === hoveredCapId) continue;
+      const domainInitIds = initiativeIdsForDomain[domain.id] ?? new Set<string>();
+
+      // Direct shared initiatives
+      for (const initId of hoveredInitIds) {
+        if (domainInitIds.has(initId)) {
+          connected.add(domain.id);
+          break;
+        }
+      }
+
+      // Dependency-linked: hovered domain's initiatives depend on this domain's initiatives
+      for (const initId of hoveredInitIds) {
+        const deps = initDepsMap.get(initId) ?? [];
+        if (deps.some(d => domainInitIds.has(d))) {
+          connected.add(domain.id);
+          break;
+        }
+      }
+
+      // Dependency-linked: this domain's initiatives depend on hovered domain's initiatives
+      for (const initId of domainInitIds) {
+        const deps = initDepsMap.get(initId) ?? [];
+        if (deps.some(d => hoveredInitIds.has(d))) {
+          connected.add(domain.id);
+          break;
+        }
+      }
+    }
+    return connected;
+  }, [hoveredCapId, l1, initiativeIdsForDomain, initDepsMap]);
 
   const getSimData = (id: string) => {
     if (!simulated) return null;
@@ -189,6 +294,11 @@ export function CapabilityLandscape() {
     const isSelected = selectedItem?.type === 'capability' && selectedItem.id === domain.id;
     const isDomainDropTarget = dropDomainIndex === domainIdx && dropSection === section && draggingId?.startsWith('l1:');
 
+    // Cross-domain highlight state
+    const isHovered = hoveredCapId === domain.id;
+    const isConnected = connectedDomainIds ? connectedDomainIds.has(domain.id) : false;
+    const isFaded = hoveredCapId !== null && !isHovered && !isConnected;
+
     return (
       <div
         key={domain.id}
@@ -198,40 +308,52 @@ export function CapabilityLandscape() {
         onDragOver={(e) => {
           if (draggingId?.startsWith('l1:')) handleL1DragOver(e, domainIdx, section);
         }}
+        onMouseEnter={() => setHoveredCapId(domain.id)}
+        onMouseLeave={() => setHoveredCapId(null)}
       >
         {isDomainDropTarget && (
           <div className="h-0.5 rounded mb-2 bg-primary" />
         )}
         <div
-          className={`flex items-stretch border rounded shadow-card overflow-hidden transition-opacity duration-150 bg-card ${
-            isSelected ? 'border-primary shadow-selected' : 'border-border'
+          className={`flex items-stretch border rounded shadow-card overflow-hidden bg-card ${
+            isSelected ? 'border-primary shadow-selected' : isConnected ? 'border-primary/60' : 'border-border'
           } ${draggingId === `l1:${domain.id}` ? 'opacity-50' : ''}`}
+          style={{
+            transition: 'opacity 150ms ease, box-shadow 150ms ease',
+            opacity: isFaded ? 0.35 : 1,
+            boxShadow: isConnected ? '0 0 0 2px var(--color-primary, #6366f1)33' : undefined,
+          }}
         >
           {/* Sticky domain name column */}
           <div
-            className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-lane)] border-r border-border cursor-pointer shrink-0 w-[180px] min-w-[180px]"
+            className={`flex items-center gap-2 bg-[var(--bg-lane)] border-r border-border cursor-pointer shrink-0 ${isHeatmap ? 'px-2 py-1 w-[120px] min-w-[120px]' : 'px-3 py-2 w-[180px] min-w-[180px]'}`}
             style={{ position: 'sticky', left: 0, zIndex: 10 }}
             onClick={() => setSelectedItem({ type: 'capability', id: domain.id })}
           >
-            <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: domainColor ?? '#94a3b8' }} />
-            <div className="flex flex-col min-w-0">
-              <span className="text-[11px] font-semibold text-text-primary truncate">{domain.name}</span>
-              <div className="flex items-center gap-1">
-                {activityCount[domain.id] > 0 && (
-                  <span
-                    className="text-[8px] bg-gray-200 text-text-secondary px-1 py-0.5 rounded-full"
-                    title={activityNames[domain.id]?.join(', ')}
-                  >
-                    {activityCount[domain.id]}
-                  </span>
-                )}
-                {domainSim?.improved && (
-                  <span className="text-[8px] text-green-600 font-medium">
-                    {domain.maturity} → {domainSim.simulatedMaturity}
-                  </span>
-                )}
+            <div className={`rounded-full shrink-0 ${isHeatmap ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} style={{ backgroundColor: domainColor ?? '#94a3b8' }} />
+            {!isHeatmap && (
+              <div className="flex flex-col min-w-0">
+                <span className="text-[11px] font-semibold text-text-primary truncate">{domain.name}</span>
+                <div className="flex items-center gap-1">
+                  {activityCount[domain.id] > 0 && (
+                    <span
+                      className="text-[8px] bg-gray-200 text-text-secondary px-1 py-0.5 rounded-full"
+                      title={activityNames[domain.id]?.join(', ')}
+                    >
+                      {activityCount[domain.id]}
+                    </span>
+                  )}
+                  {domainSim?.improved && (
+                    <span className="text-[8px] text-green-600 font-medium">
+                      {domain.maturity} → {domainSim.simulatedMaturity}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+            {isHeatmap && (
+              <span className="text-[9px] font-medium text-text-secondary truncate">{domain.name}</span>
+            )}
           </div>
 
           {/* Maturity chevron with L2 children */}
@@ -258,6 +380,8 @@ export function CapabilityLandscape() {
                   viewMode={capabilityView}
                   selectedItemId={selectedItem?.type === 'capability' ? selectedItem.id : null}
                   onSelectItem={(id) => setSelectedItem({ type: 'capability', id })}
+                  zoomLevel={zoomLevel}
+                  initiatives={initiatives}
                 />
               </div>
             )}
@@ -311,7 +435,7 @@ export function CapabilityLandscape() {
   };
 
   return (
-    <div className="h-full overflow-auto p-4">
+    <div ref={landscapeRef} className="h-full overflow-auto p-4">
       {/* Top bar */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -365,6 +489,13 @@ export function CapabilityLandscape() {
         'support',
         'capLandscape.supportSection',
         'bg-[var(--bg-lane)]',
+      )}
+
+      {/* Zoom indicator */}
+      {zoomLevel !== 1 && (
+        <div className="fixed bottom-4 right-4 bg-card border border-border rounded-md px-3 py-1.5 text-[11px] text-text-secondary shadow-md z-20">
+          {t('zoom.indicator', { level: Math.round(zoomLevel * 100) })}
+        </div>
       )}
     </div>
   );

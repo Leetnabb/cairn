@@ -26,6 +26,7 @@ export function Roadmap() {
   const roadmapViewMode = useStore(s => s.ui.roadmapViewMode);
   const setRoadmapViewMode = useStore(s => s.setRoadmapViewMode);
   const [showMoveDropdown, setShowMoveDropdown] = useState(false);
+  const [switching, setSwitching] = useState(false);
   const [collapsedDimensions, setCollapsedDimensions] = useState<Set<DimensionKey>>(new Set());
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const cardRefs = useRef(new Map<string, HTMLElement>());
@@ -203,13 +204,22 @@ export function Roadmap() {
     }
   };
 
+  const handleViewSwitch = (newMode: 'dimension' | 'capability') => {
+    if (newMode === roadmapViewMode || switching) return;
+    setSwitching(true);
+    setTimeout(() => {
+      setRoadmapViewMode(newMode);
+      setSwitching(false);
+    }, 150);
+  };
+
   if (roadmapViewMode === 'capability') {
     return (
       <div className="min-h-full">
         {/* View toggle */}
         <div className="flex items-center gap-1 px-3 pt-3 pb-1">
           <button
-            onClick={() => setRoadmapViewMode('dimension')}
+            onClick={() => handleViewSwitch('dimension')}
             className="px-2 py-0.5 rounded text-[10px] border border-border bg-card text-text-secondary hover:bg-[var(--bg-hover)]"
           >
             {t('strategyPath.dimView')}
@@ -220,7 +230,9 @@ export function Roadmap() {
             {t('strategyPath.capView')}
           </button>
         </div>
-        <CapabilityPath />
+        <div style={{ opacity: switching ? 0 : 1, transition: 'opacity 150ms ease' }}>
+          <CapabilityPath />
+        </div>
       </div>
     );
   }
@@ -244,12 +256,13 @@ export function Roadmap() {
           {t('strategyPath.dimView')}
         </button>
         <button
-          onClick={() => setRoadmapViewMode('capability')}
+          onClick={() => handleViewSwitch('capability')}
           className="px-2 py-0.5 rounded text-[10px] border border-border bg-card text-text-secondary hover:bg-[var(--bg-hover)]"
         >
           {t('strategyPath.capView')}
         </button>
       </div>
+      <div style={{ opacity: switching ? 0 : 1, transition: 'opacity 150ms ease' }}>
       {/* Empty state */}
       {initiatives.length === 0 && !hasActiveFilters && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -394,6 +407,7 @@ export function Roadmap() {
           </div>
         );
       })}
+      </div>{/* end switching fade wrapper */}
 
       {/* Bulk toolbar */}
       {selectedItems.size > 0 && roleMode === 'work' && (
