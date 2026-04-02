@@ -179,7 +179,7 @@ export type ComplexityLevel = 1 | 2 | 3;
 
 export const COMPLEXITY_FEATURES = {
   1: {
-    views: ['roadmap', 'dashboard'] as ViewMode[],
+    views: ['roadmap', 'dashboard', 'capabilities'] as ViewMode[],
     filters: ['dimensions', 'search'] as string[],
     features: ['presentationMode'] as string[],
   },

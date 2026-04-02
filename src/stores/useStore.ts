@@ -666,7 +666,7 @@ export const useStore = create<StoreState>()(
       const fallbackModules: ModuleSettings = hasExistingData
         ? { roadmap: true, capabilities: true, effects: true }
         : currentState.modules;
-      return {
+      const merged: Record<string, unknown> = {
         ...currentState,
         ...persistedRest,
         modules: (persisted.modules as ModuleSettings | undefined) ?? fallbackModules,
@@ -692,7 +692,22 @@ export const useStore = create<StoreState>()(
             return 1 as ComplexityLevel;
           })(),
         },
-      } as StoreState;
+      };
+
+      // Migrate capabilityType for existing data that predates the field
+      const caps = merged.capabilities as Capability[] | undefined;
+      if (caps && caps.length > 0 && !caps.some((c: Capability) => c.capabilityType)) {
+        const supportPatterns = ['økonomi', 'hr', 'data', 'infrastruktur', 'plattform', 'personal'];
+        merged.capabilities = caps.map((c: Capability) => {
+          if (c.level === 1 && !c.capabilityType) {
+            const isSupport = supportPatterns.some(p => c.name.toLowerCase().includes(p));
+            return { ...c, capabilityType: isSupport ? 'support' as const : 'core' as const };
+          }
+          return c;
+        });
+      }
+
+      return merged as StoreState;
     },
   })
 );

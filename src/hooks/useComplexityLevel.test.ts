@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { COMPLEXITY_FEATURES } from '../types';
 
 describe('COMPLEXITY_FEATURES', () => {
-  it('level 1 shows only roadmap and dashboard views', () => {
-    expect(COMPLEXITY_FEATURES[1].views).toEqual(['roadmap', 'dashboard']);
+  it('level 1 shows roadmap, dashboard, and capabilities views', () => {
+    expect(COMPLEXITY_FEATURES[1].views).toEqual(['roadmap', 'dashboard', 'capabilities']);
   });
 
   it('level 2 adds capabilities, effects, strategies', () => {
