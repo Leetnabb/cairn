@@ -160,7 +160,7 @@ export default function App() {
             <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
           )}
           <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
-          {modules.capabilities && isViewVisible('capabilities') && (
+          {isViewVisible('capabilities') && (
             <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
           )}
           {modules.effects && isViewVisible('effects') && (
