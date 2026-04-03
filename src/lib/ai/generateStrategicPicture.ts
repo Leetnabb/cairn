@@ -2,6 +2,7 @@ import { parseJsonObjectFromAI } from './parseJsonResponse';
 import type { DimensionKey, EffectType, Horizon } from '../../types';
 
 
+/** @deprecated Use analyzeInput + Edge Function for onboarding. Kept for direct API key mode. */
 export interface GeneratedStrategicPicture {
   strategies: Array<{
     name: string;
@@ -32,6 +33,7 @@ export interface GeneratedStrategicPicture {
   insights: string[];
 }
 
+/** @deprecated Use analyzeInput + Edge Function for onboarding. Kept for direct API key mode. */
 const SYSTEM_PROMPT = `You are a strategic advisor analyzing organizational documents to create a strategic overview.
 
 Given the input (document text or organization description), generate a COMPLETE strategic picture as JSON.

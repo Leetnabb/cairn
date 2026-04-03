@@ -66,7 +66,40 @@
       "tooMuchText": "A lot of text — results may be less focused.",
       "removeFile": "Remove file",
       "fileError": "Could not read {{filename}}",
-      "tooManyFiles": "Maximum 10 files"
+      "tooManyFiles": "Maximum 10 files",
+      "documentGuidance": "Documents that give the best results: strategy plans, business plans, board presentations, annual reports",
+      "industry": "Industry / sector",
+      "orgSize": "Organization size",
+      "industryOptions": {
+        "offentlig_forvaltning": "Public administration",
+        "helse": "Healthcare",
+        "finans": "Finance",
+        "teknologi": "Technology",
+        "industri_produksjon": "Manufacturing / Production",
+        "handel_retail": "Retail / Commerce",
+        "utdanning": "Education",
+        "annet": "Other"
+      },
+      "sizeOptions": {
+        "under_50": "Under 50 employees",
+        "50_200": "50–200 employees",
+        "200_1000": "200–1,000 employees",
+        "1000_5000": "1,000–5,000 employees",
+        "over_5000": "Over 5,000 employees"
+      },
+      "analyze": "Analyze"
+    },
+    "analysis": {
+      "title": "Document analysis",
+      "subtitle": "We've reviewed your documents and have some follow-up questions",
+      "foundSummary": "We found {{initiatives}} possible initiatives and {{effects}} effect targets",
+      "questionsIntro": "{{count}} questions will significantly improve the result",
+      "generateNow": "Generate now",
+      "analyzing": "Analyzing documents...",
+      "noFindings": "We couldn't extract specific initiatives from the documents. Add a description or proceed for suggestions based on your industry.",
+      "skipToGenerate": "Proceed",
+      "retryAnalysis": "Try again",
+      "error": "Analysis failed. You can try again or go directly to generation."
     },
     "generated": {
       "title": "Your strategic picture",
@@ -77,7 +110,10 @@
       "effects": "Effects",
       "included": "included",
       "excluded": "excluded",
-      "noData": "No data to display. Go back and upload documentation."
+      "noData": "No data to display. Go back and upload documentation.",
+      "confident": "Based on documents",
+      "suggested": "Suggested — needs confirmation",
+      "nextStepCapabilities": "Next step: Build the capability map based on your initiatives"
     },
     "insights": {
       "title": "What we see",
@@ -154,7 +190,8 @@
     "note": "Note",
     "owner": "Owner",
     "back": "Back",
-    "continue": "Continue"
+    "continue": "Continue",
+    "select": "Select"
   },
   "labels": {
     "maturity": {

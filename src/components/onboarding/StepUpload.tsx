@@ -2,8 +2,9 @@ import { useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { extractTextFromFile } from '../../lib/documentParser';
-import { generateStrategicPicture } from '../../lib/ai/generateStrategicPicture';
-import { getApiKey, setApiKey } from '../../lib/ai/claude';
+import { analyzeInput, buildOnboardingInput } from '../../lib/ai/analyzeInput';
+import { INDUSTRY_OPTIONS, SIZE_OPTIONS } from '../../lib/ai/frameworks/onboardingFramework';
+import type { IndustryKey, SizeKey } from '../../lib/ai/frameworks/onboardingFramework';
 import { useAuth } from '../../providers/AuthProvider';
 
 export function StepUpload() {
@@ -12,21 +13,23 @@ export function StepUpload() {
   const {
     orgDescription,
     uploadedFiles,
-    isGenerating,
+    industry,
+    orgSize,
+    isAnalyzing,
     generationError,
     setOrgDescription,
     addUploadedFiles,
     removeUploadedFile,
-    setGeneratedPicture,
-    setIsGenerating,
+    setIndustry,
+    setOrgSize,
+    setAnalysisResult,
+    setIsAnalyzing,
     setGenerationError,
     nextStep,
     prevStep,
   } = useOnboardingStore();
 
   const [isDragging, setIsDragging] = useState(false);
-  const [apiKeyInput, setApiKeyInput] = useState('');
-  const [persistKey, setPersistKey] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFilesProcess = useCallback(async (files: FileList) => {
@@ -69,66 +72,35 @@ export function StepUpload() {
     if (e.target.files && e.target.files.length > 0) handleFilesProcess(e.target.files);
   }, [handleFilesProcess]);
 
-  const handleGenerate = async () => {
-    const totalBudget = 150_000;
-    const descText = orgDescription.trim();
-    const descBudget = Math.min(descText.length, 10_000);
-    const fileBudget = uploadedFiles.length > 0
-      ? Math.floor((totalBudget - descBudget) / uploadedFiles.length)
-      : 0;
-
-    const fileParts = uploadedFiles
-      .map(f => `--- [${f.name}] ---\n${f.text.slice(0, fileBudget)}`)
-      .join('\n\n');
-    const descPart = descText
-      ? `--- Organisasjonsbeskrivelse ---\n${descText.slice(0, descBudget)}`
-      : '';
-    const input = [fileParts, descPart].filter(Boolean).join('\n\n');
+  const handleAnalyze = async () => {
+    const input = buildOnboardingInput(uploadedFiles, orgDescription);
     if (!input.trim()) return;
 
-    let key: string | undefined;
-    if (!isAuthenticated) {
-      key = getApiKey() ?? undefined;
-      if (!key) {
-        if (!apiKeyInput.trim()) {
-          setGenerationError(t('onboarding.upload.needApiKey'));
-          return;
-        }
-        key = apiKeyInput.trim();
-        setApiKey(key, persistKey);
-      }
-    }
-
-    setIsGenerating(true);
+    setIsAnalyzing(true);
     setGenerationError(null);
 
     try {
-      let token = isAuthenticated ? session?.access_token : undefined;
-      // Fallback: if session from context is stale, try getting it directly
-      if (isAuthenticated && !token) {
+      let token = session?.access_token;
+      if (!token) {
         const { supabase } = await import('../../lib/supabase');
         if (supabase) {
           const { data } = await supabase.auth.getSession();
           token = data.session?.access_token;
         }
       }
-      const result = await generateStrategicPicture(input, token ?? key, undefined, !!token);
-      setGeneratedPicture(result);
+      if (!token) throw new Error('Not authenticated');
+      const result = await analyzeInput(input, token, industry, orgSize);
+      setAnalysisResult(result);
       nextStep();
     } catch (err) {
-      if (err instanceof Error && err.message === 'RATE_LIMIT') {
-        setGenerationError(t('auth.rateLimitExceeded'));
-      } else {
-        setGenerationError(err instanceof Error ? err.message : t('onboarding.upload.error'));
-      }
+      setGenerationError(err instanceof Error ? err.message : t('onboarding.analysis.error'));
     } finally {
-      setIsGenerating(false);
+      setIsAnalyzing(false);
     }
   };
 
   const hasInput = uploadedFiles.length > 0 || orgDescription.trim().length > 0;
   const totalChars = uploadedFiles.reduce((sum, f) => sum + f.text.length, 0) + orgDescription.length;
-  const hasApiKey = isAuthenticated || !!getApiKey() || apiKeyInput.trim().length > 0;
 
   return (
     <div className="space-y-5">
@@ -136,6 +108,11 @@ export function StepUpload() {
         <h2 className="text-lg font-bold text-text-primary">{t('onboarding.upload.title')}</h2>
         <p className="text-[12px] text-text-secondary mt-1">{t('onboarding.upload.subtitle')}</p>
       </div>
+
+      {/* Document guidance */}
+      <p className="text-[10px] text-text-tertiary italic mb-2">
+        {t('onboarding.upload.documentGuidance')}
+      </p>
 
       {/* File drop zone */}
       <div
@@ -209,30 +186,39 @@ export function StepUpload() {
         />
       </div>
 
-      {/* API key input (shown if no key stored) */}
-      {!isAuthenticated && !getApiKey() && (
-        <div className="space-y-2">
-          <label className="text-[10px] text-text-tertiary uppercase font-medium">
-            {t('onboarding.upload.needApiKey')}
+      {/* Industry and size dropdowns */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-[10px] text-text-tertiary font-medium mb-1 block">
+            {t('onboarding.upload.industry')}
           </label>
-          <input
-            type="password"
-            value={apiKeyInput}
-            onChange={(e) => setApiKeyInput(e.target.value)}
-            placeholder={t('onboarding.upload.apiKeyPlaceholder')}
-            className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text-primary placeholder:text-text-tertiary"
-          />
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={persistKey}
-              onChange={(e) => setPersistKey(e.target.checked)}
-              className="w-3 h-3 accent-primary"
-            />
-            <span className="text-[10px] text-text-tertiary">{t('onboarding.upload.persistKey')}</span>
-          </label>
+          <select
+            value={industry}
+            onChange={(e) => setIndustry(e.target.value as IndustryKey | '')}
+            className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text-primary"
+          >
+            <option value="">{t('common.select')}</option>
+            {INDUSTRY_OPTIONS.map(key => (
+              <option key={key} value={key}>{t(`onboarding.upload.industryOptions.${key}`)}</option>
+            ))}
+          </select>
         </div>
-      )}
+        <div>
+          <label className="text-[10px] text-text-tertiary font-medium mb-1 block">
+            {t('onboarding.upload.orgSize')}
+          </label>
+          <select
+            value={orgSize}
+            onChange={(e) => setOrgSize(e.target.value as SizeKey | '')}
+            className="w-full px-3 py-2 text-[12px] border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text-primary"
+          >
+            <option value="">{t('common.select')}</option>
+            {SIZE_OPTIONS.map(key => (
+              <option key={key} value={key}>{t(`onboarding.upload.sizeOptions.${key}`)}</option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {/* Error message */}
       {generationError && (
@@ -255,19 +241,19 @@ export function StepUpload() {
           &larr; {t('common.back')}
         </button>
         <button
-          onClick={handleGenerate}
-          disabled={isGenerating || !hasInput || !hasApiKey}
+          onClick={handleAnalyze}
+          disabled={isAnalyzing || !hasInput || !isAuthenticated}
           className="flex items-center gap-2 px-4 py-2 text-[11px] font-medium bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isGenerating ? (
+          {isAnalyzing ? (
             <>
               <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 12a9 9 0 1 1-6.219-8.56" />
               </svg>
-              {t('onboarding.upload.generating')}
+              {t('onboarding.analysis.analyzing')}
             </>
           ) : (
-            t('onboarding.upload.generate')
+            t('onboarding.upload.analyze')
           )}
         </button>
       </div>
