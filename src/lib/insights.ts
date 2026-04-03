@@ -1,6 +1,7 @@
-import type { Initiative, Capability, Effect, EffectType } from '../types';
+import type { Initiative, Capability, Effect, EffectType, StrategicFrame } from '../types';
 import { DIMENSIONS } from '../types';
 import i18n from '../i18n';
+import { computeStrategicDiagnostics } from './strategicDiagnostics';
 
 export interface Insight {
   type: 'warning' | 'info' | 'positive';
@@ -12,7 +13,7 @@ const OWNER_CAPACITY_THRESHOLD = 4;
 const MAX_ORPHAN_DISPLAY = 3;
 const EFFECT_CONCENTRATION_THRESHOLD = 3;
 
-export function computeInsights(initiatives: Initiative[], capabilities: Capability[], effects: Effect[] = []): Insight[] {
+export function computeInsights(initiatives: Initiative[], capabilities: Capability[], effects: Effect[] = [], strategicFrame?: StrategicFrame): Insight[] {
   const insights: Insight[] = [];
   const capabilityMap = new Map(capabilities.map(c => [c.id, c]));
 
@@ -59,6 +60,28 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
   for (const dim of DIMENSIONS) {
     if (!nearDims.has(dim.key)) {
       insights.push({ type: 'info', message: i18n.t('insights.dimensionNoNear', { dimension: i18n.t(`labels.dimensions.${dim.key}`) }) });
+    }
+  }
+
+  // Dimension imbalance: one dimension dominates (>60%)
+  if (initiatives.length >= 5) {
+    const dimCounts: Record<string, number> = {};
+    for (const dim of DIMENSIONS) dimCounts[dim.key] = 0;
+    for (const init of initiatives) dimCounts[init.dimension] = (dimCounts[init.dimension] || 0) + 1;
+
+    for (const dim of DIMENSIONS) {
+      const pct = Math.round((dimCounts[dim.key] / initiatives.length) * 100);
+      if (pct > 60) {
+        insights.push({
+          type: 'warning',
+          message: i18n.t('insights.dimensionImbalance', {
+            dimension: i18n.t(`labels.dimensions.${dim.key}`),
+            pct,
+            count: dimCounts[dim.key],
+            total: initiatives.length,
+          }),
+        });
+      }
     }
   }
 
@@ -129,6 +152,11 @@ export function computeInsights(initiatives: Initiative[], capabilities: Capabil
         }
       }
     }
+  }
+
+  const diagnostics = computeStrategicDiagnostics(initiatives, effects, strategicFrame);
+  for (const diag of diagnostics) {
+    insights.push({ type: diag.severity, message: diag.message });
   }
 
   return insights;

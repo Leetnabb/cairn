@@ -41,7 +41,7 @@ export function CompareView() {
       case 'moved': return 'bg-yellow-100 border-yellow-300';
       case 'only-a': return 'bg-red-50 border-red-300';
       case 'only-b': return 'bg-green-50 border-green-300';
-      default: return 'bg-white border-border';
+      default: return 'bg-card border-border';
     }
   };
 
@@ -105,7 +105,7 @@ export function CompareView() {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Legend */}
-      <div className="flex items-center gap-3 px-4 py-1.5 border-b border-border bg-gray-50">
+      <div className="flex items-center gap-3 px-4 py-1.5 border-b border-border bg-[var(--bg-lane)]">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded border border-yellow-300 bg-yellow-100" />
           <span className="text-[9px] text-text-secondary">{t('scenarios.changedPosition')}</span>
@@ -126,7 +126,7 @@ export function CompareView() {
       </div>
       {/* Effect coverage */}
       {effects.length > 0 && (
-        <div className="px-4 py-1.5 border-b border-border bg-white">
+        <div className="px-4 py-1.5 border-b border-border bg-card">
           <div className="text-[10px] font-semibold mb-1">{t('effects.effectCoverage')}</div>
           <div className="flex gap-3">
             {(['cost', 'quality', 'speed', 'compliance', 'strategic'] as EffectType[]).map(type => {
@@ -154,11 +154,11 @@ export function CompareView() {
       {/* Side by side */}
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 border-r border-border flex flex-col">
-          <div className="px-3 py-1 bg-gray-50 text-[10px] font-semibold text-text-secondary border-b border-border">{activeLabel}</div>
+          <div className="px-3 py-1 bg-[var(--bg-lane)] text-[10px] font-semibold text-text-secondary border-b border-border">{activeLabel}</div>
           {renderSide(activeInits)}
         </div>
         <div className="flex-1 flex flex-col">
-          <div className="px-3 py-1 bg-gray-50 text-[10px] font-semibold text-text-secondary border-b border-border">{compareLabel}</div>
+          <div className="px-3 py-1 bg-[var(--bg-lane)] text-[10px] font-semibold text-text-secondary border-b border-border">{compareLabel}</div>
           {renderSide(compareInits)}
         </div>
       </div>

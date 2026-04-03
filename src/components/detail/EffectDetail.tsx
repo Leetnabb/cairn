@@ -95,7 +95,7 @@ export function EffectDetail({ effect }: Props) {
             {relatedCaps.map(c => (
               <button key={c.id}
                 onClick={() => setSelectedItem({ type: 'capability', id: c.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary">
+                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
                 {c.name}
               </button>
             ))}
@@ -111,7 +111,7 @@ export function EffectDetail({ effect }: Props) {
             {relatedInits.map(i => (
               <button key={i.id}
                 onClick={() => setSelectedItem({ type: 'initiative', id: i.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary">
+                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
                 {i.name}
               </button>
             ))}

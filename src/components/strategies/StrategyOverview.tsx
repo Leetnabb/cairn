@@ -55,7 +55,7 @@ export function StrategyOverview() {
           {strategyData.map(({ s, linkedCaps, linkedInits, nearCount, farCount, capsProgressing, coverageOk }) => (
             <div
               key={s.id}
-              className="bg-white rounded-lg border border-border p-4 hover:border-primary/40 transition-colors"
+              className="bg-card rounded-lg border border-border p-4 hover:border-primary/40 transition-colors"
             >
               {/* Header row */}
               <div className="flex items-start gap-3 mb-3">
@@ -104,7 +104,7 @@ export function StrategyOverview() {
                       <button
                         key={cap.id}
                         onClick={() => setSelectedItem({ type: 'capability', id: cap.id })}
-                        className="w-full flex items-center gap-3 px-2.5 py-1.5 rounded bg-gray-50 hover:bg-gray-100 border border-border/50 transition-colors text-left"
+                        className="w-full flex items-center gap-3 px-2.5 py-1.5 rounded bg-[var(--bg-lane)] hover:bg-[var(--bg-hover)] border border-border/50 transition-colors text-left"
                       >
                         {/* Maturity bar */}
                         <div className="flex items-center gap-1 shrink-0">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useComplexityLevel } from '../../hooks/useComplexityLevel';
 import type { Initiative, Capability, Effect, ValueChain } from '../../types';
 import { DimensionHealth } from './DimensionHealth';
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export function DeepDive({ initiatives, capabilities, effects, valueChains }: Props) {
+  const { t } = useTranslation();
   const { level } = useComplexityLevel();
   const [expanded, setExpanded] = useState(false);
 
@@ -31,7 +33,7 @@ export function DeepDive({ initiatives, capabilities, effects, valueChains }: Pr
         className="w-full flex items-center justify-between px-4 py-3 bg-slate-800 rounded border border-slate-700 hover:brightness-105 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-slate-500"
       >
         <span className="text-sm font-semibold text-slate-200">
-          Dypdykk / Deep dive
+          {t('dashboard.layer3Title')}
         </span>
         <svg
           width="16"
@@ -50,48 +52,48 @@ export function DeepDive({ initiatives, capabilities, effects, valueChains }: Pr
       {expanded && (
         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* DimensionHealth */}
-          <div className="bg-white rounded border border-border p-3">
-            <h3 className="text-[11px] font-semibold mb-2">Dimensjonshelse</h3>
+          <div className="bg-card rounded border border-border p-3">
+            <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.dimensionHealth')}</h3>
             <DimensionHealth initiatives={initiatives} />
           </div>
 
           {/* MaturityJourney */}
-          <div className="bg-white rounded border border-border p-3">
-            <h3 className="text-[11px] font-semibold mb-2">Modenhetreise</h3>
+          <div className="bg-card rounded border border-border p-3">
+            <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.maturityJourney')}</h3>
             <MaturityJourney capabilities={capabilities} />
           </div>
 
           {/* OwnerLoad */}
-          <div className="bg-white rounded border border-border p-3">
-            <h3 className="text-[11px] font-semibold mb-2">Eierbelastning</h3>
+          <div className="bg-card rounded border border-border p-3">
+            <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.ownerLoad')}</h3>
             <OwnerLoad initiatives={initiatives} />
           </div>
 
           {/* CriticalPathNarrative */}
-          <div className="bg-white rounded border border-border p-3">
-            <h3 className="text-[11px] font-semibold mb-2">Kritisk sti</h3>
+          <div className="bg-card rounded border border-border p-3">
+            <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.criticalPath')}</h3>
             <CriticalPathNarrative initiatives={initiatives} />
           </div>
 
           {/* StrategicBottlenecks */}
-          <div className="bg-white rounded border border-border p-3">
-            <h3 className="text-[11px] font-semibold mb-2">Strategiske flaskehalser</h3>
+          <div className="bg-card rounded border border-border p-3">
+            <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.strategicBottlenecks')}</h3>
             <StrategicBottlenecks />
           </div>
 
           {/* ValueChainView */}
-          <div className="bg-white rounded border border-border p-3">
-            <h3 className="text-[11px] font-semibold mb-2">Verdikjeder</h3>
+          <div className="bg-card rounded border border-border p-3">
+            <h3 className="text-[11px] font-semibold mb-2">{t('dashboard.valueChains')}</h3>
             <ValueChainView initiatives={initiatives} valueChains={valueChains} />
           </div>
 
           {/* EffectFunnel */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <EffectFunnel initiatives={initiatives} capabilities={capabilities} effects={effects} />
           </div>
 
           {/* SnapshotList */}
-          <div className="bg-white rounded border border-border p-3">
+          <div className="bg-card rounded border border-border p-3">
             <SnapshotList />
           </div>
         </div>

@@ -89,7 +89,7 @@ export function StrategyDetail({ strategy }: Props) {
                 key={p}
                 onClick={() => setEditPriority(p)}
                 className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                  editPriority === p ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                  editPriority === p ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                 }`}
               >
                 {p}
@@ -143,7 +143,7 @@ export function StrategyDetail({ strategy }: Props) {
               <button
                 key={c.id}
                 onClick={() => setSelectedItem({ type: 'capability', id: c.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary"
+                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary"
               >
                 {c.name}
               </button>

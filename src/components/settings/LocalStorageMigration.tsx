@@ -55,7 +55,7 @@ export function LocalStorageMigration() {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md mx-4">
-      <div className="bg-white border border-border rounded-xl shadow-xl p-5">
+      <div className="bg-card border border-border rounded-xl shadow-xl p-5">
         <h3 className="text-[13px] font-semibold text-text-primary mb-2">
           {t('migration.title')}
         </h3>
@@ -73,7 +73,7 @@ export function LocalStorageMigration() {
           <button
             onClick={dismiss}
             disabled={importing}
-            className="flex-1 px-4 py-2 text-[11px] border border-border rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors text-text-secondary"
+            className="flex-1 px-4 py-2 text-[11px] border border-border rounded-lg hover:bg-[var(--bg-hover)] disabled:opacity-40 transition-colors text-text-secondary"
           >
             {t('migration.skip')}
           </button>

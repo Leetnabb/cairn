@@ -10,7 +10,7 @@ export function RoleModeToggle() {
     <button
       onClick={() => setBoardViewMode(!boardViewMode)}
       className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium transition-colors ${
-        boardViewMode ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-gray-100'
+        boardViewMode ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
       }`}
       title={t('board.title')}
       aria-label={t('board.title')}

@@ -34,7 +34,7 @@
   "modules": {
     "title": "Moduler",
     "roadmap": "Strategi-sti",
-    "roadmapDesc": "Planlegg og prioriter initiativer – fra strategi til gjennomføring",
+    "roadmapDesc": "Se hva organisasjonen gjør — og om det henger sammen med retningen",
     "capabilities": "Kapabiliteter",
     "capabilitiesDesc": "Kartlegg organisasjonens evner og modenhetsnivå",
     "effects": "Effekter",
@@ -127,6 +127,14 @@
       "dimCount": "dimensjoner"
     }
   },
+  "resourceBar": {
+    "summary": "{{active}} aktive / {{total}} totalt"
+  },
+  "initBox": {
+    "cap": "kap",
+    "dep": "dep",
+    "act": "akt."
+  },
   "capLandscape": {
     "title": "Kapabilitetslandskap",
     "domains": "domener",
@@ -135,7 +143,25 @@
     "activities": "{{count}} aktivitet(er)",
     "noSubCaps": "Ingen sub-kapabiliteter",
     "simulatedFrom": "{{from}} → {{to}}",
-    "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang."
+    "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang.",
+    "coreSection": "Kjernevirksomhet & Verdiskaping",
+    "supportSection": "Støttefunksjoner & Fundament",
+    "strategicFoundation": "Strategisk fundament"
+  },
+  "capabilityType": {
+    "label": "Type",
+    "core": "Verdiskapende",
+    "support": "Støttende",
+    "coreDesc": "Direkte verdiskapende for sluttbruker",
+    "supportDesc": "Støttefunksjon som muliggjør verdiskaping"
+  },
+  "maturityChevron": {
+    "establish": "Etablere",
+    "optimize": "Optimalisere",
+    "innovate": "Innovasjon",
+    "strategicGap": "Strategisk gap",
+    "gapTooltip": "Ambisjon er satt til {{target}}, men ingen initiativer er planlagt i denne fasen",
+    "resourceTooltip": "Belastning: {{load}}% | Innsats: {{effort}}"
   },
   "common": {
     "save": "Lagre",
@@ -174,6 +200,9 @@
       "2": "Medium",
       "3": "Høy"
     },
+    "resource": {
+      "label": "Ressurser"
+    },
     "risk": {
       "label": "Risiko",
       "1": "Lav",
@@ -190,12 +219,14 @@
       "label": "Status",
       "planned": "Planlagt",
       "in_progress": "Pågår",
-      "done": "Fullført"
+      "done": "Fullført",
+      "stopped": "Stoppet",
+      "changed_direction": "Endret retning"
     },
     "horizon": {
       "label": "Horisont",
-      "near": "Nær",
-      "far": "Lang",
+      "near": "Nå",
+      "far": "Senere",
       "all": "Alle",
       "nearFull": "Nær horisont",
       "farFull": "Lang horisont",
@@ -229,7 +260,7 @@
     "collapsed": "Kollapset",
     "expand": "Utvid",
     "emptyTitle": "Ingen initiativer ennå",
-    "emptyBody": "Legg til et initiativ for å begynne å bygge din strategisti.",
+    "emptyBody": "Legg til et initiativ for å begynne å se det strategiske bildet.",
     "dragHint": "Dra aktiviteter hit",
     "newActivity": "Ny aktivitet"
   },
@@ -238,6 +269,9 @@
     "capView": "Per kapabilitet",
     "unlinked": "Ukoblet",
     "noCaps": "Ingen kapabiliteter definert. Legg til kapabiliteter for å bruke kapabilitetsvisningen."
+  },
+  "capPath": {
+    "maturityGoal": "Mål: {{target}}"
   },
   "dashboard": {
     "title": "Dashbord",
@@ -273,7 +307,18 @@
     "bottleneckNoInitiatives": "Ingen koblede aktiviteter",
     "bottleneckUnderserviced": "Underbemannede kapabiliteter",
     "bottleneckBlocked": "Blokkerte aktiviteter",
-    "noBottlenecks": "Ingen strategiske flaskehalser oppdaget"
+    "noBottlenecks": "Ingen strategiske flaskehalser oppdaget",
+    "noStrategicFrame": "Definer strategiske rammer i innstillinger"
+  },
+  "strategicHealth": {
+    "noLink": "uten kobling",
+    "fullCoverage": "Full dekning",
+    "avgMaturity": "Snitt modenhet",
+    "noGap": "Ingen gap",
+    "drift": "Drift",
+    "noDrift": "Ingen drift",
+    "noCapability": "Uten kapabilitet",
+    "dimensions": "Dimensjoner"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -393,10 +438,12 @@
     "ownerCapacity": "{{owner}} har {{count}} aktiviteter \u2014 kapasitetsrisiko",
     "dimensionNoNear": "{{dimension}} har ingen nær-horisont-aktiviteter",
     "orphanCapability": "\"{{name}}\" har ingen aktiviteter knyttet til seg",
-    "orphanInitiative": "\"{{name}}\" har ingen kapabiliteter knyttet til seg",
     "allDimensionsCovered": "Alle dimensjoner er dekket med aktiviteter",
     "strategyDrift_one": "{{count}} aktivitet ikke koblet til kapabilitet (strategi-drift)",
-    "strategyDrift_other": "{{count}} aktiviteter ikke koblet til kapabilitet (strategi-drift)"
+    "strategyDrift_other": "{{count}} aktiviteter ikke koblet til kapabilitet (strategi-drift)",
+    "dimensionImbalance": "{{dimension}} utgjør {{pct}}% av alle initiativer ({{count}} av {{total}}). Transformasjoner tungt vektet mot én dimensjon har høyere risiko for å feile.",
+    "crossDimensionDemand": "← {{count}} krav",
+    "crossDimensionTooltip": "{{count}} initiativer i andre dimensjoner avhenger av denne"
   },
   "strategy": {
     "title": "Strategier",
@@ -467,7 +514,13 @@
     "effectsWithoutNearInitiatives": "\"{{name}}\" har ingen nær-horisont-aktiviteter",
     "initiativeWithoutEffect": "\"{{name}}\" bidrar ikke til noen definert effekt",
     "missingEffectTypes": "Porteføljen mangler effekttype: {{types}}",
-    "effectConcentration": "{{count}} av {{total}} effekter avhenger av \"{{name}}\""
+    "effectConcentration": "{{count}} av {{total}} effekter avhenger av \"{{name}}\"",
+    "effectConfidence": {
+      "label": "Konfidens",
+      "confirmed": "Bekreftet",
+      "tentative": "Tentativ",
+      "under_consideration": "Under vurdering"
+    }
   },
   "comments": {
     "title": "Kommentarer",
@@ -480,9 +533,9 @@
     "hideDetail": "Skjul detaljpanel"
   },
   "ai": {
-    "chatSystemPrompt": "Du er en erfaren EA-rådgiver (Enterprise Architecture) som hjelper en ledergruppe med strategisk planlegging i verktøyet \"Cairn\".\n\n## Din rolle\n- Snakk norsk, vær konsis og rådgivende\n- Hjelp med å identifisere, strukturere og prioritere aktiviteter og kapabiliteter\n- Brukerne er ledere som beskriver behov uformelt — hjelp dem å konkretisere\n- Kun navn er påkrevd for å opprette elementer, alt annet er valgfritt\n\n## Dimensjoner\n- ledelse: Ledelse (styringsrelatert)\n- virksomhet: Virksomhet (kjernevirksomhet)\n- organisasjon: Organisasjon (mennesker/kultur)\n- teknologi: Teknologi (IT/digital)\n\n## Horisonter\n- near: Nær horisont (0–2 år)\n- far: Fjern horisont (2–5 år)\n\n## Modenhet og risiko\n- 1: Lav, 2: Medium, 3: Høy\n\n## Når du foreslår å opprette en aktivitet eller kapabilitet\nInkluder et JSON-forslag i en kodeblokk slik:\n\n```json:suggestion\n{\n  \"type\": \"initiative\",\n  \"name\": \"Navn på aktiviteten\",\n  \"description\": \"Kort beskrivelse\",\n  \"dimension\": \"teknologi\",\n  \"horizon\": \"near\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Navn på kapabilitet\"]\n}\n```\n\nFor kapabiliteter:\n```json:suggestion\n{\n  \"type\": \"capability\",\n  \"name\": \"Navn på kapabiliteten\",\n  \"description\": \"Kort beskrivelse\",\n  \"level\": 2,\n  \"suggestedParent\": \"Navn på overordnet domene\",\n  \"maturity\": 1,\n  \"risk\": 2\n}\n```\n\n## Viktige regler\n- Referer til eksisterende kapabiliteter og aktiviteter ved navn når relevant\n- Foreslå realistiske koblinger til eksisterende elementer\n- Gi alltid en kort forklaring i tillegg til JSON-forslaget\n- Du kan foreslå flere elementer i én melding\n- Ikke inkluder felter du er usikker på — brukeren kan fylle inn selv",
-    "formPromptInitiative": "Du er en EA-rådgiver som hjelper med å fylle ut et skjema for en ny aktivitet/initiativ.\n\nBasert på brukerens fritekstbeskrivelse, foreslå verdier for skjemafelter.\nReturner KUN gyldig JSON, ingen annen tekst.\n\nKontekst om eksisterende veikart følger i brukermeldingen.\n\nJSON-format:\n{\n  \"name\": \"Kort, beskrivende navn\",\n  \"description\": \"Utfyllende beskrivelse (1-2 setninger)\",\n  \"dimension\": \"ledelse|virksomhet|organisasjon|teknologi\",\n  \"horizon\": \"near|far\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Navn på relevante kapabiliteter fra veikartet\"]\n}\n\nRegler:\n- \"dimension\" må være en av: ledelse, virksomhet, organisasjon, teknologi\n- \"horizon\" må være \"near\" eller \"far\"\n- \"suggestedCapabilities\" skal inneholde navn på eksisterende kapabiliteter som er relevante\n- Utelat felter du er usikker på (unntatt name som er påkrevd)\n- Konteksten inneholder eksisterende kapabiliteter og aktiviteter — bruk disse som referanse",
-    "formPromptCapability": "Du er en EA-rådgiver som hjelper med å fylle ut et skjema for en ny kapabilitet.\n\nBasert på brukerens fritekstbeskrivelse, foreslå verdier for skjemafelter.\nReturner KUN gyldig JSON, ingen annen tekst.\n\nKontekst om eksisterende veikart følger i brukermeldingen.\n\nJSON-format:\n{\n  \"name\": \"Kort, beskrivende navn\",\n  \"description\": \"Utfyllende beskrivelse (1-2 setninger)\",\n  \"level\": 1 eller 2,\n  \"suggestedParent\": \"Navn på overordnet L1-kapabilitet (kun for level 2)\",\n  \"maturity\": 1-3,\n  \"risk\": 1-3\n}\n\nRegler:\n- \"level\" er 1 (domene) eller 2 (underkapabilitet)\n- \"maturity\": 1=Lav, 2=Medium, 3=Høy\n- \"risk\": 1=Lav, 2=Medium, 3=Høy\n- \"suggestedParent\" skal referere til en eksisterende L1-kapabilitet ved navn\n- Utelat felter du er usikker på (unntatt name som er påkrevd)",
+    "chatSystemPrompt": "Du er en erfaren EA-rådgiver (Enterprise Architecture) som hjelper en ledergruppe med strategisk navigering i verktøyet \"Cairn\".\n\n## Din rolle\n- Snakk norsk, vær konsis og rådgivende\n- Hjelp med å identifisere, strukturere og prioritere aktiviteter og kapabiliteter\n- Brukerne er ledere som beskriver behov uformelt — hjelp dem å konkretisere\n- Kun navn er påkrevd for å opprette elementer, alt annet er valgfritt\n\n## Dimensjoner\n- ledelse: Ledelse (styringsrelatert)\n- virksomhet: Virksomhet (kjernevirksomhet)\n- organisasjon: Organisasjon (mennesker/kultur)\n- teknologi: Teknologi (IT/digital)\n\n## Horisonter\n- near: Nær horisont (0–2 år)\n- far: Fjern horisont (2–5 år)\n\n## Modenhet og risiko\n- 1: Lav, 2: Medium, 3: Høy\n\n## Når du foreslår å opprette en aktivitet eller kapabilitet\nInkluder et JSON-forslag i en kodeblokk slik:\n\n```json:suggestion\n{\n  \"type\": \"initiative\",\n  \"name\": \"Navn på aktiviteten\",\n  \"description\": \"Kort beskrivelse\",\n  \"dimension\": \"teknologi\",\n  \"horizon\": \"near\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Navn på kapabilitet\"]\n}\n```\n\nFor kapabiliteter:\n```json:suggestion\n{\n  \"type\": \"capability\",\n  \"name\": \"Navn på kapabiliteten\",\n  \"description\": \"Kort beskrivelse\",\n  \"level\": 2,\n  \"suggestedParent\": \"Navn på overordnet domene\",\n  \"maturity\": 1,\n  \"risk\": 2\n}\n```\n\n## Viktige regler\n- Referer til eksisterende kapabiliteter og aktiviteter ved navn når relevant\n- Foreslå realistiske koblinger til eksisterende elementer\n- Gi alltid en kort forklaring i tillegg til JSON-forslaget\n- Du kan foreslå flere elementer i én melding\n- Ikke inkluder felter du er usikker på — brukeren kan fylle inn selv",
+    "formPromptInitiative": "Du er en EA-rådgiver som hjelper med å fylle ut et skjema for en ny aktivitet/initiativ.\n\nBasert på brukerens fritekstbeskrivelse, foreslå verdier for skjemafelter.\nReturner KUN gyldig JSON, ingen annen tekst.\n\nKontekst om det strategiske bildet følger i brukermeldingen.\n\nJSON-format:\n{\n  \"name\": \"Kort, beskrivende navn\",\n  \"description\": \"Utfyllende beskrivelse (1-2 setninger)\",\n  \"dimension\": \"ledelse|virksomhet|organisasjon|teknologi\",\n  \"horizon\": \"near|far\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Navn på relevante kapabiliteter fra strategibildet\"]\n}\n\nRegler:\n- \"dimension\" må være en av: ledelse, virksomhet, organisasjon, teknologi\n- \"horizon\" må være \"near\" eller \"far\"\n- \"suggestedCapabilities\" skal inneholde navn på eksisterende kapabiliteter som er relevante\n- Utelat felter du er usikker på (unntatt name som er påkrevd)\n- Konteksten inneholder eksisterende kapabiliteter og aktiviteter — bruk disse som referanse",
+    "formPromptCapability": "Du er en EA-rådgiver som hjelper med å fylle ut et skjema for en ny kapabilitet.\n\nBasert på brukerens fritekstbeskrivelse, foreslå verdier for skjemafelter.\nReturner KUN gyldig JSON, ingen annen tekst.\n\nKontekst om det strategiske bildet følger i brukermeldingen.\n\nJSON-format:\n{\n  \"name\": \"Kort, beskrivende navn\",\n  \"description\": \"Utfyllende beskrivelse (1-2 setninger)\",\n  \"level\": 1 eller 2,\n  \"suggestedParent\": \"Navn på overordnet L1-kapabilitet (kun for level 2)\",\n  \"maturity\": 1-3,\n  \"risk\": 1-3\n}\n\nRegler:\n- \"level\" er 1 (domene) eller 2 (underkapabilitet)\n- \"maturity\": 1=Lav, 2=Medium, 3=Høy\n- \"risk\": 1=Lav, 2=Medium, 3=Høy\n- \"suggestedParent\" skal referere til en eksisterende L1-kapabilitet ved navn\n- Utelat felter du er usikker på (unntatt name som er påkrevd)",
     "contextCapabilities": "Kapabiliteter",
     "contextActivities": "Aktiviteter",
     "contextValueChains": "Verdikjeder",
@@ -508,7 +561,7 @@
       "updated": "Oppdatert",
       "deleted": "Slettet",
       "notFound": "Ikke funnet",
-      "askHelp": "Spør AI om hjelp med veikartet.",
+      "askHelp": "Spør AI om hjelp med det strategiske bildet.",
       "askExample": "F.eks: \"Foreslå aktiviteter for digital transformasjon\"",
       "stopGeneration": "Stopp generering",
       "inputPlaceholder": "Skriv melding... (Ctrl+Enter for å sende)",
@@ -540,7 +593,7 @@
     "reload": "Last inn på nytt"
   },
   "export": {
-    "pptxTitle": "Cairn — Strategisk veikart",
+    "pptxTitle": "Cairn — Strategisk oversikt",
     "totalOverview": "Totaloversikt",
     "capabilityMap": "Kapabilitetskart",
     "crossAnalysis": "Tverrgående analyse",
@@ -561,6 +614,10 @@
     "confirmed": "Bekreftet",
     "tentative": "Tentativ",
     "under_consideration": "Under vurdering"
+  },
+  "zoom": {
+    "openDetails": "Åpne detaljer",
+    "indicator": "Zoom: {{level}}%"
   },
   "board": {
     "title": "Styrevisning",
@@ -587,13 +644,23 @@
     "atRisk": "I fare",
     "unsupported": "Uten støtte"
   },
+  "strategicFrame": {
+    "title": "Strategiske rammer",
+    "empty": "Ingen strategiske rammer er definert. Sett den brede retningen organisasjonen skal bevege seg i.",
+    "create": "Definer strategisk retning",
+    "direction": "Strategisk retning",
+    "directionPlaceholder": "F.eks. 'Bli en datadrevet og medlemsnær organisasjon'",
+    "themes": "Strategiske temaer",
+    "newThemePlaceholder": "Nytt tema..."
+  },
   "settings": {
     "title": "Innstillinger",
     "tabs": {
       "organisation": "Organisasjon",
       "team": "Team",
       "plan": "Plan",
-      "data": "Data"
+      "data": "Data",
+      "strategicFrame": "Strategiske rammer"
     },
     "org": {
       "name": "Organisasjonsnavn",

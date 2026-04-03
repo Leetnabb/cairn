@@ -7,12 +7,12 @@ export const itSelskapTemplate: IndustryTemplate = {
   icon: '💻',
   capabilities: [
     // L1 domains
-    { id: 'it1', name: 'Produktutvikling', level: 1, parent: null, maturity: 2, risk: 3, description: 'Utvikling, arkitektur og kvalitetssikring av programvare.' },
-    { id: 'it2', name: 'Tjenesteleveranse', level: 1, parent: null, maturity: 2, risk: 2, description: 'Drift, support og SLA-oppfølging.' },
-    { id: 'it3', name: 'Salg & Marked', level: 1, parent: null, maturity: 2, risk: 2, description: 'Markedsføring, salg og partnerhåndtering.' },
-    { id: 'it4', name: 'Kundeopplevelse', level: 1, parent: null, maturity: 1, risk: 3, description: 'Kundeportal, onboarding og selvbetjening.' },
-    { id: 'it5', name: 'Skyplattform & Infra', level: 1, parent: null, maturity: 2, risk: 3, description: 'Cloud-plattform, DevOps og sikkerhet.' },
-    { id: 'it6', name: 'Data & AI', level: 1, parent: null, maturity: 1, risk: 2, description: 'Dataplatform, analyse og maskinlæring.' },
+    { id: 'it1', name: 'Produktutvikling', level: 1, parent: null, maturity: 2, risk: 3, description: 'Utvikling, arkitektur og kvalitetssikring av programvare.', capabilityType: 'core' },
+    { id: 'it2', name: 'Tjenesteleveranse', level: 1, parent: null, maturity: 2, risk: 2, description: 'Drift, support og SLA-oppfølging.', capabilityType: 'core' },
+    { id: 'it3', name: 'Salg & Marked', level: 1, parent: null, maturity: 2, risk: 2, description: 'Markedsføring, salg og partnerhåndtering.', capabilityType: 'core' },
+    { id: 'it4', name: 'Kundeopplevelse', level: 1, parent: null, maturity: 1, risk: 3, description: 'Kundeportal, onboarding og selvbetjening.', capabilityType: 'core' },
+    { id: 'it5', name: 'Skyplattform & Infra', level: 1, parent: null, maturity: 2, risk: 3, description: 'Cloud-plattform, DevOps og sikkerhet.', capabilityType: 'support' },
+    { id: 'it6', name: 'Data & AI', level: 1, parent: null, maturity: 1, risk: 2, description: 'Dataplatform, analyse og maskinlæring.', capabilityType: 'support' },
     // L2 sub-capabilities
     { id: 'it1.1', name: 'Arkitektur', level: 2, parent: 'it1', maturity: 2, risk: 3, description: 'Systemarkitektur og teknisk gjeld.' },
     { id: 'it1.2', name: 'CI/CD', level: 2, parent: 'it1', maturity: 2, risk: 2, description: 'Kontinuerlig integrasjon og leveranse.' },

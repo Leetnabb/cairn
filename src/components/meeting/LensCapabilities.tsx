@@ -32,15 +32,15 @@ function DetailOverlay({ capability, linkedInitiatives, onClose }: DetailOverlay
   return (
     <div
       className="fixed inset-0 flex items-center justify-center z-50"
-      style={{ backgroundColor: '#0f172a99' }}
+      style={{ backgroundColor: 'color-mix(in srgb, var(--bg-app) 60%, transparent)' }}
       onClick={onClose}
     >
       <div
         className="rounded-xl p-8 max-w-lg w-full mx-4 shadow-2xl"
-        style={{ backgroundColor: '#1e293b', border: '2px solid #334155' }}
+        style={{ backgroundColor: 'var(--bg-hover)', border: '2px solid var(--border-medium)' }}
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-medium mb-2" style={{ color: '#f1f5f9' }}>
+        <h2 className="text-2xl font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
           {capability.name}
         </h2>
 
@@ -59,14 +59,14 @@ function DetailOverlay({ capability, linkedInitiatives, onClose }: DetailOverlay
         </div>
 
         {capability.description && (
-          <p className="text-base leading-relaxed mb-6" style={{ color: '#cbd5e1' }}>
+          <p className="text-base leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
             {capability.description}
           </p>
         )}
 
         {linkedInitiatives.length > 0 && (
           <div>
-            <p className="text-sm uppercase tracking-wider mb-3" style={{ color: '#64748b' }}>
+            <p className="text-sm uppercase tracking-wider mb-3" style={{ color: 'var(--text-secondary)' }}>
               Linked initiatives ({linkedInitiatives.length})
             </p>
             <div className="space-y-2">
@@ -74,11 +74,11 @@ function DetailOverlay({ capability, linkedInitiatives, onClose }: DetailOverlay
                 <div
                   key={init.id}
                   className="px-3 py-2 rounded"
-                  style={{ backgroundColor: '#0f172a', border: '1px solid #334155' }}
+                  style={{ backgroundColor: 'var(--bg-app)', border: '1px solid var(--border-medium)' }}
                 >
-                  <p className="text-sm" style={{ color: '#e2e8f0' }}>{init.name}</p>
+                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{init.name}</p>
                   {init.owner && (
-                    <p className="text-xs mt-0.5" style={{ color: '#64748b' }}>{init.owner}</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{init.owner}</p>
                   )}
                 </div>
               ))}
@@ -88,7 +88,7 @@ function DetailOverlay({ capability, linkedInitiatives, onClose }: DetailOverlay
 
         <button
           className="mt-6 px-4 py-2 rounded text-sm transition-colors"
-          style={{ backgroundColor: '#0f172a', color: '#64748b', border: '1px solid #334155' }}
+          style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-secondary)', border: '1px solid var(--border-medium)' }}
           onClick={onClose}
         >
           Close
@@ -122,7 +122,7 @@ export function LensCapabilities() {
   return (
     <div
       className="fixed inset-0 overflow-auto pb-24"
-      style={{ backgroundColor: '#0f172a' }}
+      style={{ backgroundColor: 'var(--bg-app)' }}
     >
       <div className="px-8 pt-8">
         <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))' }}>
@@ -137,9 +137,9 @@ export function LensCapabilities() {
                 key={cap.id}
                 className="rounded-xl overflow-hidden cursor-pointer transition-all duration-150 hover:scale-[1.01]"
                 style={{
-                  backgroundColor: '#1e293b',
-                  border: selectedCapId === cap.id ? '2px solid #6366f1' : '2px solid #334155',
-                  boxShadow: selectedCapId === cap.id ? '0 0 16px 2px #6366f155' : undefined,
+                  backgroundColor: 'var(--bg-hover)',
+                  border: selectedCapId === cap.id ? '2px solid var(--accent)' : '2px solid var(--border-medium)',
+                  boxShadow: selectedCapId === cap.id ? '0 0 16px 2px color-mix(in srgb, var(--accent) 33%, transparent)' : undefined,
                 }}
                 onClick={() => setSelectedCapId(prev => prev === cap.id ? null : cap.id)}
               >
@@ -148,7 +148,7 @@ export function LensCapabilities() {
 
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-xl font-medium leading-snug" style={{ color: '#f1f5f9' }}>
+                    <h3 className="text-xl font-medium leading-snug" style={{ color: 'var(--text-primary)' }}>
                       {cap.name}
                     </h3>
                     <span
@@ -162,8 +162,8 @@ export function LensCapabilities() {
                     <span style={{ color: matColor }}>
                       {MATURITY_LABELS[cap.maturity]} maturity
                     </span>
-                    <span style={{ color: '#475569' }}>·</span>
-                    <span style={{ color: '#94a3b8' }}>
+                    <span style={{ color: 'var(--text-tertiary)' }}>·</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>
                       {linkedCount} {linkedCount === 1 ? 'initiative' : 'initiatives'}
                     </span>
                   </div>
@@ -176,9 +176,9 @@ export function LensCapabilities() {
                           <div
                             key={sub.id}
                             className="flex items-center justify-between px-3 py-1.5 rounded"
-                            style={{ backgroundColor: '#0f172a' }}
+                            style={{ backgroundColor: 'var(--bg-app)' }}
                           >
-                            <span className="text-sm" style={{ color: '#94a3b8' }}>
+                            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                               {sub.name}
                             </span>
                             <div className="flex items-center gap-2">
@@ -187,7 +187,7 @@ export function LensCapabilities() {
                                 style={{ backgroundColor: MATURITY_COLORS[sub.maturity] }}
                               />
                               {subLinked > 0 && (
-                                <span className="text-xs" style={{ color: '#64748b' }}>
+                                <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                                   {subLinked}
                                 </span>
                               )}
@@ -203,7 +203,7 @@ export function LensCapabilities() {
           })}
 
           {l1Caps.length === 0 && (
-            <div className="col-span-full text-center py-20" style={{ color: '#475569' }}>
+            <div className="col-span-full text-center py-20" style={{ color: 'var(--text-tertiary)' }}>
               No capabilities defined.
             </div>
           )}

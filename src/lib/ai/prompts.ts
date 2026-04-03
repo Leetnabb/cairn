@@ -1,5 +1,6 @@
 import type { AppState } from '../../types';
 import i18n from '../../i18n';
+import { computeStrategicDiagnostics } from '../strategicDiagnostics';
 
 function serializeContext(state: AppState): string {
   const scenario = state.scenarioStates[state.activeScenario];
@@ -9,6 +10,18 @@ function serializeContext(state: AppState): string {
   const milestones = state.milestones;
 
   const lines: string[] = [];
+
+  if (state.strategicFrame) {
+    lines.push(`## Strategisk retning`);
+    lines.push(state.strategicFrame.direction);
+    if (state.strategicFrame.themes.length > 0) {
+      lines.push(`\n### Strategiske temaer`);
+      for (const theme of state.strategicFrame.themes) {
+        lines.push(`- ${theme.name}: ${theme.description}`);
+      }
+    }
+    lines.push('');
+  }
 
   lines.push(`## ${i18n.t('ai.contextCapabilities')}`);
   const l1 = caps.filter(c => c.level === 1);
@@ -73,7 +86,7 @@ When the user asks to delete an existing activity or capability:
 \`\`\`
 
 ## Status values
-Activities can have a status: "planned", "in_progress", or "done".`
+Activities can have a status: "planned", "in_progress", "done", "stopped", or "changed_direction".`
     : `## Oppdatering av eksisterende elementer
 Når brukeren ber om å oppdatere en eksisterende aktivitet eller kapabilitet, bruk dette formatet:
 
@@ -98,14 +111,25 @@ Når brukeren ber om å slette en eksisterende aktivitet eller kapabilitet:
 \`\`\`
 
 ## Status-verdier
-Aktiviteter kan ha status: "planned", "in_progress" eller "done".`;
+Aktiviteter kan ha status: "planned", "in_progress", "done", "stopped", eller "changed_direction".`;
+
+  const scenario = state.scenarioStates[state.activeScenario];
+  const diagnostics = computeStrategicDiagnostics(
+    scenario?.initiatives || [],
+    state.effects,
+    state.strategicFrame
+  );
+  let diagnosticsSection = '';
+  if (diagnostics.length > 0) {
+    diagnosticsSection = `\n\n## Strategisk diagnostikk\nFølgende observasjoner er gjort:\n${diagnostics.map(d => `- ${d.message}`).join('\n')}`;
+  }
 
   return `${basePrompt}
 
 ${actionInstructions}
 
-## ${i18n.language === 'en' ? 'Current roadmap' : 'Gjeldende veikart'}
-${context}`;
+## ${i18n.language === 'en' ? 'Current path' : 'Gjeldende veikart'}
+${context}${diagnosticsSection}`;
 }
 
 export function buildFormSuggestionPrompt(

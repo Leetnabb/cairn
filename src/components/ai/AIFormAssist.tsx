@@ -75,7 +75,7 @@ export default function AIFormAssist({ tabType, onSuggestion }: Props) {
             : t('ai.ui.capabilityPlaceholder')
         }
         rows={2}
-        className="w-full px-2 py-1.5 text-[10px] border border-border rounded resize-none bg-white focus:outline-none focus:border-primary"
+        className="w-full px-2 py-1.5 text-[10px] border border-border rounded resize-none bg-card focus:outline-none focus:border-primary"
       />
       <div className="flex items-center justify-between mt-1.5">
         <button

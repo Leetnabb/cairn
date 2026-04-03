@@ -1,22 +1,28 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { DimensionKey, Initiative } from '../../types';
+import type { DimensionKey, Initiative, Horizon } from '../../types';
 import { DIMENSION_MAP } from '../../types';
 import { useStore } from '../../stores/useStore';
 import { InitiativeBox } from './InitiativeBox';
 
 interface Props {
   dimension: DimensionKey;
-  horizon: 'near' | 'far';
+  horizon: Horizon;
   initiatives: Initiative[];
   criticalPathIds?: Set<string>;
   criticalPathEnabled?: boolean;
   selectedDeps?: { upstream: Set<string>; downstream: Set<string> };
   filterOpacity?: (i: Initiative) => number;
   fillHeight?: boolean;
+  cardRefs?: React.MutableRefObject<Map<string, HTMLElement>>;
+  onHoverStart?: (id: string) => void;
+  onHoverEnd?: () => void;
+  chainIds?: Set<string> | null;
+  onChainLock?: (id: string) => void;
+  lockedChainId?: string | null;
 }
 
-export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight }: Props) {
+export function DropZone({ dimension, horizon, initiatives, criticalPathIds, criticalPathEnabled, selectedDeps, filterOpacity, fillHeight, cardRefs, onHoverStart, onHoverEnd, chainIds, onChainLock, lockedChainId }: Props) {
   const { t } = useTranslation();
   const moveInitiative = useStore(s => s.moveInitiative);
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
@@ -71,12 +77,23 @@ export function DropZone({ dimension, horizon, initiatives, criticalPathIds, cri
             <div className="w-0.5 h-8 rounded mr-0.5 shrink-0" style={{ backgroundColor: dim.color }} />
           )}
           <InitiativeBox
+            ref={(el: HTMLDivElement | null) => {
+              if (cardRefs) {
+                if (el) cardRefs.current.set(init.id, el);
+                else cardRefs.current.delete(init.id);
+              }
+            }}
             initiative={init}
             isOnCriticalPath={criticalPathIds?.has(init.id)}
             criticalPathEnabled={criticalPathEnabled}
             isDependency={selectedDeps?.upstream.has(init.id)}
             isDependent={selectedDeps?.downstream.has(init.id)}
             opacity={filterOpacity ? filterOpacity(init) : 1}
+            fadedOut={chainIds != null && !chainIds.has(init.id)}
+            onHoverStart={onHoverStart}
+            onHoverEnd={onHoverEnd}
+            onChainLock={onChainLock}
+            isChainLocked={lockedChainId === init.id}
           />
         </div>
       ))}

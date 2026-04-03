@@ -70,23 +70,23 @@ function SinceLastMeeting() {
 
   return (
     <div className="border-l-[3px] pl-4 py-3" style={{ borderLeftColor: '#6366f1' }}>
-      <div className="text-[11px] uppercase tracking-wider text-[#94a3b8] mb-3 font-medium" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+      <div className="text-[11px] uppercase tracking-wider text-text-secondary mb-3 font-medium font-body">
         {t('board.sinceLastMeeting')}
       </div>
       {!diff ? (
-        <p className="text-[14px] text-[#94a3b8] italic">{t('board.noSnapshot')}</p>
+        <p className="text-[14px] text-text-secondary italic">{t('board.noSnapshot')}</p>
       ) : (
         <div className="space-y-1">
-          <p className="text-[13px] text-[#94a3b8] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+          <p className="text-[13px] text-text-secondary mb-2 font-body">
             Since {diff.date}:
           </p>
           {diff.lines.length === 0 ? (
-            <p className="text-[14px] text-[#94a3b8] italic">No significant changes since last snapshot.</p>
+            <p className="text-[14px] text-text-secondary italic">No significant changes since last snapshot.</p>
           ) : (
             <ul className="space-y-1">
               {diff.lines.map((line, i) => (
-                <li key={i} className="text-[14px] text-[#cbd5e1] flex items-start gap-2" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
-                  <span className="text-[#6366f1] mt-1 shrink-0">·</span>
+                <li key={i} className="text-[14px] text-text-secondary flex items-start gap-2 font-body">
+                  <span className="text-accent mt-1 shrink-0">·</span>
                   {line}
                 </li>
               ))}
@@ -113,7 +113,7 @@ function StrategyPath({ onSelectInitiative, onSelectCapability }: {
 
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-[#94a3b8] mb-4 font-medium" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+      <div className="text-[11px] uppercase tracking-wider text-text-secondary mb-4 font-medium font-body">
         {t('board.strategyPath')}
       </div>
       <div className="space-y-6">
@@ -131,48 +131,48 @@ function StrategyPath({ onSelectInitiative, onSelectCapability }: {
               <div className="flex items-center gap-3 mb-2 cursor-pointer" onClick={() => onSelectCapability(cap.id)}>
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: MATURITY_COLORS[cap.maturity] }} />
-                  <span className="text-[15px] font-medium text-[#f1f5f9]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
+                  <span className="text-[15px] font-medium text-text-primary font-serif">
                     {cap.name}
                   </span>
                 </div>
-                <div className="h-px flex-1 bg-[#1e2a3a]" />
-                <span className="text-[10px] text-[#4b5563]">{t('board.maturity')} {cap.maturity}/3</span>
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-[10px] text-text-tertiary">{t('board.maturity')} {cap.maturity}/3</span>
               </div>
               <div className="pl-4 space-y-1.5">
                 {near.map(i => (
                   <button
                     key={i.id}
                     onClick={() => onSelectInitiative(i.id)}
-                    className="flex items-center gap-2 w-full text-left hover:bg-[#1a2744]/30 rounded px-2 py-1 transition-colors group"
+                    className="flex items-center gap-2 w-full text-left hover:bg-bg-hover/30 rounded px-2 py-1 transition-colors group"
                     style={{ opacity: i.confidence === 'under_consideration' ? 0.6 : i.confidence === 'tentative' ? 0.85 : 1 }}
                   >
-                    <span className="text-[#6366f1] text-[11px]">→</span>
+                    <span className="text-accent text-[11px]">→</span>
                     <span
-                      className={`text-[14px] text-[#e2e8f0] ${i.confidence === 'under_consideration' ? 'italic' : ''}`}
-                      style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", lineHeight: 1.7 }}
+                      className={`text-[14px] text-text-primary ${i.confidence === 'under_consideration' ? 'italic' : ''} font-body`}
+                      style={{ lineHeight: 1.7 }}
                     >
                       {i.name}
                       {confidenceDot(i.confidence)}
                     </span>
-                    <span className="text-[10px] text-[#4b5563] ml-auto shrink-0">{DIMENSION_MAP[i.dimension]?.label}</span>
+                    <span className="text-[10px] text-text-tertiary ml-auto shrink-0">{DIMENSION_MAP[i.dimension]?.label}</span>
                   </button>
                 ))}
                 {far.map(i => (
                   <button
                     key={i.id}
                     onClick={() => onSelectInitiative(i.id)}
-                    className="flex items-center gap-2 w-full text-left hover:bg-[#1a2744]/30 rounded px-2 py-1 transition-colors"
+                    className="flex items-center gap-2 w-full text-left hover:bg-bg-hover/30 rounded px-2 py-1 transition-colors"
                     style={{ opacity: i.confidence === 'under_consideration' ? 0.4 : i.confidence === 'tentative' ? 0.55 : 0.65 }}
                   >
-                    <span className="text-[#4b5563] text-[10px] ml-4">→</span>
+                    <span className="text-text-tertiary text-[10px] ml-4">→</span>
                     <span
-                      className={`text-[13px] text-[#94a3b8] ${i.confidence === 'under_consideration' ? 'italic' : ''}`}
-                      style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", lineHeight: 1.7 }}
+                      className={`text-[13px] text-text-secondary ${i.confidence === 'under_consideration' ? 'italic' : ''} font-body`}
+                      style={{ lineHeight: 1.7 }}
                     >
                       {i.name}
                       {confidenceDot(i.confidence)}
                     </span>
-                    <span className="text-[10px] text-[#374151] ml-auto shrink-0">{DIMENSION_MAP[i.dimension]?.label}</span>
+                    <span className="text-[10px] text-text-tertiary ml-auto shrink-0">{DIMENSION_MAP[i.dimension]?.label}</span>
                   </button>
                 ))}
               </div>
@@ -181,15 +181,15 @@ function StrategyPath({ onSelectInitiative, onSelectCapability }: {
         })}
         {unlinked.length > 0 && (
           <div>
-            <div className="text-[12px] text-[#4b5563] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+            <div className="text-[12px] text-text-tertiary mb-2 font-body">
               Unlinked to capability
             </div>
             <div className="pl-4 space-y-1.5">
               {unlinked.map(i => (
                 <button key={i.id} onClick={() => onSelectInitiative(i.id)}
-                  className="flex items-center gap-2 w-full text-left hover:bg-[#1a2744]/30 rounded px-2 py-1 transition-colors">
-                  <span className="text-[#4b5563] text-[11px]">→</span>
-                  <span className="text-[14px] text-[#94a3b8]" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", lineHeight: 1.7 }}>
+                  className="flex items-center gap-2 w-full text-left hover:bg-bg-hover/30 rounded px-2 py-1 transition-colors">
+                  <span className="text-text-tertiary text-[11px]">→</span>
+                  <span className="text-[14px] text-text-secondary font-body" style={{ lineHeight: 1.7 }}>
                     {i.name}
                   </span>
                 </button>
@@ -269,17 +269,17 @@ function DecisionsRequired() {
 
   return (
     <div className="border-l-[3px] pl-4 py-3" style={{ borderLeftColor: '#6366f1' }}>
-      <div className="text-[11px] uppercase tracking-wider text-[#94a3b8] mb-3 font-medium" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+      <div className="text-[11px] uppercase tracking-wider text-text-secondary mb-3 font-medium font-body">
         {t('board.decisionsRequired')}
       </div>
       {decisions.length === 0 ? (
-        <p className="text-[14px] text-[#94a3b8] italic">{t('board.noDecisions')}</p>
+        <p className="text-[14px] text-text-secondary italic">{t('board.noDecisions')}</p>
       ) : (
         <ol className="space-y-4">
           {decisions.map((d, i) => (
             <li key={i} className="flex items-start gap-3">
-              <span className="text-[#6366f1] text-[13px] font-bold shrink-0 mt-0.5">{i + 1}.</span>
-              <p className="text-[15px] text-[#e2e8f0]" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", lineHeight: 1.7 }}>
+              <span className="text-accent text-[13px] font-bold shrink-0 mt-0.5">{i + 1}.</span>
+              <p className="text-[15px] text-text-primary font-body" style={{ lineHeight: 1.7 }}>
                 {d}
               </p>
             </li>
@@ -300,15 +300,15 @@ function EffectsOverview({ onSelect: _onSelect }: { onSelect: (id: string) => vo
   if (effects.length === 0) {
     return (
       <div>
-        <div className="text-[11px] uppercase tracking-wider text-[#94a3b8] mb-4 font-medium">{t('board.effectsOverview')}</div>
-        <p className="text-[14px] text-[#94a3b8] italic">{t('board.noEffects')}</p>
+        <div className="text-[11px] uppercase tracking-wider text-text-secondary mb-4 font-medium">{t('board.effectsOverview')}</div>
+        <p className="text-[14px] text-text-secondary italic">{t('board.noEffects')}</p>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="text-[11px] uppercase tracking-wider text-[#94a3b8] mb-4 font-medium" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+      <div className="text-[11px] uppercase tracking-wider text-text-secondary mb-4 font-medium font-body">
         {t('board.effectsOverview')}
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -327,10 +327,10 @@ function EffectsOverview({ onSelect: _onSelect }: { onSelect: (id: string) => vo
           return (
             <div
               key={eff.id}
-              className="rounded border border-[#1e2a3a] bg-[#0d1520] p-3 cursor-default hover:border-[#2d3748] transition-colors"
+              className="rounded border border-border bg-bg-lane p-3 cursor-default hover:border-border-medium transition-colors"
             >
               <div className="flex items-start justify-between gap-2 mb-1">
-                <span className="text-[15px] text-[#f1f5f9] font-medium" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+                <span className="text-[15px] text-text-primary font-medium font-body">
                   {eff.name}
                 </span>
                 <span className="text-[9px] font-semibold shrink-0 mt-0.5" style={{ color: statusColor }}>
@@ -341,7 +341,7 @@ function EffectsOverview({ onSelect: _onSelect }: { onSelect: (id: string) => vo
                 <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: typeColor + '22', color: typeColor }}>
                   {eff.type}
                 </span>
-                <span className="text-[10px] text-[#4b5563]">{linkedInits} initiatives · {linkedCaps} capabilities</span>
+                <span className="text-[10px] text-text-tertiary">{linkedInits} initiatives · {linkedCaps} capabilities</span>
               </div>
             </div>
           );
@@ -374,17 +374,17 @@ function ReadOnlyDetailPanel({
     const dependsOn = initiatives.filter(i => init.dependsOn.includes(i.id));
 
     return (
-      <div className="h-full bg-[#0d1520] border-l border-[#1e2a3a] flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a3a]">
-          <span className="text-[11px] uppercase text-[#94a3b8] tracking-wider">Initiative</span>
-          <button onClick={onClose} className="text-[#4b5563] hover:text-[#94a3b8] text-lg leading-none">&times;</button>
+      <div className="h-full bg-bg-lane border-l border-border flex flex-col">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <span className="text-[11px] uppercase text-text-secondary tracking-wider">Initiative</span>
+          <button onClick={onClose} className="text-text-tertiary hover:text-text-secondary text-lg leading-none">&times;</button>
         </div>
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: dim.color }} />
-            <span className="text-[10px] text-[#94a3b8] uppercase">{dim.label} · {t(`labels.horizon.${init.horizon}`)}</span>
+            <span className="text-[10px] text-text-secondary uppercase">{dim.label} · {t(`labels.horizon.${init.horizon}`)}</span>
           </div>
-          <h2 className="text-[18px] text-[#f1f5f9] font-medium" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{init.name}</h2>
+          <h2 className="text-[18px] text-text-primary font-medium font-serif">{init.name}</h2>
           {init.confidence && init.confidence !== 'confirmed' && (
             <span className={`inline-block text-[10px] px-2 py-0.5 rounded border ${
               init.confidence === 'tentative'
@@ -396,19 +396,19 @@ function ReadOnlyDetailPanel({
           )}
           {init.owner && (
             <div>
-              <div className="text-[10px] text-[#4b5563] uppercase mb-0.5">{t('common.owner')}</div>
-              <div className="text-[13px] text-[#cbd5e1]">{init.owner}</div>
+              <div className="text-[10px] text-text-tertiary uppercase mb-0.5">{t('common.owner')}</div>
+              <div className="text-[13px] text-text-secondary">{init.owner}</div>
             </div>
           )}
           {init.description && (
-            <p className="text-[13px] text-[#94a3b8] leading-relaxed">{init.description}</p>
+            <p className="text-[13px] text-text-secondary leading-relaxed">{init.description}</p>
           )}
           {linkedCaps.length > 0 && (
             <div>
-              <div className="text-[10px] text-[#4b5563] uppercase mb-1">Capabilities</div>
+              <div className="text-[10px] text-text-tertiary uppercase mb-1">Capabilities</div>
               <div className="space-y-1">
                 {linkedCaps.map(c => (
-                  <div key={c.id} className="text-[12px] text-[#94a3b8] flex items-center gap-1.5">
+                  <div key={c.id} className="text-[12px] text-text-secondary flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: MATURITY_COLORS[c.maturity] }} />
                     {c.name}
                   </div>
@@ -418,28 +418,28 @@ function ReadOnlyDetailPanel({
           )}
           {linkedEffects.length > 0 && (
             <div>
-              <div className="text-[10px] text-[#4b5563] uppercase mb-1">Effects</div>
+              <div className="text-[10px] text-text-tertiary uppercase mb-1">Effects</div>
               <div className="space-y-1">
                 {linkedEffects.map(e => (
-                  <div key={e.id} className="text-[12px] text-[#94a3b8]">{e.name}</div>
+                  <div key={e.id} className="text-[12px] text-text-secondary">{e.name}</div>
                 ))}
               </div>
             </div>
           )}
           {dependsOn.length > 0 && (
             <div>
-              <div className="text-[10px] text-[#4b5563] uppercase mb-1">Depends on</div>
+              <div className="text-[10px] text-text-tertiary uppercase mb-1">Depends on</div>
               <div className="space-y-1">
                 {dependsOn.map(i => (
-                  <div key={i.id} className="text-[12px] text-[#94a3b8]">{i.name}</div>
+                  <div key={i.id} className="text-[12px] text-text-secondary">{i.name}</div>
                 ))}
               </div>
             </div>
           )}
           {init.notes && (
             <div>
-              <div className="text-[10px] text-[#4b5563] uppercase mb-1">Notes</div>
-              <p className="text-[12px] text-[#94a3b8] leading-relaxed">{init.notes}</p>
+              <div className="text-[10px] text-text-tertiary uppercase mb-1">Notes</div>
+              <p className="text-[12px] text-text-secondary leading-relaxed">{init.notes}</p>
             </div>
           )}
         </div>
@@ -454,42 +454,42 @@ function ReadOnlyDetailPanel({
   const linkedEffects = effects.filter(e => e.capabilities.includes(cap.id));
 
   return (
-    <div className="h-full bg-[#0d1520] border-l border-[#1e2a3a] flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a3a]">
-        <span className="text-[11px] uppercase text-[#94a3b8] tracking-wider">Capability</span>
-        <button onClick={onClose} className="text-[#4b5563] hover:text-[#94a3b8] text-lg leading-none">&times;</button>
+    <div className="h-full bg-bg-lane border-l border-border flex flex-col">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+        <span className="text-[11px] uppercase text-text-secondary tracking-wider">Capability</span>
+        <button onClick={onClose} className="text-text-tertiary hover:text-text-secondary text-lg leading-none">&times;</button>
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        <h2 className="text-[18px] text-[#f1f5f9] font-medium" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{cap.name}</h2>
+        <h2 className="text-[18px] text-text-primary font-medium font-serif">{cap.name}</h2>
         <div className="grid grid-cols-2 gap-2">
-          <div className="bg-[#111827] rounded p-2">
-            <div className="text-[9px] text-[#4b5563] uppercase mb-0.5">Maturity</div>
+          <div className="bg-card rounded p-2">
+            <div className="text-[9px] text-text-tertiary uppercase mb-0.5">Maturity</div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: MATURITY_COLORS[cap.maturity] }} />
-              <span className="text-[12px] text-[#cbd5e1]">{cap.maturity}/3</span>
+              <span className="text-[12px] text-text-secondary">{cap.maturity}/3</span>
               {cap.maturityTarget && (
-                <span className="text-[11px] text-[#4b5563]"> → {cap.maturityTarget}/3</span>
+                <span className="text-[11px] text-text-tertiary"> → {cap.maturityTarget}/3</span>
               )}
             </div>
           </div>
-          <div className="bg-[#111827] rounded p-2">
-            <div className="text-[9px] text-[#4b5563] uppercase mb-0.5">Risk</div>
-            <span className="text-[12px] text-[#cbd5e1]">{cap.risk}/3</span>
+          <div className="bg-card rounded p-2">
+            <div className="text-[9px] text-text-tertiary uppercase mb-0.5">Risk</div>
+            <span className="text-[12px] text-text-secondary">{cap.risk}/3</span>
           </div>
         </div>
         {cap.description && (
-          <p className="text-[13px] text-[#94a3b8] leading-relaxed">{cap.description}</p>
+          <p className="text-[13px] text-text-secondary leading-relaxed">{cap.description}</p>
         )}
         {linkedInits.length > 0 && (
           <div>
-            <div className="text-[10px] text-[#4b5563] uppercase mb-1">Linked initiatives</div>
+            <div className="text-[10px] text-text-tertiary uppercase mb-1">Linked initiatives</div>
             <div className="space-y-1">
               {linkedInits.map(i => (
-                <div key={i.id} className="text-[12px] text-[#94a3b8] flex items-center gap-1.5">
+                <div key={i.id} className="text-[12px] text-text-secondary flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: DIMENSION_MAP[i.dimension]?.color }} />
                   {i.name}
                   {i.confidence && i.confidence !== 'confirmed' && (
-                    <span className="text-[9px] text-[#4b5563]">({i.confidence.replace('_', ' ')})</span>
+                    <span className="text-[9px] text-text-tertiary">({i.confidence.replace('_', ' ')})</span>
                   )}
                 </div>
               ))}
@@ -498,10 +498,10 @@ function ReadOnlyDetailPanel({
         )}
         {linkedEffects.length > 0 && (
           <div>
-            <div className="text-[10px] text-[#4b5563] uppercase mb-1">Linked effects</div>
+            <div className="text-[10px] text-text-tertiary uppercase mb-1">Linked effects</div>
             <div className="space-y-1">
               {linkedEffects.map(e => (
-                <div key={e.id} className="text-[12px] text-[#94a3b8]">{e.name}</div>
+                <div key={e.id} className="text-[12px] text-text-secondary">{e.name}</div>
               ))}
             </div>
           </div>
@@ -517,9 +517,9 @@ function ConfidenceLegend() {
   const { t } = useTranslation();
   return (
     <div className="text-right">
-      <div className="text-[10px] text-[#4b5563] uppercase mb-1">{t('board.confidenceLegend')}</div>
-      <div className="flex items-center justify-end gap-3 text-[11px] text-[#94a3b8]">
-        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full bg-[#6366f1]" /> {t('confidence.confirmed')}</span>
+      <div className="text-[10px] text-text-tertiary uppercase mb-1">{t('board.confidenceLegend')}</div>
+      <div className="flex items-center justify-end gap-3 text-[11px] text-text-secondary">
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full bg-accent" /> {t('confidence.confirmed')}</span>
         <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full border border-dashed border-yellow-500 opacity-80" /> {t('confidence.tentative')}</span>
         <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full border border-dotted border-gray-500 opacity-60" /> {t('confidence.under_consideration')}</span>
       </div>
@@ -539,14 +539,15 @@ export function BoardView() {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const capabilities = useStore(s => s.capabilities);
   const effects = useStore(s => s.effects);
+  const strategicFrame = useStore(s => s.strategicFrame);
 
   const activeScenarioName = scenarios.find(s => s.id === activeScenario)?.name;
   const defaultScenarioName = scenarios[0]?.name;
   const showScenario = activeScenarioName && activeScenarioName !== defaultScenarioName;
 
   const narrative = useMemo(
-    () => generateNarrative(initiatives, capabilities, effects),
-    [initiatives, capabilities, effects]
+    () => generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame),
+    [initiatives, capabilities, effects, strategicFrame]
   );
 
   const now = new Date().toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
@@ -554,7 +555,7 @@ export function BoardView() {
   const handlePrint = () => window.print();
 
   return (
-    <div className="fixed inset-0 z-50 flex" style={{ background: '#0a0f1a', color: '#f1f5f9' }}>
+    <div className="fixed inset-0 z-50 flex" data-mode="board" style={{ background: 'var(--bg-app)', color: 'var(--text-primary)' }}>
       {/* Board Print Styles */}
       <style>{`
         @media print {
@@ -570,23 +571,23 @@ export function BoardView() {
       {/* Main scrollable content */}
       <div className="flex-1 overflow-y-auto">
         {/* Header */}
-        <header className="sticky top-0 z-10 flex items-center justify-between px-10 py-3 border-b board-no-print" style={{ background: '#0a0f1a', borderColor: '#1e2a3a' }}>
+        <header className="sticky top-0 z-10 flex items-center justify-between px-10 py-3 border-b board-no-print" style={{ background: 'var(--bg-header)', borderColor: 'var(--border-default)' }}>
           <div className="flex items-center gap-3">
             <CairnMark size={0.4} />
-            <span className="text-[14px] font-medium text-[#94a3b8]" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+            <span className="text-[14px] font-medium text-text-secondary font-body">
               {showScenario ? `${activeScenarioName} · ` : ''}{t('board.title')}
             </span>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={handlePrint}
-              className="px-3 py-1.5 text-[11px] text-[#94a3b8] border border-[#1e2a3a] rounded hover:border-[#2d3748] hover:text-[#f1f5f9] transition-colors"
+              className="px-3 py-1.5 text-[11px] text-text-secondary border border-border rounded hover:border-border-medium hover:text-text-primary transition-colors"
             >
               {t('board.savePDF')}
             </button>
             <button
               onClick={() => setBoardViewMode(false)}
-              className="px-3 py-1.5 text-[11px] text-[#6366f1] hover:text-[#818cf8] transition-colors"
+              className="px-3 py-1.5 text-[11px] text-accent hover:text-primary-light transition-colors"
             >
               {t('board.exit')}
             </button>
@@ -600,7 +601,7 @@ export function BoardView() {
           <section>
             <StrategicNarrative narrative={narrative} isEditable dark />
             <div className="mt-3 flex items-start justify-between">
-              <p className="text-[11px] text-[#4b5563]">{showScenario ? `Scenario: ${activeScenarioName}` : ''}</p>
+              <p className="text-[11px] text-text-tertiary">{showScenario ? `Scenario: ${activeScenarioName}` : ''}</p>
               <ConfidenceLegend />
             </div>
           </section>
@@ -629,11 +630,11 @@ export function BoardView() {
           </section>
 
           {/* Section 7: Footer */}
-          <footer className="border-t pt-6" style={{ borderColor: '#1e2a3a' }}>
-            <p className="text-[12px] text-[#4b5563]" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+          <footer className="border-t pt-6" style={{ borderColor: 'var(--border-default)' }}>
+            <p className="text-[12px] text-text-tertiary font-body">
               Cairn · cairnpath.io
             </p>
-            <p className="text-[11px] text-[#374151] mt-0.5" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+            <p className="text-[11px] text-text-tertiary mt-0.5 font-body">
               {t('board.dataAsOf')} {now}
             </p>
           </footer>

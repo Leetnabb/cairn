@@ -1,6 +1,8 @@
-export type InitiativeStatus = 'planned' | 'in_progress' | 'done';
+export type InitiativeStatus = 'planned' | 'in_progress' | 'done' | 'stopped' | 'changed_direction';
 
 export type ConfidenceLevel = 'confirmed' | 'tentative' | 'under_consideration';
+
+export type Horizon = 'near' | 'far';
 
 export type DimensionKey = 'ledelse' | 'virksomhet' | 'organisasjon' | 'teknologi';
 
@@ -32,6 +34,17 @@ export interface Strategy {
   priority: 1 | 2 | 3;
 }
 
+export interface StrategicTheme {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface StrategicFrame {
+  direction: string;
+  themes: StrategicTheme[];
+}
+
 export interface Capability {
   id: string;
   name: string;
@@ -42,14 +55,19 @@ export interface Capability {
   risk: 1 | 2 | 3;
   description: string;
   order?: number;
+  priorityWeight?: number;  // 1-10, for sorting within Core/Support sections
   strategyIds?: string[];
+  capabilityType?: 'core' | 'support';
+  providesFoundationFor?: string[];
+  resourceLoad?: number;  // 0.0-1.0, current resource load on this capability
+  effortEstimate?: 'high' | 'medium' | 'low';
 }
 
 export interface Initiative {
   id: string;
   name: string;
   dimension: DimensionKey;
-  horizon: 'near' | 'far';
+  horizon: Horizon;
   order: number;
   capabilities: string[];
   description: string;
@@ -73,7 +91,7 @@ export interface Scenario {
 export interface Milestone {
   id: string;
   name: string;
-  horizon: 'near' | 'far';
+  horizon: Horizon;
   position: number;
   color: string;
 }
@@ -97,6 +115,7 @@ export interface Effect {
   baseline?: string;
   target?: string;
   order?: number;
+  confidence?: ConfidenceLevel;
 }
 
 export const EFFECT_TYPE_COLORS: Record<EffectType, string> = {
@@ -152,6 +171,7 @@ export interface AppState {
   comments: Comment[];
   snapshots: Snapshot[];
   modules: ModuleSettings;
+  strategicFrame?: StrategicFrame;
 }
 
 export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects' | 'strategies';
@@ -162,7 +182,7 @@ export type ComplexityLevel = 1 | 2 | 3;
 
 export const COMPLEXITY_FEATURES = {
   1: {
-    views: ['roadmap', 'dashboard'] as ViewMode[],
+    views: ['roadmap', 'dashboard', 'capabilities'] as ViewMode[],
     filters: ['dimensions', 'search'] as string[],
     features: ['presentationMode'] as string[],
   },
@@ -183,12 +203,12 @@ export interface UIState {
   view: ViewMode;
   complexityLevel: ComplexityLevel;
   roadmapViewMode: 'dimension' | 'capability';
-  capabilityView: 'maturity' | 'risk';
+  capabilityView: 'maturity' | 'risk' | 'resource';
   simulationEnabled: boolean;
   criticalPathEnabled: boolean;
   filters: {
     dimensions: DimensionKey[];
-    horizon: 'all' | 'near' | 'far';
+    horizon: 'all' | Horizon;
     owner: string;
     search: string;
     showMilestones: boolean;
@@ -200,7 +220,7 @@ export interface UIState {
   editingId: string | null;
   addModalOpen: boolean;
   addModalTab: 'initiative' | 'capability' | 'milestone' | 'valuechain' | 'effect' | 'strategy';
-  addModalDefaults: { dimension?: DimensionKey; horizon?: 'near' | 'far' } | null;
+  addModalDefaults: { dimension?: DimensionKey; horizon?: Horizon } | null;
   importModalOpen: boolean;
   presentationMode: boolean;
   presentationSlide: number;

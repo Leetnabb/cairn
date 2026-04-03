@@ -71,7 +71,7 @@ export function DataTab({ onClose }: Props) {
         <button
           onClick={handleExport}
           disabled={exporting}
-          className="px-4 py-2 text-[11px] border border-border rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors"
+          className="px-4 py-2 text-[11px] border border-border rounded-lg hover:bg-[var(--bg-hover)] disabled:opacity-40 transition-colors"
         >
           {exporting ? '…' : t('settings.data.exportBtn')}
         </button>
@@ -93,7 +93,7 @@ export function DataTab({ onClose }: Props) {
             <button
               onClick={handleCancelDeletion}
               disabled={cancelling}
-              className="px-4 py-2 text-[11px] border border-border rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors"
+              className="px-4 py-2 text-[11px] border border-border rounded-lg hover:bg-[var(--bg-hover)] disabled:opacity-40 transition-colors"
             >
               {cancelling ? '…' : t('settings.data.cancelDeletion')}
             </button>

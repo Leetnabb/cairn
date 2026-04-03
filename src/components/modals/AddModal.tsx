@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, InitiativeStatus, EffectType, Strategy, ConfidenceLevel } from '../../types';
+import type { DimensionKey, InitiativeStatus, EffectType, Strategy, ConfidenceLevel, Horizon } from '../../types';
 import { Button } from '../ui/Button';
 import { ColorPalette } from '../ui/ColorPalette';
 import AIFormAssist from '../ai/AIFormAssist';
@@ -31,7 +31,7 @@ export function AddModal() {
   const [iName, setIName] = useState('');
   const [iDesc, setIDesc] = useState('');
   const [iDim, setIDim] = useState<DimensionKey>(defaults?.dimension ?? 'ledelse');
-  const [iHorizon, setIHorizon] = useState<'near' | 'far'>(defaults?.horizon ?? 'near');
+  const [iHorizon, setIHorizon] = useState<Horizon>(defaults?.horizon ?? 'near');
   const [iOwner, setIOwner] = useState('');
   const [iCaps, setICaps] = useState<string[]>([]);
   const [iDeps, setIDeps] = useState<string[]>([]);
@@ -57,7 +57,7 @@ export function AddModal() {
 
   // Milestone state
   const [mName, setMName] = useState('');
-  const [mHorizon, setMHorizon] = useState<'near' | 'far'>('near');
+  const [mHorizon, setMHorizon] = useState<Horizon>('near');
   const [mPosition, setMPosition] = useState(0.5);
   const [mColor, setMColor] = useState('#6366f1');
 
@@ -187,7 +187,7 @@ export function AddModal() {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setAddModalOpen(false)}>
-      <div className="relative bg-white rounded-lg shadow-lg w-[440px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div className="relative bg-card rounded-lg shadow-lg w-[440px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
         {confirmMsg && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-green-600 text-white text-[11px] font-medium px-3 py-1 rounded-full shadow-md z-10 animate-fade-in">
             &#10003; {t('common.created')}
@@ -205,7 +205,7 @@ export function AddModal() {
               key={tb}
               onClick={() => setActiveTab(tb)}
               className={`flex-1 px-3 py-2 text-[11px] font-medium transition-colors ${
-                activeTab === tb ? 'border-b-2 border-primary text-primary' : 'text-text-secondary hover:bg-gray-50'
+                activeTab === tb ? 'border-b-2 border-primary text-primary' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
               }`}
             >
               {tabLabels[tb]}
@@ -220,7 +220,7 @@ export function AddModal() {
                 if (data.name) setIName(data.name as string);
                 if (data.description) setIDesc(data.description as string);
                 if (data.dimension) setIDim(data.dimension as DimensionKey);
-                if (data.horizon) setIHorizon(data.horizon as 'near' | 'far');
+                if (data.horizon) setIHorizon(data.horizon as Horizon);
                 if (data.owner) setIOwner(data.owner as string);
                 if (data.notes) setINotes(data.notes as string);
                 if (Array.isArray(data.suggestedCapabilities)) {
@@ -250,7 +250,7 @@ export function AddModal() {
                 </div>
                 <div>
                   <label className="text-[9px] text-text-tertiary uppercase">{t('labels.horizon.label')}</label>
-                  <select value={iHorizon} onChange={e => setIHorizon(e.target.value as 'near'|'far')}
+                  <select value={iHorizon} onChange={e => setIHorizon(e.target.value as Horizon)}
                     className="w-full px-2 py-1 text-[11px] border border-border rounded">
                     <option value="near">{t('labels.horizon.near')}</option>
                     <option value="far">{t('labels.horizon.far')}</option>
@@ -277,7 +277,7 @@ export function AddModal() {
                   ]).map(opt => (
                     <button key={opt.value} onClick={() => setIStatus(opt.value)}
                       className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                        iStatus === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                        iStatus === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                       }`}>
                       {opt.label}
                     </button>
@@ -294,7 +294,7 @@ export function AddModal() {
                   ]).map(opt => (
                     <button key={opt.value} onClick={() => setIConfidence(opt.value)}
                       className={`flex-1 px-1.5 py-1 text-[9px] font-medium transition-colors ${
-                        iConfidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                        iConfidence === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                       }`}>
                       {opt.label}
                     </button>
@@ -311,7 +311,7 @@ export function AddModal() {
                   ] as const).map(opt => (
                     <button key={String(opt.value)} onClick={() => setICriticalPathOverride(opt.value)}
                       className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                        iCriticalPathOverride === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                        iCriticalPathOverride === opt.value ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                       }`}>
                       {opt.label}
                     </button>
@@ -378,10 +378,10 @@ export function AddModal() {
                     {t('addModal.newValueChain')}
                   </button>
                 ) : (
-                  <div className="mt-1.5 p-2 border border-border rounded bg-gray-50 space-y-1.5">
+                  <div className="mt-1.5 p-2 border border-border rounded bg-[var(--bg-lane)] space-y-1.5">
                     <input value={inlineVCName} onChange={e => setInlineVCName(e.target.value)}
                       placeholder={t('addModal.valueChainPlaceholder')}
-                      className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary bg-white"
+                      className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary bg-card"
                       autoFocus />
                     <ColorPalette value={inlineVCColor} onChange={setInlineVCColor} />
                     <div className="flex gap-1">
@@ -487,7 +487,7 @@ export function AddModal() {
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-[9px] text-text-tertiary uppercase">{t('labels.horizon.label')}</label>
-                  <select value={mHorizon} onChange={e => setMHorizon(e.target.value as 'near'|'far')}
+                  <select value={mHorizon} onChange={e => setMHorizon(e.target.value as Horizon)}
                     className="w-full px-2 py-1 text-[11px] border border-border rounded">
                     <option value="near">{t('labels.horizon.near')}</option>
                     <option value="far">{t('labels.horizon.far')}</option>
@@ -634,7 +634,7 @@ export function AddModal() {
                     {([1, 2, 3] as const).map(p => (
                       <button key={p} onClick={() => setSPriority(p)}
                         className={`flex-1 px-2 py-1 text-[10px] font-medium transition-colors ${
-                          sPriority === p ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50'
+                          sPriority === p ? 'bg-primary text-white' : 'text-text-secondary hover:bg-[var(--bg-hover)]'
                         }`}>
                         {p}
                       </button>

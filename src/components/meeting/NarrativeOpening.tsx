@@ -10,9 +10,10 @@ export function NarrativeOpening() {
   const scenarioStates = useStore(s => s.scenarioStates);
   const capabilities = useStore(s => s.capabilities);
   const effects = useStore(s => s.effects);
+  const strategicFrame = useStore(s => s.strategicFrame);
 
   const initiatives = scenarioStates[activeScenario]?.initiatives ?? [];
-  const narrative = generateNarrative(initiatives, capabilities, effects);
+  const narrative = generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame);
 
   // Split narrative into sentences for display
   const sentences = narrative
@@ -29,7 +30,7 @@ export function NarrativeOpening() {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center cursor-pointer select-none"
-      style={{ backgroundColor: '#0f172a' }}
+      style={{ backgroundColor: 'var(--bg-app)' }}
       onClick={() => setMeetingLens('path')}
     >
       {/* Narrative text */}
@@ -39,9 +40,8 @@ export function NarrativeOpening() {
             key={i}
             className="font-serif leading-relaxed"
             style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
               fontSize: i === 0 ? 32 : 26,
-              color: i === 0 ? '#f1f5f9' : '#cbd5e1',
+              color: i === 0 ? 'var(--text-primary)' : 'var(--text-secondary)',
               lineHeight: 1.55,
             }}
           >
@@ -52,8 +52,8 @@ export function NarrativeOpening() {
 
       {/* Stats bar */}
       <div
-        className="absolute bottom-20 flex items-center gap-8 text-sm"
-        style={{ color: '#64748b', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+        className="absolute bottom-20 flex items-center gap-8 text-sm font-body"
+        style={{ color: 'var(--text-secondary)' }}
       >
         <span>
           <span className="text-slate-300 font-medium">{initiatives.length}</span>{' '}
@@ -81,8 +81,8 @@ export function NarrativeOpening() {
 
       {/* Click hint */}
       <div
-        className="absolute bottom-8 text-xs tracking-widest uppercase animate-pulse"
-        style={{ color: '#475569', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+        className="absolute bottom-8 text-xs tracking-widest uppercase animate-pulse font-body"
+        style={{ color: 'var(--text-tertiary)' }}
       >
         {t('meeting.clickToContinue')}
       </div>

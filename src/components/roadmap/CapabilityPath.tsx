@@ -13,6 +13,15 @@ export function CapabilityPath() {
 
   const strategies = useStore(s => s.strategies);
 
+  const maturityLabel = (level: number): string => {
+    const labels: Record<number, string> = {
+      1: t('maturityChevron.establish'),
+      2: t('maturityChevron.optimize'),
+      3: t('maturityChevron.innovate'),
+    };
+    return labels[level] ?? `${level}`;
+  };
+
   const l1Caps = useMemo(
     () => capabilities.filter(c => c.level === 1).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
     [capabilities]
@@ -56,10 +65,10 @@ export function CapabilityPath() {
       <div className="grid mb-2" style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
         <div />
         <div className="text-[10px] font-semibold text-text-secondary text-center px-2">
-          {t('labels.horizon.nearRange')}
+          {t('labels.horizon.near')}
         </div>
         <div className="text-[10px] font-semibold text-text-secondary text-center px-2 opacity-70">
-          {t('labels.horizon.farRange')}
+          {t('labels.horizon.far')}
         </div>
       </div>
 
@@ -69,7 +78,7 @@ export function CapabilityPath() {
           {/* Capability label */}
           <button
             onClick={() => setSelectedItem({ type: 'capability', id: cap.id })}
-            className="flex items-center gap-2 px-2 py-1.5 rounded bg-gray-50 border border-border text-left hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 px-2 py-1.5 rounded bg-[var(--bg-lane)] border border-border text-left hover:bg-[var(--bg-hover)] transition-colors"
           >
             <div
               className="w-2 h-2 rounded-full shrink-0"
@@ -119,10 +128,18 @@ export function CapabilityPath() {
             className="relative rounded min-h-[48px] p-1.5 flex flex-wrap gap-1 content-start opacity-70"
             style={{ backgroundColor: '#f0f4ff' }}
           >
+            {cap.maturityTarget != null && cap.maturityTarget > cap.maturity && (
+              <div className="absolute top-1 right-1 text-[8px] px-1.5 py-0.5 rounded-full border border-dashed border-accent text-accent bg-accent/5 z-10 whitespace-nowrap">
+                {t('capPath.maturityGoal', { target: maturityLabel(cap.maturityTarget) })}
+              </div>
+            )}
             {far.map(i => (
               <InitiativeBox key={i.id} initiative={i} criticalPathEnabled={criticalPathEnabled} />
             ))}
-            {far.length === 0 && (
+            {far.length === 0 && !cap.maturityTarget && (
+              <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
+            )}
+            {far.length === 0 && cap.maturityTarget != null && !(cap.maturityTarget > cap.maturity) && (
               <span className="text-[9px] text-text-tertiary italic self-center ml-1">{t('common.none')}</span>
             )}
           </div>

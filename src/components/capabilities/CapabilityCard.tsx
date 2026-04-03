@@ -28,7 +28,7 @@ export function CapabilityCard({ capability, isHighlighted, simulatedMaturity, i
           ? 'border-primary shadow-selected'
           : isHighlighted
           ? 'border-primary/40 bg-primary/5'
-          : 'border-border bg-white hover:shadow-hover'
+          : 'border-border bg-card hover:shadow-hover'
       }`}
     >
       <div className="flex items-center justify-between gap-1">

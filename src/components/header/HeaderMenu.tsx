@@ -54,13 +54,13 @@ export function HeaderMenu() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-7 h-7 flex items-center justify-center text-[14px] text-text-secondary hover:bg-gray-100 rounded transition-colors"
+        className="w-7 h-7 flex items-center justify-center text-[14px] text-text-secondary hover:bg-[var(--bg-hover)] rounded transition-colors"
         title={t('nav.menu')}
       >
         &#x22EF;
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white border border-border rounded-lg shadow-lg py-1 min-w-[200px] z-50">
+        <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-1 min-w-[200px] z-50">
           {items.map((item, idx) => {
             if (item.hide) return null;
             if ('divider' in item && item.divider) {
@@ -70,7 +70,7 @@ export function HeaderMenu() {
               <button
                 key={idx}
                 onClick={() => { item.action?.(); setOpen(false); }}
-                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-[var(--bg-hover)] flex items-center justify-between"
               >
                 <span>{item.label}</span>
                 {'toggle' in item && item.toggle !== undefined && (
@@ -91,7 +91,7 @@ export function HeaderMenu() {
             {level < 3 && (
               <button
                 onClick={() => { setComplexityLevel((level + 1) as ComplexityLevel); setOpen(false); }}
-                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-[var(--bg-hover)] flex items-center justify-between"
               >
                 <span>{t('complexity.unlock')} →</span>
               </button>
@@ -99,7 +99,7 @@ export function HeaderMenu() {
             {level > 1 && (
               <button
                 onClick={() => { setComplexityLevel((level - 1) as ComplexityLevel); setOpen(false); }}
-                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+                className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-[var(--bg-hover)] flex items-center justify-between"
               >
                 <span>← {t('complexity.simplify')}</span>
               </button>
@@ -119,7 +119,7 @@ export function HeaderMenu() {
             {/* Capabilities toggle */}
             <button
               onClick={() => setModules({ capabilities: !modules.capabilities })}
-              className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+              className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-[var(--bg-hover)] flex items-center justify-between"
             >
               <span>{t('modules.capabilities')}</span>
               <span className={`w-2 h-2 rounded-full ${modules.capabilities ? 'bg-primary' : 'bg-gray-300'}`} />
@@ -127,7 +127,7 @@ export function HeaderMenu() {
             {/* Effects toggle */}
             <button
               onClick={() => setModules({ effects: !modules.effects })}
-              className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-gray-50 flex items-center justify-between"
+              className="w-full text-left px-3 py-1.5 text-[11px] text-text-secondary hover:bg-[var(--bg-hover)] flex items-center justify-between"
             >
               <span>{t('modules.effects')}</span>
               <span className={`w-2 h-2 rounded-full ${modules.effects ? 'bg-primary' : 'bg-gray-300'}`} />

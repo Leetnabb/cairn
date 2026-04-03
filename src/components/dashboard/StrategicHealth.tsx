@@ -111,9 +111,9 @@ export function StrategicHealth({ initiatives, capabilities, effects: _effects, 
         <div className="text-sm text-slate-400 mt-0.5">{t('dashboard.strategyCoverage')}</div>
         <div className="mt-1">
           {stats.driftCount > 0 ? (
-            <span className="text-xs text-red-400">{stats.driftCount} {t('dashboard.strategyDriftCount', { count: stats.driftCount }).replace(/^\d+\s*/, '') || 'uten kobling'}</span>
+            <span className="text-xs text-red-400">{stats.driftCount} {t('strategicHealth.noLink')}</span>
           ) : (
-            <span className="text-xs text-green-400">Full dekning</span>
+            <span className="text-xs text-green-400">{t('strategicHealth.fullCoverage')}</span>
           )}
         </div>
       </div>
@@ -130,12 +130,12 @@ export function StrategicHealth({ initiatives, capabilities, effects: _effects, 
         >
           {stats.avgMaturity > 0 ? stats.avgMaturity : '—'}
         </div>
-        <div className="text-sm text-slate-400 mt-0.5">{t('dashboard.maturityNowTarget', 'Snitt modenhet')}</div>
+        <div className="text-sm text-slate-400 mt-0.5">{t('strategicHealth.avgMaturity')}</div>
         <div className="mt-1">
           {stats.maturityGap > 0 ? (
             <span className="text-xs text-amber-400">gap +{stats.maturityGap}</span>
           ) : (
-            <span className="text-xs text-slate-500">Ingen gap</span>
+            <span className="text-xs text-slate-500">{t('strategicHealth.noGap')}</span>
           )}
         </div>
       </div>
@@ -148,12 +148,12 @@ export function StrategicHealth({ initiatives, capabilities, effects: _effects, 
         >
           {stats.driftCount}
         </div>
-        <div className="text-sm text-slate-400 mt-0.5">Drift</div>
+        <div className="text-sm text-slate-400 mt-0.5">{t('strategicHealth.drift')}</div>
         <div className="mt-1">
           {stats.driftCount === 0 ? (
-            <span className="text-xs text-green-400">Ingen drift</span>
+            <span className="text-xs text-green-400">{t('strategicHealth.noDrift')}</span>
           ) : (
-            <span className="text-xs text-red-400">Uten kapabilitet</span>
+            <span className="text-xs text-red-400">{t('strategicHealth.noCapability')}</span>
           )}
         </div>
       </div>
@@ -164,7 +164,7 @@ export function StrategicHealth({ initiatives, capabilities, effects: _effects, 
           {stats.dimCounts.filter(d => d.count > 0).length}
           <span className="text-sm font-normal text-slate-500">/{DIMENSIONS.length}</span>
         </div>
-        <div className="text-sm text-slate-400 mt-0.5">Dimensjoner</div>
+        <div className="text-sm text-slate-400 mt-0.5">{t('strategicHealth.dimensions')}</div>
         <div className="mt-2 flex gap-0.5 h-2">
           {stats.dimCounts.map(dim => (
             <div

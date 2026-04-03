@@ -87,7 +87,7 @@ export function ImportModal() {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setImportModalOpen(false)}>
-      <div className="bg-white rounded-lg shadow-lg w-[480px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div className="bg-card rounded-lg shadow-lg w-[480px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
         <div className="px-4 py-3 border-b border-border">
           <h2 className="text-[13px] font-semibold">{t('importModal.title')}</h2>
         </div>

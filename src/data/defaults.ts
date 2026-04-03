@@ -1,4 +1,4 @@
-import type { Capability, Initiative, Milestone, ValueChain, Scenario, ScenarioState, Effect, ModuleSettings, Strategy } from '../types';
+import type { Capability, Initiative, Milestone, ValueChain, Scenario, ScenarioState, Effect, ModuleSettings, Strategy, StrategicFrame } from '../types';
 import { frivilligTemplate } from './templates/frivillig';
 
 // Re-export from frivillig template for backward compatibility
@@ -32,6 +32,15 @@ export const defaultModules: ModuleSettings = {
   effects: false,
 };
 
+export const defaultStrategicFrame: StrategicFrame = {
+  direction: 'Bli en datadrevet og medlemsnær organisasjon gjennom digital transformasjon',
+  themes: [
+    { id: 'st_1', name: 'Kundedata', description: 'Samle, strukturere og bruke kundedata aktivt i beslutninger' },
+    { id: 'st_2', name: 'Prosessdigitalisering', description: 'Digitalisere kjernearbeidsflyter for effektivitet' },
+    { id: 'st_3', name: 'Kompetanseløft', description: 'Bygge digital kompetanse i hele organisasjonen' },
+  ],
+};
+
 export function createDefaultState(): {
   strategies: Strategy[];
   capabilities: Capability[];
@@ -42,6 +51,7 @@ export function createDefaultState(): {
   valueChains: ValueChain[];
   effects: Effect[];
   modules: ModuleSettings;
+  strategicFrame: StrategicFrame;
 } {
   return {
     strategies: defaultStrategies,
@@ -55,5 +65,6 @@ export function createDefaultState(): {
     valueChains: defaultValueChains,
     effects: defaultEffects,
     modules: defaultModules,
+    strategicFrame: defaultStrategicFrame,
   };
 }

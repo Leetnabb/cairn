@@ -46,7 +46,7 @@ export function PresentationMode() {
   const currentSlide = SLIDES[slide];
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" style={{ backgroundColor: '#0f172a' }}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-[var(--bg-app)]" data-mode="board">
       {/* Navigation dots */}
       <div className="flex items-center justify-center gap-2 py-3">
         {SLIDES.map((_, idx) => (
@@ -170,8 +170,8 @@ function StrategiesSlide({ strategies, capabilities, initiatives }: { strategies
               <h3 className="text-[18px] font-bold text-white mb-1">{s.name}</h3>
               <p className="text-[12px] text-white/60 mb-4">{s.description}</p>
               <div className="flex gap-4 text-[11px] text-white/40">
-                <span>{linkedCaps.length} kap.</span>
-                <span>{linkedInits.length} akt.</span>
+                <span>{linkedCaps.length} {t('initBox.cap')}</span>
+                <span>{linkedInits.length} {t('initBox.act')}</span>
               </div>
             </div>
           ))}
@@ -297,7 +297,7 @@ function BottlenecksSlide({ capabilities, initiatives }: { capabilities: Capabil
     <div className="w-full max-w-5xl">
       <h1 className="text-[36px] font-bold text-white mb-8">{t('presentation.bottlenecksTitle')}</h1>
       {bottlenecks.length === 0 ? (
-        <p className="text-[20px] text-green-400 font-semibold">✓ Ingen strategiske flaskehalser</p>
+        <p className="text-[20px] text-green-400 font-semibold">{t('dashboard.noBottlenecks')}</p>
       ) : (
         <div className="grid grid-cols-2 gap-4">
           {bottlenecks.map(({ cap, linkedCount, flags }) => (
@@ -365,9 +365,10 @@ function EffectSummarySlide({ effects, initiatives }: { effects: ReturnType<type
 
 function StrategicReadingSlide({ initiatives, capabilities, effects }: { initiatives: Initiative[]; capabilities: Capability[]; effects: Effect[] }) {
   const { t } = useTranslation();
+  const strategicFrame = useStore(s => s.strategicFrame);
   const narrative = useMemo(
-    () => generateNarrative(initiatives, capabilities, effects),
-    [initiatives, capabilities, effects]
+    () => generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame),
+    [initiatives, capabilities, effects, strategicFrame]
   );
 
   // Split narrative into sentences for visual presentation
@@ -402,7 +403,7 @@ function StrategicReadingSlide({ initiatives, capabilities, effects }: { initiat
       {/* Supporting stats bar */}
       <div className="flex gap-8 pt-6 border-t border-white/10">
         <div className="text-center">
-          <div className="text-[28px] font-bold text-[#6366f1]">{initiatives.length}</div>
+          <div className="text-[28px] font-bold text-accent">{initiatives.length}</div>
           <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('dashboard.activities')}</div>
         </div>
         <div className="text-center">
@@ -435,7 +436,7 @@ function SummarySlide({ initiatives, capabilities }: { initiatives: Initiative[]
       <h1 className="text-[42px] font-bold text-white mb-10">{t('presentation.summaryTitle')}</h1>
       <div className="grid grid-cols-4 gap-6 mb-10">
         <div>
-          <div className="text-[48px] font-bold text-[#6366f1]">{initiatives.length}</div>
+          <div className="text-[48px] font-bold text-accent">{initiatives.length}</div>
           <div className="text-[13px] text-white/50">{t('dashboard.activities')}</div>
         </div>
         <div>

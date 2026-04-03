@@ -13,7 +13,7 @@ export function UndoRedoButtons() {
         disabled={!canUndo}
         title="Undo (Ctrl+Z)"
         aria-label="Undo"
-        className="w-7 h-7 flex items-center justify-center rounded text-text-secondary hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        className="w-7 h-7 flex items-center justify-center rounded text-text-secondary hover:bg-[var(--bg-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
       >
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 7v6h6" />
@@ -25,7 +25,7 @@ export function UndoRedoButtons() {
         disabled={!canRedo}
         title="Redo (Ctrl+Shift+Z)"
         aria-label="Redo"
-        className="w-7 h-7 flex items-center justify-center rounded text-text-secondary hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        className="w-7 h-7 flex items-center justify-center rounded text-text-secondary hover:bg-[var(--bg-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
       >
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 7v6h-6" />

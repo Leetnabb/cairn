@@ -1,36 +1,217 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
 
-  --color-primary: #6366f1;
+  --color-primary: var(--accent);
   --color-primary-light: #818cf8;
-  --color-primary-dark: #4f46e5;
+  --color-primary-dark: var(--accent-hover);
 
-  --color-bg: #f8fafc;
-  --color-card: #ffffff;
-  --color-border: #e2e8f0;
+  --color-bg: var(--bg-app);
+  --color-card: var(--bg-card);
+  --color-border: var(--border-default);
 
-  --color-text-primary: #1e293b;
-  --color-text-secondary: #64748b;
-  --color-text-tertiary: #94a3b8;
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-inverse: var(--text-inverse);
 
-  --color-dim-ledelse: #ef4444;
-  --color-dim-virksomhet: #22c55e;
-  --color-dim-organisasjon: #eab308;
-  --color-dim-teknologi: #6366f1;
+  --color-dim-ledelse: var(--dim-leadership);
+  --color-dim-virksomhet: var(--dim-business);
+  --color-dim-organisasjon: var(--dim-organisation);
+  --color-dim-teknologi: var(--dim-technology);
 
-  --color-maturity-low: #dc2626;
-  --color-maturity-med: #f59e0b;
-  --color-maturity-high: #22c55e;
+  --color-dim-ledelse-bg: var(--dim-leadership-bg);
+  --color-dim-virksomhet-bg: var(--dim-business-bg);
+  --color-dim-organisasjon-bg: var(--dim-organisation-bg);
+  --color-dim-teknologi-bg: var(--dim-technology-bg);
+
+  --color-dim-ledelse-border: var(--dim-leadership-border);
+  --color-dim-virksomhet-border: var(--dim-business-border);
+  --color-dim-organisasjon-border: var(--dim-organisation-border);
+  --color-dim-teknologi-border: var(--dim-technology-border);
+
+  --color-maturity-low: var(--maturity-low);
+  --color-maturity-med: var(--maturity-mid);
+  --color-maturity-high: var(--maturity-high);
 
   --color-risk-low: #22c55e;
   --color-risk-med: #f59e0b;
   --color-risk-high: #dc2626;
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
+  --color-bg-hover: var(--bg-hover);
+  --color-bg-lane: var(--bg-lane);
+  --color-bg-panel: var(--bg-panel);
+  --color-bg-header: var(--bg-header);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border-medium: var(--border-medium);
+
+  --shadow-card: var(--shadow-card);
   --shadow-selected: 0 2px 8px rgba(99, 102, 241, 0.12);
-  --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-hover: var(--shadow-hover);
+  --shadow-panel: var(--shadow-panel);
+}
+
+/* ───────────────────────────────────────────────
+   Work mode tokens (light) — default
+   ─────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-app:         #f8fafc;
+  --bg-lane:        #f1f5f9;
+  --bg-card:        #ffffff;
+  --bg-panel:       #ffffff;
+  --bg-header:      #ffffff;
+  --bg-hover:       #f8fafc;
+
+  /* Borders */
+  --border-default: #e2e8f0;
+  --border-subtle:  #f1f5f9;
+  --border-medium:  #cbd5e1;
+
+  /* Text */
+  --text-primary:   #1e293b;
+  --text-secondary: #64748b;
+  --text-tertiary:  #94a3b8;
+  --text-inverse:   #f1f5f9;
+
+  /* Dimension colors — full saturation */
+  --dim-leadership:   #ef4444;
+  --dim-business:     #22c55e;
+  --dim-organisation: #eab308;
+  --dim-technology:   #6366f1;
+
+  /* Dimension colors — subtle backgrounds (8% opacity) */
+  --dim-leadership-bg:   #ef44441a;
+  --dim-business-bg:     #22c55e1a;
+  --dim-organisation-bg: #eab3081a;
+  --dim-technology-bg:   #6366f11a;
+
+  /* Dimension colors — borders (30% opacity) */
+  --dim-leadership-border:   #ef44444d;
+  --dim-business-border:     #22c55e4d;
+  --dim-organisation-border: #eab3084d;
+  --dim-technology-border:   #6366f14d;
+
+  /* Primary action */
+  --accent:         #6366f1;
+  --accent-hover:   #4f46e5;
+
+  /* Status */
+  --maturity-low:   #dc2626;
+  --maturity-mid:   #f59e0b;
+  --maturity-high:  #22c55e;
+
+  /* Confidence */
+  --confidence-confirmed:    #1e293b;
+  --confidence-tentative:    #64748b;
+  --confidence-considering:  #94a3b8;
+
+  /* Shadows */
+  --shadow-card:    0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-panel:   0 4px 24px rgba(15, 23, 42, 0.08);
+  --shadow-hover:   0 4px 12px rgba(15, 23, 42, 0.10);
+
+  /* Radii */
+  --radius-sm:  4px;
+  --radius-md:  6px;
+  --radius-lg:  8px;
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-base:   200ms ease;
+  --transition-mode:   350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  transition: background-color var(--transition-mode), color var(--transition-mode);
+}
+
+/* ───────────────────────────────────────────────
+   Board View tokens (dark)
+   ─────────────────────────────────────────────── */
+[data-mode="board"] {
+  /* Backgrounds */
+  --bg-app:         #0a0f1a;
+  --bg-lane:        #0f1520;
+  --bg-card:        #111827;
+  --bg-panel:       #141c2e;
+  --bg-header:      #0a0f1a;
+  --bg-hover:       #1a2235;
+
+  /* Borders */
+  --border-default: #1e2a3f;
+  --border-subtle:  #141c2e;
+  --border-medium:  #243348;
+
+  /* Text */
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary:  #4f5b75;
+  --text-inverse:   #1e293b;
+
+  /* Dimension bg variants — lower opacity for dark */
+  --dim-leadership-bg:   #ef444408;
+  --dim-business-bg:     #22c55e08;
+  --dim-organisation-bg: #eab30808;
+  --dim-technology-bg:   #6366f108;
+
+  --dim-leadership-border:   #ef444433;
+  --dim-business-border:     #22c55e33;
+  --dim-organisation-border: #eab30833;
+  --dim-technology-border:   #6366f133;
+
+  /* Shadows — lifted for dark */
+  --shadow-card:    0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-panel:   0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-hover:   0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ───────────────────────────────────────────────
+   Global mode transition rules
+   Only apply mode transitions when actively switching
+   ─────────────────────────────────────────────── */
+.mode-transitioning,
+.mode-transitioning *,
+.mode-transitioning *::before,
+.mode-transitioning *::after {
+  transition:
+    background-color var(--transition-mode),
+    border-color var(--transition-mode),
+    color var(--transition-mode),
+    box-shadow var(--transition-mode) !important;
+}
+
+.no-mode-transition {
+  transition: none;
+}
+
+/* ───────────────────────────────────────────────
+   App canvas fade transition (layout shift)
+   ─────────────────────────────────────────────── */
+.app-canvas {
+  transition: opacity 200ms ease;
+}
+
+.app-canvas.transitioning {
+  opacity: 0;
+}
+
+/* ───────────────────────────────────────────────
+   Animations
+   ─────────────────────────────────────────────── */
+@keyframes dependency-flow {
+  from { stroke-dashoffset: 20; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulse-gap {
+  0%, 100% { border-color: #f87171; }
+  50% { border-color: #fca5a5; }
 }
 
 @keyframes fade-in {
@@ -71,6 +252,9 @@
   animation: slide-in-left 0.2s ease-out;
 }
 
+/* ───────────────────────────────────────────────
+   Base styles
+   ─────────────────────────────────────────────── */
 * {
   box-sizing: border-box;
 }

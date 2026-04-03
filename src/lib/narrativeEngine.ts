@@ -1,6 +1,8 @@
 import type { Initiative, Capability, Effect } from '../types';
 import { DIMENSIONS } from '../types';
 import { getMergedCriticalPath } from './criticalPath';
+import { initiativeMatchesTheme } from './strategicDiagnostics';
+import type { StrategicFrame } from '../types';
 
 export interface NarrativeSignal {
   priority: number;
@@ -213,17 +215,39 @@ function benchmarkSignal(
   return null;
 }
 
+function strategicFrameSignal(
+  initiatives: Initiative[],
+  frame?: StrategicFrame
+): NarrativeSignal | null {
+  if (!frame || frame.themes.length === 0 || initiatives.length < 3) return null;
+
+  const aligned = initiatives.filter(i =>
+    frame.themes.some(t => initiativeMatchesTheme(i, t))
+  );
+  const pct = Math.round((aligned.length / initiatives.length) * 100);
+
+  if (pct < 50) {
+    return {
+      priority: 0,
+      text: `Only ${pct}% of initiatives align with the stated strategic themes. The organization may be drifting from its intended direction — or an emergent strategy is forming that the frame doesn't yet reflect.`,
+    };
+  }
+  return null;
+}
+
 export function generateNarrative(
   initiatives: Initiative[],
   capabilities: Capability[],
   effects: Effect[],
-  benchmark?: BenchmarkContext
+  benchmark?: BenchmarkContext,
+  frame?: StrategicFrame
 ): string {
   if (initiatives.length === 0) {
     return 'No initiatives have been added yet. Add initiatives to the strategy path to generate a strategic reading.';
   }
 
   const signals: NarrativeSignal[] = [
+    strategicFrameSignal(initiatives, frame),
     benchmarkSignal(initiatives, benchmark),
     dimensionSignal(initiatives),
     capabilitySignal(initiatives, capabilities),

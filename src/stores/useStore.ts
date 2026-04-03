@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens, Horizon, StrategicFrame, StrategicTheme } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -22,7 +22,7 @@ interface StoreState extends AppState {
   addInitiative: (initiative: Initiative) => void;
   updateInitiative: (id: string, updates: Partial<Initiative>) => void;
   deleteInitiative: (id: string) => void;
-  moveInitiative: (id: string, dimension: DimensionKey, horizon: 'near' | 'far', newOrder: number) => void;
+  moveInitiative: (id: string, dimension: DimensionKey, horizon: Horizon, newOrder: number) => void;
 
   // Strategy CRUD
   addStrategy: (strategy: Strategy) => void;
@@ -72,7 +72,7 @@ interface StoreState extends AppState {
   setSelectedItem: (item: UIState['selectedItem']) => void;
   setView: (view: ViewMode) => void;
   setRoadmapViewMode: (mode: 'dimension' | 'capability') => void;
-  setCapabilityView: (view: 'maturity' | 'risk') => void;
+  setCapabilityView: (view: 'maturity' | 'risk' | 'resource') => void;
   toggleSimulation: () => void;
   toggleCriticalPath: () => void;
   setFilter: (filters: Partial<UIState['filters']>) => void;
@@ -98,7 +98,7 @@ interface StoreState extends AppState {
   // Bulk operations
   toggleSelectedItem: (id: string) => void;
   clearSelectedItems: () => void;
-  bulkMoveInitiatives: (ids: string[], dimension: DimensionKey, horizon: 'near' | 'far') => void;
+  bulkMoveInitiatives: (ids: string[], dimension: DimensionKey, horizon: Horizon) => void;
   bulkDeleteInitiatives: (ids: string[]) => void;
 
   // Modules
@@ -110,6 +110,14 @@ interface StoreState extends AppState {
   // Template
   loadTemplate: (template: IndustryTemplate) => void;
   addCapabilities: (caps: Capability[]) => void;
+
+  // Strategic Frame
+  setStrategicFrame: (frame: StrategicFrame) => void;
+  updateStrategicDirection: (direction: string) => void;
+  addStrategicTheme: (theme: StrategicTheme) => void;
+  updateStrategicTheme: (id: string, updates: Partial<StrategicTheme>) => void;
+  deleteStrategicTheme: (id: string) => void;
+  clearStrategicFrame: () => void;
 }
 
 const defaultUI: UIState = {
@@ -604,6 +612,36 @@ export const useStore = create<StoreState>()(
         addCapabilities: (caps) => set(state => ({
           capabilities: [...state.capabilities, ...caps],
         })),
+
+        // Strategic Frame
+        setStrategicFrame: (frame) => set({ strategicFrame: frame }),
+        updateStrategicDirection: (direction) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return { strategicFrame: { ...state.strategicFrame, direction } };
+        }),
+        addStrategicTheme: (theme) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return { strategicFrame: { ...state.strategicFrame, themes: [...state.strategicFrame.themes, theme] } };
+        }),
+        updateStrategicTheme: (id, updates) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return {
+            strategicFrame: {
+              ...state.strategicFrame,
+              themes: state.strategicFrame.themes.map((t) => t.id === id ? { ...t, ...updates } : t),
+            },
+          };
+        }),
+        deleteStrategicTheme: (id) => set((state) => {
+          if (!state.strategicFrame) return {};
+          return {
+            strategicFrame: {
+              ...state.strategicFrame,
+              themes: state.strategicFrame.themes.filter((t) => t.id !== id),
+            },
+          };
+        }),
+        clearStrategicFrame: () => set({ strategicFrame: undefined }),
       };
     },
     {
@@ -628,7 +666,7 @@ export const useStore = create<StoreState>()(
       const fallbackModules: ModuleSettings = hasExistingData
         ? { roadmap: true, capabilities: true, effects: true }
         : currentState.modules;
-      return {
+      const merged: Record<string, unknown> = {
         ...currentState,
         ...persistedRest,
         modules: (persisted.modules as ModuleSettings | undefined) ?? fallbackModules,
@@ -654,7 +692,25 @@ export const useStore = create<StoreState>()(
             return 1 as ComplexityLevel;
           })(),
         },
-      } as StoreState;
+      };
+
+      // Migrate capabilityType for L1 capabilities that lack it
+      const caps = merged.capabilities as Capability[] | undefined;
+      if (caps && caps.length > 0) {
+        const l1WithoutType = caps.filter((c: Capability) => c.level === 1 && !c.capabilityType);
+        if (l1WithoutType.length > 0) {
+          const supportPatterns = ['økonomi', 'hr', 'data', 'infrastruktur', 'plattform', 'personal'];
+          merged.capabilities = caps.map((c: Capability) => {
+            if (c.level === 1 && !c.capabilityType) {
+              const isSupport = supportPatterns.some(p => c.name.toLowerCase().includes(p));
+              return { ...c, capabilityType: isSupport ? 'support' as const : 'core' as const };
+            }
+            return c;
+          });
+        }
+      }
+
+      return merged as StoreState;
     },
   })
 );

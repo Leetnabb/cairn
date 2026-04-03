@@ -1,5 +1,5 @@
 import { parseJsonObjectFromAI } from './parseJsonResponse';
-import type { DimensionKey, EffectType } from '../../types';
+import type { DimensionKey, EffectType, Horizon } from '../../types';
 
 
 /** @deprecated Use analyzeInput + Edge Function for onboarding. Kept for direct API key mode. */
@@ -21,7 +21,7 @@ export interface GeneratedStrategicPicture {
   initiatives: Array<{
     name: string;
     dimension: DimensionKey;
-    horizon: 'near' | 'far';
+    horizon: Horizon;
     description: string;
     capabilityNames?: string[];
   }>;

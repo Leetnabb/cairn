@@ -102,7 +102,7 @@ export function CapabilityDetail({ capability }: Props) {
             {children.map(c => (
               <button key={c.id}
                 onClick={() => setSelectedItem({ type: 'capability', id: c.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary">
+                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
                 {c.name}
               </button>
             ))}
@@ -146,7 +146,7 @@ export function CapabilityDetail({ capability }: Props) {
                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium transition-colors ${
                     linked
                       ? 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200'
-                      : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
+                      : 'bg-[var(--bg-hover)] text-text-secondary hover:bg-[var(--bg-hover)]'
                   }`}
                 >
                   {s.name}
@@ -165,7 +165,7 @@ export function CapabilityDetail({ capability }: Props) {
             {relatedInitiatives.map(i => (
               <button key={i.id}
                 onClick={() => setSelectedItem({ type: 'initiative', id: i.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary">
+                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
                 {i.name}
               </button>
             ))}
@@ -181,7 +181,7 @@ export function CapabilityDetail({ capability }: Props) {
             {relatedEffects.map(e => (
               <button key={e.id}
                 onClick={() => setSelectedItem({ type: 'effect', id: e.id })}
-                className="flex items-center gap-1.5 w-full text-left px-2 py-1 text-[10px] rounded hover:bg-gray-50 text-primary">
+                className="flex items-center gap-1.5 w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
                 <span className="px-1 py-0.5 text-[7px] font-medium rounded text-white shrink-0" style={{ backgroundColor: EFFECT_TYPE_COLORS[e.type] }}>
                   {t(`effects.types.${e.type}`)}
                 </span>

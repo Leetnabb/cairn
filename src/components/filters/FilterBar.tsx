@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey } from '../../types';
+import type { DimensionKey, Horizon } from '../../types';
 import { Button } from '../ui/Button';
 
 export function FilterBar() {
@@ -27,7 +27,7 @@ export function FilterBar() {
   };
 
   return (
-    <div className="flex items-center gap-2 px-4 py-1.5 bg-white border-b border-border shrink-0">
+    <div className="flex items-center gap-2 px-4 py-1.5 bg-card border-b border-border shrink-0">
       {/* Dimension toggles */}
       <div className="flex gap-0.5">
         {DIMENSIONS.map(d => (
@@ -54,12 +54,12 @@ export function FilterBar() {
 
       {/* Horizon toggle */}
       <div className="flex gap-0.5">
-        {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['far', t('labels.horizon.far')]] .map(([val, label]) => (
+        {[['all', t('labels.horizon.all')], ['near', t('labels.horizon.near')], ['far', t('labels.horizon.far')]].map(([val, label]) => (
           <button
             key={val}
-            onClick={() => setFilter({ horizon: val as 'all' | 'near' | 'far' })}
+            onClick={() => setFilter({ horizon: val as 'all' | Horizon })}
             className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-              filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+              filters.horizon === val ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
             }`}
           >
             {label}
@@ -73,7 +73,7 @@ export function FilterBar() {
       <button
         onClick={() => setFilter({ showMilestones: !filters.showMilestones })}
         className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-          filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+          filters.showMilestones ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
         }`}
       >
         {t('filters.milestones')}
@@ -83,7 +83,7 @@ export function FilterBar() {
       <button
         onClick={() => setFilter({ focusMode: !filters.focusMode })}
         className={`px-1.5 py-0.5 text-[9px] rounded transition-colors ${
-          filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-gray-100'
+          filters.focusMode ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
         }`}
       >
         {t('filters.focus')}
@@ -94,7 +94,7 @@ export function FilterBar() {
         <div className="flex items-center gap-0.5">
           <button
             onClick={() => setFilter({ zoomLevel: Math.max(0.5, (filters.zoomLevel ?? 1) - 0.25) })}
-            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-gray-100 text-text-tertiary"
+            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-[var(--bg-hover)] text-text-tertiary"
           >
             −
           </button>
@@ -103,7 +103,7 @@ export function FilterBar() {
           </span>
           <button
             onClick={() => setFilter({ zoomLevel: Math.min(3, (filters.zoomLevel ?? 1) + 0.25) })}
-            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-gray-100 text-text-tertiary"
+            className="px-1.5 py-0.5 text-[9px] rounded hover:bg-[var(--bg-hover)] text-text-tertiary"
           >
             +
           </button>
@@ -125,13 +125,15 @@ export function FilterBar() {
       {/* Status filter */}
       <select
         value={filters.status}
-        onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' })}
+        onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' | 'stopped' | 'changed_direction' })}
         className="px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
       >
         <option value="">{t('filters.allStatuses')}</option>
         <option value="planned">{t('labels.status.planned')}</option>
         <option value="in_progress">{t('labels.status.in_progress')}</option>
         <option value="done">{t('labels.status.done')}</option>
+        <option value="stopped">{t('labels.status.stopped')}</option>
+        <option value="changed_direction">{t('labels.status.changed_direction')}</option>
       </select>
 
       {/* Search */}

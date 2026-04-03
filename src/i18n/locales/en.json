@@ -34,7 +34,7 @@
   "modules": {
     "title": "Modules",
     "roadmap": "Strategy Path",
-    "roadmapDesc": "Plan and prioritize initiatives – from strategy to execution",
+    "roadmapDesc": "See what the organization is doing — and whether it aligns with the direction",
     "capabilities": "Capabilities",
     "capabilitiesDesc": "Map organizational capabilities and maturity levels",
     "effects": "Effects",
@@ -127,6 +127,14 @@
       "dimCount": "dimensions"
     }
   },
+  "resourceBar": {
+    "summary": "{{active}} active / {{total}} total"
+  },
+  "initBox": {
+    "cap": "cap",
+    "dep": "dep",
+    "act": "act."
+  },
   "capLandscape": {
     "title": "Capability Landscape",
     "domains": "domains",
@@ -135,7 +143,25 @@
     "activities": "{{count}} activity/activities",
     "noSubCaps": "No sub-capabilities",
     "simulatedFrom": "{{from}} → {{to}}",
-    "emptyDomains": "No capability domains yet. Add a capability to get started."
+    "emptyDomains": "No capability domains yet. Add a capability to get started.",
+    "coreSection": "Core Business & Value Creation",
+    "supportSection": "Support & Foundation",
+    "strategicFoundation": "Strategic Foundation"
+  },
+  "capabilityType": {
+    "label": "Type",
+    "core": "Core",
+    "support": "Support",
+    "coreDesc": "Directly creates value for end user",
+    "supportDesc": "Enables value creation"
+  },
+  "maturityChevron": {
+    "establish": "Establish",
+    "optimize": "Optimize",
+    "innovate": "Innovate",
+    "strategicGap": "Strategic Gap",
+    "gapTooltip": "Ambition is set to {{target}}, but no initiatives are planned for this phase",
+    "resourceTooltip": "Load: {{load}}% | Effort: {{effort}}"
   },
   "common": {
     "save": "Save",
@@ -174,6 +200,9 @@
       "2": "Medium",
       "3": "High"
     },
+    "resource": {
+      "label": "Resources"
+    },
     "risk": {
       "label": "Risk",
       "1": "Low",
@@ -190,12 +219,14 @@
       "label": "Status",
       "planned": "Planned",
       "in_progress": "In progress",
-      "done": "Done"
+      "done": "Done",
+      "stopped": "Stopped",
+      "changed_direction": "Changed direction"
     },
     "horizon": {
       "label": "Horizon",
-      "near": "Near",
-      "far": "Far",
+      "near": "Now",
+      "far": "Later",
       "all": "All",
       "nearFull": "Near horizon",
       "farFull": "Far horizon",
@@ -229,7 +260,7 @@
     "collapsed": "Collapsed",
     "expand": "Expand",
     "emptyTitle": "No initiatives yet",
-    "emptyBody": "Add an initiative to start building your strategy path.",
+    "emptyBody": "Add an initiative to start seeing the strategic picture.",
     "dragHint": "Drag activities here",
     "newActivity": "New activity"
   },
@@ -238,6 +269,9 @@
     "capView": "By capability",
     "unlinked": "Unlinked",
     "noCaps": "No capabilities defined. Add capabilities to use the capability view."
+  },
+  "capPath": {
+    "maturityGoal": "Goal: {{target}}"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -273,7 +307,18 @@
     "bottleneckNoInitiatives": "No linked initiatives",
     "bottleneckUnderserviced": "Underpowered capabilities",
     "bottleneckBlocked": "Blocked initiatives",
-    "noBottlenecks": "No strategic bottlenecks detected"
+    "noBottlenecks": "No strategic bottlenecks detected",
+    "noStrategicFrame": "Define strategic frame in settings"
+  },
+  "strategicHealth": {
+    "noLink": "no link",
+    "fullCoverage": "Full coverage",
+    "avgMaturity": "Avg. maturity",
+    "noGap": "No gap",
+    "drift": "Drift",
+    "noDrift": "No drift",
+    "noCapability": "No capability",
+    "dimensions": "Dimensions"
   },
   "snapshots": {
     "title": "Snapshots",
@@ -393,10 +438,12 @@
     "ownerCapacity": "{{owner}} has {{count}} activities \u2014 capacity risk",
     "dimensionNoNear": "{{dimension}} has no near-horizon activities",
     "orphanCapability": "\"{{name}}\" has no activities linked to it",
-    "orphanInitiative": "\"{{name}}\" has no capabilities linked to it",
     "allDimensionsCovered": "All dimensions are covered with activities",
     "strategyDrift_one": "{{count}} activity not linked to a capability (strategy drift)",
-    "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)"
+    "strategyDrift_other": "{{count}} activities not linked to a capability (strategy drift)",
+    "dimensionImbalance": "{{dimension}} accounts for {{pct}}% of all initiatives ({{count}} of {{total}}). Transformations heavily weighted toward one dimension carry higher failure risk.",
+    "crossDimensionDemand": "← {{count}} demands",
+    "crossDimensionTooltip": "{{count}} initiatives in other dimensions depend on this one"
   },
   "strategy": {
     "title": "Strategies",
@@ -467,7 +514,13 @@
     "effectsWithoutNearInitiatives": "\"{{name}}\" has no near-horizon activities",
     "initiativeWithoutEffect": "\"{{name}}\" does not contribute to any defined effect",
     "missingEffectTypes": "Portfolio lacks effect type: {{types}}",
-    "effectConcentration": "{{count}} of {{total}} effects depend on \"{{name}}\""
+    "effectConcentration": "{{count}} of {{total}} effects depend on \"{{name}}\"",
+    "effectConfidence": {
+      "label": "Confidence",
+      "confirmed": "Confirmed",
+      "tentative": "Tentative",
+      "under_consideration": "Under consideration"
+    }
   },
   "comments": {
     "title": "Comments",
@@ -480,9 +533,9 @@
     "hideDetail": "Hide detail panel"
   },
   "ai": {
-    "chatSystemPrompt": "You are an experienced EA advisor (Enterprise Architecture) helping a leadership team with strategic planning in the tool \"Cairn\".\n\n## Your role\n- Speak English, be concise and advisory\n- Help identify, structure and prioritise activities and capabilities\n- Users are leaders who describe needs informally — help them make things concrete\n- Only name is required to create elements, everything else is optional\n\n## Dimensions\n- ledelse: Governance (steering-related)\n- virksomhet: Business (core business)\n- organisasjon: Organisation (people/culture)\n- teknologi: Technology (IT/digital)\n\n## Horizons\n- near: Near horizon (0–2 years)\n- far: Far horizon (2–5 years)\n\n## Maturity and risk\n- 1: Low, 2: Medium, 3: High\n\n## When suggesting an activity or capability\nInclude a JSON suggestion in a code block like this:\n\n```json:suggestion\n{\n  \"type\": \"initiative\",\n  \"name\": \"Name of the activity\",\n  \"description\": \"Short description\",\n  \"dimension\": \"teknologi\",\n  \"horizon\": \"near\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Name of capability\"]\n}\n```\n\nFor capabilities:\n```json:suggestion\n{\n  \"type\": \"capability\",\n  \"name\": \"Name of the capability\",\n  \"description\": \"Short description\",\n  \"level\": 2,\n  \"suggestedParent\": \"Name of parent domain\",\n  \"maturity\": 1,\n  \"risk\": 2\n}\n```\n\n## Important rules\n- Reference existing capabilities and activities by name when relevant\n- Suggest realistic connections to existing elements\n- Always provide a brief explanation alongside the JSON suggestion\n- You can suggest multiple elements in one message\n- Do not include fields you are unsure about — the user can fill them in",
-    "formPromptInitiative": "You are an EA advisor helping fill out a form for a new activity/initiative.\n\nBased on the user's free-text description, suggest values for form fields.\nReturn ONLY valid JSON, no other text.\n\nContext about the existing roadmap follows in the user message.\n\nJSON format:\n{\n  \"name\": \"Short, descriptive name\",\n  \"description\": \"Expanded description (1-2 sentences)\",\n  \"dimension\": \"ledelse|virksomhet|organisasjon|teknologi\",\n  \"horizon\": \"near|far\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Names of relevant capabilities from the roadmap\"]\n}\n\nRules:\n- \"dimension\" must be one of: ledelse, virksomhet, organisasjon, teknologi\n- \"horizon\" must be \"near\" or \"far\"\n- \"suggestedCapabilities\" should contain names of existing relevant capabilities\n- Omit fields you are unsure about (except name which is required)\n- The context contains existing capabilities and activities — use these as reference",
-    "formPromptCapability": "You are an EA advisor helping fill out a form for a new capability.\n\nBased on the user's free-text description, suggest values for form fields.\nReturn ONLY valid JSON, no other text.\n\nContext about the existing roadmap follows in the user message.\n\nJSON format:\n{\n  \"name\": \"Short, descriptive name\",\n  \"description\": \"Expanded description (1-2 sentences)\",\n  \"level\": 1 or 2,\n  \"suggestedParent\": \"Name of parent L1 capability (only for level 2)\",\n  \"maturity\": 1-3,\n  \"risk\": 1-3\n}\n\nRules:\n- \"level\" is 1 (domain) or 2 (sub-capability)\n- \"maturity\": 1=Low, 2=Medium, 3=High\n- \"risk\": 1=Low, 2=Medium, 3=High\n- \"suggestedParent\" should reference an existing L1 capability by name\n- Omit fields you are unsure about (except name which is required)",
+    "chatSystemPrompt": "You are an experienced EA advisor (Enterprise Architecture) helping a leadership team navigate strategy in the tool \"Cairn\".\n\n## Your role\n- Speak English, be concise and advisory\n- Help identify, structure and prioritise activities and capabilities\n- Users are leaders who describe needs informally — help them make things concrete\n- Only name is required to create elements, everything else is optional\n\n## Dimensions\n- ledelse: Governance (steering-related)\n- virksomhet: Business (core business)\n- organisasjon: Organisation (people/culture)\n- teknologi: Technology (IT/digital)\n\n## Horizons\n- near: Near horizon (0–2 years)\n- far: Far horizon (2–5 years)\n\n## Maturity and risk\n- 1: Low, 2: Medium, 3: High\n\n## When suggesting an activity or capability\nInclude a JSON suggestion in a code block like this:\n\n```json:suggestion\n{\n  \"type\": \"initiative\",\n  \"name\": \"Name of the activity\",\n  \"description\": \"Short description\",\n  \"dimension\": \"teknologi\",\n  \"horizon\": \"near\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Name of capability\"]\n}\n```\n\nFor capabilities:\n```json:suggestion\n{\n  \"type\": \"capability\",\n  \"name\": \"Name of the capability\",\n  \"description\": \"Short description\",\n  \"level\": 2,\n  \"suggestedParent\": \"Name of parent domain\",\n  \"maturity\": 1,\n  \"risk\": 2\n}\n```\n\n## Important rules\n- Reference existing capabilities and activities by name when relevant\n- Suggest realistic connections to existing elements\n- Always provide a brief explanation alongside the JSON suggestion\n- You can suggest multiple elements in one message\n- Do not include fields you are unsure about — the user can fill them in",
+    "formPromptInitiative": "You are an EA advisor helping fill out a form for a new activity/initiative.\n\nBased on the user's free-text description, suggest values for form fields.\nReturn ONLY valid JSON, no other text.\n\nContext about the existing strategic picture follows in the user message.\n\nJSON format:\n{\n  \"name\": \"Short, descriptive name\",\n  \"description\": \"Expanded description (1-2 sentences)\",\n  \"dimension\": \"ledelse|virksomhet|organisasjon|teknologi\",\n  \"horizon\": \"near|far\",\n  \"owner\": \"\",\n  \"notes\": \"\",\n  \"suggestedCapabilities\": [\"Names of relevant capabilities from the strategic picture\"]\n}\n\nRules:\n- \"dimension\" must be one of: ledelse, virksomhet, organisasjon, teknologi\n- \"horizon\" must be \"near\" or \"far\"\n- \"suggestedCapabilities\" should contain names of existing relevant capabilities\n- Omit fields you are unsure about (except name which is required)\n- The context contains existing capabilities and activities — use these as reference",
+    "formPromptCapability": "You are an EA advisor helping fill out a form for a new capability.\n\nBased on the user's free-text description, suggest values for form fields.\nReturn ONLY valid JSON, no other text.\n\nContext about the existing strategic picture follows in the user message.\n\nJSON format:\n{\n  \"name\": \"Short, descriptive name\",\n  \"description\": \"Expanded description (1-2 sentences)\",\n  \"level\": 1 or 2,\n  \"suggestedParent\": \"Name of parent L1 capability (only for level 2)\",\n  \"maturity\": 1-3,\n  \"risk\": 1-3\n}\n\nRules:\n- \"level\" is 1 (domain) or 2 (sub-capability)\n- \"maturity\": 1=Low, 2=Medium, 3=High\n- \"risk\": 1=Low, 2=Medium, 3=High\n- \"suggestedParent\" should reference an existing L1 capability by name\n- Omit fields you are unsure about (except name which is required)",
     "contextCapabilities": "Capabilities",
     "contextActivities": "Activities",
     "contextValueChains": "Value chains",
@@ -508,7 +561,7 @@
       "updated": "Updated",
       "deleted": "Deleted",
       "notFound": "Not found",
-      "askHelp": "Ask AI for help with the roadmap.",
+      "askHelp": "Ask AI for help with the strategic picture.",
       "askExample": "E.g.: \"Suggest activities for digital transformation\"",
       "stopGeneration": "Stop generating",
       "inputPlaceholder": "Type a message... (Ctrl+Enter to send)",
@@ -540,7 +593,7 @@
     "reload": "Reload"
   },
   "export": {
-    "pptxTitle": "Cairn — Strategic roadmap",
+    "pptxTitle": "Cairn — Strategic overview",
     "totalOverview": "Total overview",
     "capabilityMap": "Capability map",
     "crossAnalysis": "Cross-analysis",
@@ -561,6 +614,10 @@
     "confirmed": "Confirmed",
     "tentative": "Tentative",
     "under_consideration": "Under consideration"
+  },
+  "zoom": {
+    "openDetails": "Open details",
+    "indicator": "Zoom: {{level}}%"
   },
   "board": {
     "title": "Board View",
@@ -587,13 +644,23 @@
     "atRisk": "At risk",
     "unsupported": "Unsupported"
   },
+  "strategicFrame": {
+    "title": "Strategic frame",
+    "empty": "No strategic frame defined. Set the broad direction for the organization.",
+    "create": "Define strategic direction",
+    "direction": "Strategic direction",
+    "directionPlaceholder": "E.g. 'Become a data-driven, member-focused organization'",
+    "themes": "Strategic themes",
+    "newThemePlaceholder": "New theme..."
+  },
   "settings": {
     "title": "Settings",
     "tabs": {
       "organisation": "Organisation",
       "team": "Team",
       "plan": "Plan",
-      "data": "Data"
+      "data": "Data",
+      "strategicFrame": "Strategic frame"
     },
     "org": {
       "name": "Organisation name",

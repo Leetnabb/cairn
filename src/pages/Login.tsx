@@ -64,9 +64,20 @@ export function Login() {
   const isExpired = searchParams.get('expired') === 'true';
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-xl font-bold text-text-primary text-center mb-6">
+    <div
+      data-mode="board"
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: 'var(--bg-app)', color: 'var(--text-primary)' }}
+    >
+      <div
+        className="w-full max-w-sm rounded-xl p-8"
+        style={{
+          background: 'var(--bg-card)',
+          boxShadow: 'var(--shadow-panel)',
+          border: '1px solid var(--border-default)',
+        }}
+      >
+        <h1 className="text-xl font-bold text-center mb-6" style={{ color: 'var(--text-primary)' }}>
           {mode === 'login' && t('auth.login')}
           {mode === 'register' && t('auth.register')}
           {mode === 'reset' && t('auth.resetPassword')}
@@ -83,7 +94,12 @@ export function Login() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder={t('auth.displayName')}
-              className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text-primary placeholder:text-text-tertiary"
+              className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'var(--text-primary)',
+              }}
             />
           )}
 
@@ -93,7 +109,12 @@ export function Login() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t('auth.email')}
             required
-            className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text-primary placeholder:text-text-tertiary"
+            className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: 'var(--text-primary)',
+            }}
           />
 
           {mode !== 'reset' && (
@@ -104,7 +125,12 @@ export function Login() {
               placeholder={t('auth.password')}
               required
               minLength={6}
-              className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text-primary placeholder:text-text-tertiary"
+              className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'var(--text-primary)',
+              }}
             />
           )}
 
@@ -116,22 +142,25 @@ export function Login() {
                 onChange={(e) => setConsentResearch(e.target.checked)}
                 className="w-3.5 h-3.5 accent-primary"
               />
-              <span className="text-xs text-text-secondary">{t('auth.consentResearch')}</span>
+              <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{t('auth.consentResearch')}</span>
             </label>
           )}
 
           {error && (
-            <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
+            <p className="text-xs text-red-400 bg-red-900/20 rounded-lg px-3 py-2">{error}</p>
           )}
 
           {message && (
-            <p className="text-xs text-green-700 bg-green-50 rounded-lg px-3 py-2">{message}</p>
+            <p className="text-xs text-green-400 bg-green-900/20 rounded-lg px-3 py-2">{message}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50"
+            className="w-full py-2 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50"
+            style={{ background: 'var(--accent)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--accent)'; }}
           >
             {loading ? '...' : (
               mode === 'login' ? t('auth.login') :
@@ -146,15 +175,17 @@ export function Login() {
             <>
               <button
                 onClick={() => { setMode('reset'); setError(null); setMessage(null); }}
-                className="text-xs text-text-tertiary hover:text-primary transition-colors"
+                className="text-xs transition-colors"
+                style={{ color: 'var(--text-tertiary)' }}
               >
                 {t('auth.forgotPassword')}
               </button>
-              <p className="text-xs text-text-tertiary">
+              <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
                 {t('auth.noAccount')}{' '}
                 <button
                   onClick={() => { setMode('register'); setError(null); setMessage(null); }}
-                  className="text-primary font-medium hover:underline"
+                  className="font-medium hover:underline"
+                  style={{ color: 'var(--accent)' }}
                 >
                   {t('auth.register')}
                 </button>
@@ -163,11 +194,12 @@ export function Login() {
           )}
 
           {mode === 'register' && (
-            <p className="text-xs text-text-tertiary">
+            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
               {t('auth.hasAccount')}{' '}
               <button
                 onClick={() => { setMode('login'); setError(null); setMessage(null); }}
-                className="text-primary font-medium hover:underline"
+                className="font-medium hover:underline"
+                style={{ color: 'var(--accent)' }}
               >
                 {t('auth.login')}
               </button>
@@ -177,7 +209,8 @@ export function Login() {
           {mode === 'reset' && (
             <button
               onClick={() => { setMode('login'); setError(null); setMessage(null); }}
-              className="text-xs text-primary font-medium hover:underline"
+              className="text-xs font-medium hover:underline"
+              style={{ color: 'var(--accent)' }}
             >
               {t('auth.login')}
             </button>

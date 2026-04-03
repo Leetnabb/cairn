@@ -4,7 +4,7 @@ import { useAIStore } from '../../stores/useAIStore';
 import { useStore } from '../../stores/useStore';
 import { useAIChat } from '../../hooks/useAIChat';
 import { parseSuggestions, type AISuggestion } from '../../lib/ai/parseSuggestions';
-import type { DimensionKey } from '../../types';
+import type { DimensionKey, Horizon } from '../../types';
 import APIKeyInput from './APIKeyInput';
 
 function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
@@ -42,7 +42,7 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
     if (suggestion.type === 'initiative') {
       const initiatives = scenarioStates[activeScenario]?.initiatives || [];
       const dim = (suggestion.dimension || 'ledelse') as DimensionKey;
-      const hor = (suggestion.horizon === 'far' ? 'far' : 'near') as 'near' | 'far';
+      const hor = (suggestion.horizon === 'far' ? 'far' : 'near') as Horizon;
       const maxOrder = initiatives
         .filter((i) => i.dimension === dim && i.horizon === hor)
         .reduce((max, i) => Math.max(max, i.order), 0);
@@ -129,7 +129,7 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
 
   if (action === 'update') {
     return (
-      <div className="my-1.5 p-2 bg-white border border-orange-200 rounded shadow-sm">
+      <div className="my-1.5 p-2 bg-card border border-orange-200 rounded shadow-sm">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[9px] font-medium text-orange-600 uppercase tracking-wide">
             {t('ai.ui.update')} {suggestion.type === 'initiative' ? t('ai.ui.initiative') : t('ai.ui.capability')}
@@ -164,7 +164,7 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
 
   if (action === 'delete') {
     return (
-      <div className="my-1.5 p-2 bg-white border border-red-200 rounded shadow-sm">
+      <div className="my-1.5 p-2 bg-card border border-red-200 rounded shadow-sm">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[9px] font-medium text-red-600 uppercase tracking-wide">
             {t('ai.ui.deleteItem')} {suggestion.type === 'initiative' ? t('ai.ui.initiative') : t('ai.ui.capability')}
@@ -190,7 +190,7 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
 
   // Default: create
   return (
-    <div className="my-1.5 p-2 bg-white border border-border rounded shadow-sm">
+    <div className="my-1.5 p-2 bg-card border border-border rounded shadow-sm">
       <div className="flex items-center justify-between mb-1">
         <span className="text-[9px] font-medium text-primary uppercase tracking-wide">
           {suggestion.type === 'initiative' ? t('ai.ui.initiative') : t('ai.ui.capability')}
@@ -212,12 +212,12 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
         <p className="text-[10px] text-text-secondary mt-0.5">{suggestion.description}</p>
       )}
       {suggestion.dimension && (
-        <span className="inline-block mt-1 mr-1 px-1 py-0.5 text-[8px] bg-gray-100 rounded text-text-tertiary">
+        <span className="inline-block mt-1 mr-1 px-1 py-0.5 text-[8px] bg-[var(--bg-hover)] rounded text-text-tertiary">
           {suggestion.dimension}
         </span>
       )}
       {suggestion.horizon && (
-        <span className="inline-block mt-1 mr-1 px-1 py-0.5 text-[8px] bg-gray-100 rounded text-text-tertiary">
+        <span className="inline-block mt-1 mr-1 px-1 py-0.5 text-[8px] bg-[var(--bg-hover)] rounded text-text-tertiary">
           {t(`labels.horizon.${suggestion.horizon}`)}
         </span>
       )}
@@ -332,7 +332,7 @@ export default function AIChatPanel() {
               className={`max-w-[85%] px-2.5 py-1.5 rounded-lg ${
                 msg.role === 'user'
                   ? 'bg-primary text-white'
-                  : 'bg-gray-100 text-text-primary'
+                  : 'bg-[var(--bg-hover)] text-text-primary'
               }`}
             >
               {msg.role === 'user' ? (
@@ -346,7 +346,7 @@ export default function AIChatPanel() {
 
         {isStreaming && streamingText && (
           <div className="flex justify-start">
-            <div className="max-w-[85%] px-2.5 py-1.5 rounded-lg bg-gray-100 text-text-primary">
+            <div className="max-w-[85%] px-2.5 py-1.5 rounded-lg bg-[var(--bg-hover)] text-text-primary">
               <MessageContent content={streamingText} />
             </div>
           </div>
@@ -354,7 +354,7 @@ export default function AIChatPanel() {
 
         {isStreaming && !streamingText && (
           <div className="flex justify-start">
-            <div className="px-2.5 py-1.5 rounded-lg bg-gray-100">
+            <div className="px-2.5 py-1.5 rounded-lg bg-[var(--bg-hover)]">
               <div className="flex gap-1">
                 <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-pulse" />
                 <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-pulse [animation-delay:150ms]" />
@@ -384,7 +384,7 @@ export default function AIChatPanel() {
               onKeyDown={handleKeyDown}
               placeholder={t('ai.ui.inputPlaceholder')}
               rows={2}
-              className="flex-1 px-2 py-1.5 text-[11px] border border-border rounded resize-none focus:outline-none focus:border-primary bg-white"
+              className="flex-1 px-2 py-1.5 text-[11px] border border-border rounded resize-none focus:outline-none focus:border-primary bg-card"
             />
             <button
               onClick={handleSend}

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 const PLAN_DISPLAY = {
-  FREE: { label: 'Free', color: 'text-text-secondary bg-gray-100' },
+  FREE: { label: 'Free', color: 'text-text-secondary bg-[var(--bg-hover)]' },
   PRO: { label: 'Pro', color: 'text-blue-700 bg-blue-50' },
   ENTERPRISE: { label: 'Enterprise', color: 'text-indigo-700 bg-indigo-50' },
 };

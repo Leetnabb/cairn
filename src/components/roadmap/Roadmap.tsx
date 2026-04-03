@@ -1,12 +1,14 @@
-import { useMemo, useEffect, useState, useCallback } from 'react';
+import { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
-import type { DimensionKey, Initiative } from '../../types';
+import type { DimensionKey, Initiative, Horizon } from '../../types';
 import { DropZone } from './DropZone';
 import { MilestoneMarker } from './MilestoneMarker';
+import { ResourceBar } from './ResourceBar';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
 import { CapabilityPath } from './CapabilityPath';
+import { DependencyOverlay } from './DependencyOverlay';
 
 export function Roadmap() {
   const { t } = useTranslation();
@@ -22,10 +24,52 @@ export function Roadmap() {
   const bulkDeleteInitiatives = useStore(s => s.bulkDeleteInitiatives);
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const roleMode = useStore(s => s.ui.roleMode);
+  const capabilities = useStore(s => s.capabilities);
   const roadmapViewMode = useStore(s => s.ui.roadmapViewMode);
   const setRoadmapViewMode = useStore(s => s.setRoadmapViewMode);
   const [showMoveDropdown, setShowMoveDropdown] = useState(false);
+  const [switching, setSwitching] = useState(false);
   const [collapsedDimensions, setCollapsedDimensions] = useState<Set<DimensionKey>>(new Set());
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [lockedChainId, setLockedChainId] = useState<string | null>(null);
+  const cardRefs = useRef(new Map<string, HTMLElement>());
+  const roadmapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Build init map for dependency traversal
+  const initMap = useMemo(() => {
+    const map = new Map<string, Initiative>();
+    for (const init of initiatives) map.set(init.id, init);
+    return map;
+  }, [initiatives]);
+
+  // Pre-compute reverse deps: who depends on each initiative
+  const dependedOnBy = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const init of initiatives) {
+      for (const depId of init.dependsOn) {
+        const list = map.get(depId) ?? [];
+        list.push(init.id);
+        map.set(depId, list);
+      }
+    }
+    return map;
+  }, [initiatives]);
+
+  // Cross-dimension demand: count inbound dependencies from other dimensions
+  const crossDimDemand = useMemo(() => {
+    const demand: Record<string, number> = {};
+    for (const dim of DIMENSIONS) demand[dim.key] = 0;
+
+    for (const init of initiatives) {
+      for (const depId of init.dependsOn) {
+        const dep = initMap.get(depId);
+        if (dep && dep.dimension !== init.dimension) {
+          demand[dep.dimension] = (demand[dep.dimension] || 0) + 1;
+        }
+      }
+    }
+    return demand;
+  }, [initiatives, initMap]);
 
   const criticalPathIds = useMemo(() => {
     if (!criticalPathEnabled) return new Set<string>();
@@ -44,6 +88,51 @@ export function Roadmap() {
     );
     return { upstream, downstream };
   }, [selectedItem, initiatives]);
+
+  // Active chain ID: locked takes precedence over hover
+  const activeChainId = lockedChainId ?? hoveredId;
+
+  // Dependency thread connections on hover/lock
+  const depConnections = useMemo(() => {
+    if (!activeChainId) return [];
+    const conns: { fromId: string; toId: string }[] = [];
+    // Walk upstream
+    const visited = new Set<string>();
+    const queue = [activeChainId];
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (visited.has(current)) continue;
+      visited.add(current);
+      const init = initMap.get(current);
+      if (init) {
+        for (const depId of init.dependsOn) {
+          conns.push({ fromId: depId, toId: current });
+          queue.push(depId);
+        }
+      }
+    }
+    // Walk downstream
+    const downVisited = new Set<string>();
+    const downQueue = [activeChainId];
+    while (downQueue.length > 0) {
+      const current = downQueue.shift()!;
+      if (downVisited.has(current)) continue;
+      downVisited.add(current);
+      for (const childId of (dependedOnBy.get(current) ?? [])) {
+        conns.push({ fromId: current, toId: childId });
+        downQueue.push(childId);
+      }
+    }
+    return conns;
+  }, [activeChainId, initMap, dependedOnBy]);
+
+  const chainIds = useMemo(() => {
+    if (!activeChainId) return null;
+    const ids = new Set<string>();
+    depConnections.forEach(c => { ids.add(c.fromId); ids.add(c.toId); });
+    ids.add(activeChainId);
+    return ids;
+  }, [activeChainId, depConnections]);
 
   // Value chain spotlight
   const spotlightValueChain = filters.spotlightValueChain;
@@ -65,7 +154,7 @@ export function Roadmap() {
 
   const hasActiveFilters = filters.dimensions.length > 0 || filters.horizon !== 'all' || filters.owner || filters.search || filters.status || !!spotlightValueChain;
 
-  const getInitiativesForZone = (dim: DimensionKey, horizon: 'near' | 'far') =>
+  const getInitiativesForZone = (dim: DimensionKey, horizon: Horizon) =>
     initiatives.filter(i => i.dimension === dim && i.horizon === horizon);
 
   const nearMilestones = milestones.filter(m => m.horizon === 'near');
@@ -73,20 +162,28 @@ export function Roadmap() {
 
   const setFilter = useStore(s => s.setFilter);
 
-  // Keyboard shortcuts for zoom (only in focus mode)
+  const ZOOM_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+
+  const stepZoom = useCallback((direction: 'in' | 'out') => {
+    const current = filters.zoomLevel ?? 1;
+    const currentIdx = ZOOM_STEPS.findIndex(s => s >= current);
+    const idx = direction === 'in'
+      ? Math.min((currentIdx === -1 ? ZOOM_STEPS.length - 1 : currentIdx) + 1, ZOOM_STEPS.length - 1)
+      : Math.max((currentIdx === -1 ? 0 : currentIdx) - 1, 0);
+    setFilter({ zoomLevel: ZOOM_STEPS[idx] });
+  }, [filters.zoomLevel, setFilter]);
+
+  // Keyboard shortcuts for zoom (works always in roadmap view)
   useEffect(() => {
-    if (!filters.focusMode) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
       if (!mod) return;
       if (e.key === '=' || e.key === '+') {
         e.preventDefault();
-        const current = filters.zoomLevel ?? 1;
-        setFilter({ zoomLevel: Math.min(current + 0.1, 2) });
+        stepZoom('in');
       } else if (e.key === '-') {
         e.preventDefault();
-        const current = filters.zoomLevel ?? 1;
-        setFilter({ zoomLevel: Math.max(current - 0.1, 0.5) });
+        stepZoom('out');
       } else if (e.key === '0') {
         e.preventDefault();
         setFilter({ zoomLevel: 1 });
@@ -94,12 +191,27 @@ export function Roadmap() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [filters.focusMode, filters.zoomLevel, setFilter]);
+  }, [stepZoom, setFilter]);
+
+  // Ctrl+Scroll zoom handler
+  const roadmapRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        stepZoom(e.deltaY < 0 ? 'in' : 'out');
+      }
+    };
+    const el = roadmapRef.current;
+    if (el) el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el?.removeEventListener('wheel', handleWheel);
+  }, [stepZoom]);
 
   const focusMode = filters.focusMode;
-  const showNear = !(focusMode && filters.horizon === 'far');
-  const showFar = !(focusMode && filters.horizon === 'near');
-  const gridCols = showNear && showFar ? '120px 1fr 1fr' : '120px 1fr';
+  const showNear = !(focusMode && filters.horizon !== 'near' && filters.horizon !== 'all');
+  const showFar = !(focusMode && filters.horizon !== 'far' && filters.horizon !== 'all');
+  const visibleColCount = [showNear, showFar].filter(Boolean).length;
+  const gridCols = visibleColCount === 2 ? '120px 1fr 1fr' : '120px 1fr';
 
   const visibleDimensions = useMemo(
     () => focusMode && filters.dimensions.length > 0
@@ -122,7 +234,17 @@ export function Roadmap() {
   const handleBackgroundClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       setSelectedItem(null);
+      setLockedChainId(null);
     }
+  };
+
+  const handleViewSwitch = (newMode: 'dimension' | 'capability') => {
+    if (newMode === roadmapViewMode || switching) return;
+    setSwitching(true);
+    setTimeout(() => {
+      setRoadmapViewMode(newMode);
+      setSwitching(false);
+    }, 150);
   };
 
   if (roadmapViewMode === 'capability') {
@@ -131,8 +253,8 @@ export function Roadmap() {
         {/* View toggle */}
         <div className="flex items-center gap-1 px-3 pt-3 pb-1">
           <button
-            onClick={() => setRoadmapViewMode('dimension')}
-            className="px-2 py-0.5 rounded text-[10px] border border-border bg-white text-text-secondary hover:bg-gray-50"
+            onClick={() => handleViewSwitch('dimension')}
+            className="px-2 py-0.5 rounded text-[10px] border border-border bg-card text-text-secondary hover:bg-[var(--bg-hover)]"
           >
             {t('strategyPath.dimView')}
           </button>
@@ -142,13 +264,24 @@ export function Roadmap() {
             {t('strategyPath.capView')}
           </button>
         </div>
-        <CapabilityPath />
+        <div style={{ opacity: switching ? 0 : 1, transition: 'opacity 150ms ease' }}>
+          <CapabilityPath />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={focusMode ? "h-full p-3 flex flex-col" : "min-h-full p-3"} onClick={handleBackgroundClick}>
+    <div ref={(el) => {
+      (roadmapRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+      (roadmapContainerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    }} className={focusMode ? "relative h-full p-3 flex flex-col" : "relative min-h-full p-3"} onClick={handleBackgroundClick}>
+      {/* Dependency thread SVG overlay */}
+      <DependencyOverlay
+        connections={depConnections}
+        cardRefs={cardRefs.current}
+        containerRef={roadmapContainerRef}
+      />
       {/* View toggle */}
       <div className="flex items-center gap-1 mb-2">
         <button
@@ -157,12 +290,13 @@ export function Roadmap() {
           {t('strategyPath.dimView')}
         </button>
         <button
-          onClick={() => setRoadmapViewMode('capability')}
-          className="px-2 py-0.5 rounded text-[10px] border border-border bg-white text-text-secondary hover:bg-gray-50"
+          onClick={() => handleViewSwitch('capability')}
+          className="px-2 py-0.5 rounded text-[10px] border border-border bg-card text-text-secondary hover:bg-[var(--bg-hover)]"
         >
           {t('strategyPath.capView')}
         </button>
       </div>
+      <div style={{ opacity: switching ? 0 : 1, transition: 'opacity 150ms ease' }}>
       {/* Empty state */}
       {initiatives.length === 0 && !hasActiveFilters && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -210,6 +344,18 @@ export function Roadmap() {
               >
                 <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} aria-hidden="true" />
                 {t(`labels.dimensions.${dim.key}`)}
+                {crossDimDemand[dim.key] >= 2 && (
+                  <span
+                    className={`ml-1 px-1 py-0.5 rounded text-[8px] font-medium whitespace-nowrap border ${
+                      crossDimDemand[dim.key] >= 4
+                        ? 'bg-red-50 text-red-600 border-red-200'
+                        : 'bg-amber-50 text-amber-600 border-amber-200'
+                    }`}
+                    title={t('insights.crossDimensionTooltip', { count: crossDimDemand[dim.key] })}
+                  >
+                    {t('insights.crossDimensionDemand', { count: crossDimDemand[dim.key] })}
+                  </span>
+                )}
                 <span className="ml-1 text-[8px] opacity-60">({t('roadmap.collapsed')})</span>
               </div>
               {showNear && <div className="rounded" style={{ backgroundColor: dim.bgLight, height: 24 }} />}
@@ -237,7 +383,6 @@ export function Roadmap() {
               style={{
                 backgroundColor: dim.bgColor,
                 color: dim.textColor,
-                ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
               }}
               onClick={() => toggleCollapse(dim.key)}
               onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && toggleCollapse(dim.key)}
@@ -245,7 +390,19 @@ export function Roadmap() {
               aria-expanded={true}
             >
               <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} aria-hidden="true" />
-              {t(`labels.dimensions.${dim.key}`)}
+              <span className="truncate">{t(`labels.dimensions.${dim.key}`)}</span>
+              {crossDimDemand[dim.key] >= 2 && (
+                <span
+                  className={`ml-1 px-1 py-0.5 rounded text-[8px] font-medium whitespace-nowrap border ${
+                    crossDimDemand[dim.key] >= 4
+                      ? 'bg-red-50 text-red-600 border-red-200'
+                      : 'bg-amber-50 text-amber-600 border-amber-200'
+                  }`}
+                  title={t('insights.crossDimensionTooltip', { count: crossDimDemand[dim.key] })}
+                >
+                  {t('insights.crossDimensionDemand', { count: crossDimDemand[dim.key] })}
+                </span>
+              )}
             </div>
 
             {/* Near horizon — stronger colors */}
@@ -255,7 +412,6 @@ export function Roadmap() {
                 style={{
                   backgroundColor: dim.bgColor,
                   borderLeft: `3px solid ${dim.color}`,
-                  ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
                 }}
               >
                 {filters.showMilestones && nearMilestones.map(m => (
@@ -270,7 +426,14 @@ export function Roadmap() {
                   criticalPathEnabled={criticalPathEnabled}
                   selectedDeps={selectedDeps}
                   filterOpacity={hasActiveFilters ? getOpacity : undefined}
+                  cardRefs={cardRefs}
+                  onHoverStart={setHoveredId}
+                  onHoverEnd={() => setHoveredId(null)}
+                  chainIds={chainIds}
+                  onChainLock={setLockedChainId}
+                  lockedChainId={lockedChainId}
                 />
+                <ResourceBar initiatives={getInitiativesForZone(dim.key, 'near')} capabilities={capabilities} />
               </div>
             )}
 
@@ -281,7 +444,6 @@ export function Roadmap() {
                 style={{
                   backgroundColor: dim.bgLight,
                   opacity: 0.7,
-                  ...(focusMode && zoomLevel !== 1 && { zoom: zoomLevel }),
                 }}
               >
                 {filters.showMilestones && farMilestones.map(m => (
@@ -296,16 +458,24 @@ export function Roadmap() {
                   criticalPathEnabled={criticalPathEnabled}
                   selectedDeps={selectedDeps}
                   filterOpacity={hasActiveFilters ? getOpacity : undefined}
+                  cardRefs={cardRefs}
+                  onHoverStart={setHoveredId}
+                  onHoverEnd={() => setHoveredId(null)}
+                  chainIds={chainIds}
+                  onChainLock={setLockedChainId}
+                  lockedChainId={lockedChainId}
                 />
+                <ResourceBar initiatives={getInitiativesForZone(dim.key, 'far')} capabilities={capabilities} />
               </div>
             )}
           </div>
         );
       })}
+      </div>{/* end switching fade wrapper */}
 
       {/* Bulk toolbar */}
       {selectedItems.size > 0 && roleMode === 'work' && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-lg border border-border">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2 bg-card rounded-lg shadow-lg border border-border">
           <span className="text-[11px] font-medium text-text-secondary">
             {t('bulk.selected', { count: selectedItems.size })}
           </span>
@@ -317,19 +487,19 @@ export function Roadmap() {
               {t('bulk.moveTo')}
             </button>
             {showMoveDropdown && (
-              <div className="absolute bottom-full mb-1 left-0 bg-white border border-border rounded shadow-lg p-2 min-w-[160px]">
+              <div className="absolute bottom-full mb-1 left-0 bg-card border border-border rounded shadow-lg p-2 min-w-[160px]">
                 {DIMENSIONS.map(dim => (
                   <div key={dim.key} className="mb-1">
                     <div className="text-[9px] text-text-tertiary uppercase px-1">{t(`labels.dimensions.${dim.key}`)}</div>
                     <button
                       onClick={() => { bulkMoveInitiatives([...selectedItems], dim.key, 'near'); setShowMoveDropdown(false); }}
-                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-gray-100"
+                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-[var(--bg-hover)]"
                     >
                       {t('labels.horizon.near')}
                     </button>
                     <button
                       onClick={() => { bulkMoveInitiatives([...selectedItems], dim.key, 'far'); setShowMoveDropdown(false); }}
-                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-gray-100"
+                      className="block w-full text-left px-2 py-0.5 text-[10px] rounded hover:bg-[var(--bg-hover)]"
                     >
                       {t('labels.horizon.far')}
                     </button>
@@ -350,10 +520,17 @@ export function Roadmap() {
           </button>
           <button
             onClick={() => { clearSelectedItems(); setShowMoveDropdown(false); }}
-            className="px-3 py-1 text-[11px] rounded border border-border hover:bg-gray-50"
+            className="px-3 py-1 text-[11px] rounded border border-border hover:bg-[var(--bg-hover)]"
           >
             {t('bulk.cancel')}
           </button>
+        </div>
+      )}
+
+      {/* Zoom indicator */}
+      {zoomLevel !== 1 && (
+        <div className="fixed bottom-4 right-4 bg-card border border-border rounded-md px-3 py-1.5 text-[11px] text-text-secondary shadow-md z-20">
+          {t('zoom.indicator', { level: Math.round(zoomLevel * 100) })}
         </div>
       )}
     </div>
