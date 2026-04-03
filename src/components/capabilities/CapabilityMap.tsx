@@ -10,8 +10,7 @@ export function CapabilityMap() {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const simulationEnabled = useStore(s => s.ui.simulationEnabled);
   const selectedItem = useStore(s => s.ui.selectedItem);
-  const capabilityView = useStore(s => s.ui.capabilityView);
-  const setCapabilityView = useStore(s => s.setCapabilityView);
+  const [capabilityView, setCapabilityView] = useState<'maturity' | 'risk'>('maturity');
 
   const [expandedDomains, setExpandedDomains] = useState<Set<string>>(new Set());
 
@@ -97,6 +96,7 @@ export function CapabilityMap() {
                   <CapabilityCard
                     capability={cap}
                     isHighlighted={highlightedIds.has(cap.id)}
+                    capabilityView={capabilityView}
                     {...getSimData(cap.id)}
                   />
                 </div>
@@ -108,6 +108,7 @@ export function CapabilityMap() {
                       key={child.id}
                       capability={child}
                       isHighlighted={highlightedIds.has(child.id)}
+                      capabilityView={capabilityView}
                       {...getSimData(child.id)}
                     />
                   ))}

@@ -25,7 +25,7 @@ export function DimensionHealth({ initiatives }: Props) {
                   key={init.id}
                   className="w-2.5 h-2.5 rounded-sm"
                   style={{
-                    backgroundColor: init.status === 'done' ? '#22c55e' : init.status === 'in_progress' ? '#3b82f6' : '#d1d5db',
+                    backgroundColor: init.status === 'done' ? '#22c55e' : init.status === 'active' ? '#3b82f6' : '#d1d5db',
                   }}
                   title={`${init.name} (${t(`labels.status.${init.status ?? 'planned'}`)})`}
                 />

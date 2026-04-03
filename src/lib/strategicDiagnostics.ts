@@ -85,7 +85,7 @@ export function assessEffectFeasibility(
     if (linked.length === 0) continue;
 
     const derailed = linked.filter(i =>
-      i.status === 'stopped' || i.status === 'changed_direction'
+      i.status === 'stopped' || i.status === 'pivoted'
     );
     if (derailed.length > 0 && derailed.length >= linked.length * 0.5) {
       results.push({
@@ -125,7 +125,7 @@ export function detectCrossDimensionGaps(initiatives: Initiative[]): DiagnosticR
 
   // Count own active per dimension
   for (const init of initiatives) {
-    const isActive = init.status === 'in_progress' || (!init.status && init.horizon === 'near');
+    const isActive = init.status === 'active' || (!init.status && init.horizon === 'near');
     if (isActive) dimStats[init.dimension].own++;
   }
 
@@ -157,7 +157,7 @@ export function detectCrossDimensionGaps(initiatives: Initiative[]): DiagnosticR
 
 export function detectAbsorptionIssues(initiatives: Initiative[]): DiagnosticResult[] {
   if (initiatives.length < 5) return [];
-  const inProgress = initiatives.filter(i => i.status === 'in_progress').length;
+  const inProgress = initiatives.filter(i => i.status === 'active').length;
   const done = initiatives.filter(i => i.status === 'done').length;
   const total = initiatives.length;
 

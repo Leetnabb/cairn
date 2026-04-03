@@ -80,8 +80,8 @@ describe('assessEffectFeasibility', () => {
   it('warns when majority of linked initiatives are stopped or changed', () => {
     const initiatives = [
       { ...makeInit('1', 'A', 'teknologi'), status: 'stopped' as const },
-      { ...makeInit('2', 'B', 'teknologi'), status: 'changed_direction' as const },
-      { ...makeInit('3', 'C', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('2', 'B', 'teknologi'), status: 'pivoted' as const },
+      { ...makeInit('3', 'C', 'teknologi'), status: 'active' as const },
     ];
     const effects: Effect[] = [{
       id: 'e1', name: 'Øke medlemstall', description: '', type: 'strategic',
@@ -93,7 +93,7 @@ describe('assessEffectFeasibility', () => {
 
   it('does not warn when initiatives are healthy', () => {
     const initiatives = [
-      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), status: 'active' as const },
       { ...makeInit('2', 'B', 'teknologi'), status: 'planned' as const },
     ];
     const effects: Effect[] = [{
@@ -113,12 +113,12 @@ describe('detectAbsorptionIssues', () => {
 
   it('warns when many initiatives started but few completed', () => {
     const initiatives = [
-      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
-      { ...makeInit('2', 'B', 'teknologi'), status: 'in_progress' as const },
-      { ...makeInit('3', 'C', 'virksomhet'), status: 'in_progress' as const },
-      { ...makeInit('4', 'D', 'organisasjon'), status: 'in_progress' as const },
-      { ...makeInit('5', 'E', 'teknologi'), status: 'in_progress' as const },
-      { ...makeInit('6', 'F', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), status: 'active' as const },
+      { ...makeInit('2', 'B', 'teknologi'), status: 'active' as const },
+      { ...makeInit('3', 'C', 'virksomhet'), status: 'active' as const },
+      { ...makeInit('4', 'D', 'organisasjon'), status: 'active' as const },
+      { ...makeInit('5', 'E', 'teknologi'), status: 'active' as const },
+      { ...makeInit('6', 'F', 'teknologi'), status: 'active' as const },
       { ...makeInit('7', 'G', 'teknologi'), status: 'planned' as const },
       { ...makeInit('8', 'H', 'teknologi'), status: 'done' as const },
     ];
@@ -129,7 +129,7 @@ describe('detectAbsorptionIssues', () => {
 
   it('does not warn when ratio is healthy', () => {
     const initiatives = [
-      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), status: 'active' as const },
       { ...makeInit('2', 'B', 'teknologi'), status: 'done' as const },
       { ...makeInit('3', 'C', 'teknologi'), status: 'done' as const },
       { ...makeInit('4', 'D', 'teknologi'), status: 'done' as const },
@@ -147,11 +147,11 @@ describe('computeStrategicDiagnostics', () => {
       themes: [{ id: 'st_1', name: 'Kundedata', description: 'Samle data' }],
     };
     const initiatives = [
-      { ...makeInit('1', 'Ny kantineløsning', 'virksomhet'), status: 'in_progress' as const },
-      { ...makeInit('2', 'Kantineoppgradering', 'virksomhet'), status: 'in_progress' as const },
-      { ...makeInit('3', 'Kantine-app', 'teknologi'), status: 'in_progress' as const },
-      { ...makeInit('4', 'Kantineutvidelse', 'virksomhet'), status: 'in_progress' as const },
-      { ...makeInit('5', 'Kantineservice', 'organisasjon'), status: 'in_progress' as const },
+      { ...makeInit('1', 'Ny kantineløsning', 'virksomhet'), status: 'active' as const },
+      { ...makeInit('2', 'Kantineoppgradering', 'virksomhet'), status: 'active' as const },
+      { ...makeInit('3', 'Kantine-app', 'teknologi'), status: 'active' as const },
+      { ...makeInit('4', 'Kantineutvidelse', 'virksomhet'), status: 'active' as const },
+      { ...makeInit('5', 'Kantineservice', 'organisasjon'), status: 'active' as const },
     ];
     const effects: Effect[] = [{
       id: 'e1', name: 'Bedre mat', description: '', type: 'quality',
@@ -163,7 +163,7 @@ describe('computeStrategicDiagnostics', () => {
 
   it('returns empty without strategic frame', () => {
     const initiatives = [
-      { ...makeInit('1', 'A', 'teknologi'), status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), status: 'active' as const },
     ];
     const results = computeStrategicDiagnostics(initiatives, [], undefined);
     expect(results).toEqual([]);
@@ -173,11 +173,11 @@ describe('computeStrategicDiagnostics', () => {
 describe('detectCrossDimensionGaps', () => {
   it('warns when dimension has many inbound deps but few own initiatives', () => {
     const inits = [
-      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['5'], status: 'in_progress' as const },
-      { ...makeInit('2', 'B', 'teknologi'), dependsOn: ['5'], status: 'in_progress' as const },
-      { ...makeInit('3', 'C', 'ledelse'), dependsOn: ['5'], status: 'in_progress' as const },
-      { ...makeInit('4', 'D', 'virksomhet'), dependsOn: ['5'], status: 'in_progress' as const },
-      { ...makeInit('5', 'E', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['5'], status: 'active' as const },
+      { ...makeInit('2', 'B', 'teknologi'), dependsOn: ['5'], status: 'active' as const },
+      { ...makeInit('3', 'C', 'ledelse'), dependsOn: ['5'], status: 'active' as const },
+      { ...makeInit('4', 'D', 'virksomhet'), dependsOn: ['5'], status: 'active' as const },
+      { ...makeInit('5', 'E', 'organisasjon'), dependsOn: [], status: 'active' as const },
     ];
     const result = detectCrossDimensionGaps(inits);
     expect(result).toHaveLength(1);
@@ -188,9 +188,9 @@ describe('detectCrossDimensionGaps', () => {
 
   it('does not warn when inbound deps are below threshold', () => {
     const inits = [
-      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['3'], status: 'in_progress' as const },
-      { ...makeInit('2', 'B', 'ledelse'), dependsOn: ['3'], status: 'in_progress' as const },
-      { ...makeInit('3', 'C', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['3'], status: 'active' as const },
+      { ...makeInit('2', 'B', 'ledelse'), dependsOn: ['3'], status: 'active' as const },
+      { ...makeInit('3', 'C', 'organisasjon'), dependsOn: [], status: 'active' as const },
     ];
     const result = detectCrossDimensionGaps(inits);
     expect(result).toHaveLength(0);
@@ -198,11 +198,11 @@ describe('detectCrossDimensionGaps', () => {
 
   it('does not warn when dimension has enough own active initiatives', () => {
     const inits = [
-      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['4'], status: 'in_progress' as const },
-      { ...makeInit('2', 'B', 'ledelse'), dependsOn: ['4'], status: 'in_progress' as const },
-      { ...makeInit('3', 'C', 'virksomhet'), dependsOn: ['4'], status: 'in_progress' as const },
-      { ...makeInit('4', 'D', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
-      { ...makeInit('5', 'E', 'organisasjon'), dependsOn: [], status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['4'], status: 'active' as const },
+      { ...makeInit('2', 'B', 'ledelse'), dependsOn: ['4'], status: 'active' as const },
+      { ...makeInit('3', 'C', 'virksomhet'), dependsOn: ['4'], status: 'active' as const },
+      { ...makeInit('4', 'D', 'organisasjon'), dependsOn: [], status: 'active' as const },
+      { ...makeInit('5', 'E', 'organisasjon'), dependsOn: [], status: 'active' as const },
     ];
     // inbound=3, own=2, 3 > 2*2=4 is false, so no warning
     const result = detectCrossDimensionGaps(inits);
@@ -211,10 +211,10 @@ describe('detectCrossDimensionGaps', () => {
 
   it('does not count same-dimension dependencies', () => {
     const inits = [
-      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['2'], status: 'in_progress' as const },
-      { ...makeInit('2', 'B', 'teknologi'), dependsOn: [], status: 'in_progress' as const },
-      { ...makeInit('3', 'C', 'teknologi'), dependsOn: ['2'], status: 'in_progress' as const },
-      { ...makeInit('4', 'D', 'teknologi'), dependsOn: ['2'], status: 'in_progress' as const },
+      { ...makeInit('1', 'A', 'teknologi'), dependsOn: ['2'], status: 'active' as const },
+      { ...makeInit('2', 'B', 'teknologi'), dependsOn: [], status: 'active' as const },
+      { ...makeInit('3', 'C', 'teknologi'), dependsOn: ['2'], status: 'active' as const },
+      { ...makeInit('4', 'D', 'teknologi'), dependsOn: ['2'], status: 'active' as const },
     ];
     const result = detectCrossDimensionGaps(inits);
     expect(result).toHaveLength(0);

@@ -72,7 +72,6 @@ interface StoreState extends AppState {
   setSelectedItem: (item: UIState['selectedItem']) => void;
   setView: (view: ViewMode) => void;
   setRoadmapViewMode: (mode: 'dimension' | 'capability') => void;
-  setCapabilityView: (view: 'maturity' | 'risk' | 'resource') => void;
   toggleSimulation: () => void;
   toggleCriticalPath: () => void;
   setFilter: (filters: Partial<UIState['filters']>) => void;
@@ -87,8 +86,6 @@ interface StoreState extends AppState {
   setFilterDropdownOpen: (open: boolean) => void;
   setCapabilityOverlayOpen: (open: boolean) => void;
   setRoleMode: (mode: 'work' | 'governance') => void;
-  setBoardViewMode: (active: boolean) => void;
-  setBoardSelectedItem: (item: UIState['boardSelectedItem']) => void;
   setSettingsOpen: (open: boolean) => void;
   setComplexityLevel: (level: ComplexityLevel) => void;
   enterMeetingMode: () => void;
@@ -125,7 +122,6 @@ const defaultUI: UIState = {
   view: 'roadmap',
   complexityLevel: 1,
   roadmapViewMode: 'capability',
-  capabilityView: 'maturity',
   simulationEnabled: false,
   criticalPathEnabled: false,
   filters: {
@@ -152,8 +148,6 @@ const defaultUI: UIState = {
   filterDropdownOpen: false,
   capabilityOverlayOpen: false,
   roleMode: 'work',
-  boardViewMode: false,
-  boardSelectedItem: null,
   settingsOpen: false,
   meetingMode: false,
   meetingLens: 'narrative' as MeetingLens,
@@ -438,13 +432,10 @@ export const useStore = create<StoreState>()(
           ui: { ...state.ui, selectedItem: item, editingId: null },
         })),
         setView: (view) => set(state => ({
-          ui: { ...state.ui, view, compareScenario: view !== 'compare' ? null : state.ui.compareScenario },
+          ui: { ...state.ui, view },
         })),
         setRoadmapViewMode: (roadmapViewMode) => set(state => ({
           ui: { ...state.ui, roadmapViewMode },
-        })),
-        setCapabilityView: (capabilityView) => set(state => ({
-          ui: { ...state.ui, capabilityView },
         })),
         toggleSimulation: () => set(state => ({
           ui: { ...state.ui, simulationEnabled: !state.ui.simulationEnabled },
@@ -492,12 +483,6 @@ export const useStore = create<StoreState>()(
         })),
         setRoleMode: (mode) => set(state => ({
           ui: { ...state.ui, roleMode: mode },
-        })),
-        setBoardViewMode: (active) => set(state => ({
-          ui: { ...state.ui, boardViewMode: active, boardSelectedItem: null },
-        })),
-        setBoardSelectedItem: (item) => set(state => ({
-          ui: { ...state.ui, boardSelectedItem: item },
         })),
         setSettingsOpen: (open) => set(state => ({
           ui: { ...state.ui, settingsOpen: open },

@@ -6,14 +6,16 @@ describe('COMPLEXITY_FEATURES', () => {
     expect(COMPLEXITY_FEATURES[1].views).toEqual(['roadmap', 'dashboard', 'capabilities']);
   });
 
-  it('level 2 adds capabilities, effects, strategies', () => {
+  it('level 2 has the same three views', () => {
     expect(COMPLEXITY_FEATURES[2].views).toContain('capabilities');
-    expect(COMPLEXITY_FEATURES[2].views).toContain('effects');
-    expect(COMPLEXITY_FEATURES[2].views).toContain('strategies');
+    expect(COMPLEXITY_FEATURES[2].views).toContain('roadmap');
+    expect(COMPLEXITY_FEATURES[2].views).toContain('dashboard');
   });
 
-  it('level 3 adds compare view', () => {
-    expect(COMPLEXITY_FEATURES[3].views).toContain('compare');
+  it('level 3 has the same three views', () => {
+    expect(COMPLEXITY_FEATURES[3].views).toContain('roadmap');
+    expect(COMPLEXITY_FEATURES[3].views).toContain('dashboard');
+    expect(COMPLEXITY_FEATURES[3].views).toContain('capabilities');
   });
 
   it('level 1 filters are limited to dimensions and search', () => {

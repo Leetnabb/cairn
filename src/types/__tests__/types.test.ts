@@ -14,10 +14,10 @@ describe('StrategicFrame type', () => {
   });
 });
 
-describe('Initiative extended statuses', () => {
-  it('accepts stopped and changed_direction statuses', () => {
-    const statuses: InitiativeStatus[] = ['planned', 'in_progress', 'done', 'stopped', 'changed_direction'];
-    expect(statuses).toHaveLength(5);
+describe('Initiative statuses', () => {
+  it('accepts all new status values', () => {
+    const statuses: InitiativeStatus[] = ['idea', 'planned', 'active', 'done', 'stopped', 'pivoted'];
+    expect(statuses).toHaveLength(6);
   });
 });
 
@@ -30,21 +30,8 @@ describe('Initiative horizons', () => {
   });
 });
 
-describe('Effect confidence field', () => {
-  it('accepts effect with confidence', () => {
-    const effect: Effect = {
-      id: 'eff_1',
-      name: 'Øke medlemstall',
-      description: 'Forventet effekt av digitalisering',
-      type: 'strategic',
-      capabilities: [],
-      initiatives: [],
-      confidence: 'tentative',
-    };
-    expect(effect.confidence).toBe('tentative');
-  });
-
-  it('accepts effect without confidence (backward compat)', () => {
+describe('Effect type', () => {
+  it('accepts effect without confidence (field removed)', () => {
     const effect: Effect = {
       id: 'eff_2',
       name: 'Test',
@@ -53,6 +40,6 @@ describe('Effect confidence field', () => {
       capabilities: [],
       initiatives: [],
     };
-    expect(effect.confidence).toBeUndefined();
+    expect(effect.id).toBe('eff_2');
   });
 });

@@ -217,11 +217,12 @@
     },
     "status": {
       "label": "Status",
+      "idea": "Idea",
       "planned": "Planned",
-      "in_progress": "In progress",
+      "active": "Active",
       "done": "Done",
       "stopped": "Stopped",
-      "changed_direction": "Changed direction"
+      "pivoted": "Pivoted"
     },
     "horizon": {
       "label": "Horizon",

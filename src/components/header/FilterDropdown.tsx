@@ -170,13 +170,16 @@ export function FilterDropdown() {
               <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('labels.status.label')}</div>
               <select
                 value={filters.status}
-                onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' })}
+                onChange={e => setFilter({ status: e.target.value as '' | 'idea' | 'planned' | 'active' | 'done' | 'stopped' | 'pivoted' })}
                 className="w-full px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
               >
                 <option value="">{t('filters.allStatuses')}</option>
+                <option value="idea">{t('labels.status.idea')}</option>
                 <option value="planned">{t('labels.status.planned')}</option>
-                <option value="in_progress">{t('labels.status.in_progress')}</option>
+                <option value="active">{t('labels.status.active')}</option>
                 <option value="done">{t('labels.status.done')}</option>
+                <option value="stopped">{t('labels.status.stopped')}</option>
+                <option value="pivoted">{t('labels.status.pivoted')}</option>
               </select>
             </div>
           )}

@@ -142,15 +142,13 @@ function confidenceSignal(initiatives: Initiative[]): NarrativeSignal | null {
   const near = initiatives.filter(i => i.horizon === 'near');
   if (near.length < 3) return null;
 
-  const uncertain = near.filter(i =>
-    i.confidence === 'tentative' || i.confidence === 'under_consideration'
-  );
+  const uncertain = near.filter(i => i.status === 'idea');
 
   if (uncertain.length / near.length > 0.3) {
     const pct = Math.round((uncertain.length / near.length) * 100);
     return {
       priority: 6,
-      text: `${pct}% of near-horizon initiatives are not yet confirmed. The strategy carries significant execution uncertainty.`,
+      text: `${pct}% of near-horizon initiatives are still at the idea stage. The strategy carries significant execution uncertainty.`,
     };
   }
 

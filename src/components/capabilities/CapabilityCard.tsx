@@ -7,11 +7,11 @@ interface Props {
   isHighlighted?: boolean;
   simulatedMaturity?: number;
   improved?: boolean;
+  capabilityView?: 'maturity' | 'risk';
 }
 
-export function CapabilityCard({ capability, isHighlighted, simulatedMaturity, improved }: Props) {
+export function CapabilityCard({ capability, isHighlighted, simulatedMaturity, improved, capabilityView = 'maturity' }: Props) {
   const selectedItem = useStore(s => s.ui.selectedItem);
-  const capabilityView = useStore(s => s.ui.capabilityView);
   const setSelectedItem = useStore(s => s.setSelectedItem);
 
   const isSelected = selectedItem?.type === 'capability' && selectedItem.id === capability.id;

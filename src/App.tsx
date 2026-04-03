@@ -8,10 +8,7 @@ import { useAIStore } from './stores/useAIStore';
 import { Roadmap } from './components/roadmap/Roadmap';
 import { DetailPanel } from './components/detail/DetailPanel';
 import { Dashboard } from './components/dashboard/Dashboard';
-import { CompareView } from './components/scenarios/CompareView';
 import { CapabilityLandscape } from './components/capabilities/CapabilityLandscape';
-import { EffectBoard } from './components/effects/EffectBoard';
-import { StrategyOverview } from './components/strategies/StrategyOverview';
 import { CapabilityOverlay } from './components/capabilities/CapabilityOverlay';
 import { AddModal } from './components/modals/AddModal';
 import { ImportModal } from './components/modals/ImportModal';
@@ -50,7 +47,6 @@ export default function App() {
   const setAIPanelOpen = useAIStore(s => s.setPanelOpen);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
-  const modules = useStore(s => s.modules);
   const settingsOpen = useStore(s => s.ui.settingsOpen);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
   const auth = useAuth();
@@ -64,10 +60,10 @@ export default function App() {
 
   // Auto-show wizard is handled in onboarding store initialization
 
-  // Redirect to roadmap if active view belongs to a disabled module
+  // Redirect to roadmap if active view is invalid
   useEffect(() => {
-    if (view === 'effects' && !modules.effects) setView('roadmap');
-  }, [modules, view, setView]);
+    if (!['roadmap', 'capabilities', 'dashboard'].includes(view)) setView('roadmap');
+  }, [view, setView]);
 
   // Global undo/redo keyboard shortcuts
   useEffect(() => {
@@ -154,18 +150,9 @@ export default function App() {
 
         {/* Right: Nav + actions */}
         <nav className="flex items-center gap-1">
-          {isViewVisible('strategies') && (
-            <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
-          )}
           <NavBtn active={view === 'roadmap'} onClick={() => setView('roadmap')}>{t('nav.roadmap')}</NavBtn>
           {isViewVisible('capabilities') && (
             <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
-          )}
-          {modules.effects && isViewVisible('effects') && (
-            <NavBtn active={view === 'effects'} onClick={() => setView('effects')}>{t('nav.effects')}</NavBtn>
-          )}
-          {isViewVisible('compare') && (
-            <NavBtn active={view === 'compare'} onClick={() => setView('compare')}>{t('nav.compare')}</NavBtn>
           )}
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
           <NavBtn active={false} onClick={() => enterMeetingMode()}>{t('nav.presentation')}</NavBtn>
@@ -226,28 +213,6 @@ export default function App() {
       <div className={`app-canvas flex-1 flex overflow-hidden ${transitioning ? 'transitioning' : ''}`}>
         {view === 'dashboard' ? (
           <Dashboard />
-        ) : view === 'strategies' ? (
-          <StrategyOverview />
-        ) : view === 'effects' ? (
-          <>
-            <main className="flex-1 overflow-auto">
-              <EffectBoard />
-            </main>
-            {showDetailPanel && (
-              <aside className="shrink-0 border-l border-border w-[320px] overflow-hidden transition-all duration-200" style={{ background: 'var(--bg-panel)' }}>
-                <div className="flex h-full">
-                  <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-[var(--bg-hover)] transition-colors" title={t('common.close')}>
-                    <span className="text-xs text-text-secondary">&raquo;</span>
-                  </button>
-                  <div className="flex-1 overflow-y-auto">
-                    {aiPanelOpen ? <AIChatPanel /> : <DetailPanel />}
-                  </div>
-                </div>
-              </aside>
-            )}
-          </>
-        ) : view === 'compare' ? (
-          <CompareView />
         ) : view === 'capabilities' ? (
           <>
             <main className="flex-1 overflow-auto">

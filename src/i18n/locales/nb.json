@@ -217,11 +217,12 @@
     },
     "status": {
       "label": "Status",
+      "idea": "Idé",
       "planned": "Planlagt",
-      "in_progress": "Pågår",
+      "active": "Aktiv",
       "done": "Fullført",
       "stopped": "Stoppet",
-      "changed_direction": "Endret retning"
+      "pivoted": "Pivotering"
     },
     "horizon": {
       "label": "Horisont",

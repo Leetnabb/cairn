@@ -31,9 +31,7 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
   const dim = DIMENSION_MAP[initiative.dimension];
   const isSelected = selectedItem?.type === 'initiative' && selectedItem.id === initiative.id;
   const isMultiSelected = selectedItems.has(initiative.id);
-  const confidence = initiative.confidence ?? 'confirmed';
-  const isTentative = confidence === 'tentative';
-  const isUnderConsideration = confidence === 'under_consideration';
+  const isIdea = initiative.status === 'idea';
   const capCount = initiative.capabilities.length;
   const depCount = initiative.dependsOn.length;
   const override = initiative.criticalPathOverride;
@@ -59,24 +57,20 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
       ? 'border-yellow-300 bg-yellow-50'
       : isDependent
       ? 'border-blue-300 bg-blue-50'
-      : isTentative
+      : isIdea
       ? 'border-dashed border-border bg-card hover:shadow-hover'
-      : isUnderConsideration
-      ? 'border-dotted border-border bg-card hover:shadow-hover'
       : 'border-border bg-card hover:shadow-hover'
   } ${isOnCriticalPath ? 'ring-2 ring-red-400 shadow-[0_0_8px_rgba(239,68,68,0.2)]' : ''}`;
 
   const computedOpacity = fadedOut
     ? 0.3
-    : isUnderConsideration
-    ? Math.min(opacity, 0.6)
-    : isTentative
-    ? Math.min(opacity, 0.8)
+    : isIdea
+    ? Math.min(opacity, 0.7)
     : initiative.status === 'done' ? Math.min(opacity, 0.7) : opacity;
 
   const baseStyle: React.CSSProperties = {
     borderLeftWidth: 3,
-    borderLeftStyle: (isTentative ? 'dashed' : isUnderConsideration ? 'dotted' : 'solid') as React.CSSProperties['borderLeftStyle'],
+    borderLeftStyle: (isIdea ? 'dashed' : 'solid') as React.CSSProperties['borderLeftStyle'],
     borderLeftColor: dim.color,
     opacity: computedOpacity,
     filter: fadedOut ? 'grayscale(0.5)' : 'none',
@@ -89,11 +83,12 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
   };
 
   const statusColorMap: Record<string, string> = {
+    idea: 'bg-purple-100 text-purple-600',
     planned: 'bg-gray-100 text-gray-600',
-    in_progress: 'bg-blue-100 text-blue-700',
+    active: 'bg-blue-100 text-blue-700',
     done: 'bg-green-100 text-green-700',
     stopped: 'bg-red-100 text-red-600',
-    changed_direction: 'bg-amber-100 text-amber-700',
+    pivoted: 'bg-amber-100 text-amber-700',
   };
 
   // Level 1 - Minimalist
@@ -124,7 +119,7 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
         {isMultiSelected && (
           <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[8px] z-10">✓</div>
         )}
-        <div className={`text-[10px] font-medium leading-tight truncate ${isUnderConsideration ? 'italic' : ''}`} title={initiative.name}>
+        <div className={`text-[10px] font-medium leading-tight truncate ${isIdea ? 'italic' : ''}`} title={initiative.name}>
           {initiative.name}
         </div>
       </div>
@@ -180,7 +175,7 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
         {isMultiSelected && (
           <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[8px] z-10">✓</div>
         )}
-        <div className={`text-[10px] font-medium leading-tight truncate ${isUnderConsideration ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
+        <div className={`text-[10px] font-medium leading-tight truncate ${isIdea ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
         <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
         {/* Compact info line */}
         <div className="text-[8px] text-text-tertiary mt-0.5">
@@ -194,12 +189,6 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
           <span className={`inline-block px-1.5 py-0.5 rounded-full text-[8px] font-medium ${statusColorMap[status] ?? 'bg-gray-100 text-gray-600'}`}>
             {t(`labels.status.${status}`)}
           </span>
-          {/* Confidence indicator */}
-          {confidence !== 'confirmed' && (
-            <span className="inline-block px-1.5 py-0.5 rounded-full text-[8px] font-medium bg-amber-50 text-amber-700">
-              {t(`confidence.${confidence}`)}
-            </span>
-          )}
         </div>
         {/* Description */}
         {initiative.description && (
@@ -268,7 +257,7 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
       {isMultiSelected && (
         <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[8px] z-10">✓</div>
       )}
-      <div className={`text-[10px] font-medium leading-tight truncate ${isUnderConsideration ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
+      <div className={`text-[10px] font-medium leading-tight truncate ${isIdea ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
       <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
       {/* Compact info line */}
       <div className="text-[8px] text-text-tertiary mt-0.5">

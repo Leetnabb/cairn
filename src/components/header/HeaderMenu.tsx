@@ -10,7 +10,6 @@ export function HeaderMenu() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const setView = useStore(s => s.setView);
   const toggleSimulation = useStore(s => s.toggleSimulation);
   const toggleCriticalPath = useStore(s => s.toggleCriticalPath);
   const simulationEnabled = useStore(s => s.ui.simulationEnabled);
@@ -25,7 +24,7 @@ export function HeaderMenu() {
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
   const setPresentationMode = useStore(s => s.setPresentationMode);
   const setComplexityLevel = useStore(s => s.setComplexityLevel);
-  const { level, isViewVisible } = useComplexityLevel();
+  const { level } = useComplexityLevel();
 
   useEffect(() => {
     if (!open) return;
@@ -37,7 +36,7 @@ export function HeaderMenu() {
   }, [open]);
 
   const items = [
-    { label: t('nav.compare'), action: () => setView('compare'), hide: !isViewVisible('compare') },
+    // Compare view removed
     { label: t('nav.capabilityMap'), action: () => setCapabilityOverlayOpen(true), hide: !modules.capabilities },
     { label: t('nav.simulation'), action: toggleSimulation, toggle: simulationEnabled, hide: !modules.capabilities },
     { label: t('nav.criticalPath'), action: toggleCriticalPath, toggle: criticalPathEnabled, hide: false },

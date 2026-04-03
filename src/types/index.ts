@@ -1,6 +1,4 @@
-export type InitiativeStatus = 'planned' | 'in_progress' | 'done' | 'stopped' | 'changed_direction';
-
-export type ConfidenceLevel = 'confirmed' | 'tentative' | 'under_consideration';
+export type InitiativeStatus = 'idea' | 'planned' | 'active' | 'done' | 'stopped' | 'pivoted';
 
 export type Horizon = 'near' | 'far';
 
@@ -55,12 +53,8 @@ export interface Capability {
   risk: 1 | 2 | 3;
   description: string;
   order?: number;
-  priorityWeight?: number;  // 1-10, for sorting within Core/Support sections
   strategyIds?: string[];
   capabilityType?: 'core' | 'support';
-  providesFoundationFor?: string[];
-  resourceLoad?: number;  // 0.0-1.0, current resource load on this capability
-  effortEstimate?: 'high' | 'medium' | 'low';
 }
 
 export interface Initiative {
@@ -78,14 +72,12 @@ export interface Initiative {
   valueChains: string[];
   criticalPathOverride?: boolean | null;
   status?: InitiativeStatus;
-  confidence?: ConfidenceLevel;
 }
 
 export interface Scenario {
   id: string;
   name: string;
   color: string;
-  description?: string;
 }
 
 export interface Milestone {
@@ -115,7 +107,6 @@ export interface Effect {
   baseline?: string;
   target?: string;
   order?: number;
-  confidence?: ConfidenceLevel;
 }
 
 export const EFFECT_TYPE_COLORS: Record<EffectType, string> = {
@@ -138,7 +129,6 @@ export interface Comment {
   id: string;
   itemId: string;
   text: string;
-  author?: string;
   timestamp: string;
 }
 
@@ -174,7 +164,7 @@ export interface AppState {
   strategicFrame?: StrategicFrame;
 }
 
-export type ViewMode = 'roadmap' | 'dashboard' | 'compare' | 'capabilities' | 'effects' | 'strategies';
+export type ViewMode = 'roadmap' | 'capabilities' | 'dashboard';
 
 export type MeetingLens = 'narrative' | 'path' | 'capabilities' | 'effects';
 
@@ -187,14 +177,14 @@ export const COMPLEXITY_FEATURES = {
     features: ['presentationMode'] as string[],
   },
   2: {
-    views: ['roadmap', 'dashboard', 'capabilities', 'effects', 'strategies'] as ViewMode[],
+    views: ['roadmap', 'dashboard', 'capabilities'] as ViewMode[],
     filters: ['dimensions', 'search', 'horizon', 'owner', 'status', 'milestones'] as string[],
     features: ['presentationMode'] as string[],
   },
   3: {
-    views: ['roadmap', 'dashboard', 'capabilities', 'effects', 'strategies', 'compare'] as ViewMode[],
+    views: ['roadmap', 'dashboard', 'capabilities'] as ViewMode[],
     filters: ['dimensions', 'search', 'horizon', 'owner', 'status', 'milestones', 'focusMode', 'zoomLevel', 'spotlightValueChain'] as string[],
-    features: ['presentationMode', 'simulation', 'criticalPath', 'scenarios', 'benchmarking', 'import', 'export'] as string[],
+    features: ['presentationMode', 'simulation', 'criticalPath', 'scenarios', 'import', 'export'] as string[],
   },
 };
 
@@ -203,7 +193,6 @@ export interface UIState {
   view: ViewMode;
   complexityLevel: ComplexityLevel;
   roadmapViewMode: 'dimension' | 'capability';
-  capabilityView: 'maturity' | 'risk' | 'resource';
   simulationEnabled: boolean;
   criticalPathEnabled: boolean;
   filters: {
@@ -230,8 +219,6 @@ export interface UIState {
   filterDropdownOpen: boolean;
   capabilityOverlayOpen: boolean;
   roleMode: 'work' | 'governance';
-  boardViewMode: boolean;
-  boardSelectedItem: { type: 'capability' | 'initiative'; id: string } | null;
   settingsOpen: boolean;
   meetingMode: boolean;
   meetingLens: MeetingLens;

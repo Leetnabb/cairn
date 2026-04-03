@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { generateNarrative } from '../../lib/narrativeEngine';
@@ -9,11 +9,11 @@ import type { Initiative } from '../../types';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
-function confidenceDot(c?: Initiative['confidence']) {
-  if (!c || c === 'confirmed') return null;
-  if (c === 'tentative')
-    return <span className="ml-1 text-[8px] text-yellow-400 border border-dashed border-yellow-400 rounded px-1">~</span>;
-  return <span className="ml-1 text-[8px] text-gray-400 border border-dotted border-gray-400 rounded px-1 italic">?</span>;
+function statusDot(s?: Initiative['status']) {
+  if (!s || s === 'planned' || s === 'active' || s === 'done') return null;
+  if (s === 'idea')
+    return <span className="ml-1 text-[8px] text-purple-400 border border-dashed border-purple-400 rounded px-1 italic">?</span>;
+  return null;
 }
 
 // ── Section 2: Since Last Meeting ─────────────────────────────────────────
@@ -36,7 +36,7 @@ function SinceLastMeeting() {
     const removed = prevInits.filter(i => !currMap.has(i.id));
     const confirmed = initiatives.filter(i => {
       const prev = prevMap.get(i.id);
-      return prev && prev.confidence !== 'confirmed' && i.confidence === 'confirmed';
+      return prev && prev.status === 'idea' && i.status !== 'idea';
     });
     const unlinkedEffects = latest.data.effects?.filter(e =>
       e.initiatives.length > 0 && e.initiatives.every(id => !currMap.has(id))
@@ -55,7 +55,7 @@ function SinceLastMeeting() {
     }
     if (confirmed.length > 0) {
       for (const i of confirmed.slice(0, 2)) {
-        lines.push(`"${i.name}" moved from tentative to confirmed`);
+        lines.push(`"${i.name}" moved from idea to planned`);
       }
     }
     if (unlinkedEffects.length > 0) {
@@ -144,15 +144,15 @@ function StrategyPath({ onSelectInitiative, onSelectCapability }: {
                     key={i.id}
                     onClick={() => onSelectInitiative(i.id)}
                     className="flex items-center gap-2 w-full text-left hover:bg-bg-hover/30 rounded px-2 py-1 transition-colors group"
-                    style={{ opacity: i.confidence === 'under_consideration' ? 0.6 : i.confidence === 'tentative' ? 0.85 : 1 }}
+                    style={{ opacity: i.status === 'idea' ? 0.7 : 1 }}
                   >
                     <span className="text-accent text-[11px]">→</span>
                     <span
-                      className={`text-[14px] text-text-primary ${i.confidence === 'under_consideration' ? 'italic' : ''} font-body`}
+                      className={`text-[14px] text-text-primary ${i.status === 'idea' ? 'italic' : ''} font-body`}
                       style={{ lineHeight: 1.7 }}
                     >
                       {i.name}
-                      {confidenceDot(i.confidence)}
+                      {statusDot(i.status)}
                     </span>
                     <span className="text-[10px] text-text-tertiary ml-auto shrink-0">{DIMENSION_MAP[i.dimension]?.label}</span>
                   </button>
@@ -162,15 +162,15 @@ function StrategyPath({ onSelectInitiative, onSelectCapability }: {
                     key={i.id}
                     onClick={() => onSelectInitiative(i.id)}
                     className="flex items-center gap-2 w-full text-left hover:bg-bg-hover/30 rounded px-2 py-1 transition-colors"
-                    style={{ opacity: i.confidence === 'under_consideration' ? 0.4 : i.confidence === 'tentative' ? 0.55 : 0.65 }}
+                    style={{ opacity: i.status === 'idea' ? 0.4 : 0.65 }}
                   >
                     <span className="text-text-tertiary text-[10px] ml-4">→</span>
                     <span
-                      className={`text-[13px] text-text-secondary ${i.confidence === 'under_consideration' ? 'italic' : ''} font-body`}
+                      className={`text-[13px] text-text-secondary ${i.status === 'idea' ? 'italic' : ''} font-body`}
                       style={{ lineHeight: 1.7 }}
                     >
                       {i.name}
-                      {confidenceDot(i.confidence)}
+                      {statusDot(i.status)}
                     </span>
                     <span className="text-[10px] text-text-tertiary ml-auto shrink-0">{DIMENSION_MAP[i.dimension]?.label}</span>
                   </button>
@@ -213,18 +213,18 @@ function DecisionsRequired() {
   const decisions = useMemo(() => {
     const items: string[] = [];
 
-    // 1. Unconfirmed blocking confirmed
-    const confirmedDeps = initiatives.filter(i =>
-      (i.confidence ?? 'confirmed') === 'confirmed' &&
+    // 1. Idea-stage initiatives blocking active ones
+    const blockedByIdea = initiatives.filter(i =>
+      i.status !== 'idea' &&
       i.dependsOn.some(depId => {
         const dep = initiatives.find(x => x.id === depId);
-        return dep && dep.confidence && dep.confidence !== 'confirmed';
+        return dep && dep.status === 'idea';
       })
     );
-    if (confirmedDeps.length > 0) {
-      const init = confirmedDeps[0];
-      const blocker = initiatives.find(x => init.dependsOn.includes(x.id) && x.confidence !== 'confirmed')!;
-      items.push(`Should "${blocker.name}" be confirmed before proceeding? It is currently ${blocker.confidence === 'tentative' ? 'tentative' : 'under consideration'} but is a dependency for "${init.name}" and ${confirmedDeps.length > 1 ? `${confirmedDeps.length - 1} other confirmed ${confirmedDeps.length - 1 === 1 ? 'initiative' : 'initiatives'}` : 'other confirmed initiatives'}.`);
+    if (blockedByIdea.length > 0) {
+      const init = blockedByIdea[0];
+      const blocker = initiatives.find(x => init.dependsOn.includes(x.id) && x.status === 'idea')!;
+      items.push(`Should "${blocker.name}" move beyond the idea stage? It is a dependency for "${init.name}" and ${blockedByIdea.length > 1 ? `${blockedByIdea.length - 1} other ${blockedByIdea.length - 1 === 1 ? 'initiative' : 'initiatives'}` : 'other initiatives'}.`);
     }
 
     // 2. Low-maturity caps with no initiatives
@@ -316,11 +316,11 @@ function EffectsOverview({ onSelect: _onSelect }: { onSelect: (id: string) => vo
           const linkedInits = eff.initiatives.length;
           const linkedCaps = eff.capabilities.length;
           const hasAnyInit = linkedInits > 0;
-          const anyTentative = eff.initiatives.some(id => {
+          const anyIdea = eff.initiatives.some(id => {
             const init = initiatives.find(x => x.id === id);
-            return init && (init.confidence === 'tentative' || init.confidence === 'under_consideration');
+            return init && init.status === 'idea';
           });
-          const status = !hasAnyInit ? 'unsupported' : anyTentative ? 'atRisk' : 'onTrack';
+          const status = !hasAnyInit ? 'unsupported' : anyIdea ? 'atRisk' : 'onTrack';
           const statusColor = status === 'unsupported' ? '#94a3b8' : status === 'atRisk' ? '#f59e0b' : '#22c55e';
           const typeColor = EFFECT_TYPE_COLORS[eff.type] || '#6366f1';
 
@@ -385,15 +385,6 @@ function ReadOnlyDetailPanel({
             <span className="text-[10px] text-text-secondary uppercase">{dim.label} · {t(`labels.horizon.${init.horizon}`)}</span>
           </div>
           <h2 className="text-[18px] text-text-primary font-medium font-serif">{init.name}</h2>
-          {init.confidence && init.confidence !== 'confirmed' && (
-            <span className={`inline-block text-[10px] px-2 py-0.5 rounded border ${
-              init.confidence === 'tentative'
-                ? 'border-dashed border-yellow-500 text-yellow-400'
-                : 'border-dotted border-gray-500 text-gray-400 italic'
-            }`}>
-              {t(`confidence.${init.confidence}`)}
-            </span>
-          )}
           {init.owner && (
             <div>
               <div className="text-[10px] text-text-tertiary uppercase mb-0.5">{t('common.owner')}</div>
@@ -488,9 +479,6 @@ function ReadOnlyDetailPanel({
                 <div key={i.id} className="text-[12px] text-text-secondary flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: DIMENSION_MAP[i.dimension]?.color }} />
                   {i.name}
-                  {i.confidence && i.confidence !== 'confirmed' && (
-                    <span className="text-[9px] text-text-tertiary">({i.confidence.replace('_', ' ')})</span>
-                  )}
                 </div>
               ))}
             </div>
@@ -511,17 +499,17 @@ function ReadOnlyDetailPanel({
   );
 }
 
-// ── Confidence Legend ──────────────────────────────────────────────────────
+// ── Status Legend ──────────────────────────────────────────────────────
 
-function ConfidenceLegend() {
+function StatusLegend() {
   const { t } = useTranslation();
   return (
     <div className="text-right">
-      <div className="text-[10px] text-text-tertiary uppercase mb-1">{t('board.confidenceLegend')}</div>
+      <div className="text-[10px] text-text-tertiary uppercase mb-1">{t('labels.status.label')}</div>
       <div className="flex items-center justify-end gap-3 text-[11px] text-text-secondary">
-        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full bg-accent" /> {t('confidence.confirmed')}</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full border border-dashed border-yellow-500 opacity-80" /> {t('confidence.tentative')}</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full border border-dotted border-gray-500 opacity-60" /> {t('confidence.under_consideration')}</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full bg-accent" /> {t('labels.status.active')}</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full bg-gray-300" /> {t('labels.status.planned')}</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full border border-dashed border-purple-500 opacity-60" /> {t('labels.status.idea')}</span>
       </div>
     </div>
   );
@@ -529,11 +517,9 @@ function ConfidenceLegend() {
 
 // ── Main Board View ────────────────────────────────────────────────────────
 
-export function BoardView() {
+export function BoardView({ onClose }: { onClose?: () => void }) {
   const { t } = useTranslation();
-  const setBoardViewMode = useStore(s => s.setBoardViewMode);
-  const boardSelectedItem = useStore(s => s.ui.boardSelectedItem);
-  const setBoardSelectedItem = useStore(s => s.setBoardSelectedItem);
+  const [boardSelectedItem, setBoardSelectedItem] = useState<{ type: 'capability' | 'initiative'; id: string } | null>(null);
   const scenarios = useStore(s => s.scenarios);
   const activeScenario = useStore(s => s.activeScenario);
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
@@ -586,7 +572,7 @@ export function BoardView() {
               {t('board.savePDF')}
             </button>
             <button
-              onClick={() => setBoardViewMode(false)}
+              onClick={() => onClose?.()}
               className="px-3 py-1.5 text-[11px] text-accent hover:text-primary-light transition-colors"
             >
               {t('board.exit')}
@@ -602,7 +588,7 @@ export function BoardView() {
             <StrategicNarrative narrative={narrative} isEditable dark />
             <div className="mt-3 flex items-start justify-between">
               <p className="text-[11px] text-text-tertiary">{showScenario ? `Scenario: ${activeScenarioName}` : ''}</p>
-              <ConfidenceLegend />
+              <StatusLegend />
             </div>
           </section>
 

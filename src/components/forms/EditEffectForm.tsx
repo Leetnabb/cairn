@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { Button } from '../ui/Button';
-import type { Effect, EffectType, ConfidenceLevel } from '../../types';
+import type { Effect, EffectType } from '../../types';
 
 interface Props {
   effect: Effect;
@@ -26,8 +26,6 @@ export function EditEffectForm({ effect }: Props) {
   const [target, setTarget] = useState(effect.target ?? '');
   const [caps, setCaps] = useState<string[]>(effect.capabilities);
   const [inits, setInits] = useState<string[]>(effect.initiatives);
-  const [confidence, setConfidence] = useState<ConfidenceLevel | undefined>(effect.confidence);
-
   const toggleItem = (list: string[], item: string, setter: (v: string[]) => void) => {
     setter(list.includes(item) ? list.filter(i => i !== item) : [...list, item]);
   };
@@ -42,7 +40,6 @@ export function EditEffectForm({ effect }: Props) {
       target: target || undefined,
       capabilities: caps,
       initiatives: inits,
-      confidence,
     });
     setEditingId(null);
   };
@@ -99,19 +96,6 @@ export function EditEffectForm({ effect }: Props) {
             className="w-full px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-primary"
           />
         </div>
-      </div>
-      <div>
-        <label className="text-[9px] text-text-tertiary uppercase">{t('effects.effectConfidence.label')}</label>
-        <select
-          value={confidence ?? ''}
-          onChange={e => setConfidence((e.target.value as ConfidenceLevel) || undefined)}
-          className="w-full px-2 py-1 text-[11px] border border-border rounded"
-        >
-          <option value="">{t('common.none')}</option>
-          <option value="confirmed">{t('effects.effectConfidence.confirmed')}</option>
-          <option value="tentative">{t('effects.effectConfidence.tentative')}</option>
-          <option value="under_consideration">{t('effects.effectConfidence.under_consideration')}</option>
-        </select>
       </div>
       {modules.capabilities && (
         <div>

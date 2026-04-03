@@ -86,7 +86,7 @@ When the user asks to delete an existing activity or capability:
 \`\`\`
 
 ## Status values
-Activities can have a status: "planned", "in_progress", "done", "stopped", or "changed_direction".`
+Activities can have a status: "idea", "planned", "active", "done", "stopped", or "pivoted".`
     : `## Oppdatering av eksisterende elementer
 Når brukeren ber om å oppdatere en eksisterende aktivitet eller kapabilitet, bruk dette formatet:
 
@@ -111,7 +111,7 @@ Når brukeren ber om å slette en eksisterende aktivitet eller kapabilitet:
 \`\`\`
 
 ## Status-verdier
-Aktiviteter kan ha status: "planned", "in_progress", "done", "stopped", eller "changed_direction".`;
+Aktiviteter kan ha status: "idea", "planned", "active", "done", "stopped", eller "pivoted".`;
 
   const scenario = state.scenarioStates[state.activeScenario];
   const diagnostics = computeStrategicDiagnostics(

@@ -380,7 +380,7 @@ function StrategicReadingSlide({ initiatives, capabilities, effects }: { initiat
   // Key stats for visual context
   const near = initiatives.filter(i => i.horizon === 'near').length;
   const far = initiatives.filter(i => i.horizon === 'far').length;
-  const confirmed = initiatives.filter(i => i.confidence === 'confirmed').length;
+  const confirmed = initiatives.filter(i => i.status !== 'idea').length;
   const dimCount = new Set(initiatives.map(i => i.dimension)).size;
 
   return (
@@ -420,7 +420,7 @@ function StrategicReadingSlide({ initiatives, capabilities, effects }: { initiat
         </div>
         <div className="text-center">
           <div className="text-[28px] font-bold text-[#a78bfa]">{confirmed}</div>
-          <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('confidence.confirmed')}</div>
+          <div className="text-[10px] text-white/40 uppercase tracking-wide">{t('labels.status.active')}</div>
         </div>
       </div>
     </div>

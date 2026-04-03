@@ -13,8 +13,7 @@ export function CapabilityLandscape() {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const simulationEnabled = useStore(s => s.ui.simulationEnabled);
   const selectedItem = useStore(s => s.ui.selectedItem);
-  const capabilityView = useStore(s => s.ui.capabilityView);
-  const setCapabilityView = useStore(s => s.setCapabilityView);
+  const [capabilityView, setCapabilityView] = useState<'maturity' | 'risk'>('maturity');
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const moveCapability = useStore(s => s.moveCapability);
   const zoomLevel = useStore(s => s.ui.filters.zoomLevel ?? 1);
@@ -23,57 +22,18 @@ export function CapabilityLandscape() {
   // Hovered L1 domain id for cross-domain dependency highlighting
   const [hoveredCapId, setHoveredCapId] = useState<string | null>(null);
 
-  // --- L2 Synergy hover state ---
+  // --- L2 hover state ---
   const [hoveredL2Id, setHoveredL2Id] = useState<string | null>(null);
-  const chipRefs = useRef(new Map<string, HTMLElement>());
-  const [connectorLines, setConnectorLines] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
+  const connectorLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
 
-  const registerChipRef = useCallback((id: string, el: HTMLElement | null) => {
-    if (el) {
-      chipRefs.current.set(id, el);
-    } else {
-      chipRefs.current.delete(id);
-    }
+  const registerChipRef = useCallback((_id: string, _el: HTMLElement | null) => {
+    // No-op: synergy connectors removed
   }, []);
 
-  // Compute synergy targets from providesFoundationFor
-  const synergyTargets = useMemo(() => {
-    if (!hoveredL2Id) return null;
-    const cap = capabilities.find(c => c.id === hoveredL2Id);
-    if (!cap?.providesFoundationFor?.length) return null;
-    return new Set(cap.providesFoundationFor);
-  }, [hoveredL2Id, capabilities]);
+  // Synergy targets removed (providesFoundationFor field removed)
+  const synergyTargets = null;
 
-  // Compute connector lines when synergy is active
-  useEffect(() => {
-    if (!hoveredL2Id || !synergyTargets || synergyTargets.size === 0) {
-      setConnectorLines([]);
-      return;
-    }
-
-    const sourceEl = chipRefs.current.get(hoveredL2Id);
-    const containerEl = landscapeRef.current;
-    if (!sourceEl || !containerEl) {
-      setConnectorLines([]);
-      return;
-    }
-
-    const containerRect = containerEl.getBoundingClientRect();
-    const sourceRect = sourceEl.getBoundingClientRect();
-    const sx = sourceRect.left + sourceRect.width / 2 - containerRect.left + containerEl.scrollLeft;
-    const sy = sourceRect.top + sourceRect.height / 2 - containerRect.top + containerEl.scrollTop;
-
-    const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
-    for (const targetId of synergyTargets) {
-      const targetEl = chipRefs.current.get(targetId);
-      if (!targetEl) continue;
-      const targetRect = targetEl.getBoundingClientRect();
-      const tx = targetRect.left + targetRect.width / 2 - containerRect.left + containerEl.scrollLeft;
-      const ty = targetRect.top + targetRect.height / 2 - containerRect.top + containerEl.scrollTop;
-      lines.push({ x1: sx, y1: sy, x2: tx, y2: ty });
-    }
-    setConnectorLines(lines);
-  }, [hoveredL2Id, synergyTargets]);
+  // Connector lines removed (providesFoundationFor field removed)
 
   // Drag state for L1 domain reordering
   const [dropDomainIndex, setDropDomainIndex] = useState<number | null>(null);
@@ -94,23 +54,17 @@ export function CapabilityLandscape() {
     [capabilities]
   );
 
-  // Split L1 into core and support, sorted by priorityWeight desc then order asc
+  // Split L1 into core and support, sorted by order
   const coreDomains = useMemo(
     () => l1
       .filter(c => c.capabilityType === 'core' || c.capabilityType === undefined)
-      .sort((a, b) => {
-        const pw = (b.priorityWeight ?? 0) - (a.priorityWeight ?? 0);
-        return pw !== 0 ? pw : (a.order ?? 0) - (b.order ?? 0);
-      }),
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
     [l1]
   );
   const supportDomains = useMemo(
     () => l1
       .filter(c => c.capabilityType === 'support')
-      .sort((a, b) => {
-        const pw = (b.priorityWeight ?? 0) - (a.priorityWeight ?? 0);
-        return pw !== 0 ? pw : (a.order ?? 0) - (b.order ?? 0);
-      }),
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
     [l1]
   );
 
@@ -271,11 +225,6 @@ export function CapabilityLandscape() {
       const avg = allCaps.reduce((s, c) => s + c.maturity, 0) / allCaps.length;
       const level = avg < 1.5 ? 1 : avg < 2.5 ? 2 : 3;
       return MATURITY_COLORS[level];
-    } else if (capabilityView === 'resource') {
-      const l2Caps = allCaps.filter(c => c.level === 2 && c.resourceLoad !== undefined);
-      if (l2Caps.length === 0) return '#94a3b8';
-      const avgLoad = l2Caps.reduce((s, c) => s + (c.resourceLoad ?? 0), 0) / l2Caps.length;
-      return avgLoad > 0.8 ? '#ef4444' : avgLoad >= 0.5 ? '#f59e0b' : '#22c55e';
     } else {
       const maxRisk = Math.max(...allCaps.map(c => c.risk));
       return RISK_COLORS[maxRisk];
@@ -590,14 +539,6 @@ export function CapabilityLandscape() {
             }`}
           >
             {t('labels.risk.label')}
-          </button>
-          <button
-            onClick={() => setCapabilityView('resource')}
-            className={`px-2 py-1 text-[10px] rounded transition-colors ${
-              capabilityView === 'resource' ? 'bg-primary text-white' : 'text-text-tertiary hover:bg-[var(--bg-hover)]'
-            }`}
-          >
-            {t('labels.resource.label')}
           </button>
         </div>
       </div>

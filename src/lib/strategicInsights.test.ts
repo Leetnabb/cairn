@@ -70,7 +70,7 @@ function makeInit(overrides: Partial<any> = {}) {
     id: 'i1', name: 'Test', dimension: 'teknologi' as const, horizon: 'near' as const,
     order: 0, capabilities: [], description: '', owner: '',
     dependsOn: [], maturityEffect: {}, notes: '', valueChains: [],
-    status: 'planned' as const, confidence: 'confirmed' as const, ...overrides,
+    status: 'planned' as const, ...overrides,
   };
 }
 

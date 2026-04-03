@@ -125,15 +125,16 @@ export function FilterBar() {
       {/* Status filter */}
       <select
         value={filters.status}
-        onChange={e => setFilter({ status: e.target.value as '' | 'planned' | 'in_progress' | 'done' | 'stopped' | 'changed_direction' })}
+        onChange={e => setFilter({ status: e.target.value as '' | 'idea' | 'planned' | 'active' | 'done' | 'stopped' | 'pivoted' })}
         className="px-2 py-0.5 text-[10px] border border-border rounded focus:outline-none focus:border-primary"
       >
         <option value="">{t('filters.allStatuses')}</option>
+        <option value="idea">{t('labels.status.idea')}</option>
         <option value="planned">{t('labels.status.planned')}</option>
-        <option value="in_progress">{t('labels.status.in_progress')}</option>
+        <option value="active">{t('labels.status.active')}</option>
         <option value="done">{t('labels.status.done')}</option>
         <option value="stopped">{t('labels.status.stopped')}</option>
-        <option value="changed_direction">{t('labels.status.changed_direction')}</option>
+        <option value="pivoted">{t('labels.status.pivoted')}</option>
       </select>
 
       {/* Search */}
