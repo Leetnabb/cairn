@@ -9,8 +9,8 @@ interface ResourceBarProps {
 
 export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
   const { t } = useTranslation();
-  const { load, pct, color, bgColor, activeCount, totalCount } = useMemo(() => {
-    if (initiatives.length === 0) return { load: 0, pct: 0, color: '#64748b', bgColor: '#f1f5f9', activeCount: 0, totalCount: 0 };
+  const { pct, color, bgColor, activeCount, totalCount } = useMemo(() => {
+    if (initiatives.length === 0) return { pct: 0, color: '#64748b', bgColor: '#f1f5f9', activeCount: 0, totalCount: 0 };
 
     const active = initiatives.filter(i =>
       i.status === 'in_progress' || (!i.status && i.horizon === 'near')
@@ -69,7 +69,7 @@ export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
     const c = clamped > 0.8 ? '#dc2626' : clamped >= 0.6 ? '#f59e0b' : '#22c55e';
     const bg = clamped > 0.8 ? '#fef2f2' : clamped >= 0.6 ? '#fffbeb' : '#f0fdf4';
 
-    return { load: clamped, pct: p, color: c, bgColor: bg, activeCount: activeN, totalCount: total };
+    return { pct: p, color: c, bgColor: bg, activeCount: activeN, totalCount: total };
   }, [initiatives, capabilities]);
 
   if (initiatives.length === 0) return null;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { StrategicFrame, StrategicTheme, Initiative, Effect, InitiativeStatus } from '../index';
+import type { StrategicFrame, Initiative, Effect, InitiativeStatus } from '../index';
 
 describe('StrategicFrame type', () => {
   it('accepts a valid strategic frame', () => {

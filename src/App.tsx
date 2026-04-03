@@ -50,7 +50,6 @@ export default function App() {
   const setAIPanelOpen = useAIStore(s => s.setPanelOpen);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
   const roleMode = useStore(s => s.ui.roleMode);
-  const boardViewMode = useStore(s => s.ui.boardViewMode);
   const modules = useStore(s => s.modules);
   const settingsOpen = useStore(s => s.ui.settingsOpen);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);

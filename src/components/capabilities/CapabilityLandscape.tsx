@@ -177,7 +177,7 @@ export function CapabilityLandscape() {
 
   // Derived zoom tiers
   const isHeatmap = zoomLevel <= 0.75;
-  const isExpanded = zoomLevel >= 1.25;
+  // isExpanded derived in MaturityChevron from zoomLevel prop
 
   // --- Cross-domain dependency highlighting ---
   // For each L1 domain, collect all L2 cap ids under it (including itself)
@@ -316,13 +316,6 @@ export function CapabilityLandscape() {
   };
 
   // --- L2 drag handlers ---
-  const handleL2DragStart = (e: React.DragEvent, id: string) => {
-    e.stopPropagation();
-    e.dataTransfer.setData('text/plain', `l2:${id}`);
-    e.dataTransfer.effectAllowed = 'move';
-    setDraggingId(`l2:${id}`);
-  };
-
   const handleL2DragOver = (e: React.DragEvent, domainId: string, idx: number) => {
     if (!draggingId?.startsWith('l2:')) return;
     e.preventDefault();
