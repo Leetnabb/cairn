@@ -710,7 +710,7 @@ export const useStore = create<StoreState>()(
         }
       }
 
-      return merged as StoreState;
+      return merged as unknown as StoreState;
     },
   })
 );
