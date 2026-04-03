@@ -112,7 +112,6 @@ export function StepUpload() {
           token = data.session?.access_token;
         }
       }
-      console.log('[StepUpload] isAuthenticated:', isAuthenticated, 'hasToken:', !!token);
       const result = await generateStrategicPicture(input, token ?? key, undefined, !!token);
       setGeneratedPicture(result);
       nextStep();

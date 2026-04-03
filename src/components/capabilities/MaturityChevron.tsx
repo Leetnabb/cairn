@@ -266,7 +266,7 @@ export function MaturityChevron({
                           style={{ minWidth: '180px' }}
                         >
                           <div>{t('maturityChevron.gapTooltip', { target: step })}</div>
-                          <div className="text-gray-300 mt-0.5">{domain.name}</div>
+                          <div className="text-text-tertiary mt-0.5">{domain.name}</div>
                         </div>
                       )}
                     </div>

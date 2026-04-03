@@ -273,6 +273,16 @@
     "noBottlenecks": "Ingen strategiske flaskehalser oppdaget",
     "noStrategicFrame": "Definer strategiske rammer i innstillinger"
   },
+  "strategicHealth": {
+    "noLink": "uten kobling",
+    "fullCoverage": "Full dekning",
+    "avgMaturity": "Snitt modenhet",
+    "noGap": "Ingen gap",
+    "drift": "Drift",
+    "noDrift": "Ingen drift",
+    "noCapability": "Uten kapabilitet",
+    "dimensions": "Dimensjoner"
+  },
   "snapshots": {
     "title": "Snapshots",
     "none": "Ingen snapshots lagret",

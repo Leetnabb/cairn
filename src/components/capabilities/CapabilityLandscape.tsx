@@ -405,7 +405,7 @@ export function CapabilityLandscape() {
                 <div className="flex items-center gap-1">
                   {activityCount[domain.id] > 0 && (
                     <span
-                      className="text-[8px] bg-gray-200 text-text-secondary px-1 py-0.5 rounded-full"
+                      className="text-[8px] bg-[var(--border-default)] text-text-secondary px-1 py-0.5 rounded-full"
                       title={activityNames[domain.id]?.join(', ')}
                     >
                       {activityCount[domain.id]}

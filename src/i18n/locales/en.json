@@ -273,6 +273,16 @@
     "noBottlenecks": "No strategic bottlenecks detected",
     "noStrategicFrame": "Define strategic frame in settings"
   },
+  "strategicHealth": {
+    "noLink": "no link",
+    "fullCoverage": "Full coverage",
+    "avgMaturity": "Avg. maturity",
+    "noGap": "No gap",
+    "drift": "Drift",
+    "noDrift": "No drift",
+    "noCapability": "No capability",
+    "dimensions": "Dimensions"
+  },
   "snapshots": {
     "title": "Snapshots",
     "none": "No snapshots saved",
