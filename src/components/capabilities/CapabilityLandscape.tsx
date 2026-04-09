@@ -23,58 +23,6 @@ export function CapabilityLandscape() {
   // Hovered L1 domain id for cross-domain dependency highlighting
   const [hoveredCapId, setHoveredCapId] = useState<string | null>(null);
 
-  // --- L2 Synergy hover state ---
-  const [hoveredL2Id, setHoveredL2Id] = useState<string | null>(null);
-  const chipRefs = useRef(new Map<string, HTMLElement>());
-  const [connectorLines, setConnectorLines] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
-
-  const registerChipRef = useCallback((id: string, el: HTMLElement | null) => {
-    if (el) {
-      chipRefs.current.set(id, el);
-    } else {
-      chipRefs.current.delete(id);
-    }
-  }, []);
-
-  // Compute synergy targets from providesFoundationFor
-  const synergyTargets = useMemo(() => {
-    if (!hoveredL2Id) return null;
-    const cap = capabilities.find(c => c.id === hoveredL2Id);
-    if (!cap?.providesFoundationFor?.length) return null;
-    return new Set(cap.providesFoundationFor);
-  }, [hoveredL2Id, capabilities]);
-
-  // Compute connector lines when synergy is active
-  useEffect(() => {
-    if (!hoveredL2Id || !synergyTargets || synergyTargets.size === 0) {
-      setConnectorLines([]);
-      return;
-    }
-
-    const sourceEl = chipRefs.current.get(hoveredL2Id);
-    const containerEl = landscapeRef.current;
-    if (!sourceEl || !containerEl) {
-      setConnectorLines([]);
-      return;
-    }
-
-    const containerRect = containerEl.getBoundingClientRect();
-    const sourceRect = sourceEl.getBoundingClientRect();
-    const sx = sourceRect.left + sourceRect.width / 2 - containerRect.left + containerEl.scrollLeft;
-    const sy = sourceRect.top + sourceRect.height / 2 - containerRect.top + containerEl.scrollTop;
-
-    const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
-    for (const targetId of synergyTargets) {
-      const targetEl = chipRefs.current.get(targetId);
-      if (!targetEl) continue;
-      const targetRect = targetEl.getBoundingClientRect();
-      const tx = targetRect.left + targetRect.width / 2 - containerRect.left + containerEl.scrollLeft;
-      const ty = targetRect.top + targetRect.height / 2 - containerRect.top + containerEl.scrollTop;
-      lines.push({ x1: sx, y1: sy, x2: tx, y2: ty });
-    }
-    setConnectorLines(lines);
-  }, [hoveredL2Id, synergyTargets]);
-
   // Drag state for L1 domain reordering
   const [dropDomainIndex, setDropDomainIndex] = useState<number | null>(null);
   // Drag state for L2 capability reordering: key = domainId, value = drop index within that domain
@@ -483,10 +431,6 @@ export function CapabilityLandscape() {
                   zoomLevel={zoomLevel}
                   initiatives={initiatives}
                   elevated={section === 'core'}
-                  registerChipRef={registerChipRef}
-                  hoveredL2Id={hoveredL2Id}
-                  synergyTargets={synergyTargets}
-                  onL2Hover={setHoveredL2Id}
                 />
               </div>
             )}
@@ -635,36 +579,6 @@ export function CapabilityLandscape() {
         'support',
         'capLandscape.supportSection',
         '',
-      )}
-
-      {/* SVG overlay for synergy connector lines */}
-      {connectorLines.length > 0 && (
-        <svg
-          className="pointer-events-none"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 20,
-            overflow: 'visible',
-          }}
-        >
-          {connectorLines.map((line, i) => (
-            <line
-              key={i}
-              x1={line.x1}
-              y1={line.y1}
-              x2={line.x2}
-              y2={line.y2}
-              stroke="#eab308"
-              strokeWidth={1.5}
-              strokeDasharray="4 4"
-              opacity={0.6}
-            />
-          ))}
-        </svg>
       )}
 
       {/* Zoom indicator */}

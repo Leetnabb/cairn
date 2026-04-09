@@ -53,10 +53,9 @@ export default function App() {
   const modules = useStore(s => s.modules);
   const settingsOpen = useStore(s => s.ui.settingsOpen);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
-  const auth = useAuth();
-  const { isAuthenticated, user, signOut } = useAuth();
+  const { isAuthenticated, user, signOut, role } = useAuth();
   const navigate = useNavigate();
-  const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
+  const isBoardUser = isAuthenticated && role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
   useSupabaseSync();
 
@@ -152,7 +151,7 @@ export default function App() {
         {/* Center: Scenario dropdown */}
         <ScenarioDropdown />
 
-        {/* Right: Nav + actions */}
+        {/* Center: Nav tabs */}
         <nav className="flex items-center gap-1">
           {isViewVisible('strategies') && (
             <NavBtn active={view === 'strategies'} onClick={() => setView('strategies')}>{t('nav.strategies')}</NavBtn>
@@ -169,7 +168,11 @@ export default function App() {
           )}
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
           <NavBtn active={false} onClick={() => enterMeetingMode()}>{t('nav.presentation')}</NavBtn>
-          <div className="w-px h-5 bg-border mx-0.5" />
+        </nav>
+
+        {/* Right: actions */}
+        <div className="flex items-center gap-1">
+          {/* Group: filter, insights, +New */}
           {view === 'roadmap' && <FilterDropdown />}
           <InsightsBadge />
           {roleMode === 'work' && (
@@ -177,15 +180,14 @@ export default function App() {
           )}
           <HeaderMenu />
           {roleMode === 'work' && <UndoRedoButtons />}
-          <div className="w-px h-5 bg-border mx-0.5" />
-          {/* Board View toggle */}
+          <div className="w-px h-5 bg-border mx-1" />
+          {/* Group: Board View, AI */}
           <button
             onClick={enterBoardView}
             className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium text-text-secondary hover:bg-[var(--bg-hover)] transition-colors"
             title={t('board.title')}
             aria-label={t('board.title')}
           >
-            {/* Frame icon — signals presentation, not surveillance */}
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="3" width="20" height="14" rx="2" />
               <line x1="8" y1="21" x2="16" y2="21" />
@@ -194,13 +196,14 @@ export default function App() {
             {t('board.title')}
           </button>
           <ToggleBtn active={aiPanelOpen} onClick={() => setAIPanelOpen(!aiPanelOpen)}>AI</ToggleBtn>
+          <div className="w-px h-5 bg-border mx-1" />
+          {/* Group: language, auth */}
           <button
             onClick={() => i18n.changeLanguage(i18n.language === 'nb' ? 'en' : 'nb')}
             className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-[var(--bg-hover)] rounded"
           >
             {i18n.language === 'nb' ? 'EN' : 'NB'}
           </button>
-          <div className="w-px h-5 bg-border mx-0.5" />
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
               <span className="text-[10px] text-text-secondary">{user?.email}</span>
@@ -219,7 +222,7 @@ export default function App() {
               {t('auth.login')}
             </button>
           )}
-        </nav>
+        </div>
       </header>
 
       {/* Main content */}
@@ -237,7 +240,7 @@ export default function App() {
               <aside className="shrink-0 border-l border-border w-[320px] overflow-hidden transition-all duration-200" style={{ background: 'var(--bg-panel)' }}>
                 <div className="flex h-full">
                   <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-[var(--bg-hover)] transition-colors" title={t('common.close')}>
-                    <span className="text-xs text-text-secondary">&raquo;</span>
+                    <span className="text-xs text-text-secondary">&times;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
                     {aiPanelOpen ? <AIChatPanel /> : <DetailPanel />}
@@ -257,7 +260,7 @@ export default function App() {
               <aside className="shrink-0 border-l border-border w-[320px] overflow-hidden transition-all duration-200" style={{ background: 'var(--bg-panel)' }}>
                 <div className="flex h-full">
                   <button onClick={() => setSelectedItem(null)} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-[var(--bg-hover)] transition-colors" title={t('common.close')}>
-                    <span className="text-xs text-text-secondary">&raquo;</span>
+                    <span className="text-xs text-text-secondary">&times;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
                     {aiPanelOpen ? <AIChatPanel /> : <DetailPanel />}
@@ -283,7 +286,7 @@ export default function App() {
               <aside className="shrink-0 border-l border-border w-[320px] overflow-hidden transition-all duration-200 animate-slide-in-right" style={{ background: 'var(--bg-panel)' }}>
                 <div className="flex h-full">
                   <button onClick={() => { setSelectedItem(null); setAIPanelOpen(false); }} className="w-5 shrink-0 flex items-center justify-center border-r border-border hover:bg-[var(--bg-hover)] transition-colors" title={t('common.close')}>
-                    <span className="text-xs text-text-secondary">&raquo;</span>
+                    <span className="text-xs text-text-secondary">&times;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
                     {aiPanelOpen ? <AIChatPanel /> : <DetailPanel />}

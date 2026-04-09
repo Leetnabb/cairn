@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FadeIn, BarDivider, S, ctaStyle } from "../landingUtils";
 
@@ -8,14 +7,6 @@ interface CTASectionProps {
 
 export function CTASection({ isMobile }: CTASectionProps) {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-    setSubmitted(true);
-  };
 
   return (
     <section
@@ -74,62 +65,20 @@ export function CTASection({ isMobile }: CTASectionProps) {
         </FadeIn>
 
         <FadeIn delay={0.3}>
-          {submitted ? (
-            <p
-              style={{
-                fontSize: 15,
-                color: "#22c55e",
-                fontWeight: 500,
-                marginBottom: 20,
-              }}
-            >
-              {t("landing.cta.submitted")}
-            </p>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 10,
-                alignItems: "center",
-              }}
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("landing.cta.emailPlaceholder")}
-                required
-                style={{
-                  fontSize: 14,
-                  padding: "12px 16px",
-                  borderRadius: 5,
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(255,255,255,0.06)",
-                  color: "var(--text-primary)",
-                  outline: "none",
-                  fontFamily: "var(--font-body)",
-                  width: isMobile ? "100%" : 280,
-                  textAlign: "center",
-                }}
-              />
-              <button
-                type="submit"
-                style={{ ...ctaStyle, fontSize: 15, padding: "14px 36px" }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "var(--accent-hover)";
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "var(--accent)";
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                }}
-              >
-                {t("landing.cta.button")}
-              </button>
-            </form>
-          )}
+          <a
+            href="/app"
+            style={{ ...ctaStyle, fontSize: 15, padding: "14px 36px", display: "inline-block", textDecoration: "none" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "var(--accent-hover)";
+              (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "var(--accent)";
+              (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+            }}
+          >
+            {t("landing.cta.tryDemo", "Utforsk Cairn")}
+          </a>
           <p
             style={{
               fontSize: 13,

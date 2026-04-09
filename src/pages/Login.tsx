@@ -96,6 +96,7 @@ export function Login() {
               placeholder={t('auth.displayName')}
               className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
               style={{
+                // Intentional rgba: glass-morphism effect on always-dark login page (data-mode="board")
                 background: 'rgba(255,255,255,0.08)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 color: 'var(--text-primary)',
@@ -111,6 +112,7 @@ export function Login() {
             required
             className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
             style={{
+              // Intentional rgba: glass-morphism effect on always-dark login page (data-mode="board")
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.15)',
               color: 'var(--text-primary)',
@@ -127,6 +129,7 @@ export function Login() {
               minLength={6}
               className="w-full px-3 py-2 text-sm rounded-lg focus:outline-none"
               style={{
+                // Intentional rgba: glass-morphism effect on always-dark login page (data-mode="board")
                 background: 'rgba(255,255,255,0.08)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 color: 'var(--text-primary)',

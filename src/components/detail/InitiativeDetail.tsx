@@ -199,7 +199,7 @@ export function InitiativeDetail({ initiative }: Props) {
         if (override === true) {
           return (
             <div className="px-2 py-1.5 rounded bg-red-50 border border-red-200 text-[10px] text-red-800 flex items-center justify-between">
-              <span>\ud83d\udd34 {t('detail.criticalPath.onManual')}</span>
+              <span><svg width="10" height="10" viewBox="0 0 10 10" className="inline-block shrink-0" style={{verticalAlign: 'middle'}}><circle cx="5" cy="5" r="4" fill="#ef4444"/></svg> {t('detail.criticalPath.onManual')}</span>
               <button onClick={() => updateInitiative(initiative.id, { criticalPathOverride: null })}
                 className="text-[9px] text-red-600 hover:text-red-800 font-medium">{t('detail.criticalPath.removeFrom')}</button>
             </div>
@@ -208,7 +208,7 @@ export function InitiativeDetail({ initiative }: Props) {
         if (override === false) {
           return (
             <div className="px-2 py-1.5 rounded bg-[var(--bg-lane)] border border-border text-[10px] text-text-secondary flex items-center justify-between">
-              <span>\u26aa {t('detail.criticalPath.excluded')}</span>
+              <span><svg width="10" height="10" viewBox="0 0 10 10" className="inline-block shrink-0" style={{verticalAlign: 'middle'}}><circle cx="5" cy="5" r="4" fill="none" stroke="#94a3b8" strokeWidth="1.5"/></svg> {t('detail.criticalPath.excluded')}</span>
               <button onClick={() => updateInitiative(initiative.id, { criticalPathOverride: null })}
                 className="text-[9px] text-text-secondary hover:text-text-primary font-medium">{t('detail.criticalPath.resetAuto')}</button>
             </div>
@@ -217,7 +217,7 @@ export function InitiativeDetail({ initiative }: Props) {
         if (isOnMerged && isOnAuto) {
           return (
             <div className="px-2 py-1.5 rounded bg-red-50 border border-red-200 text-[10px] text-red-800 flex items-center justify-between">
-              <span>\ud83d\udd34 {t('detail.criticalPath.onAuto')}</span>
+              <span><svg width="10" height="10" viewBox="0 0 10 10" className="inline-block shrink-0" style={{verticalAlign: 'middle'}}><circle cx="5" cy="5" r="4" fill="#ef4444"/></svg> {t('detail.criticalPath.onAuto')}</span>
               <button onClick={() => updateInitiative(initiative.id, { criticalPathOverride: false })}
                 className="text-[9px] text-red-600 hover:text-red-800 font-medium">{t('detail.criticalPath.removeFrom')}</button>
             </div>
@@ -225,7 +225,7 @@ export function InitiativeDetail({ initiative }: Props) {
         }
         return (
           <div className="px-2 py-1.5 rounded bg-[var(--bg-lane)] border border-border text-[10px] text-text-secondary flex items-center justify-between">
-            <span>\u26aa {t('detail.criticalPath.notOn')}</span>
+            <span><svg width="10" height="10" viewBox="0 0 10 10" className="inline-block shrink-0" style={{verticalAlign: 'middle'}}><circle cx="5" cy="5" r="4" fill="none" stroke="#94a3b8" strokeWidth="1.5"/></svg> {t('detail.criticalPath.notOn')}</span>
             <button onClick={() => updateInitiative(initiative.id, { criticalPathOverride: true })}
               className="text-[9px] text-text-secondary hover:text-text-primary font-medium">{t('detail.criticalPath.addTo')}</button>
           </div>

@@ -414,6 +414,9 @@
     "fileTooLarge": "Filen er for stor (maks 10 MB)",
     "fileReadError": "Kunne ikke lese filen"
   },
+  "scenario": {
+    "default": "Hovedscenario"
+  },
   "scenarios": {
     "label": "Scenario:",
     "newScenario": "Nytt scenario",
@@ -779,6 +782,7 @@
       "subline1": "Strategi → Kapabiliteter → Initiativer → Effekter.",
       "subline2": "Ett bilde. Levende. For de som leder.",
       "cta": "Ta kontakt",
+      "tryDemo": "Prøv demo",
       "emailPlaceholder": "din@epost.no",
       "submitted": "Du er på listen — vi tar kontakt."
     },
@@ -825,6 +829,7 @@
       "headline": "Vi er i early access.",
       "body": "Ta kontakt — så setter vi opp stien sammen.",
       "button": "Ta kontakt",
+      "tryDemo": "Utforsk Cairn",
       "emailPlaceholder": "din@epost.no",
       "submitted": "Du er på listen — vi tar kontakt."
     }

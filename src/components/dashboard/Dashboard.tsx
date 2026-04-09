@@ -19,6 +19,7 @@ export function Dashboard() {
   const snapshots = useStore(s => s.snapshots);
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const strategicFrame = useStore(s => s.strategicFrame);
+  const setSettingsOpen = useStore(s => s.setSettingsOpen);
 
   const narrative = useMemo(
     () => generateNarrative(initiatives, capabilities, effects, undefined, strategicFrame),
@@ -65,7 +66,15 @@ export function Dashboard() {
             )}
           </>
         ) : (
-          <p className="text-sm text-text-secondary">{t('dashboard.noStrategicFrame')}</p>
+          <>
+            <p className="text-sm text-text-secondary mb-2">{t('dashboard.noStrategicFrame')}</p>
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="px-3 py-1.5 text-xs font-medium text-white bg-primary rounded hover:bg-primary-dark transition-colors"
+            >
+              {t('nav.settings')}
+            </button>
+          </>
         )}
       </div>
 

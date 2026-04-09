@@ -7,7 +7,6 @@ import { ProblemSection } from "./sections/ProblemSection";
 import { ProductPreview } from "./sections/ProductPreview";
 import { InsightsSection } from "./sections/InsightsSection";
 import { DifferentiationSection } from "./sections/DifferentiationSection";
-import { TestimonialSectionDefault } from "./sections/TestimonialSection";
 import { CTASection } from "./sections/CTASection";
 import { BarDivider } from "./landingUtils";
 
@@ -94,10 +93,7 @@ export default function CairnLanding() {
       {/* 6. Differentiation */}
       <DifferentiationSection isMobile={isMobile} />
 
-      {/* 7. Testimonial (placeholder) */}
-      <TestimonialSectionDefault isMobile={isMobile} />
-
-      {/* 8. CTA */}
+      {/* 7. CTA */}
       <div ref={ctaRef}>
         <CTASection isMobile={isMobile} />
       </div>

@@ -414,6 +414,9 @@
     "fileTooLarge": "File is too large (max 10 MB)",
     "fileReadError": "Could not read the file"
   },
+  "scenario": {
+    "default": "Main scenario"
+  },
   "scenarios": {
     "label": "Scenario:",
     "newScenario": "New scenario",
@@ -779,6 +782,7 @@
       "subline1": "Strategy → Capabilities → Initiatives → Effects.",
       "subline2": "One picture. Living. For those who lead.",
       "cta": "Request early access",
+      "tryDemo": "Try demo",
       "emailPlaceholder": "your@email.com",
       "submitted": "You're on the list — we'll be in touch."
     },
@@ -825,6 +829,7 @@
       "headline": "We are in early access.",
       "body": "Get in touch — and we'll set up the path together.",
       "button": "Request early access",
+      "tryDemo": "Explore Cairn",
       "emailPlaceholder": "your@email.com",
       "submitted": "You're on the list — we'll be in touch."
     }

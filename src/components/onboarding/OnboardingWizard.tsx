@@ -9,7 +9,7 @@ import { StepInsights } from './StepInsights';
 import type { Initiative, Effect, Scenario, AppState } from '../../types';
 import type { OnboardingResult } from '../../lib/ai/frameworks/onboardingFramework';
 
-function convertToAppState(result: OnboardingResult): Partial<AppState> {
+function convertToAppState(result: OnboardingResult, scenarioName: string): Partial<AppState> {
   const scenarioId = crypto.randomUUID();
 
   const initiatives: Initiative[] = result.initiatives.map((init, order) => ({
@@ -39,7 +39,7 @@ function convertToAppState(result: OnboardingResult): Partial<AppState> {
 
   const scenario: Scenario = {
     id: scenarioId,
-    name: 'Hovedscenario',
+    name: scenarioName,
     color: '#6366f1',
   };
 
@@ -80,7 +80,7 @@ export function OnboardingWizard() {
 
   const handleComplete = () => {
     if (onboardingResult) {
-      const appState = convertToAppState(onboardingResult);
+      const appState = convertToAppState(onboardingResult, t('scenario.default', 'Hovedscenario'));
       importState(appState);
       setComplexityLevel(1);
       setModules({ roadmap: true, capabilities: true, effects: true });
