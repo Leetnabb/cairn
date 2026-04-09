@@ -779,21 +779,18 @@
     },
     "hero": {
       "headline": "When the fog rolls in, you don't need a better map. You need a cairn.",
-      "subline1": "Strategy → Capabilities → Initiatives → Effects.",
-      "subline2": "One picture. Living. For those who lead.",
-      "cta": "Request early access",
-      "tryDemo": "Try demo",
-      "emailPlaceholder": "your@email.com",
-      "submitted": "You're on the list — we'll be in touch."
+      "subline1": "See everything your organisation is doing — and whether it's taking you where you want to go.",
+      "subline2": "Not a plan locked in place, but a living path that updates from cairn to cairn.",
+      "tryDemo": "Try demo"
     },
     "problem": {
-      "context": "Technology moves faster than the organisation can follow. Regulation tightens. Geopolitics creates uncertainty. When everything moves at once, it becomes hard to see forward. The fog.",
+      "context": "Technology moves faster than the organisation can follow. Regulation tightens. Geopolitics creates uncertainty. When everything moves at once, it becomes hard to see forward.",
       "headline": "Everyone has a strategy. Most have projects. What's missing is the TO — the link between strategy and execution.",
       "body1": "Initiatives live in project tools. Strategy lives in presentations. Capabilities live in EA tools only the architect understands. Effects are assumed but rarely measured.",
       "silo1": "Initiatives live in project tools.",
       "silo2": "Strategy lives in presentations.",
       "silo3": "Capabilities live in EA tools only the architect understands.",
-      "closing": "What's needed is dynamic strategy — not a plan locked in place, but a living path that updates from cairn to cairn."
+      "closing": "That's where Cairn comes in."
     },
     "product": {
       "eyebrow": "The product",
@@ -828,10 +825,7 @@
     "cta": {
       "headline": "We are in early access.",
       "body": "Get in touch — and we'll set up the path together.",
-      "button": "Request early access",
-      "tryDemo": "Explore Cairn",
-      "emailPlaceholder": "your@email.com",
-      "submitted": "You're on the list — we'll be in touch."
+      "tryDemo": "Explore Cairn"
     }
   },
   "auth": {
