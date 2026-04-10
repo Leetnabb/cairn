@@ -777,20 +777,18 @@
     },
     "hero": {
       "headline": "Når tåken legger seg, trenger du ikke et bedre kart. Du trenger en varde.",
-      "subline1": "Strategi → Kapabiliteter → Initiativer → Effekter.",
-      "subline2": "Ett bilde. Levende. For de som leder.",
-      "cta": "Ta kontakt",
-      "emailPlaceholder": "din@epost.no",
-      "submitted": "Du er på listen — vi tar kontakt."
+      "subline1": "Se alt organisasjonen din gjør — og om det tar dere dit dere vil.",
+      "subline2": "Ikke en plan som låses fast, men en levende sti som oppdateres fra varde til varde.",
+      "tryDemo": "Prøv demo"
     },
     "problem": {
-      "context": "Teknologi endrer seg raskere enn organisasjonen klarer å følge. Regulering strammes til. Geopolitikk skaper usikkerhet. Når alt beveger seg samtidig, blir det vanskelig å se fremover. Tåken.",
+      "context": "Teknologi endrer seg raskere enn organisasjonen klarer å følge. Regulering strammes til. Geopolitikk skaper usikkerhet. Når alt beveger seg samtidig, blir det vanskelig å se fremover.",
       "headline": "Alle har en strategi. De fleste har prosjekter. Men det som mangler er TO-en — koblingen mellom strategi og eksekusjon.",
       "body1": "Initiativene lever i prosjektverktøy. Strategien lever i presentasjoner. Kapabilitetene lever i EA-verktøy som kun arkitekten forstår. Effektene antas, men måles sjelden.",
       "silo1": "Initiativene lever i prosjektverktøy.",
       "silo2": "Strategien lever i presentasjoner.",
       "silo3": "Kapabilitetene lever i EA-verktøy som kun arkitekten forstår.",
-      "closing": "Her trengs dynamisk strategi — ikke en plan som låses fast, men en levende sti som oppdateres fra varde til varde."
+      "closing": "Det er her Cairn kommer inn."
     },
     "product": {
       "eyebrow": "Produktet",
@@ -825,9 +823,7 @@
     "cta": {
       "headline": "Vi er i early access.",
       "body": "Ta kontakt — så setter vi opp stien sammen.",
-      "button": "Ta kontakt",
-      "emailPlaceholder": "din@epost.no",
-      "submitted": "Du er på listen — vi tar kontakt."
+      "tryDemo": "Utforsk Cairn"
     }
   },
   "auth": {
