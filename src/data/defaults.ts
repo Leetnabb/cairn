@@ -8,20 +8,20 @@ export const defaultValueChains: ValueChain[] = frivilligTemplate.valueChains;
 export const defaultEffects: Effect[] = frivilligTemplate.effects;
 
 export const defaultStrategies: Strategy[] = [
-  { id: 'strat_1', name: 'Digital transformasjon', description: 'Modernisere digitale systemer og arbeidsflyter', timeHorizon: 'long', priority: 1 },
-  { id: 'strat_2', name: 'Datadrevet organisasjon', description: 'Bruke data aktivt i beslutningsprosesser', timeHorizon: 'medium', priority: 1 },
-  { id: 'strat_3', name: 'Medlemsvekst', description: 'Øke antall og engasjement av medlemmer', timeHorizon: 'short', priority: 2 },
+  { id: 'strat_1', name: 'Digital Transformation', description: 'Modernize digital systems and workflows', timeHorizon: 'long', priority: 1 },
+  { id: 'strat_2', name: 'Data-Driven Organization', description: 'Use data actively in decision-making', timeHorizon: 'medium', priority: 1 },
+  { id: 'strat_3', name: 'Member Growth', description: 'Increase member count and engagement', timeHorizon: 'short', priority: 2 },
 ];
 
 export const defaultMilestones: Milestone[] = [
-  { id: 'm1', name: 'Strategivedtak', horizon: 'near', position: 0.15, color: '#6366f1' },
-  { id: 'm2', name: 'Go/no-go pilot', horizon: 'near', position: 0.6, color: '#eab308' },
-  { id: 'm3', name: 'Midtveisevaluering', horizon: 'far', position: 0.4, color: '#3b82f6' },
+  { id: 'm1', name: 'Strategy Approval', horizon: 'near', position: 0.15, color: '#6366f1' },
+  { id: 'm2', name: 'Pilot Go/No-Go', horizon: 'near', position: 0.6, color: '#eab308' },
+  { id: 'm3', name: 'Mid-Term Review', horizon: 'far', position: 0.4, color: '#3b82f6' },
 ];
 
 export const defaultScenario: Scenario = {
   id: 'default',
-  name: 'Hovedscenario',
+  name: 'Main Scenario',
   color: '#6366f1',
 };
 
@@ -33,11 +33,11 @@ export const defaultModules: ModuleSettings = {
 };
 
 export const defaultStrategicFrame: StrategicFrame = {
-  direction: 'Bli en datadrevet og medlemsnær organisasjon gjennom digital transformasjon',
+  direction: 'Become a data-driven, member-focused organization through digital transformation',
   themes: [
-    { id: 'st_1', name: 'Kundedata', description: 'Samle, strukturere og bruke kundedata aktivt i beslutninger' },
-    { id: 'st_2', name: 'Prosessdigitalisering', description: 'Digitalisere kjernearbeidsflyter for effektivitet' },
-    { id: 'st_3', name: 'Kompetanseløft', description: 'Bygge digital kompetanse i hele organisasjonen' },
+    { id: 'st_1', name: 'Customer Data', description: 'Collect, structure, and actively use customer data in decisions' },
+    { id: 'st_2', name: 'Process Digitalization', description: 'Digitalize core workflows for efficiency' },
+    { id: 'st_3', name: 'Competence Development', description: 'Build digital competence across the entire organization' },
   ],
 };
 
