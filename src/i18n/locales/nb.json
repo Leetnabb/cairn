@@ -820,6 +820,10 @@
       "card3": "Prosjektverktøyet viser oppgaver, ikke retning.",
       "closing": "Cairn er verktøyet ledergruppen faktisk åpner mellom møtene."
     },
+    "testimonial": {
+      "quote": "Strategi er et mønster i en strøm av beslutninger.",
+      "subtext": "Spørsmålet er ikke om du har en strategi. Det er om du kan se den du faktisk lever."
+    },
     "cta": {
       "headline": "Vi er i early access.",
       "body": "Ta kontakt — så setter vi opp stien sammen.",

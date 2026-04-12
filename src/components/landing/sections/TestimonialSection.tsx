@@ -1,23 +1,15 @@
+import { useTranslation } from "react-i18next";
 import { FadeIn, S } from "../landingUtils";
 
 interface TestimonialSectionProps {
-  quote: string;
-  author: string;
-  title: string;
-  org: string;
   isMobile: boolean;
 }
 
-export function TestimonialSection({
-  quote,
-  author,
-  title,
-  org,
-  isMobile,
-}: TestimonialSectionProps) {
+export function TestimonialSectionDefault({ isMobile }: TestimonialSectionProps) {
+  const { t } = useTranslation();
+
   return (
     <section
-      data-placeholder="true"
       style={{
         padding: isMobile ? "80px 20px 80px" : "120px 48px 140px",
         position: "relative",
@@ -62,51 +54,40 @@ export function TestimonialSection({
           <blockquote
             style={{
               ...S.serif,
-              fontSize: "clamp(20px, 2.8vw, 28px)",
+              fontSize: "clamp(22px, 3vw, 32px)",
               fontWeight: 400,
               fontStyle: "italic",
               color: "var(--text-secondary)",
-              lineHeight: 1.55,
-              margin: "0 0 40px",
+              lineHeight: 1.5,
+              margin: "0 0 32px",
               letterSpacing: "-0.01em",
             }}
           >
-            {quote}
+            {t("landing.testimonial.quote")}
           </blockquote>
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-            <div
-              style={{
-                width: 32,
-                height: 1,
-                background: "rgba(255,255,255,0.12)",
-                marginBottom: 12,
-              }}
-            />
-            <span style={{ fontSize: 14, color: "var(--text-tertiary)", fontWeight: 600 }}>
-              — {author}
-            </span>
-            {(title || org) && (
-              <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
-                {title && org ? `${title}, ${org}` : title || org}
-              </span>
-            )}
-          </div>
+          <div
+            style={{
+              width: 32,
+              height: 1,
+              background: "rgba(255,255,255,0.12)",
+              margin: "0 auto 20px",
+            }}
+          />
+
+          <p
+            style={{
+              fontSize: "clamp(15px, 1.8vw, 18px)",
+              color: "var(--text-tertiary)",
+              lineHeight: 1.65,
+              maxWidth: 540,
+              margin: "0 auto",
+            }}
+          >
+            {t("landing.testimonial.subtext")}
+          </p>
         </FadeIn>
       </div>
     </section>
-  );
-}
-
-// Default export with placeholder content
-export function TestimonialSectionDefault({ isMobile }: { isMobile: boolean }) {
-  return (
-    <TestimonialSection
-      isMobile={isMobile}
-      quote="Vi brukte Cairn i ledergruppen for første gang. Etter ti minutter så vi at 80% av initiativene våre var teknologi. Ingen eide organisasjonsendringen. Den samtalen hadde vi aldri tatt uten dette bildet."
-      author="[Tittel]"
-      title=""
-      org="[Organisasjon]"
-    />
   );
 }
