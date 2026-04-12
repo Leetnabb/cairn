@@ -1,4 +1,3 @@
-import { useState, useRef, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { FadeIn, HeroMark, S, ctaStyle } from "../landingUtils";
 
@@ -9,15 +8,6 @@ interface HeroSectionProps {
 
 export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const heroFormRef = useRef<HTMLDivElement | null>(null);
-
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-    setSubmitted(true);
-  };
 
   return (
     <section
@@ -112,64 +102,20 @@ export function HeroSection({ scrollY, isMobile }: HeroSectionProps) {
         </FadeIn>
 
         <FadeIn delay={0.7}>
-          <div ref={heroFormRef}>
-            {submitted ? (
-              <p
-                style={{
-                  fontSize: 15,
-                  color: "#22c55e",
-                  fontWeight: 500,
-                  marginBottom: 16,
-                }}
-              >
-                {t("landing.hero.submitted")}
-              </p>
-            ) : (
-              <form
-                onSubmit={handleEmailSubmit}
-                style={{
-                  display: "flex",
-                  gap: 10,
-                  flexWrap: "wrap",
-                  marginBottom: 16,
-                  alignItems: "center",
-                }}
-              >
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("landing.hero.emailPlaceholder")}
-                  required
-                  style={{
-                    fontSize: 14,
-                    padding: "12px 16px",
-                    borderRadius: 5,
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    background: "rgba(255,255,255,0.06)",
-                    color: "var(--text-primary)",
-                    outline: "none",
-                    fontFamily: "var(--font-body)",
-                    width: isMobile ? "100%" : 220,
-                  } as CSSProperties}
-                />
-                <button
-                  type="submit"
-                  style={{ ...ctaStyle, fontSize: 15, padding: "13px 32px" }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "var(--accent-hover)";
-                    (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "var(--accent)";
-                    (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                  }}
-                >
-                  {t("landing.hero.cta")}
-                </button>
-              </form>
-            )}
-          </div>
+          <a
+            href="/app"
+            style={{ ...ctaStyle, fontSize: 15, padding: "13px 32px", display: "inline-block", textDecoration: "none" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "var(--accent-hover)";
+              (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "var(--accent)";
+              (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+            }}
+          >
+            {t("landing.hero.tryDemo")}
+          </a>
         </FadeIn>
       </div>
 
