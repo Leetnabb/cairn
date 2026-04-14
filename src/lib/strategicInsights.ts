@@ -28,7 +28,7 @@ export function computeStrategicInsights(
     strategic.push({
       id: 'dimension-imbalance',
       priority: 1,
-      message: `${dominant[1]} av ${total} initiativer er ${dominant[0]}. ${empty.length > 0 ? `${empty.join(' og ')} har ingen.` : ''}`,
+      message: `${dominant[1]} of ${total} initiatives are ${dominant[0]}. ${empty.length > 0 ? `${empty.join(' and ')} have none.` : ''}`,
       detail: Object.entries(dimCounts).map(([d, c]) => `${d}: ${c}`).join(', '),
       relatedIds: initiatives.filter(i => i.dimension === dominant[0]).map(i => i.id),
       type: 'imbalance',
@@ -43,7 +43,7 @@ export function computeStrategicInsights(
     strategic.push({
       id: 'unlinked-capabilities',
       priority: 2,
-      message: `${unlinked.length} kapabilitet${unlinked.length > 1 ? 'er' : ''} har ingen initiativer koblet til seg.`,
+      message: `${unlinked.length} capabilit${unlinked.length > 1 ? 'ies have' : 'y has'} no linked initiatives.`,
       detail: unlinked.map(c => c.name).join(', '),
       relatedIds: unlinked.map(c => c.id),
       type: 'blocker',
@@ -58,7 +58,7 @@ export function computeStrategicInsights(
     strategic.push({
       id: 'unlinked-effects',
       priority: 3,
-      message: `${unlinkedEffects.length} effektmål har ingen kobling til aktive initiativer.`,
+      message: `${unlinkedEffects.length} expected effect${unlinkedEffects.length > 1 ? 's have' : ' has'} no linked initiatives.`,
       detail: unlinkedEffects.map(e => e.name).join(', '),
       relatedIds: unlinkedEffects.map(e => e.id),
       type: 'gap',
@@ -73,7 +73,7 @@ export function computeStrategicInsights(
     strategic.push({
       id: 'owner-overload',
       priority: 4,
-      message: `${overloaded.map(([o, c]) => `${o} (${c})`).join(', ')} har mange initiativer. Er kapasiteten realistisk?`,
+      message: `${overloaded.map(([o, c]) => `${o} (${c})`).join(', ')} own many initiatives. Is the capacity realistic?`,
       detail: '',
       relatedIds: initiatives.filter(i => overloaded.some(([o]) => i.owner === o)).map(i => i.id),
       type: 'blocker',

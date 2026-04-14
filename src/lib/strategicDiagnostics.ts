@@ -45,7 +45,7 @@ export function detectStrategicDrift(
         type: 'unaddressed_theme',
         severity: 'warning',
         themeName: theme.name,
-        message: `Strategisk tema "${theme.name}" har ingen initiativer som støtter det.`,
+        message: `Strategic theme "${theme.name}" has no supporting initiatives.`,
       });
     }
   }
@@ -60,7 +60,7 @@ export function detectStrategicDrift(
         type: 'unaligned_initiatives',
         severity: 'warning',
         count: unaligned.length,
-        message: `${unaligned.length} av ${initiatives.length} initiativer (${pct}%) kan ikke kobles til noen strategiske temaer.`,
+        message: `${unaligned.length} of ${initiatives.length} initiatives (${pct}%) cannot be linked to any strategic theme. This may indicate strategic drift — or an emergent direction worth acknowledging.`,
         details: unaligned.map(i => i.name).join(', '),
       });
     }
@@ -91,7 +91,7 @@ export function assessEffectFeasibility(
       results.push({
         type: 'effect_at_risk',
         severity: 'warning',
-        message: `Forventet effekt "${effect.name}" er truet: ${derailed.length} av ${linked.length} koblede initiativer er stoppet eller har endret retning.`,
+        message: `Expected effect "${effect.name}" is at risk: ${derailed.length} of ${linked.length} linked initiatives are stopped or pivoted.`,
       });
     }
   }
@@ -147,7 +147,7 @@ export function detectCrossDimensionGaps(initiatives: Initiative[]): DiagnosticR
       results.push({
         type: 'absorption_warning',
         severity: 'warning',
-        message: `${dim.label} har ${stats.own} egne aktive initiativer, men ${stats.inbound} initiativer i andre dimensjoner avhenger av denne. Endringsarbeidet kan bli en flaskehals.`,
+        message: `${dim.label} has ${stats.own} own active initiatives, but ${stats.inbound} initiatives in other dimensions depend on it. Change work may become a bottleneck.`,
       });
     }
   }
@@ -166,7 +166,7 @@ export function detectAbsorptionIssues(initiatives: Initiative[]): DiagnosticRes
       type: 'absorption_warning',
       severity: 'warning',
       count: inProgress,
-      message: `${inProgress} av ${total} initiativer pågår, men bare ${done} er fullført. Organisasjonen kan ha kapasitetsproblemer.`,
+      message: `${inProgress} of ${total} initiatives are active, but only ${done} are done. The organization may have capacity issues — consider whether you've taken on too much at once.`,
     }];
   }
   return [];
