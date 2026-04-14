@@ -183,7 +183,7 @@ describe('detectCrossDimensionGaps', () => {
     expect(result).toHaveLength(1);
     expect(result[0].type).toBe('absorption_warning');
     expect(result[0].message).toContain('Organisasjon');
-    expect(result[0].message).toContain('flaskehals');
+    expect(result[0].message).toContain('bottleneck');
   });
 
   it('does not warn when inbound deps are below threshold', () => {
