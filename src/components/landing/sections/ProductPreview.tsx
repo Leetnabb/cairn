@@ -12,30 +12,9 @@ type Dimension = "ledelse" | "virksomhet" | "organisasjon" | "teknologi";
 
 const DIMENSION_ORDER: Dimension[] = ["ledelse", "virksomhet", "organisasjon", "teknologi"];
 
-// Initiative name translations (keyed by initiative id)
-const INITIATIVE_NAMES_EN: Record<string, string> = {
-  l1: "New governance model",
-  v1: "Customer portal 2.0",
-  v2: "Automated reporting",
-  o1: "Digital capability uplift",
-  t1: "Cloud migration phase 2",
-  t2: "API platform",
-  t3: "IAM modernization",
-  t4: "Data platform",
-  t5: "DevOps pipeline",
-  t6: "Legacy decommissioning",
-  t7: "Integration platform",
-  t8: "AI/ML capability",
-  t9: "Security program",
-};
-
 export function ProductPreview({ isMobile }: ProductPreviewProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
-  // Use English names when language is 'en', otherwise keep original Norwegian
-  const getInitiativeName = (id: string, fallback: string) =>
-    i18n.language === 'en' ? (INITIATIVE_NAMES_EN[id] ?? fallback) : fallback;
 
   // Group initiatives by dimension + horizon
   const byDimHorizon = (dim: Dimension, horizon: Horizon) =>
@@ -199,7 +178,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                       <InitiativeCard
                         key={item.id}
                         id={item.id}
-                        name={getInitiativeName(item.id, item.name)}
+                        name={item.name}
                         color={color}
                         selected={selectedId === item.id}
                         animDelay={dimIdx * 0.08 + cardIdx * 0.05}
@@ -226,7 +205,7 @@ export function ProductPreview({ isMobile }: ProductPreviewProps) {
                       <InitiativeCard
                         key={item.id}
                         id={item.id}
-                        name={getInitiativeName(item.id, item.name)}
+                        name={item.name}
                         color={color}
                         selected={selectedId === item.id}
                         animDelay={dimIdx * 0.08 + cardIdx * 0.05 + 0.15}
