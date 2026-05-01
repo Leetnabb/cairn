@@ -616,14 +616,14 @@ export const useStore = create<StoreState>()(
         })),
 
         // Strategic Frame
-        setStrategicFrame: (frame) => set({ strategicFrame: { goals: [], ...frame } }),
+        setStrategicFrame: (frame) => set({ strategicFrame: { ...frame, goals: frame.goals ?? [] } }),
         updateStrategicDirection: (direction) => set((state) => {
           if (!state.strategicFrame) return {};
           return { strategicFrame: { ...state.strategicFrame, direction } };
         }),
         addStrategicTheme: (theme) => set((state) => {
           if (!state.strategicFrame) return {};
-          const newTheme = { goalIds: [], ...theme };
+          const newTheme = { ...theme, goalIds: theme.goalIds ?? [] };
           return { strategicFrame: { ...state.strategicFrame, themes: [...state.strategicFrame.themes, newTheme] } };
         }),
         updateStrategicTheme: (id, updates) => set((state) => {

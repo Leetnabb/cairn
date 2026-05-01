@@ -11,9 +11,10 @@ const makeInit = (id: string, name: string, dim: string): Initiative => ({
 describe('detectStrategicDrift', () => {
   const frame: StrategicFrame = {
     direction: 'Bli en datadrevet organisasjon',
+    goals: [],
     themes: [
-      { id: 'st_1', name: 'Kundedata', description: 'Samle kundedata' },
-      { id: 'st_2', name: 'Prosessdigitalisering', description: 'Digitalisere prosesser' },
+      { id: 'st_1', name: 'Kundedata', description: 'Samle kundedata', goalIds: [] },
+      { id: 'st_2', name: 'Prosessdigitalisering', description: 'Digitalisere prosesser', goalIds: [] },
     ],
   };
 
@@ -23,7 +24,7 @@ describe('detectStrategicDrift', () => {
   });
 
   it('returns no drift when frame has no themes', () => {
-    const result = detectStrategicDrift([], { direction: 'Test', themes: [] });
+    const result = detectStrategicDrift([], { direction: 'Test', goals: [], themes: [] });
     expect(result).toEqual([]);
   });
 
@@ -144,7 +145,8 @@ describe('computeStrategicDiagnostics', () => {
   it('combines all diagnostics', () => {
     const frame: StrategicFrame = {
       direction: 'Datadrevet',
-      themes: [{ id: 'st_1', name: 'Kundedata', description: 'Samle data' }],
+      goals: [],
+      themes: [{ id: 'st_1', name: 'Kundedata', description: 'Samle data', goalIds: [] }],
     };
     const initiatives = [
       { ...makeInit('1', 'Ny kantineløsning', 'virksomhet'), status: 'active' as const },

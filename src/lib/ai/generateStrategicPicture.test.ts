@@ -3,7 +3,7 @@ import { parseStrategicPicture, type GeneratedStrategicPicture } from './generat
 
 const validResponse: GeneratedStrategicPicture = {
   strategies: [
-    { name: 'Digital transformasjon', description: 'Modernisere tjenester', timeHorizon: 'medium', priority: 1 }
+    { name: 'Digital transformasjon', description: 'Modernisere tjenester' }
   ],
   capabilities: [
     { name: 'Skyplattform', description: 'Cloud-first', level: 1, parent: null, maturity: 1, risk: 2 }

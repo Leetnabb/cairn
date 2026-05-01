@@ -17,7 +17,7 @@ export function StrategicFrameEditor() {
       <div className="space-y-4">
         <p className="text-sm text-text-secondary">{t('strategicFrame.empty')}</p>
         <button
-          onClick={() => setFrame({ direction: '', themes: [] })}
+          onClick={() => setFrame({ direction: '', goals: [], themes: [] })}
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700"
         >
           {t('strategicFrame.create')}
@@ -28,7 +28,7 @@ export function StrategicFrameEditor() {
 
   const handleAddTheme = () => {
     if (!newThemeName.trim()) return;
-    addTheme({ id: `st_${Date.now()}`, name: newThemeName.trim(), description: '' });
+    addTheme({ id: `st_${Date.now()}`, name: newThemeName.trim(), description: '', goalIds: [] });
     setNewThemeName('');
   };
 

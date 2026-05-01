@@ -5,8 +5,9 @@ describe('StrategicFrame type', () => {
   it('accepts a valid strategic frame', () => {
     const frame: StrategicFrame = {
       direction: 'Vi skal bli en datadrevet organisasjon',
+      goals: [],
       themes: [
-        { id: 'st_1', name: 'Kundedata', description: 'Samle og bruke kundedata aktivt' },
+        { id: 'st_1', name: 'Kundedata', description: 'Samle og bruke kundedata aktivt', goalIds: [] },
       ],
     };
     expect(frame.direction).toBeDefined();

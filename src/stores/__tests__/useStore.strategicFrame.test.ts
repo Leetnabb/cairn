@@ -9,27 +9,29 @@ describe('StrategicFrame store actions', () => {
   it('setStrategicFrame sets the frame', () => {
     useStore.getState().setStrategicFrame({
       direction: 'Bli datadrevet',
-      themes: [{ id: 'st_1', name: 'Kundedata', description: '' }],
+      goals: [],
+      themes: [{ id: 'st_1', name: 'Kundedata', description: '', goalIds: [] }],
     });
     expect(useStore.getState().strategicFrame?.direction).toBe('Bli datadrevet');
   });
 
   it('updateStrategicDirection updates direction only', () => {
-    useStore.getState().setStrategicFrame({ direction: 'Bli datadrevet', themes: [] });
+    useStore.getState().setStrategicFrame({ direction: 'Bli datadrevet', goals: [], themes: [] });
     useStore.getState().updateStrategicDirection('Digitalisere kundeflaten');
     expect(useStore.getState().strategicFrame?.direction).toBe('Digitalisere kundeflaten');
   });
 
   it('addStrategicTheme adds a theme', () => {
-    useStore.getState().setStrategicFrame({ direction: 'Test', themes: [] });
-    useStore.getState().addStrategicTheme({ id: 'st_1', name: 'Kundedata', description: '' });
+    useStore.getState().setStrategicFrame({ direction: 'Test', goals: [], themes: [] });
+    useStore.getState().addStrategicTheme({ id: 'st_1', name: 'Kundedata', description: '', goalIds: [] });
     expect(useStore.getState().strategicFrame?.themes).toHaveLength(1);
   });
 
   it('updateStrategicTheme updates a theme by id', () => {
     useStore.getState().setStrategicFrame({
       direction: 'Test',
-      themes: [{ id: 'st_1', name: 'Kundedata', description: '' }],
+      goals: [],
+      themes: [{ id: 'st_1', name: 'Kundedata', description: '', goalIds: [] }],
     });
     useStore.getState().updateStrategicTheme('st_1', { name: 'Kundedata 2.0' });
     expect(useStore.getState().strategicFrame?.themes[0].name).toBe('Kundedata 2.0');
@@ -38,9 +40,10 @@ describe('StrategicFrame store actions', () => {
   it('deleteStrategicTheme removes a theme by id', () => {
     useStore.getState().setStrategicFrame({
       direction: 'Test',
+      goals: [],
       themes: [
-        { id: 'st_1', name: 'A', description: '' },
-        { id: 'st_2', name: 'B', description: '' },
+        { id: 'st_1', name: 'A', description: '', goalIds: [] },
+        { id: 'st_2', name: 'B', description: '', goalIds: [] },
       ],
     });
     useStore.getState().deleteStrategicTheme('st_1');
@@ -49,7 +52,7 @@ describe('StrategicFrame store actions', () => {
   });
 
   it('clearStrategicFrame removes the frame', () => {
-    useStore.getState().setStrategicFrame({ direction: 'Test', themes: [] });
+    useStore.getState().setStrategicFrame({ direction: 'Test', goals: [], themes: [] });
     useStore.getState().clearStrategicFrame();
     expect(useStore.getState().strategicFrame).toBeUndefined();
   });

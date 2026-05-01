@@ -25,9 +25,6 @@ export function CapabilityDetail({ capability }: Props) {
   const effects = useStore(s => s.effects);
   const modules = useStore(s => s.modules);
   const goals = useStore(s => s.strategicFrame?.goals ?? []);
-  const updateCapability = useStore(s => s.updateCapability);
-  const roleMode = useStore(s => s.ui.roleMode);
-  const isGovernance = roleMode === 'governance';
 
   const relatedInitiatives = useMemo(() =>
     initiatives.filter(i => i.capabilities.includes(capability.id)),
