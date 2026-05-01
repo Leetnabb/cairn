@@ -641,7 +641,21 @@ export const useStore = create<StoreState>()(
             strategicFrame: {
               ...state.strategicFrame,
               themes: state.strategicFrame.themes.filter((t) => t.id !== id),
+              goals: state.strategicFrame.goals.map((g) => ({
+                ...g,
+                themeIds: g.themeIds.filter((tid) => tid !== id),
+              })),
             },
+            scenarioStates: Object.fromEntries(
+              Object.entries(state.scenarioStates).map(([sid, ss]) => [
+                sid,
+                {
+                  initiatives: ss.initiatives.map((i) =>
+                    i.themeIds ? { ...i, themeIds: i.themeIds.filter((tid) => tid !== id) } : i
+                  ),
+                },
+              ])
+            ),
           };
         }),
         clearStrategicFrame: () => set({ strategicFrame: undefined }),
