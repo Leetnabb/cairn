@@ -6,13 +6,13 @@ import type { Capability, Effect, Initiative } from '../../types';
 import { CairnLogo } from '../CairnLogo';
 import { generateNarrative } from '../../lib/narrativeEngine';
 
-const SLIDES = ['overview', 'strategies', 'capabilityMomentum', 'portfolio', 'bottlenecks', 'effects', 'strategicReading', 'summary'] as const;
+const SLIDES = ['overview', 'goals', 'capabilityMomentum', 'portfolio', 'bottlenecks', 'effects', 'strategicReading', 'summary'] as const;
 
 function useSlideLabels() {
   const { t } = useTranslation();
   return useMemo(() => [
     t('presentation.slides.overview'),
-    t('presentation.slides.strategies'),
+    t('presentation.slides.goals'),
     t('presentation.slides.capabilityMomentum'),
     t('presentation.slides.portfolio'),
     t('presentation.slides.bottlenecks'),
@@ -30,7 +30,8 @@ export function PresentationMode() {
   const initiatives = useStore(s => s.scenarioStates[s.activeScenario]?.initiatives ?? EMPTY_INITIATIVES);
   const capabilities = useStore(s => s.capabilities);
   const effects = useStore(s => s.effects);
-  const strategies = useStore(s => s.strategies);
+  const goals = useStore(s => s.strategicFrame?.goals ?? []);
+  const themes = useStore(s => s.strategicFrame?.themes ?? []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') setPresentationMode(false);
@@ -72,7 +73,7 @@ export function PresentationMode() {
       {/* Slide content */}
       <div className="flex-1 flex items-center justify-center p-8 overflow-auto">
         {currentSlide === 'overview' && <OverviewSlide initiatives={initiatives} />}
-        {currentSlide === 'strategies' && <StrategiesSlide strategies={strategies} capabilities={capabilities} initiatives={initiatives} />}
+        {currentSlide === 'goals' && <GoalsSlide goals={goals} themes={themes} initiatives={initiatives} />}
         {currentSlide === 'capabilityMomentum' && <CapabilityMomentumSlide capabilities={capabilities} initiatives={initiatives} />}
         {currentSlide === 'portfolio' && <PortfolioSlide initiatives={initiatives} capabilities={capabilities} />}
         {currentSlide === 'bottlenecks' && <BottlenecksSlide capabilities={capabilities} initiatives={initiatives} />}
@@ -137,40 +138,39 @@ function OverviewSlide({ initiatives }: { initiatives: Initiative[] }) {
   );
 }
 
-function StrategiesSlide({ strategies, capabilities, initiatives }: { strategies: ReturnType<typeof useStore.getState>['strategies']; capabilities: Capability[]; initiatives: Initiative[] }) {
+function GoalsSlide({ goals, themes, initiatives }: { goals: import('../../types').StrategicGoal[]; themes: import('../../types').StrategicTheme[]; initiatives: Initiative[] }) {
   const { t } = useTranslation();
 
-  const strategyData = useMemo(() => {
-    return strategies.map(s => {
-      const linkedCaps = capabilities.filter(c => c.strategyIds?.includes(s.id));
-      const capIds = new Set(linkedCaps.flatMap(c => {
-        const childIds = capabilities.filter(cc => cc.parent === c.id).map(cc => cc.id);
-        return [c.id, ...childIds];
-      }));
-      const linkedInits = initiatives.filter(i => i.capabilities.some(cid => capIds.has(cid)));
-      return { s, linkedCaps, linkedInits };
+  const goalData = useMemo(() => {
+    return goals.map(g => {
+      const linkedThemes = themes.filter(th => g.themeIds.includes(th.id));
+      const themeIds = new Set(g.themeIds);
+      const linkedInits = initiatives.filter(i => i.themeIds?.some(tid => themeIds.has(tid)));
+      return { g, linkedThemes, linkedInits };
     });
-  }, [strategies, capabilities, initiatives]);
+  }, [goals, themes, initiatives]);
 
   return (
     <div className="w-full max-w-5xl">
-      <h1 className="text-[36px] font-bold text-white mb-8">{t('presentation.strategiesTitle')}</h1>
-      {strategies.length === 0 ? (
+      <h1 className="text-[36px] font-bold text-white mb-8">{t('presentation.goalsTitle')}</h1>
+      {goals.length === 0 ? (
         <p className="text-[16px] text-white/40 italic">{t('common.none')}</p>
       ) : (
         <div className="grid grid-cols-3 gap-5">
-          {strategyData.map(({ s, linkedCaps, linkedInits }) => (
-            <div key={s.id} className="rounded-xl p-5" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
-              <div className="flex items-center gap-2 mb-2">
-                <span className={`px-2 py-0.5 rounded text-[9px] font-semibold text-white ${s.priority === 1 ? 'bg-red-500' : s.priority === 2 ? 'bg-amber-500' : 'bg-gray-500'}`}>
-                  P{s.priority}
-                </span>
-                <span className="text-[9px] text-white/40 uppercase">{s.timeHorizon}</span>
-              </div>
-              <h3 className="text-[18px] font-bold text-white mb-1">{s.name}</h3>
-              <p className="text-[12px] text-white/60 mb-4">{s.description}</p>
+          {goalData.map(({ g, linkedThemes, linkedInits }) => (
+            <div key={g.id} className="rounded-xl p-5" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
+              <h3 className="text-[18px] font-bold text-white mb-1">{g.name}</h3>
+              <p className="text-[12px] text-white/60 mb-4">{g.description}</p>
+              {linkedThemes.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {linkedThemes.map(th => (
+                    <span key={th.id} className="px-2 py-0.5 rounded text-[9px] font-medium bg-violet-500/30 text-violet-200">
+                      {th.name}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="flex gap-4 text-[11px] text-white/40">
-                <span>{linkedCaps.length} {t('initBox.cap')}</span>
                 <span>{linkedInits.length} {t('initBox.act')}</span>
               </div>
             </div>

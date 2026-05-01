@@ -27,7 +27,8 @@ export function InitiativeDetail({ initiative }: Props) {
   const criticalPathEnabled = useStore(s => s.ui.criticalPathEnabled);
   const roleMode = useStore(s => s.ui.roleMode);
   const modules = useStore(s => s.modules);
-  const strategies = useStore(s => s.strategies);
+  const goals = useStore(s => s.strategicFrame?.goals ?? []);
+  const themes = useStore(s => s.strategicFrame?.themes ?? []);
   const isGovernance = roleMode === 'governance';
 
   const isEditing = editingId === initiative.id;
@@ -161,11 +162,10 @@ export function InitiativeDetail({ initiative }: Props) {
       {/* Strategic Context Chain */}
       <StrategicContextChain
         initiative={initiative}
-        capabilities={capabilities}
-        strategies={strategies}
+        goals={goals}
+        themes={themes}
         effects={effects}
-        onSelectStrategy={(id) => setSelectedItem({ type: 'strategy', id })}
-        onSelectCapability={(id) => setSelectedItem({ type: 'capability', id })}
+        onSelectGoal={(id) => setSelectedItem({ type: 'goal', id })}
         onSelectEffect={(id) => setSelectedItem({ type: 'effect', id })}
       />
 

@@ -12,7 +12,7 @@ const MAX_MESSAGES = 20;
 function buildChatContext(): string {
   const appState = useStore.getState();
   return buildChatSystemPrompt({
-    strategies: appState.strategies,
+    strategies: appState.strategies,  // kept for AI prompt context (legacy field)
     capabilities: appState.capabilities,
     scenarios: appState.scenarios,
     scenarioStates: appState.scenarioStates,

@@ -14,8 +14,17 @@ function serializeContext(state: AppState): string {
   if (state.strategicFrame) {
     lines.push(`## Strategisk retning`);
     lines.push(state.strategicFrame.direction);
+    if (state.strategicFrame.goals && state.strategicFrame.goals.length > 0) {
+      lines.push(`\n### Overordna mål`);
+      for (const goal of state.strategicFrame.goals) {
+        const linkedThemes = goal.themeIds
+          .map(tid => state.strategicFrame?.themes.find(t => t.id === tid)?.name)
+          .filter(Boolean);
+        lines.push(`- ${goal.name}: ${goal.description}${linkedThemes.length > 0 ? ` [${linkedThemes.join(', ')}]` : ''}`);
+      }
+    }
     if (state.strategicFrame.themes.length > 0) {
-      lines.push(`\n### Strategiske temaer`);
+      lines.push(`\n### Satsingsområder`);
       for (const theme of state.strategicFrame.themes) {
         lines.push(`- ${theme.name}: ${theme.description}`);
       }

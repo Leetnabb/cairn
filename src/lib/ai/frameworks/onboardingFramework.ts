@@ -11,7 +11,7 @@ export interface AnalysisResult {
 
 export interface Finding {
   text: string;
-  type: 'initiative' | 'effect' | 'strategy';
+  type: 'initiative' | 'effect' | 'goal';
   confidence: 'high' | 'medium' | 'low';
   source: string;
 }

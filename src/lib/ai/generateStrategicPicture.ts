@@ -7,8 +7,6 @@ export interface GeneratedStrategicPicture {
   strategies: Array<{
     name: string;
     description: string;
-    timeHorizon: 'short' | 'medium' | 'long';
-    priority: 1 | 2 | 3;
   }>;
   capabilities: Array<{
     name: string;
@@ -39,7 +37,7 @@ const SYSTEM_PROMPT = `You are a strategic advisor analyzing organizational docu
 Given the input (document text or organization description), generate a COMPLETE strategic picture as JSON.
 
 Requirements:
-- 3-5 strategies with clear priorities
+- 3-5 strategic goals (overordna mål)
 - 12-18 capabilities organized in max 2 levels: 4-6 Level 1 capability domains and 2-3 Level 2 sub-capabilities per domain. This forms the organisation's first capability map.
 - Generate capabilities SPECIFIC to this organisation based on the input provided. Do NOT use generic capability names. Level 1 capabilities should reflect the organisation's actual domains (e.g., for a municipality: 'Innbyggertjenester', 'Helse & Omsorg'; for an IT company: 'Produktutvikling', 'Tjenesteleveranse'). Level 2 should be concrete sub-capabilities.
 - 8-15 initiatives distributed across ALL FOUR dimensions: ledelse, virksomhet, organisasjon, teknologi
@@ -51,7 +49,7 @@ CRITICAL: Distribute initiatives across dimensions. Most organizations over-inde
 
 Respond with ONLY valid JSON matching this schema:
 {
-  "strategies": [{ "name": "", "description": "", "timeHorizon": "short|medium|long", "priority": 1-3 }],
+  "strategies": [{ "name": "", "description": "" }],
   "capabilities": [{ "name": "", "description": "", "level": 1|2, "parent": null|"parent name", "maturity": 1-3, "risk": 1-3 }],
   "initiatives": [{ "name": "", "dimension": "ledelse|virksomhet|organisasjon|teknologi", "horizon": "near|far", "description": "", "capabilityNames": ["exact name of capability this builds"] }],
   "effects": [{ "name": "", "type": "cost|quality|speed|compliance|strategic", "description": "" }],

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
-import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens, Horizon, StrategicFrame, StrategicTheme } from '../types';
+import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens, Horizon, StrategicFrame, StrategicTheme, StrategicGoal } from '../types';
 import { createDefaultState } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
@@ -24,10 +24,10 @@ interface StoreState extends AppState {
   deleteInitiative: (id: string) => void;
   moveInitiative: (id: string, dimension: DimensionKey, horizon: Horizon, newOrder: number) => void;
 
-  // Strategy CRUD
-  addStrategy: (strategy: Strategy) => void;
-  updateStrategy: (id: string, updates: Partial<Strategy>) => void;
-  deleteStrategy: (id: string) => void;
+  // Strategic Goal CRUD
+  addGoal: (goal: StrategicGoal) => void;
+  updateGoal: (id: string, updates: Partial<StrategicGoal>) => void;
+  deleteGoal: (id: string) => void;
 
   // Capability CRUD
   addCapability: (capability: Capability) => void;
@@ -226,22 +226,39 @@ export const useStore = create<StoreState>()(
           };
         }),
 
-        // Strategy CRUD
-        addStrategy: (strategy) => set(state => ({
-          strategies: [...state.strategies, strategy],
-        })),
+        // Strategic Goal CRUD
+        addGoal: (goal) => set(state => {
+          const frame = state.strategicFrame ?? { direction: '', goals: [], themes: [] };
+          return { strategicFrame: { ...frame, goals: [...frame.goals, goal] } };
+        }),
 
-        updateStrategy: (id, updates) => set(state => ({
-          strategies: state.strategies.map(s => s.id === id ? { ...s, ...updates } : s),
-        })),
+        updateGoal: (id, updates) => set(state => {
+          if (!state.strategicFrame) return {};
+          return {
+            strategicFrame: {
+              ...state.strategicFrame,
+              goals: state.strategicFrame.goals.map(g => g.id === id ? { ...g, ...updates } : g),
+            },
+          };
+        }),
 
-        deleteStrategy: (id) => set(state => ({
-          strategies: state.strategies.filter(s => s.id !== id),
-          capabilities: state.capabilities.map(c => ({
-            ...c,
-            strategyIds: c.strategyIds?.filter(sid => sid !== id) ?? [],
-          })),
-        })),
+        deleteGoal: (id) => set(state => {
+          if (!state.strategicFrame) return {};
+          return {
+            strategicFrame: {
+              ...state.strategicFrame,
+              goals: state.strategicFrame.goals.filter(g => g.id !== id),
+              themes: state.strategicFrame.themes.map(t => ({
+                ...t,
+                goalIds: t.goalIds.filter(gid => gid !== id),
+              })),
+            },
+            effects: state.effects.map(e => ({
+              ...e,
+              goalId: e.goalId === id ? undefined : e.goalId,
+            })),
+          };
+        }),
 
         // Capability CRUD
         addCapability: (capability) => set(state => ({
@@ -599,14 +616,15 @@ export const useStore = create<StoreState>()(
         })),
 
         // Strategic Frame
-        setStrategicFrame: (frame) => set({ strategicFrame: frame }),
+        setStrategicFrame: (frame) => set({ strategicFrame: { goals: [], ...frame } }),
         updateStrategicDirection: (direction) => set((state) => {
           if (!state.strategicFrame) return {};
           return { strategicFrame: { ...state.strategicFrame, direction } };
         }),
         addStrategicTheme: (theme) => set((state) => {
           if (!state.strategicFrame) return {};
-          return { strategicFrame: { ...state.strategicFrame, themes: [...state.strategicFrame.themes, theme] } };
+          const newTheme = { goalIds: [], ...theme };
+          return { strategicFrame: { ...state.strategicFrame, themes: [...state.strategicFrame.themes, newTheme] } };
         }),
         updateStrategicTheme: (id, updates) => set((state) => {
           if (!state.strategicFrame) return {};
@@ -678,6 +696,35 @@ export const useStore = create<StoreState>()(
           })(),
         },
       };
+
+      // Migrate old strategies → strategicFrame.goals
+      const oldStrategies = merged.strategies as Strategy[] | undefined;
+      const frame = merged.strategicFrame as StrategicFrame | undefined;
+      if (oldStrategies && oldStrategies.length > 0 && frame) {
+        const existingGoalIds = new Set((frame.goals ?? []).map((g: StrategicGoal) => g.id));
+        const newGoals: StrategicGoal[] = oldStrategies
+          .filter(s => !existingGoalIds.has(s.id))
+          .map(s => ({ id: s.id, name: s.name, description: s.description, themeIds: [] }));
+        if (newGoals.length > 0) {
+          merged.strategicFrame = { ...frame, goals: [...(frame.goals ?? []), ...newGoals] };
+        }
+        merged.strategies = [];
+      }
+      // Ensure strategicFrame.goals exists
+      if (frame && !frame.goals) {
+        merged.strategicFrame = { ...frame, goals: [] };
+      }
+      // Ensure all themes have goalIds
+      if (merged.strategicFrame) {
+        const sf = merged.strategicFrame as StrategicFrame;
+        const needsMigration = sf.themes.some((t: StrategicTheme) => !('goalIds' in t));
+        if (needsMigration) {
+          merged.strategicFrame = {
+            ...sf,
+            themes: sf.themes.map((t: StrategicTheme) => ({ ...t, goalIds: t.goalIds ?? [] })),
+          };
+        }
+      }
 
       // Migrate capabilityType for L1 capabilities that lack it
       const caps = merged.capabilities as Capability[] | undefined;

@@ -11,7 +11,7 @@ export function CapabilityPath() {
   const setSelectedItem = useStore(s => s.setSelectedItem);
   const criticalPathEnabled = useStore(s => s.ui.criticalPathEnabled);
 
-  const strategies = useStore(s => s.strategies);
+  const goals = useStore(s => s.strategicFrame?.goals ?? []);
 
   const maturityLabel = (level: number): string => {
     const labels: Record<number, string> = {
@@ -33,15 +33,15 @@ export function CapabilityPath() {
       const childIds = capabilities.filter(c => c.parent === cap.id).map(c => c.id);
       const allIds = new Set([cap.id, ...childIds]);
       const linked = initiatives.filter(i => i.capabilities.some(cid => allIds.has(cid)));
-      const capStrategies = strategies.filter(s => cap.strategyIds?.includes(s.id));
+      const capGoals = goals.filter(g => cap.strategyIds?.includes(g.id));
       return {
         cap,
         near: linked.filter(i => i.horizon === 'near').sort((a, b) => a.order - b.order),
         far: linked.filter(i => i.horizon === 'far').sort((a, b) => a.order - b.order),
-        capStrategies,
+        capGoals,
       };
     });
-  }, [l1Caps, capabilities, initiatives, strategies]);
+  }, [l1Caps, capabilities, initiatives, goals]);
 
   // Unlinked initiatives (no capabilities)
   const unlinked = useMemo(
@@ -73,7 +73,7 @@ export function CapabilityPath() {
       </div>
 
       {/* Capability rows */}
-      {capRows.map(({ cap, near, far, capStrategies }) => (
+      {capRows.map(({ cap, near, far, capGoals }) => (
         <div key={cap.id} className="grid mb-1" style={{ gridTemplateColumns: gridCols, gap: '4px' }}>
           {/* Capability label */}
           <button
@@ -91,19 +91,19 @@ export function CapabilityPath() {
                   {cap.maturity} → <span className="text-indigo-500">{cap.maturityTarget}</span>
                 </div>
               )}
-              {capStrategies.length > 0 && (
+              {capGoals.length > 0 && (
                 <div className="flex flex-wrap gap-0.5 mt-0.5">
-                  {capStrategies.slice(0, 2).map(s => (
+                  {capGoals.slice(0, 2).map(g => (
                     <span
-                      key={s.id}
+                      key={g.id}
                       className="px-1 py-px text-[7px] rounded bg-indigo-100 text-indigo-700 leading-tight truncate max-w-[70px]"
-                      title={s.name}
+                      title={g.name}
                     >
-                      {s.name}
+                      {g.name}
                     </span>
                   ))}
-                  {capStrategies.length > 2 && (
-                    <span className="text-[7px] text-text-tertiary">+{capStrategies.length - 2}</span>
+                  {capGoals.length > 2 && (
+                    <span className="text-[7px] text-text-tertiary">+{capGoals.length - 2}</span>
                   )}
                 </div>
               )}

@@ -389,13 +389,13 @@
     "milestone": "Milepæl",
     "valuechain": "Verdikjede",
     "effect": "Effekt",
-    "strategy": "Strategi",
+    "goal": "Overordna mål",
     "createEffect": "Opprett effekt",
     "createInitiative": "Opprett aktivitet",
     "createCapability": "Opprett kapabilitet",
     "createMilestone": "Opprett milepæl",
     "createValueChain": "Opprett verdikjede",
-    "createStrategy": "Opprett strategi",
+    "createGoal": "Opprett mål",
     "createAndNew": "Opprett og ny",
     "newValueChain": "+ Ny verdikjede",
     "valueChainPlaceholder": "Verdikjedenavn..."
@@ -446,25 +446,21 @@
     "crossDimensionDemand": "← {{count}} krav",
     "crossDimensionTooltip": "{{count}} initiativer i andre dimensjoner avhenger av denne"
   },
-  "strategy": {
-    "title": "Strategier",
-    "singular": "Strategi",
-    "timeHorizon": "Tidshorisont",
-    "short": "Kort sikt",
-    "medium": "Mellomlang sikt",
-    "long": "Lang sikt",
-    "priority": "Prioritet",
-    "linkedCapabilities": "Tilknyttede kapabiliteter",
-    "noLinkedCapabilities": "Ingen kapabiliteter koblet til denne strategien",
-    "noStrategies": "Ingen strategier definert ennå.",
-    "noStrategiesHint": "Legg til en strategi via +-knappen for å komme i gang.",
-    "capsProgressing": "kapabiliteter i fremgang",
-    "viewInPath": "Vis i Strategi-sti"
+  "goal": {
+    "title": "Overordna mål",
+    "singular": "Overordna mål",
+    "linkedThemes": "Satsingsområder",
+    "noLinkedThemes": "Ingen satsingsområder koblet til dette målet",
+    "noGoals": "Ingen overordna mål definert ennå.",
+    "noGoalsHint": "Legg til et overordna mål via +-knappen for å komme i gang.",
+    "noActivity": "Ingen aktivitet",
+    "viewInPath": "Vis i stien"
   },
   "strategicContext": {
     "title": "Strategisk kontekst",
-    "noContext": "Ingen strategi koblet",
-    "strategy": "Strategi",
+    "noContext": "Ingen mål koblet",
+    "goal": "Mål",
+    "theme": "Satsingsområde",
     "capability": "Kapabilitet",
     "initiative": "Initiativ",
     "effects": "Forventede effekter"
@@ -472,7 +468,7 @@
   "presentation": {
     "slides": {
       "overview": "Oversikt",
-      "strategies": "Strategier",
+      "goals": "Overordna mål",
       "capabilityMomentum": "Kapabilitetsfremgang",
       "portfolio": "Portefølje",
       "bottlenecks": "Strategiske flaskehalser",
@@ -484,7 +480,7 @@
     "noActivities": "Ingen aktiviteter",
     "summaryTitle": "Oppsummering",
     "dimensions": "Dimensjoner",
-    "strategiesTitle": "Aktive strategier",
+    "goalsTitle": "Overordna mål",
     "capMomentumTitle": "Kapabilitetsfremgang",
     "portfolioTitle": "Porteføljeoversikt",
     "bottlenecksTitle": "Strategiske flaskehalser",

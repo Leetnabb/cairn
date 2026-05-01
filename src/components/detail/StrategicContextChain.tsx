@@ -1,50 +1,48 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Initiative, Capability, Strategy, Effect } from '../../types';
+import type { Initiative, StrategicGoal, StrategicTheme, Effect } from '../../types';
 import { EFFECT_TYPE_COLORS } from '../../types';
 
 interface Props {
   initiative: Initiative;
-  capabilities: Capability[];
-  strategies: Strategy[];
+  goals: StrategicGoal[];
+  themes: StrategicTheme[];
   effects: Effect[];
-  onSelectStrategy: (id: string) => void;
-  onSelectCapability: (id: string) => void;
+  onSelectGoal: (id: string) => void;
   onSelectEffect: (id: string) => void;
 }
 
 export function StrategicContextChain({
   initiative,
-  capabilities,
-  strategies,
+  goals,
+  themes,
   effects,
-  onSelectStrategy,
-  onSelectCapability,
+  onSelectGoal,
   onSelectEffect,
 }: Props) {
   const { t } = useTranslation();
 
-  const relatedCaps = useMemo(
-    () => capabilities.filter(c => initiative.capabilities.includes(c.id)),
-    [capabilities, initiative.capabilities]
+  const relatedThemes = useMemo(
+    () => themes.filter(th => initiative.themeIds?.includes(th.id)),
+    [themes, initiative.themeIds]
   );
 
-  const relatedStrategies = useMemo(() => {
-    const ids = new Set<string>();
-    for (const cap of relatedCaps) {
-      for (const sid of cap.strategyIds ?? []) {
-        ids.add(sid);
+  const relatedGoals = useMemo(() => {
+    const goalIds = new Set<string>();
+    for (const theme of relatedThemes) {
+      for (const gid of theme.goalIds ?? []) {
+        goalIds.add(gid);
       }
     }
-    return strategies.filter(s => ids.has(s.id));
-  }, [relatedCaps, strategies]);
+    return goals.filter(g => goalIds.has(g.id));
+  }, [relatedThemes, goals]);
 
   const relatedEffects = useMemo(
     () => effects.filter(e => e.initiatives.includes(initiative.id)),
     [effects, initiative.id]
   );
 
-  const hasAnyContext = relatedStrategies.length > 0 || relatedCaps.length > 0 || relatedEffects.length > 0;
+  const hasAnyContext = relatedGoals.length > 0 || relatedThemes.length > 0 || relatedEffects.length > 0;
 
   if (!hasAnyContext) return null;
 
@@ -55,39 +53,39 @@ export function StrategicContextChain({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        {/* Strategies */}
-        {relatedStrategies.length > 0 && (
-          <ChainRow label={t('strategicContext.strategy')}>
-            {relatedStrategies.map(s => (
+        {/* Goals */}
+        {relatedGoals.length > 0 && (
+          <ChainRow label={t('strategicContext.goal')}>
+            {relatedGoals.map(g => (
               <ChainChip
-                key={s.id}
-                label={s.name}
+                key={g.id}
+                label={g.name}
                 color="indigo"
-                onClick={() => onSelectStrategy(s.id)}
+                onClick={() => onSelectGoal(g.id)}
               />
             ))}
           </ChainRow>
         )}
 
         {/* Arrow divider */}
-        {relatedStrategies.length > 0 && relatedCaps.length > 0 && <ChainArrow />}
+        {relatedGoals.length > 0 && relatedThemes.length > 0 && <ChainArrow />}
 
-        {/* Capabilities */}
-        {relatedCaps.length > 0 && (
-          <ChainRow label={t('strategicContext.capability')}>
-            {relatedCaps.map(c => (
+        {/* Themes / Satsingsområder */}
+        {relatedThemes.length > 0 && (
+          <ChainRow label={t('strategicContext.theme')}>
+            {relatedThemes.map(th => (
               <ChainChip
-                key={c.id}
-                label={c.name}
+                key={th.id}
+                label={th.name}
                 color="violet"
-                onClick={() => onSelectCapability(c.id)}
+                onClick={() => {}}
               />
             ))}
           </ChainRow>
         )}
 
         {/* Arrow divider */}
-        {relatedCaps.length > 0 && <ChainArrow />}
+        {relatedThemes.length > 0 && <ChainArrow />}
 
         {/* This initiative */}
         <ChainRow label={t('strategicContext.initiative')}>

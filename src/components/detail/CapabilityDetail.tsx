@@ -24,7 +24,7 @@ export function CapabilityDetail({ capability }: Props) {
   const children = capabilities.filter(c => c.parent === capability.id);
   const effects = useStore(s => s.effects);
   const modules = useStore(s => s.modules);
-  const strategies = useStore(s => s.strategies);
+  const goals = useStore(s => s.strategicFrame?.goals ?? []);
   const updateCapability = useStore(s => s.updateCapability);
   const roleMode = useStore(s => s.ui.roleMode);
   const isGovernance = roleMode === 'governance';
@@ -121,39 +121,20 @@ export function CapabilityDetail({ capability }: Props) {
         </div>
       )}
 
-      {/* Linked strategies */}
-      {strategies.length > 0 && (
+      {/* Linked goals */}
+      {goals.length > 0 && (
         <div>
-          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('strategy.singular')}</div>
+          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('goal.singular')}</div>
           <div className="flex flex-wrap gap-1">
-            {strategies.map(s => {
-              const linked = capability.strategyIds?.includes(s.id) ?? false;
-              if (isGovernance && !linked) return null;
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => {
-                    if (isGovernance) {
-                      setSelectedItem({ type: 'strategy', id: s.id });
-                      return;
-                    }
-                    const current = capability.strategyIds ?? [];
-                    const next = linked
-                      ? current.filter(id => id !== s.id)
-                      : [...current, s.id];
-                    updateCapability(capability.id, { strategyIds: next });
-                  }}
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium transition-colors ${
-                    linked
-                      ? 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200'
-                      : 'bg-[var(--bg-hover)] text-text-secondary hover:bg-[var(--bg-hover)]'
-                  }`}
-                >
-                  {s.name}
-                  {linked && !isGovernance && <span className="text-[8px] leading-none">×</span>}
-                </button>
-              );
-            })}
+            {goals.map(g => (
+              <button
+                key={g.id}
+                onClick={() => setSelectedItem({ type: 'goal', id: g.id })}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium transition-colors bg-indigo-100 text-indigo-800 hover:bg-indigo-200"
+              >
+                {g.name}
+              </button>
+            ))}
           </div>
         </div>
       )}

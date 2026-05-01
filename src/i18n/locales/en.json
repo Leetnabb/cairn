@@ -389,13 +389,13 @@
     "milestone": "Milestone",
     "valuechain": "Value chain",
     "effect": "Effect",
-    "strategy": "Strategy",
+    "goal": "Strategic Goal",
     "createEffect": "Create effect",
     "createInitiative": "Create activity",
     "createCapability": "Create capability",
     "createMilestone": "Create milestone",
     "createValueChain": "Create value chain",
-    "createStrategy": "Create strategy",
+    "createGoal": "Create goal",
     "createAndNew": "Create & new",
     "newValueChain": "+ New value chain",
     "valueChainPlaceholder": "Value chain name..."
@@ -446,25 +446,21 @@
     "crossDimensionDemand": "← {{count}} demands",
     "crossDimensionTooltip": "{{count}} initiatives in other dimensions depend on this one"
   },
-  "strategy": {
-    "title": "Strategies",
-    "singular": "Strategy",
-    "timeHorizon": "Time horizon",
-    "short": "Short term",
-    "medium": "Medium term",
-    "long": "Long term",
-    "priority": "Priority",
-    "linkedCapabilities": "Linked capabilities",
-    "noLinkedCapabilities": "No capabilities linked to this strategy",
-    "noStrategies": "No strategies defined yet.",
-    "noStrategiesHint": "Add a strategy via the + button to get started.",
-    "capsProgressing": "capabilities progressing",
-    "viewInPath": "View in Strategy Path"
+  "goal": {
+    "title": "Strategic Goals",
+    "singular": "Strategic Goal",
+    "linkedThemes": "Focus Areas",
+    "noLinkedThemes": "No focus areas linked to this goal",
+    "noGoals": "No strategic goals defined yet.",
+    "noGoalsHint": "Add a strategic goal via the + button to get started.",
+    "noActivity": "No activity",
+    "viewInPath": "View in path"
   },
   "strategicContext": {
     "title": "Strategic context",
-    "noContext": "No strategy linked",
-    "strategy": "Strategy",
+    "noContext": "No goal linked",
+    "goal": "Goal",
+    "theme": "Focus Area",
     "capability": "Capability",
     "initiative": "Initiative",
     "effects": "Expected effects"
@@ -472,7 +468,7 @@
   "presentation": {
     "slides": {
       "overview": "Overview",
-      "strategies": "Strategies",
+      "goals": "Strategic Goals",
       "capabilityMomentum": "Capability Momentum",
       "portfolio": "Portfolio",
       "bottlenecks": "Strategic Bottlenecks",
@@ -484,7 +480,7 @@
     "noActivities": "No activities",
     "summaryTitle": "Summary",
     "dimensions": "Dimensions",
-    "strategiesTitle": "Active Strategies",
+    "goalsTitle": "Strategic Goals",
     "capMomentumTitle": "Capability Momentum",
     "portfolioTitle": "Portfolio Overview",
     "bottlenecksTitle": "Strategic Bottlenecks",

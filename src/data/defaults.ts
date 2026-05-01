@@ -1,4 +1,4 @@
-import type { Capability, Initiative, Milestone, ValueChain, Scenario, ScenarioState, Effect, ModuleSettings, Strategy, StrategicFrame } from '../types';
+import type { Capability, Initiative, Milestone, ValueChain, Scenario, ScenarioState, Effect, ModuleSettings, StrategicFrame, StrategicGoal } from '../types';
 import { frivilligTemplate } from './templates/frivillig';
 
 // Re-export from frivillig template for backward compatibility
@@ -7,10 +7,10 @@ export const defaultInitiatives: Initiative[] = frivilligTemplate.sampleInitiati
 export const defaultValueChains: ValueChain[] = frivilligTemplate.valueChains;
 export const defaultEffects: Effect[] = frivilligTemplate.effects;
 
-export const defaultStrategies: Strategy[] = [
-  { id: 'strat_1', name: 'Digital Transformation', description: 'Modernize digital systems and workflows', timeHorizon: 'long', priority: 1 },
-  { id: 'strat_2', name: 'Data-Driven Organization', description: 'Use data actively in decision-making', timeHorizon: 'medium', priority: 1 },
-  { id: 'strat_3', name: 'Member Growth', description: 'Increase member count and engagement', timeHorizon: 'short', priority: 2 },
+export const defaultGoals: StrategicGoal[] = [
+  { id: 'goal_1', name: 'Digital Transformation', description: 'Modernize digital systems and workflows', themeIds: ['st_2'] },
+  { id: 'goal_2', name: 'Data-Driven Organization', description: 'Use data actively in decision-making', themeIds: ['st_1'] },
+  { id: 'goal_3', name: 'Member Growth', description: 'Increase member count and engagement', themeIds: ['st_1', 'st_3'] },
 ];
 
 export const defaultMilestones: Milestone[] = [
@@ -34,15 +34,16 @@ export const defaultModules: ModuleSettings = {
 
 export const defaultStrategicFrame: StrategicFrame = {
   direction: 'Become a data-driven, member-focused organization through digital transformation',
+  goals: defaultGoals,
   themes: [
-    { id: 'st_1', name: 'Customer Data', description: 'Collect, structure, and actively use customer data in decisions' },
-    { id: 'st_2', name: 'Process Digitalization', description: 'Digitalize core workflows for efficiency' },
-    { id: 'st_3', name: 'Competence Development', description: 'Build digital competence across the entire organization' },
+    { id: 'st_1', name: 'Customer Data', description: 'Collect, structure, and actively use customer data in decisions', goalIds: ['goal_2', 'goal_3'] },
+    { id: 'st_2', name: 'Process Digitalization', description: 'Digitalize core workflows for efficiency', goalIds: ['goal_1'] },
+    { id: 'st_3', name: 'Competence Development', description: 'Build digital competence across the entire organization', goalIds: ['goal_3'] },
   ],
 };
 
 export function createDefaultState(): {
-  strategies: Strategy[];
+  strategies: never[];
   capabilities: Capability[];
   scenarios: Scenario[];
   scenarioStates: Record<string, ScenarioState>;
@@ -54,7 +55,7 @@ export function createDefaultState(): {
   strategicFrame: StrategicFrame;
 } {
   return {
-    strategies: defaultStrategies,
+    strategies: [],
     capabilities: defaultCapabilities,
     scenarios: [defaultScenario],
     scenarioStates: {

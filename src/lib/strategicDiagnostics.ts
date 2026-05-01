@@ -2,7 +2,7 @@ import type { Initiative, StrategicFrame, Effect } from '../types';
 import { DIMENSIONS } from '../types';
 
 export interface DiagnosticResult {
-  type: 'unaddressed_theme' | 'unaligned_initiatives' | 'effect_at_risk' | 'absorption_warning';
+  type: 'unaddressed_theme' | 'unaligned_initiatives' | 'effect_at_risk' | 'absorption_warning' | 'unaddressed_goal';
   severity: 'warning' | 'info';
   themeName?: string;
   count?: number;
@@ -11,13 +11,18 @@ export interface DiagnosticResult {
 }
 
 /**
- * Simple word-overlap matching between an initiative name and a theme name/description.
- * Exported for reuse in narrativeEngine.ts.
+ * Check if an initiative is explicitly linked to a theme via themeIds.
+ * Falls back to word-overlap matching for initiatives without themeIds (migration support).
  */
 export function initiativeMatchesTheme(
   initiative: Initiative,
-  theme: { name: string; description: string }
+  theme: { id: string; name: string; description: string }
 ): boolean {
+  // Prefer explicit link
+  if (initiative.themeIds && initiative.themeIds.length > 0) {
+    return initiative.themeIds.includes(theme.id);
+  }
+  // Fallback: word-overlap for unlinked initiatives
   const initWords = new Set(
     `${initiative.name} ${initiative.description}`.toLowerCase().split(/\s+/).filter(w => w.length > 0)
   );
@@ -69,6 +74,31 @@ export function detectStrategicDrift(
   return results;
 }
 
+export function detectUnaddressedGoals(
+  initiatives: Initiative[],
+  frame: StrategicFrame | undefined
+): DiagnosticResult[] {
+  if (!frame || !frame.goals || frame.goals.length === 0) return [];
+  const results: DiagnosticResult[] = [];
+
+  for (const goal of frame.goals) {
+    // A goal is addressed if any of its linked themes have initiatives
+    const goalThemeIds = new Set(goal.themeIds);
+    const hasActivity = initiatives.some(i =>
+      i.themeIds?.some(tid => goalThemeIds.has(tid))
+    );
+    if (!hasActivity && goal.themeIds.length > 0) {
+      results.push({
+        type: 'unaddressed_goal',
+        severity: 'warning',
+        message: `Strategic goal "${goal.name}" has no active initiatives working toward it.`,
+      });
+    }
+  }
+
+  return results;
+}
+
 export function assessEffectFeasibility(
   initiatives: Initiative[],
   effects: Effect[]
@@ -108,6 +138,7 @@ export function computeStrategicDiagnostics(
 
   return [
     ...detectStrategicDrift(initiatives, frame),
+    ...detectUnaddressedGoals(initiatives, frame),
     ...assessEffectFeasibility(initiatives, effects),
     ...detectAbsorptionIssues(initiatives),
     ...detectCrossDimensionGaps(initiatives),
@@ -123,13 +154,11 @@ export function detectCrossDimensionGaps(initiatives: Initiative[]): DiagnosticR
     dimStats[dim.key] = { own: 0, inbound: 0, sources: new Set() };
   }
 
-  // Count own active per dimension
   for (const init of initiatives) {
     const isActive = init.status === 'active' || (!init.status && init.horizon === 'near');
     if (isActive) dimStats[init.dimension].own++;
   }
 
-  // Count inbound cross-dimension deps
   for (const init of initiatives) {
     for (const depId of init.dependsOn) {
       const dep = initMap.get(depId);
@@ -140,7 +169,6 @@ export function detectCrossDimensionGaps(initiatives: Initiative[]): DiagnosticR
     }
   }
 
-  // Generate warnings
   for (const dim of DIMENSIONS) {
     const stats = dimStats[dim.key];
     if (stats.inbound >= 3 && stats.inbound > stats.own * 2) {

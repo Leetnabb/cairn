@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Initiative, Capability, Effect, Strategy } from '../../types';
+import type { Initiative, Capability, Effect, StrategicGoal } from '../../types';
 import { DIMENSIONS } from '../../types';
 import { computeInsights } from '../../lib/insights';
 import { simulateMaturity } from '../../lib/simulation';
@@ -9,10 +9,10 @@ interface Props {
   initiatives: Initiative[];
   capabilities: Capability[];
   effects: Effect[];
-  strategies?: Strategy[];
+  goals?: StrategicGoal[];
 }
 
-export function ExecutiveSummary({ initiatives, capabilities, effects, strategies = [] }: Props) {
+export function ExecutiveSummary({ initiatives, capabilities, effects, goals = [] }: Props) {
   const { t } = useTranslation();
 
   // Section 1: Portfolio scope
@@ -22,20 +22,6 @@ export function ExecutiveSummary({ initiatives, capabilities, effects, strategie
     const farCount = initiatives.filter(i => i.horizon === 'far').length;
     return `${initiatives.length} ${t('dashboard.activities').toLowerCase()} — ${nearCount} ${t('labels.horizon.near').toLowerCase()} / ${farCount} ${t('labels.horizon.far').toLowerCase()} — ${dimCoverage.length}/${DIMENSIONS.length} dim.`;
   }, [initiatives, t]);
-
-  // Linked strategies (strategies that have at least one capability linked)
-  const linkedStrategyIds = useMemo(() => {
-    const ids = new Set<string>();
-    capabilities.forEach(cap => {
-      cap.strategyIds?.forEach(sid => ids.add(sid));
-    });
-    return ids;
-  }, [capabilities]);
-
-  const activeStrategies = useMemo(
-    () => strategies.filter(s => linkedStrategyIds.has(s.id)),
-    [strategies, linkedStrategyIds]
-  );
 
   // Section 2: Maturity direction
   const maturitySentence = useMemo(() => {
@@ -62,14 +48,14 @@ export function ExecutiveSummary({ initiatives, capabilities, effects, strategie
             {t('dashboard.activities')}
           </div>
           <p className="text-[11px] text-text-secondary leading-relaxed mb-2">{portfolioSentence}</p>
-          {activeStrategies.length > 0 && (
+          {goals.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {activeStrategies.map(s => (
+              {goals.map(g => (
                 <span
-                  key={s.id}
+                  key={g.id}
                   className="px-1.5 py-0.5 rounded text-[8px] font-medium bg-primary/10 text-primary border border-primary/20"
                 >
-                  {s.name}
+                  {g.name}
                 </span>
               ))}
             </div>
