@@ -45,17 +45,34 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.code(400).send({ error: error?.message ?? 'Failed to create user' });
     }
 
-    // Create tenant + owner membership
-    const { tenantId } = await createTenant({
-      slug: data.orgSlug,
-      displayName: data.orgName,
-      ownerUserId: authData.user.id,
-      ownerEmail: data.email,
-    });
+    const newUserId = authData.user.id;
+
+    // Create tenant + owner membership. If this fails, the Supabase auth user
+    // is already created and would otherwise become an orphan — best-effort
+    // delete it so the caller can retry registration cleanly.
+    let tenantId: string;
+    try {
+      ({ tenantId } = await createTenant({
+        slug: data.orgSlug,
+        displayName: data.orgName,
+        ownerUserId: newUserId,
+        ownerEmail: data.email,
+      }));
+    } catch (err) {
+      try {
+        await supabase.auth.admin.deleteUser(newUserId);
+      } catch (cleanupErr) {
+        request.log.error(
+          { err: cleanupErr, userId: newUserId },
+          'Failed to clean up Supabase user after tenant provisioning failure'
+        );
+      }
+      throw err;
+    }
 
     return reply.code(201).send({
       message: 'Account created successfully',
-      userId: authData.user.id,
+      userId: newUserId,
       tenantId,
     });
   });

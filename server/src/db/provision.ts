@@ -1,47 +1,62 @@
 import { readFile } from 'fs/promises';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import pg from 'pg';
-import { pool, queryPublic } from './pool.js';
+import type { PoolClient } from 'pg';
+import { pool } from './pool.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SQL_DIR = resolve(__dirname, '../../../sql');
 
 /**
- * Provision a new tenant:
+ * Provision tenant schema using an existing transactional client.
+ * Caller owns the BEGIN/COMMIT — this function only performs the work.
+ *
+ * Steps:
  * 1. Create schema
  * 2. Run tenant schema template
  * 3. Insert default strategy + scenario
  */
-export async function provisionTenantSchema(schemaName: string, tenantId: string): Promise<void> {
+export async function provisionTenantSchemaInTx(
+  client: PoolClient,
+  schemaName: string,
+  tenantId: string
+): Promise<void> {
   const tenantSql = await readFile(resolve(SQL_DIR, 'init_tenant.sql'), 'utf-8');
 
+  // Create schema — schemaName is always server-generated "tenant_<uuid>"
+  await client.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
+
+  // Set search path and run tenant template
+  await client.query(`SET LOCAL search_path = "${schemaName}", cairn_public`);
+  await client.query(tenantSql);
+
+  // Seed default strategy and scenario
+  const strategyId = crypto.randomUUID();
+  const scenarioId = crypto.randomUUID();
+
+  await client.query(
+    `INSERT INTO strategies (id, name) VALUES ($1, $2)`,
+    [strategyId, 'Default Strategy']
+  );
+  await client.query(
+    `INSERT INTO scenarios (id, strategy_id, name, is_default) VALUES ($1, $2, $3, $4)`,
+    [scenarioId, strategyId, 'Base Case', true]
+  );
+
+  console.log(`[provision] Schema ${schemaName} prepared for tenant ${tenantId}`);
+}
+
+/**
+ * Provision a new tenant schema in its own transaction.
+ * Convenience wrapper for callers that don't need to coordinate with other
+ * cairn_public mutations.
+ */
+export async function provisionTenantSchema(schemaName: string, tenantId: string): Promise<void> {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-
-    // Create schema — schemaName is always server-generated "tenant_<uuid>"
-    await client.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
-
-    // Set search path and run tenant template
-    await client.query(`SET search_path = "${schemaName}", cairn_public`);
-    await client.query(tenantSql);
-
-    // Seed default strategy and scenario
-    const strategyId = crypto.randomUUID();
-    const scenarioId = crypto.randomUUID();
-
-    await client.query(
-      `INSERT INTO strategies (id, name) VALUES ($1, $2)`,
-      [strategyId, 'Default Strategy']
-    );
-    await client.query(
-      `INSERT INTO scenarios (id, strategy_id, name, is_default) VALUES ($1, $2, $3, $4)`,
-      [scenarioId, strategyId, 'Base Case', true]
-    );
-
+    await provisionTenantSchemaInTx(client, schemaName, tenantId);
     await client.query('COMMIT');
-    console.log(`[provision] Schema ${schemaName} created for tenant ${tenantId}`);
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;

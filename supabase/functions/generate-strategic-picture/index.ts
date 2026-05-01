@@ -119,7 +119,8 @@ Deno.serve(async (req) => {
 
     if (!aiResponse.ok) {
       const errBody = await aiResponse.text();
-      return new Response(JSON.stringify({ error: `AI request failed: ${aiResponse.status}`, details: errBody }), {
+      console.error('[generate-strategic-picture] AI request failed', aiResponse.status, errBody);
+      return new Response(JSON.stringify({ error: `AI request failed: ${aiResponse.status}` }), {
         status: 502,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -135,7 +136,8 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: (err as Error).message }), {
+    console.error('[generate-strategic-picture] Unhandled error', err);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

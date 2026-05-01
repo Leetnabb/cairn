@@ -1,5 +1,5 @@
-import { queryPublic } from '../db/pool.js';
-import { dropTenantSchema } from '../db/provision.js';
+import { pool, queryPublic } from '../db/pool.js';
+import { dropTenantSchema, provisionTenantSchemaInTx } from '../db/provision.js';
 import { BenchmarkRepository } from '../repositories/BenchmarkRepository.js';
 import { AuditRepository } from '../repositories/AuditRepository.js';
 
@@ -79,32 +79,41 @@ export async function createTenant(data: {
   const tenantId = crypto.randomUUID();
   const schemaName = `tenant_${tenantId.replace(/-/g, '')}`;
 
-  // Insert tenant record
-  await queryPublic(
-    `INSERT INTO cairn_public.tenants (id, slug, display_name, schema_name, plan)
-     VALUES ($1, $2, $3, $4, 'FREE')`,
-    [tenantId, data.slug, data.displayName, schemaName]
-  );
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
 
-  // Upsert user record
-  await queryPublic(
-    `INSERT INTO cairn_public.users (id, email)
-     VALUES ($1, $2)
-     ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email`,
-    [data.ownerUserId, data.ownerEmail]
-  );
+    await client.query(
+      `INSERT INTO cairn_public.tenants (id, slug, display_name, schema_name, plan)
+       VALUES ($1, $2, $3, $4, 'FREE')`,
+      [tenantId, data.slug, data.displayName, schemaName]
+    );
 
-  // Add owner membership
-  await queryPublic(
-    `INSERT INTO cairn_public.tenant_memberships (id, tenant_id, user_id, role, accepted_at)
-     VALUES (gen_random_uuid(), $1, $2, 'OWNER', NOW())`,
-    [tenantId, data.ownerUserId]
-  );
+    await client.query(
+      `INSERT INTO cairn_public.users (id, email)
+       VALUES ($1, $2)
+       ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email`,
+      [data.ownerUserId, data.ownerEmail]
+    );
 
-  // Provision tenant schema
-  const { provisionTenantSchema } = await import('../db/provision.js');
-  await provisionTenantSchema(schemaName, tenantId);
+    await client.query(
+      `INSERT INTO cairn_public.tenant_memberships (id, tenant_id, user_id, role, accepted_at)
+       VALUES (gen_random_uuid(), $1, $2, 'OWNER', NOW())`,
+      [tenantId, data.ownerUserId]
+    );
 
+    await provisionTenantSchemaInTx(client, schemaName, tenantId);
+
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+
+  // Audit log is intentionally outside the transaction: it is append-only and
+  // logging failure must never roll back a successful provision.
   await AuditRepository.log({
     tenantId,
     userId: data.ownerUserId,
