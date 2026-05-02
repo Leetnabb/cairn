@@ -126,7 +126,7 @@ export function InitiativeDetail({ initiative }: Props) {
   }
 
   return (
-    <div className="p-3 space-y-3">
+    <div className="p-3 space-y-2">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-1.5 mb-0.5">
@@ -227,7 +227,7 @@ export function InitiativeDetail({ initiative }: Props) {
       {/* Maturity effects */}
       {modules.capabilities && Object.keys(initiative.maturityEffect).length > 0 && (
         <div>
-          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.maturityEffect')}</div>
+          <div className="text-[10px] text-text-tertiary mb-1">{t('detail.maturityEffect')}</div>
           <div className="space-y-0.5">
             {Object.entries(initiative.maturityEffect).map(([capId, level]) => {
               const cap = capabilities.find(c => c.id === capId);
@@ -249,7 +249,7 @@ export function InitiativeDetail({ initiative }: Props) {
       {/* Dependencies */}
       {dependsOnInits.length > 0 && (
         <div>
-          <div className="text-[9px] text-yellow-600 uppercase mb-1 font-medium">{t('detail.dependsOn')}</div>
+          <div className="text-[10px] text-yellow-700 mb-1">{t('detail.dependsOn')}</div>
           <div className="space-y-0.5">
             {dependsOnInits.map(i => (
               <button key={i.id}
@@ -262,25 +262,10 @@ export function InitiativeDetail({ initiative }: Props) {
         </div>
       )}
 
-      {blocksInits.length > 0 && (
-        <div>
-          <div className="text-[9px] text-blue-600 uppercase mb-1 font-medium">{t('detail.blocks')}</div>
-          <div className="space-y-0.5">
-            {blocksInits.map(i => (
-              <button key={i.id}
-                onClick={() => setSelectedItem({ type: 'initiative', id: i.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded bg-blue-50 hover:bg-blue-100 text-blue-800">
-                {i.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Capabilities */}
       {modules.capabilities && relatedCaps.length > 0 && (
         <div>
-          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.capabilities')}</div>
+          <div className="text-[10px] text-text-tertiary mb-1">{t('detail.capabilities')}</div>
           <div className="flex flex-wrap gap-1">
             {relatedCaps.map(c => (
               <button key={c.id}
@@ -296,15 +281,13 @@ export function InitiativeDetail({ initiative }: Props) {
       {/* Effects */}
       {modules.effects && (relatedEffects.length > 0 ? (
         <div>
-          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('effects.contributesToEffects')}</div>
-          <div className="space-y-0.5">
+          <div className="text-[10px] text-text-tertiary mb-1">{t('effects.contributesToEffects')}</div>
+          <div className="flex flex-wrap gap-1">
             {relatedEffects.map(e => (
               <button key={e.id}
                 onClick={() => setSelectedItem({ type: 'effect', id: e.id })}
-                className="flex items-center gap-1.5 w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
-                <span className="px-1 py-0.5 text-[7px] font-medium rounded text-white shrink-0" style={{ backgroundColor: EFFECT_TYPE_COLORS[e.type] }}>
-                  {t(`effects.types.${e.type}`)}
-                </span>
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] rounded bg-[var(--bg-hover)] hover:bg-[var(--bg-hover)] text-primary">
+                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: EFFECT_TYPE_COLORS[e.type] }} />
                 {e.name}
               </button>
             ))}
@@ -319,7 +302,7 @@ export function InitiativeDetail({ initiative }: Props) {
       {/* Value chains */}
       {vcItems.length > 0 && (
         <div>
-          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.valueChains')}</div>
+          <div className="text-[10px] text-text-tertiary mb-1">{t('detail.valueChains')}</div>
           <div className="flex flex-wrap gap-1">
             {vcItems.map(vc => (
               <span key={vc.id} className="px-1.5 py-0.5 text-[9px] rounded text-white" style={{ backgroundColor: vc.color }}>
@@ -333,12 +316,12 @@ export function InitiativeDetail({ initiative }: Props) {
       {/* Overlapping */}
       {overlapping.length > 0 && (
         <div>
-          <div className="text-[9px] text-text-tertiary uppercase mb-1">{t('detail.overlapping')}</div>
-          <div className="space-y-0.5">
+          <div className="text-[10px] text-text-tertiary mb-1">{t('detail.overlapping')}</div>
+          <div className="flex flex-wrap gap-1">
             {overlapping.map(i => (
               <button key={i.id}
                 onClick={() => setSelectedItem({ type: 'initiative', id: i.id })}
-                className="block w-full text-left px-2 py-1 text-[10px] rounded hover:bg-[var(--bg-hover)] text-primary">
+                className="px-1.5 py-0.5 text-[9px] rounded bg-[var(--bg-hover)] hover:bg-[var(--bg-hover)] text-primary">
                 {i.name}
               </button>
             ))}
@@ -348,16 +331,16 @@ export function InitiativeDetail({ initiative }: Props) {
 
       {/* Impact analysis */}
       {(modules.capabilities && impactedCapabilities.length > 0 || blocksInits.length > 0) && (
-        <div className="px-2 py-1.5 rounded bg-orange-50 border border-orange-200">
-          <div className="text-[9px] text-orange-700 uppercase font-medium mb-1">{t('detail.impactAnalysis')}</div>
+        <div className="border-l-2 border-orange-400 pl-2 py-0.5 space-y-1.5">
+          <div className="text-[10px] text-orange-700">{t('detail.impactAnalysis')}</div>
           {impactedCapabilities.length > 0 && (
-            <div className="mb-1">
-              <div className="text-[9px] text-orange-600 mb-0.5">{t('detail.soleContributor')}</div>
-              <div className="space-y-0.5">
+            <div>
+              <div className="text-[9px] text-text-tertiary mb-0.5">{t('detail.soleContributor')}</div>
+              <div className="flex flex-wrap gap-1">
                 {impactedCapabilities.map(cap => (
                   <button key={cap!.id}
                     onClick={() => setSelectedItem({ type: 'capability', id: cap!.id })}
-                    className="block w-full text-left px-1.5 py-0.5 text-[10px] rounded bg-orange-100 hover:bg-orange-200 text-orange-800">
+                    className="px-1.5 py-0.5 text-[9px] rounded bg-orange-50 hover:bg-orange-100 text-orange-800">
                     {cap!.name}
                   </button>
                 ))}
@@ -366,12 +349,12 @@ export function InitiativeDetail({ initiative }: Props) {
           )}
           {blocksInits.length > 0 && (
             <div>
-              <div className="text-[9px] text-orange-600 mb-0.5">{t('detail.willBlock')}</div>
-              <div className="space-y-0.5">
+              <div className="text-[9px] text-text-tertiary mb-0.5">{t('detail.willBlock')}</div>
+              <div className="flex flex-wrap gap-1">
                 {blocksInits.map(i => (
                   <button key={i.id}
                     onClick={() => setSelectedItem({ type: 'initiative', id: i.id })}
-                    className="block w-full text-left px-1.5 py-0.5 text-[10px] rounded bg-orange-100 hover:bg-orange-200 text-orange-800">
+                    className="px-1.5 py-0.5 text-[9px] rounded bg-orange-50 hover:bg-orange-100 text-orange-800">
                     {i.name}
                   </button>
                 ))}

@@ -521,7 +521,8 @@
   },
   "comments": {
     "title": "Comments",
-    "placeholder": "Write a comment..."
+    "placeholder": "Write a comment...",
+    "addCta": "+ Comment"
   },
   "sidebar": {
     "showCapMap": "Show capability map",

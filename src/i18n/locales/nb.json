@@ -521,7 +521,8 @@
   },
   "comments": {
     "title": "Kommentarer",
-    "placeholder": "Skriv en kommentar..."
+    "placeholder": "Skriv en kommentar...",
+    "addCta": "+ Kommentar"
   },
   "sidebar": {
     "showCapMap": "Vis kapabilitetskart",
