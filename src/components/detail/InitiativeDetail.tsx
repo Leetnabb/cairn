@@ -5,6 +5,7 @@ import { DIMENSION_MAP, MATURITY_COLORS, EFFECT_TYPE_COLORS } from '../../types'
 import type { Initiative } from '../../types';
 import { EditInitiativeForm } from '../forms/EditInitiativeForm';
 import { Button } from '../ui/Button';
+import { Avatar } from '../ui/Avatar';
 import { CommentsSection } from './CommentsSection';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
 import { StrategicContextChain } from './StrategicContextChain';
@@ -170,10 +171,12 @@ export function InitiativeDetail({ initiative }: Props) {
         onSelectEffect={(id) => setSelectedItem({ type: 'effect', id })}
       />
 
-      <div className="px-2 py-1 rounded border border-border">
-        <div className="text-[9px] text-text-tertiary uppercase">{t('common.owner')}</div>
-        <div className="text-[11px] font-medium">{initiative.owner}</div>
-      </div>
+      {initiative.owner && (
+        <div className="flex items-center gap-2">
+          <Avatar name={initiative.owner} size="sm" />
+          <div className="text-[11px] font-medium text-text-primary truncate">{initiative.owner}</div>
+        </div>
+      )}
 
       {initiative.description && (
         <p className="text-[11px] text-text-secondary">{initiative.description}</p>

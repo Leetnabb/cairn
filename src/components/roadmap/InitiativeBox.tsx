@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
 import { DIMENSION_MAP } from '../../types';
 import type { Initiative } from '../../types';
+import { Avatar } from '../ui/Avatar';
 
 interface Props {
   initiative: Initiative;
@@ -176,7 +177,12 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
           <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[8px] z-10">✓</div>
         )}
         <div className={`text-[10px] font-medium leading-tight truncate ${isIdea ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
-        <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
+        {initiative.owner && (
+          <div className="flex items-center gap-1 mt-1 min-w-0">
+            <Avatar name={initiative.owner} size="xs" />
+            <span className="text-[9px] text-text-tertiary truncate" title={initiative.owner}>{initiative.owner}</span>
+          </div>
+        )}
         {/* Compact info line */}
         <div className="text-[8px] text-text-tertiary mt-0.5">
           {capCount > 0 && <span>{capCount} {t('initBox.cap')}</span>}
@@ -259,7 +265,12 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
         <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[8px] z-10">✓</div>
       )}
       <div className={`text-[10px] font-medium leading-tight truncate ${isIdea ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
-      <div className="text-[8px] text-text-tertiary truncate mt-0.5" title={initiative.owner}>{initiative.owner}</div>
+      {initiative.owner && (
+        <div className="flex items-center gap-1 mt-1 min-w-0">
+          <Avatar name={initiative.owner} size="xs" />
+          <span className="text-[9px] text-text-tertiary truncate" title={initiative.owner}>{initiative.owner}</span>
+        </div>
+      )}
       {/* Compact info line */}
       <div className="text-[8px] text-text-tertiary mt-0.5">
         {capCount > 0 && <span>{capCount} {t('initBox.cap')}</span>}

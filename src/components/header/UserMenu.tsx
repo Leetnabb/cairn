@@ -2,15 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../providers/AuthProvider';
+import { Avatar } from '../ui/Avatar';
 import i18n from '../../i18n';
-
-function initials(email: string | null | undefined): string {
-  if (!email) return '?';
-  const local = email.split('@')[0] ?? '';
-  const parts = local.split(/[._-]/).filter(Boolean);
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return (local[0] ?? '?').toUpperCase();
-}
 
 export function UserMenu() {
   const { t } = useTranslation();
@@ -44,11 +37,10 @@ export function UserMenu() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-7 h-7 flex items-center justify-center rounded-full bg-primary text-white text-[10px] font-semibold hover:opacity-90 transition-opacity"
-        title={user?.email ?? ''}
+        className="rounded-full hover:opacity-90 transition-opacity"
         aria-label={user?.email ?? t('auth.login')}
       >
-        {initials(user?.email)}
+        <Avatar name={user?.email} size="sm" title={user?.email ?? ''} />
       </button>
       {open && (
         <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-1 min-w-[200px] z-50">
