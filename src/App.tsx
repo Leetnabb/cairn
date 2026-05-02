@@ -138,7 +138,7 @@ export default function App() {
         {/* Left: Logo */}
         <Link to="/" className="flex items-center gap-3 no-underline">
           <CairnMark size={0.45} />
-          <span className="text-[15px] font-bold text-primary tracking-tight">Cairn</span>
+          <span className="text-[18px] font-serif font-normal text-primary tracking-tight">Cairn</span>
           <span className="text-[10px] text-text-tertiary">{t('app.tagline')}</span>
         </Link>
 

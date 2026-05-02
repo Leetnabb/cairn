@@ -129,7 +129,7 @@ export function DependencyOverlay({ connections, cardRefs, containerRef }: Depen
         <path
           key={key}
           d={d}
-          stroke="var(--accent)"
+          stroke="var(--dependency-line)"
           strokeWidth={2}
           opacity={0.6}
           fill="none"

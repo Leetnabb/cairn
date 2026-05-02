@@ -69,7 +69,7 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
     : initiative.status === 'done' ? Math.min(opacity, 0.7) : opacity;
 
   const baseStyle: React.CSSProperties = {
-    borderLeftWidth: 3,
+    borderLeftWidth: 4,
     borderLeftStyle: (isIdea ? 'dashed' : 'solid') as React.CSSProperties['borderLeftStyle'],
     borderLeftColor: dim.color,
     opacity: computedOpacity,
@@ -186,7 +186,8 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
         {/* Deep dive extras */}
         <div className="flex flex-wrap gap-1 mt-1">
           {/* Status badge */}
-          <span className={`inline-block px-1.5 py-0.5 rounded-full text-[8px] font-medium ${statusColorMap[status] ?? 'bg-gray-100 text-gray-600'}`}>
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${statusColorMap[status] ?? 'bg-gray-100 text-gray-600'}`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-current" />
             {t(`labels.status.${status}`)}
           </span>
         </div>

@@ -49,6 +49,8 @@
   --color-bg-panel: var(--bg-panel);
   --color-bg-header: var(--bg-header);
 
+  --color-dependency-line: var(--dependency-line);
+
   --color-border-subtle: var(--border-subtle);
   --color-border-medium: var(--border-medium);
 
@@ -103,8 +105,11 @@
   --accent:         #6366f1;
   --accent-hover:   #4f46e5;
 
+  /* Dependency / system lines — distinct from dim-technology (#6366f1) */
+  --dependency-line: #475569;
+
   /* Status */
-  --maturity-low:   #dc2626;
+  --maturity-low:   #f97316;
   --maturity-mid:   #f59e0b;
   --maturity-high:  #22c55e;
 
@@ -169,6 +174,9 @@
   --shadow-card:    0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-panel:   0 4px 24px rgba(0, 0, 0, 0.4);
   --shadow-hover:   0 4px 12px rgba(0, 0, 0, 0.4);
+
+  /* Dependency line tuned for dark canvas */
+  --dependency-line: #94a3b8;
 }
 
 /* ───────────────────────────────────────────────

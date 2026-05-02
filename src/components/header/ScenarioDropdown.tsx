@@ -69,7 +69,7 @@ export function ScenarioDropdown() {
         className="flex items-center gap-1.5 px-2.5 py-1 rounded hover:bg-[var(--bg-hover)] transition-colors"
       >
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: active?.color ?? '#8b5cf6' }} />
-        <span className="text-[11px] font-medium text-text-primary">{active?.name ?? 'Scenario'}</span>
+        <span className="text-[14px] font-serif font-normal text-text-primary">{active?.name ?? 'Scenario'}</span>
         <span className="text-[9px] text-text-tertiary">{open ? '\u25B4' : '\u25BE'}</span>
       </button>
       {open && (

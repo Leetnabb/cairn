@@ -137,11 +137,12 @@ export function InitiativeDetail({ initiative }: Props) {
           </div>
           <h3 className="text-[14px] font-semibold">{initiative.name}</h3>
           <div className="flex items-center gap-1 mt-0.5">
-            <span className={`inline-block px-1.5 py-0.5 text-[8px] font-medium rounded-full ${
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-full ${
               initiative.status === 'active' ? 'bg-blue-100 text-blue-700' :
               initiative.status === 'done' ? 'bg-green-100 text-green-700' :
               'bg-[var(--bg-hover)] text-text-secondary'
             }`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-current" />
               {t(`labels.status.${initiative.status ?? 'planned'}`)}
             </span>
           </div>
