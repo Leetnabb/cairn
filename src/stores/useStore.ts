@@ -121,7 +121,7 @@ const defaultUI: UIState = {
   selectedItem: null,
   view: 'roadmap',
   complexityLevel: 1,
-  roadmapViewMode: 'capability',
+  roadmapViewMode: 'dimension',
   simulationEnabled: false,
   criticalPathEnabled: false,
   filters: {
