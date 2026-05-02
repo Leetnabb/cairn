@@ -211,7 +211,7 @@ export function Roadmap() {
   const showNear = !(focusMode && filters.horizon !== 'near' && filters.horizon !== 'all');
   const showFar = !(focusMode && filters.horizon !== 'far' && filters.horizon !== 'all');
   const visibleColCount = [showNear, showFar].filter(Boolean).length;
-  const gridCols = visibleColCount === 2 ? '120px 1fr 1fr' : '120px 1fr';
+  const gridCols = visibleColCount === 2 ? '144px 1fr 1fr' : '144px 1fr';
 
   const visibleDimensions = useMemo(
     () => focusMode && filters.dimensions.length > 0
@@ -390,7 +390,7 @@ export function Roadmap() {
               aria-expanded={true}
             >
               <div className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: dim.color }} aria-hidden="true" />
-              <span className="truncate">{t(`labels.dimensions.${dim.key}`)}</span>
+              <span className="truncate" title={t(`labels.dimensions.${dim.key}`)}>{t(`labels.dimensions.${dim.key}`)}</span>
               {crossDimDemand[dim.key] >= 2 && (
                 <span
                   className={`ml-1 px-1 py-0.5 rounded text-[8px] font-medium whitespace-nowrap border ${

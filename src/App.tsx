@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore } from './stores/useStore';
 import { useAIStore } from './stores/useAIStore';
@@ -22,6 +21,8 @@ import { ScenarioDropdown } from './components/header/ScenarioDropdown';
 import { InsightsBadge } from './components/header/InsightsBadge';
 import { FilterDropdown } from './components/header/FilterDropdown';
 import { UndoRedoButtons } from './components/header/UndoRedoButtons';
+import { UserMenu } from './components/header/UserMenu';
+import { PresentationMenu } from './components/header/PresentationMenu';
 import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
@@ -29,7 +30,6 @@ import { useAuth } from './providers/AuthProvider';
 import { useComplexityLevel } from './hooks/useComplexityLevel';
 import { useSupabaseSync } from './hooks/useSupabaseSync';
 import { useMode } from './hooks/useMode';
-import i18n from './i18n';
 
 export default function App() {
   const { t } = useTranslation();
@@ -42,7 +42,6 @@ export default function App() {
   const setAddModalOpen = useStore(s => s.setAddModalOpen);
   const selectedItem = useStore(s => s.ui.selectedItem);
   const setSelectedItem = useStore(s => s.setSelectedItem);
-  const enterMeetingMode = useStore(s => s.enterMeetingMode);
   const aiPanelOpen = useAIStore(s => s.panelOpen);
   const setAIPanelOpen = useAIStore(s => s.setPanelOpen);
   const capabilityOverlayOpen = useStore(s => s.ui.capabilityOverlayOpen);
@@ -50,13 +49,11 @@ export default function App() {
   const settingsOpen = useStore(s => s.ui.settingsOpen);
   const setSettingsOpen = useStore(s => s.setSettingsOpen);
   const auth = useAuth();
-  const { isAuthenticated, user, signOut } = useAuth();
-  const navigate = useNavigate();
   const isBoardUser = auth.isAuthenticated && auth.role === 'BOARD';
   const { isViewVisible } = useComplexityLevel();
   useSupabaseSync();
 
-  const { mode, transitioning, enterBoardView, exitBoardView } = useMode();
+  const { mode, transitioning, exitBoardView } = useMode();
 
   // Auto-show wizard is handled in onboarding store initialization
 
@@ -155,7 +152,7 @@ export default function App() {
             <NavBtn active={view === 'capabilities'} onClick={() => setView('capabilities')}>{t('nav.capabilities')}</NavBtn>
           )}
           <NavBtn active={view === 'dashboard'} onClick={() => setView('dashboard')}>{t('nav.dashboard')}</NavBtn>
-          <NavBtn active={false} onClick={() => enterMeetingMode()}>{t('nav.presentation')}</NavBtn>
+          <PresentationMenu />
           <div className="w-px h-5 bg-border mx-0.5" />
           {view === 'roadmap' && <FilterDropdown />}
           <InsightsBadge />
@@ -164,48 +161,9 @@ export default function App() {
           )}
           <HeaderMenu />
           {roleMode === 'work' && <UndoRedoButtons />}
-          <div className="w-px h-5 bg-border mx-0.5" />
-          {/* Board View toggle */}
-          <button
-            onClick={enterBoardView}
-            className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-medium text-text-secondary hover:bg-[var(--bg-hover)] transition-colors"
-            title={t('board.title')}
-            aria-label={t('board.title')}
-          >
-            {/* Frame icon — signals presentation, not surveillance */}
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="3" width="20" height="14" rx="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
-            </svg>
-            {t('board.title')}
-          </button>
           <ToggleBtn active={aiPanelOpen} onClick={() => setAIPanelOpen(!aiPanelOpen)}>AI</ToggleBtn>
-          <button
-            onClick={() => i18n.changeLanguage(i18n.language === 'nb' ? 'en' : 'nb')}
-            className="px-2 py-1 text-[10px] font-medium text-text-secondary hover:bg-[var(--bg-hover)] rounded"
-          >
-            {i18n.language === 'nb' ? 'EN' : 'NB'}
-          </button>
           <div className="w-px h-5 bg-border mx-0.5" />
-          {isAuthenticated ? (
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] text-text-secondary">{user?.email}</span>
-              <button
-                onClick={async () => { await signOut(); navigate('/login'); }}
-                className="text-[10px] text-text-tertiary hover:text-text-primary transition-colors"
-              >
-                {t('auth.logout')}
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => navigate('/login')}
-              className="text-[10px] font-medium text-primary hover:underline"
-            >
-              {t('auth.login')}
-            </button>
-          )}
+          <UserMenu />
         </nav>
       </header>
 

@@ -33,7 +33,10 @@ export function ResourceBar({ initiatives, capabilities }: ResourceBarProps) {
   if (initiatives.length === 0) return null;
 
   return (
-    <div className="relative w-full mt-2 px-1">
+    <div
+      className="relative w-full mt-2 px-1"
+      title={t('resourceBar.tooltip', { active: activeCount, total: totalCount, pct })}
+    >
       <div
         className="h-3 w-full rounded-full border overflow-hidden"
         style={{ backgroundColor: bgColor, borderColor: `${color}33` }}

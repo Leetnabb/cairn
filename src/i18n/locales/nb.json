@@ -128,7 +128,8 @@
     }
   },
   "resourceBar": {
-    "summary": "{{active}} aktive / {{total}} totalt"
+    "summary": "{{active}} aktive / {{total}} totalt",
+    "tooltip": "Kapasitet: {{active}} aktive av {{total}} ({{pct}}%). Grønn < 60 %, oransje 60–80 %, rød > 80 %."
   },
   "initBox": {
     "cap": "kap",
@@ -831,6 +832,7 @@
     "login": "Logg inn",
     "register": "Opprett konto",
     "logout": "Logg ut",
+    "language": "Språk",
     "email": "E-post",
     "password": "Passord",
     "displayName": "Navn",

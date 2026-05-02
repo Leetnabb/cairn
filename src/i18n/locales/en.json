@@ -128,7 +128,8 @@
     }
   },
   "resourceBar": {
-    "summary": "{{active}} active / {{total}} total"
+    "summary": "{{active}} active / {{total}} total",
+    "tooltip": "Capacity: {{active}} active of {{total}} ({{pct}}%). Green < 60%, orange 60-80%, red > 80%."
   },
   "initBox": {
     "cap": "cap",
@@ -831,6 +832,7 @@
     "login": "Log in",
     "register": "Create account",
     "logout": "Log out",
+    "language": "Language",
     "email": "Email",
     "password": "Password",
     "displayName": "Name",
