@@ -145,6 +145,8 @@
     "noSubCaps": "Ingen sub-kapabiliteter",
     "simulatedFrom": "{{from}} → {{to}}",
     "emptyDomains": "Ingen kapabilitetsdomener ennå. Legg til en kapabilitet for å komme i gang.",
+    "emptyTitle": "Ingen kapabiliteter ennå",
+    "emptyCta": "+ Legg til kapabilitet",
     "coreSection": "Kjernevirksomhet & Verdiskaping",
     "supportSection": "Støttefunksjoner & Fundament",
     "strategicFoundation": "Strategisk fundament"
@@ -263,6 +265,7 @@
     "expand": "Utvid",
     "emptyTitle": "Ingen initiativer ennå",
     "emptyBody": "Legg til et initiativ for å begynne å se det strategiske bildet.",
+    "emptyCta": "+ Legg til initiativ",
     "dragHint": "Dra aktiviteter hit",
     "newActivity": "Ny aktivitet"
   },
@@ -277,6 +280,9 @@
   },
   "dashboard": {
     "title": "Dashbord",
+    "emptyTitle": "Ingenting å oppsummere ennå",
+    "emptyBody": "Begynn med å legge til initiativer i Roadmap.",
+    "emptyCta": "Gå til Roadmap",
     "layer1Title": "Hva bør dere diskutere?",
     "layer2Title": "Strategisk helse",
     "layer3Title": "Dypdykk",

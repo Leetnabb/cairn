@@ -6,6 +6,7 @@ import { useAIChat } from '../../hooks/useAIChat';
 import { parseSuggestions, type AISuggestion } from '../../lib/ai/parseSuggestions';
 import type { DimensionKey, Horizon } from '../../types';
 import APIKeyInput from './APIKeyInput';
+import { EmptyState } from '../ui/EmptyState';
 
 function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
   const { t } = useTranslation();
@@ -313,14 +314,11 @@ export default function AIChatPanel() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
         {messages.length === 0 && !isStreaming && (
-          <div className="text-center py-8">
-            <p className="text-[11px] text-text-tertiary">
-              {t('ai.ui.askHelp')}
-            </p>
-            <p className="text-[10px] text-text-tertiary mt-1">
-              {t('ai.ui.askExample')}
-            </p>
-          </div>
+          <EmptyState
+            icon="cairn"
+            title={t('ai.ui.askHelp')}
+            body={t('ai.ui.askExample')}
+          />
         )}
 
         {messages.map((msg) => (

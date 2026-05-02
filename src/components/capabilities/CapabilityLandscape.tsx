@@ -5,6 +5,7 @@ import { simulateMaturity } from '../../lib/simulation';
 import { MATURITY_COLORS, RISK_COLORS } from '../../types';
 import type { Capability } from '../../types';
 import { MaturityChevron } from './MaturityChevron';
+import { EmptyState } from '../ui/EmptyState';
 
 export function CapabilityLandscape() {
   const { t } = useTranslation();
@@ -545,9 +546,15 @@ export function CapabilityLandscape() {
 
       {/* Empty state */}
       {l1.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-[12px] text-text-tertiary">{t('capLandscape.emptyDomains')}</p>
-        </div>
+        <EmptyState
+          icon="cairn"
+          title={t('capLandscape.emptyTitle')}
+          body={t('capLandscape.emptyDomains')}
+          cta={{
+            label: t('capLandscape.emptyCta'),
+            onClick: () => useStore.getState().setAddModalOpen(true),
+          }}
+        />
       )}
 
       {/* Core Business & Value Creation section */}

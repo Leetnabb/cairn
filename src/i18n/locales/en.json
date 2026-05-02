@@ -145,6 +145,8 @@
     "noSubCaps": "No sub-capabilities",
     "simulatedFrom": "{{from}} → {{to}}",
     "emptyDomains": "No capability domains yet. Add a capability to get started.",
+    "emptyTitle": "No capabilities yet",
+    "emptyCta": "+ Add capability",
     "coreSection": "Core Business & Value Creation",
     "supportSection": "Support & Foundation",
     "strategicFoundation": "Strategic Foundation"
@@ -263,6 +265,7 @@
     "expand": "Expand",
     "emptyTitle": "No initiatives yet",
     "emptyBody": "Add an initiative to start seeing the strategic picture.",
+    "emptyCta": "+ Add initiative",
     "dragHint": "Drag activities here",
     "newActivity": "New activity"
   },
@@ -277,6 +280,9 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "emptyTitle": "Nothing to summarise yet",
+    "emptyBody": "Start by adding initiatives in the Roadmap.",
+    "emptyCta": "Go to Roadmap",
     "layer1Title": "What should you discuss?",
     "layer2Title": "Strategic health",
     "layer3Title": "Deep dive",

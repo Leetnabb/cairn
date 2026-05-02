@@ -9,6 +9,7 @@ import { ResourceBar } from './ResourceBar';
 import { getMergedCriticalPath } from '../../lib/criticalPath';
 import { CapabilityPath } from './CapabilityPath';
 import { DependencyOverlay } from './DependencyOverlay';
+import { EmptyState } from '../ui/EmptyState';
 
 export function Roadmap() {
   const { t } = useTranslation();
@@ -299,10 +300,15 @@ export function Roadmap() {
       <div style={{ opacity: switching ? 0 : 1, transition: 'opacity 150ms ease' }}>
       {/* Empty state */}
       {initiatives.length === 0 && !hasActiveFilters && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-[13px] font-medium text-text-secondary mb-1">{t('roadmap.emptyTitle')}</p>
-          <p className="text-[11px] text-text-tertiary">{t('roadmap.emptyBody')}</p>
-        </div>
+        <EmptyState
+          icon="cairn"
+          title={t('roadmap.emptyTitle')}
+          body={t('roadmap.emptyBody')}
+          cta={{
+            label: t('roadmap.emptyCta'),
+            onClick: () => useStore.getState().setAddModalOpen(true),
+          }}
+        />
       )}
 
       {/* Column headers */}

@@ -9,6 +9,7 @@ import { ChangeIndicators } from './ChangeIndicators';
 import { InsightCards } from './InsightCards';
 import { StrategicHealth } from './StrategicHealth';
 import { DeepDive } from './DeepDive';
+import { EmptyState } from '../ui/EmptyState';
 
 export function Dashboard() {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ export function Dashboard() {
   const valueChains = useStore(s => s.valueChains);
   const snapshots = useStore(s => s.snapshots);
   const setSelectedItem = useStore(s => s.setSelectedItem);
+  const setView = useStore(s => s.setView);
   const strategicFrame = useStore(s => s.strategicFrame);
 
   const narrative = useMemo(
@@ -42,6 +44,22 @@ export function Dashboard() {
         setSelectedItem({ type: 'capability', id: firstId });
       }
     }
+  }
+
+  if (initiatives.length === 0 && capabilities.length === 0) {
+    return (
+      <div className="flex-1 overflow-auto p-4">
+        <EmptyState
+          icon="cairn"
+          title={t('dashboard.emptyTitle')}
+          body={t('dashboard.emptyBody')}
+          cta={{
+            label: t('dashboard.emptyCta'),
+            onClick: () => setView('roadmap'),
+          }}
+        />
+      </div>
+    );
   }
 
   return (
