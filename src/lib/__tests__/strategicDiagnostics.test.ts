@@ -221,4 +221,12 @@ describe('detectCrossDimensionGaps', () => {
     const result = detectCrossDimensionGaps(inits);
     expect(result).toHaveLength(0);
   });
+
+  it('does not throw on an unknown dimension key (M3)', () => {
+    const inits = [
+      { ...makeInit('1', 'A', 'ukjent'), dependsOn: ['2'], status: 'active' as const },
+      { ...makeInit('2', 'B', 'teknologi'), dependsOn: [], status: 'active' as const },
+    ];
+    expect(() => detectCrossDimensionGaps(inits)).not.toThrow();
+  });
 });

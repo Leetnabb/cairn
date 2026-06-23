@@ -18,11 +18,14 @@ export function filterInitiatives(initiatives: Initiative[], filters?: ExportFil
   });
 }
 
-function escapeCsv(val: string): string {
-  if (val.includes(';') || val.includes('"') || val.includes('\n')) {
-    return `"${val.replace(/"/g, '""')}"`;
+export function escapeCsv(val: string): string {
+  // Neutralize spreadsheet formula injection: a leading =, +, -, @, tab or CR can
+  // make Excel/Sheets execute the cell. Prefix with a single quote to defuse it.
+  let v = /^[=+\-@\t\r]/.test(val) ? `'${val}` : val;
+  if (/[;"\n\r]/.test(v)) {
+    v = `"${v.replace(/"/g, '""')}"`;
   }
-  return val;
+  return v;
 }
 
 function buildCsv(header: string[], rows: string[][]): string {

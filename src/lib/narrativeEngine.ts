@@ -27,7 +27,8 @@ function dimensionSignal(initiatives: Initiative[]): NarrativeSignal | null {
   if (initiatives.length === 0) return null;
   const counts: Record<string, number> = {};
   for (const dim of DIMENSIONS) counts[dim.key] = 0;
-  for (const i of initiatives) counts[i.dimension] = (counts[i.dimension] || 0) + 1;
+  // Only count known dimensions so the per-dimension sum stays consistent with `total`.
+  for (const i of initiatives) if (i.dimension in counts) counts[i.dimension]++;
 
   const total = initiatives.length;
   const domDim = DIMENSIONS.reduce((a, b) => counts[a.key] > counts[b.key] ? a : b);
@@ -126,9 +127,25 @@ function criticalPathSignal(initiatives: Initiative[]): NarrativeSignal | null {
   const { merged } = getMergedCriticalPath(initiatives);
   if (merged.size < 2) return null;
 
-  const pathIds = Array.from(merged);
-  const first = initiatives.find(i => i.id === pathIds[0]);
-  const last = initiatives.find(i => i.id === pathIds[pathIds.length - 1]);
+  // `merged` is unordered (built in input order), so derive real endpoints from the
+  // dependency edges: the source depends on no other path member; the sink is depended
+  // on by no other path member.
+  const map = new Map(initiatives.map(i => [i.id, i]));
+  const dependedOnByMember = new Set<string>();
+  for (const id of merged) {
+    const init = map.get(id);
+    if (!init) continue;
+    for (const dep of init.dependsOn) {
+      if (merged.has(dep)) dependedOnByMember.add(dep);
+    }
+  }
+  const sourceId = [...merged].find(id => {
+    const init = map.get(id);
+    return init ? !init.dependsOn.some(d => merged.has(d)) : false;
+  });
+  const sinkId = [...merged].find(id => !dependedOnByMember.has(id));
+  const first = sourceId ? map.get(sourceId) : undefined;
+  const last = sinkId ? map.get(sinkId) : undefined;
 
   if (!first || !last || first.id === last.id) return null;
 

@@ -18,7 +18,7 @@ export function computeStrategicInsights(
 
   // 1. Dimension imbalance — highest priority
   const dimCounts: Record<string, number> = { ledelse: 0, virksomhet: 0, organisasjon: 0, teknologi: 0 };
-  initiatives.forEach(i => { dimCounts[i.dimension]++; });
+  initiatives.forEach(i => { if (i.dimension in dimCounts) dimCounts[i.dimension]++; });
   const total = initiatives.length;
   const sorted = Object.entries(dimCounts).sort((a, b) => b[1] - a[1]);
   const dominant = sorted[0];
