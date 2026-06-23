@@ -60,6 +60,20 @@ describe('computeCriticalPath', () => {
     const result = computeCriticalPath(inits);
     expect(result).toEqual(new Set(['A']));
   });
+
+  it('krasjer ikke ved selvreferanse (syklusvakt)', () => {
+    const inits = [makeInit('A', ['A'])];
+    expect(() => computeCriticalPath(inits)).not.toThrow();
+    expect(computeCriticalPath(inits).has('A')).toBe(true);
+  });
+
+  it('krasjer ikke ved sirkulær avhengighet A → B → A', () => {
+    const inits = [makeInit('A', ['B']), makeInit('B', ['A'])];
+    expect(() => computeCriticalPath(inits)).not.toThrow();
+    const result = computeCriticalPath(inits);
+    expect(result.has('A')).toBe(true);
+    expect(result.has('B')).toBe(true);
+  });
 });
 
 describe('getMergedCriticalPath', () => {
