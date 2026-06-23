@@ -55,6 +55,7 @@ export function useSupabaseSync() {
   const { isAuthenticated, userId } = useAuth();
 
   useEffect(() => {
+    if (import.meta.env.VITE_DISABLE_SUPABASE_SYNC === 'true') return;
     if (!supabase || !isAuthenticated || !userId) return;
 
     let cancelled = false;
