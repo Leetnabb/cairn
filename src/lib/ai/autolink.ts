@@ -1,9 +1,10 @@
 import type { Capability } from '../../types';
 import { AIError } from './claude';
 import { parseJsonArrayFromAI } from './parseJsonResponse';
+import { CLAUDE_MODEL, ANTHROPIC_API_URL } from './model';
 
-const API_URL = 'https://api.anthropic.com/v1/messages';
-const MODEL = 'claude-sonnet-4-20250514';
+const API_URL = ANTHROPIC_API_URL;
+const MODEL = CLAUDE_MODEL;
 
 export interface CapabilityLinkSuggestion {
   capabilityId: string;

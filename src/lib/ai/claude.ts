@@ -1,11 +1,12 @@
 import { parseJsonObjectFromAI } from './parseJsonResponse';
 import { supabase } from '../supabase';
+import { CLAUDE_MODEL, ANTHROPIC_API_URL } from './model';
 
 const STORAGE_KEY_LOCAL = 'cairn-ai-key';
 const STORAGE_KEY_SESSION = 'cairn-ai-key-session';
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = CLAUDE_MODEL;
 const MAX_TOKENS = 2048;
-const API_URL = 'https://api.anthropic.com/v1/messages';
+const API_URL = ANTHROPIC_API_URL;
 
 export class AIError extends Error {
   status: number;

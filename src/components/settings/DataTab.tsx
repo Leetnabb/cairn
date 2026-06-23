@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStore } from '../../stores/useStore';
+import { exportJson } from '../../lib/exportJson';
+import type { AppState } from '../../types';
 
 interface Props {
   onClose: () => void;
@@ -7,7 +10,7 @@ interface Props {
 
 export function DataTab({ onClose }: Props) {
   const { t } = useTranslation();
-  // TODO: Replace with Supabase client calls
+  // TODO: account deletion still needs a Supabase-backed implementation.
   const [exporting, setExporting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [requestingDeletion, setRequestingDeletion] = useState(false);
@@ -18,19 +21,8 @@ export function DataTab({ onClose }: Props) {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL ?? ''}/api/v1/settings/data/export`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('cairn_access_token') ?? ''}`,
-        },
-      });
-      if (!response.ok) throw new Error('Export failed');
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `cairn-export-${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
+      const { ui: _ui, ...rest } = useStore.getState();
+      exportJson(rest as AppState);
     } finally {
       setExporting(false);
     }

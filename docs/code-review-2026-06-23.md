@@ -149,3 +149,17 @@ Den enkeltobservasjonen som rammer inn alt annet:
 3. **K2 + K3 + M9** gjør import-stien lossless og validert — hindrer stille datatap/krasj.
 4. **H2** migrer Anthropic-modell-ID (allerede forbi utfasingsdato) — AI er ellers nede.
 5. **K4 + K5 + H5 + H6** før serveren tas i bruk: fiks search_path-isolasjon, skjemanavn-injeksjon, medlemskaps-revalidering og invite-flyt.
+
+---
+
+## Oppfølging — utført i denne committen
+
+Topp 5 er adressert. Valgt datasti: **Supabase RLS** (server/ fjernet), så #5 (server-herding) utgår.
+
+- **#1 Én datasti (Supabase):** `server/`-katalogen og server-jobben i CI er fjernet. Eneste frontend-forbruker (GDPR-eksport i `DataTab.tsx`) er lagt om til klient-side eksport via `exportJson`. `src/lib/workspace.ts` er rettet (kaster nå ved feil, skiller `PGRST116` «ikke funnet» fra reelle feil, scoper load på `user_id`). `useSupabaseSync` er koblet til Supabase `workspaces`-tabellen (som allerede fantes med RLS): pull på innlogging, seeding fra lokal state ved første innlogging, debouncet push ved endringer, og lokal-only fallback ved feil (klobrer aldri lokale data). *NB: denne synk-stien bør verifiseres mot en faktisk Supabase-instans før den stoles på i produksjon.*
+- **#2 K1:** Syklusvakt lagt til i `criticalPath.ts` (+ regresjonstester for selvreferanse og A→B→A).
+- **#3 K2/K3/M9:** `importData.ts` er nå lossless (bevarer `strategicFrame`/`modules`/`strategies`), validerer at `activeScenario` finnes i `scenarioStates`, sjekker enum-verdier (level/maturity/risk/dimension/horizon/effect.type) og backfiller manglende array-felt på initiativer (+ ny testfil).
+- **#4 H2:** Anthropic-modell migrert til `claude-sonnet-4-6` i alle 8 steder; frontend-konstanten sentralisert i `src/lib/ai/model.ts`.
+
+**Verifikasjon:** `tsc` ren, `vitest` 95/95 grønn, `vite build` OK. Lint uendret (24 errors / 5 warnings — alle forhåndseksisterende, ingen nye).
+

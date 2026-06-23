@@ -1,4 +1,5 @@
 import { parseJsonObjectFromAI } from './parseJsonResponse';
+import { CLAUDE_MODEL } from './model';
 import type { DimensionKey, EffectType, Horizon } from '../../types';
 
 
@@ -112,7 +113,7 @@ export async function generateStrategicPicture(
         'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: CLAUDE_MODEL,
         max_tokens: 4096,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: input }],
