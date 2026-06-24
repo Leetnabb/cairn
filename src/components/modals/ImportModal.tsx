@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import type { AppState } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
@@ -22,6 +23,7 @@ export function ImportModal() {
 
   const hasActiveFilters = filters.dimensions.length > 0 || filters.horizon !== 'all' || !!filters.owner || !!filters.search || !!filters.status;
   const [exportFiltered, setExportFiltered] = useState<boolean>(hasActiveFilters);
+  const dialogRef = useFocusTrap<HTMLDivElement>();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -87,7 +89,7 @@ export function ImportModal() {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setImportModalOpen(false)}>
-      <div className="bg-card rounded-lg shadow-lg w-[480px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={t('importModal.title')} tabIndex={-1} className="bg-card rounded-lg shadow-lg w-[480px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
         <div className="px-4 py-3 border-b border-border">
           <h2 className="text-[13px] font-semibold">{t('importModal.title')}</h2>
         </div>

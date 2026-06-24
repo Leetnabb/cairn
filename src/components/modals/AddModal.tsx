@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { useTranslation } from 'react-i18next';
 import { useStore, EMPTY_INITIATIVES } from '../../stores/useStore';
 import { DIMENSIONS } from '../../types';
@@ -88,6 +89,8 @@ export function AddModal() {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [setAddModalOpen]);
+
+  const dialogRef = useFocusTrap<HTMLDivElement>();
 
   const l1Caps = capabilities.filter(c => c.level === 1);
 
@@ -183,7 +186,7 @@ export function AddModal() {
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setAddModalOpen(false)}>
-      <div className="relative bg-card rounded-lg shadow-lg w-[440px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={t('nav.addNew')} tabIndex={-1} className="relative bg-card rounded-lg shadow-lg w-[440px] max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
         {confirmMsg && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-green-600 text-white text-[11px] font-medium px-3 py-1 rounded-full shadow-md z-10 animate-fade-in">
             &#10003; {t('common.created')}
