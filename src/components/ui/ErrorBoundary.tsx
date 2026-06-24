@@ -3,6 +3,10 @@ import i18n from '../../i18n';
 
 interface Props {
   children: ReactNode;
+  /** Optional inline fallback for local boundaries; defaults to the full-screen reload screen. */
+  fallback?: ReactNode;
+  /** Optional label to identify which boundary caught the error in logs. */
+  label?: string;
 }
 
 interface State {
@@ -17,11 +21,12 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('ErrorBoundary caught:', error, info.componentStack);
+    console.error(`ErrorBoundary${this.props.label ? ` [${this.props.label}]` : ''} caught:`, error, info.componentStack);
   }
 
   render() {
     if (this.state.hasError) {
+      if (this.props.fallback !== undefined) return this.props.fallback;
       return (
         <div className="h-full flex items-center justify-center bg-[var(--bg-lane)]">
           <div className="text-center p-8">
@@ -39,4 +44,21 @@ export class ErrorBoundary extends Component<Props, State> {
     }
     return this.props.children;
   }
+}
+
+/** Compact fallback for local boundaries so a crash in one region doesn't blank the whole app. */
+export function InlineErrorFallback() {
+  return (
+    <div className="h-full w-full flex items-center justify-center p-6 bg-[var(--bg-lane)]">
+      <div className="text-center">
+        <p className="text-sm text-text-secondary mb-3">{i18n.t('errors.description')}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-3 py-1.5 text-xs bg-primary text-white rounded hover:opacity-90 transition-opacity"
+        >
+          {i18n.t('errors.reload')}
+        </button>
+      </div>
+    </div>
+  );
 }

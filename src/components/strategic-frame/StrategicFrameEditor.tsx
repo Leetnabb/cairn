@@ -28,7 +28,7 @@ export function StrategicFrameEditor() {
 
   const handleAddTheme = () => {
     if (!newThemeName.trim()) return;
-    addTheme({ id: `st_${Date.now()}`, name: newThemeName.trim(), description: '', goalIds: [] });
+    addTheme({ id: `st_${crypto.randomUUID()}`, name: newThemeName.trim(), description: '', goalIds: [] });
     setNewThemeName('');
   };
 

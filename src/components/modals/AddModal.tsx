@@ -113,7 +113,7 @@ export function AddModal() {
     if (!iName.trim()) return;
     const maxOrder = Math.max(0, ...initiatives.filter(i => i.dimension === iDim && i.horizon === iHorizon).map(i => i.order));
     addInitiative({
-      id: `i_${Date.now()}`, name: iName.trim(), description: iDesc.trim(), dimension: iDim, horizon: iHorizon,
+      id: `i_${crypto.randomUUID()}`, name: iName.trim(), description: iDesc.trim(), dimension: iDim, horizon: iHorizon,
       order: maxOrder + 1, owner: iOwner.trim(), capabilities: iCaps, dependsOn: iDeps, maturityEffect: {},
       notes: iNotes.trim(), valueChains: iVCs, status: iStatus, criticalPathOverride: iCriticalPathOverride,
     });
@@ -123,7 +123,7 @@ export function AddModal() {
   const handleAddCapability = (keepOpen: boolean) => {
     if (!cName.trim()) return;
     addCapability({
-      id: `c_${Date.now()}`, name: cName.trim(), description: cDesc.trim(), level: cLevel,
+      id: `c_${crypto.randomUUID()}`, name: cName.trim(), description: cDesc.trim(), level: cLevel,
       parent: cLevel === 2 ? (cParent || null) : null, maturity: cMat, maturityTarget: cMatTarget, risk: cRisk,
     });
     if (keepOpen) { resetCapabilityFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
@@ -131,20 +131,20 @@ export function AddModal() {
 
   const handleAddMilestone = (keepOpen: boolean) => {
     if (!mName.trim()) return;
-    addMilestone({ id: `m_${Date.now()}`, name: mName.trim(), horizon: mHorizon, position: mPosition, color: mColor });
+    addMilestone({ id: `m_${crypto.randomUUID()}`, name: mName.trim(), horizon: mHorizon, position: mPosition, color: mColor });
     if (keepOpen) { resetMilestoneFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddValueChain = (keepOpen: boolean) => {
     if (!vcName.trim()) return;
-    addValueChain({ id: `vc_${Date.now()}`, name: vcName.trim(), color: vcColor });
+    addValueChain({ id: `vc_${crypto.randomUUID()}`, name: vcName.trim(), color: vcColor });
     if (keepOpen) { resetValueChainFields(); showConfirmation(); } else { showConfirmation(); setTimeout(() => setAddModalOpen(false), 600); }
   };
 
   const handleAddEffect = (keepOpen: boolean) => {
     if (!eName.trim()) return;
     addEffect({
-      id: `eff_${Date.now()}`, name: eName.trim(), description: eDesc.trim(), type: eType,
+      id: `eff_${crypto.randomUUID()}`, name: eName.trim(), description: eDesc.trim(), type: eType,
       capabilities: eCaps, initiatives: eInits,
       indicator: eIndicator.trim() || undefined,
       baseline: eBaseline.trim() || undefined,
@@ -156,7 +156,7 @@ export function AddModal() {
   const handleAddGoal = (keepOpen: boolean) => {
     if (!gName.trim()) return;
     addGoal({
-      id: `goal_${Date.now()}`,
+      id: `goal_${crypto.randomUUID()}`,
       name: gName.trim(),
       description: gDesc.trim(),
       themeIds: [],
@@ -166,7 +166,7 @@ export function AddModal() {
 
   const handleInlineVCCreate = () => {
     if (!inlineVCName.trim()) return;
-    const id = `vc_${Date.now()}`;
+    const id = `vc_${crypto.randomUUID()}`;
     addValueChain({ id, name: inlineVCName.trim(), color: inlineVCColor });
     setIVCs(prev => [...prev, id]);
     setInlineVCName(''); setInlineVCColor('#ec4899'); setShowInlineVC(false);

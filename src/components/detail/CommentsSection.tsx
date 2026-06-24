@@ -23,7 +23,7 @@ export function CommentsSection({ itemId }: Props) {
   const handleAdd = () => {
     if (!text.trim()) return;
     addComment({
-      id: `comment_${Date.now()}`,
+      id: `comment_${crypto.randomUUID()}`,
       itemId,
       text: text.trim(),
       timestamp: new Date().toISOString(),
