@@ -31,13 +31,13 @@ export function ScenarioDropdown() {
   }, [open]);
 
   const handleCreate = () => {
-    const id = `scenario_${Date.now()}`;
+    const id = `scenario_${crypto.randomUUID()}`;
     addScenario({ id, name: t('scenarios.newScenario'), color: '#8b5cf6' });
     setActiveScenario(id);
   };
 
   const handleDuplicate = () => {
-    const id = `scenario_${Date.now()}`;
+    const id = `scenario_${crypto.randomUUID()}`;
     addScenario({ id, name: t('scenarios.copyName', { name: active?.name ?? 'Scenario' }), color: '#8b5cf6' }, activeScenario);
     setActiveScenario(id);
   };

@@ -54,7 +54,7 @@ export function useAIChat() {
 
     // Add user message
     const userMsg = {
-      id: `msg_${Date.now()}`,
+      id: `msg_${crypto.randomUUID()}`,
       role: 'user' as const,
       content: text,
     };

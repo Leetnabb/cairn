@@ -26,6 +26,7 @@ import { PresentationMenu } from './components/header/PresentationMenu';
 import { BoardView } from './components/board/BoardView';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LocalStorageMigration } from './components/settings/LocalStorageMigration';
+import { ErrorBoundary, InlineErrorFallback } from './components/ui/ErrorBoundary';
 import { useAuth } from './providers/AuthProvider';
 import { useComplexityLevel } from './hooks/useComplexityLevel';
 import { useSupabaseSync } from './hooks/useSupabaseSync';
@@ -80,12 +81,12 @@ export default function App() {
   }, []);
 
   if (presentationMode && !isBoardUser) {
-    return <PresentationMode />;
+    return <ErrorBoundary label="presentation"><PresentationMode /></ErrorBoundary>;
   }
 
   // BOARD role users are restricted to Board View only — no app access
   if (isBoardUser) {
-    return <BoardView />;
+    return <ErrorBoundary label="board"><BoardView /></ErrorBoundary>;
   }
 
   const showDetailPanel = selectedItem !== null || aiPanelOpen;
@@ -120,10 +121,16 @@ export default function App() {
 
         {/* Board content canvas */}
         <div className={`app-canvas flex-1 flex overflow-hidden ${transitioning ? 'transitioning' : ''}`}>
-          <BoardView />
+          <ErrorBoundary label="board" fallback={<InlineErrorFallback />}>
+            <BoardView />
+          </ErrorBoundary>
         </div>
 
-        {meetingMode && <MeetingMode />}
+        {meetingMode && (
+          <ErrorBoundary label="meeting" fallback={<InlineErrorFallback />}>
+            <MeetingMode />
+          </ErrorBoundary>
+        )}
       </div>
     );
   }
@@ -169,6 +176,7 @@ export default function App() {
 
       {/* Main content */}
       <div className={`app-canvas flex-1 flex overflow-hidden ${transitioning ? 'transitioning' : ''}`}>
+        <ErrorBoundary label="main-view" fallback={<InlineErrorFallback />}>
         {view === 'dashboard' ? (
           <Dashboard />
         ) : view === 'capabilities' ? (
@@ -183,7 +191,7 @@ export default function App() {
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
-                    {aiPanelOpen ? <AIChatPanel /> : <DetailPanel />}
+                    {aiPanelOpen ? <ErrorBoundary label="ai-chat" fallback={<InlineErrorFallback />}><AIChatPanel /></ErrorBoundary> : <DetailPanel />}
                   </div>
                 </div>
               </aside>
@@ -209,13 +217,14 @@ export default function App() {
                     <span className="text-xs text-text-secondary">&raquo;</span>
                   </button>
                   <div className="flex-1 overflow-y-auto">
-                    {aiPanelOpen ? <AIChatPanel /> : <DetailPanel />}
+                    {aiPanelOpen ? <ErrorBoundary label="ai-chat" fallback={<InlineErrorFallback />}><AIChatPanel /></ErrorBoundary> : <DetailPanel />}
                   </div>
                 </div>
               </aside>
             )}
           </>
         )}
+        </ErrorBoundary>
       </div>
 
       {/* Footer */}
@@ -224,7 +233,11 @@ export default function App() {
       </footer>
 
       {/* Meeting Mode overlay */}
-      {meetingMode && <MeetingMode />}
+      {meetingMode && (
+        <ErrorBoundary label="meeting" fallback={<InlineErrorFallback />}>
+          <MeetingMode />
+        </ErrorBoundary>
+      )}
 
       {/* Capability Overlay */}
       {capabilityOverlayOpen && <CapabilityOverlay />}

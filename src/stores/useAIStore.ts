@@ -61,7 +61,7 @@ export const useAIStore = create<AIState>()(
             messages: [
               ...s.messages,
               {
-                id: `msg_${Date.now()}`,
+                id: `msg_${crypto.randomUUID()}`,
                 role: 'assistant',
                 content: streamingText,
               },

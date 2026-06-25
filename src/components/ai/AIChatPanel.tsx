@@ -58,7 +58,7 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
         .filter((id): id is string => !!id);
 
       addInitiative({
-        id: `i_${Date.now()}`,
+        id: `i_${crypto.randomUUID()}`,
         name: suggestion.name,
         description: suggestion.description || '',
         dimension: dim,
@@ -83,7 +83,7 @@ function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
       }
 
       addCapability({
-        id: `c_${Date.now()}`,
+        id: `c_${crypto.randomUUID()}`,
         name: suggestion.name,
         description: suggestion.description || '',
         level: (suggestion.level === 1 ? 1 : 2) as 1 | 2,
