@@ -1,9 +1,14 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import {
+  corsHeaders,
+  jsonResponse,
+  underRateLimit,
+  logUsage,
+  extractText,
+} from '../_shared/edge.ts';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const RATE_LIMIT_KIND = 'analyze';
+const DAILY_LIMIT = 50;
 
 const ANALYSIS_PROMPT = `You are a strategic advisor analyzing organizational documents.
 
@@ -43,17 +48,15 @@ Rules:
 - readiness: 80-100 = few/no questions needed, 40-79 = questions will help significantly, 0-39 = very little found`;
 
 Deno.serve(async (req) => {
+  const cors = corsHeaders(req);
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: cors });
   }
 
   try {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Missing authorization' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ error: 'Missing authorization' }, 401, cors);
     }
 
     const supabase = createClient(
@@ -64,26 +67,21 @@ Deno.serve(async (req) => {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ error: 'Unauthorized' }, 401, cors);
     }
 
     const { input, industry, orgSize } = await req.json();
     if (!input || typeof input !== 'string') {
-      return new Response(JSON.stringify({ error: 'Missing input' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ error: 'Missing input' }, 400, cors);
+    }
+
+    if (!(await underRateLimit(supabase, user.id, RATE_LIMIT_KIND, DAILY_LIMIT))) {
+      return jsonResponse({ error: 'Rate limit exceeded' }, 429, cors);
     }
 
     const anthropicKey = Deno.env.get('ANTHROPIC_API_KEY');
     if (!anthropicKey) {
-      return new Response(JSON.stringify({ error: 'AI service not configured' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ error: 'AI service not configured' }, 500, cors);
     }
 
     const contextPrefix = [
@@ -94,6 +92,8 @@ Deno.serve(async (req) => {
     const userMessage = contextPrefix
       ? `${contextPrefix}\n\n${input}`
       : input;
+
+    await logUsage(supabase, user.id, RATE_LIMIT_KIND);
 
     const aiResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -111,23 +111,18 @@ Deno.serve(async (req) => {
     });
 
     if (!aiResponse.ok) {
-      return new Response(JSON.stringify({ error: `AI request failed: ${aiResponse.status}` }), {
-        status: 502,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ error: `AI request failed: ${aiResponse.status}` }, 502, cors);
     }
 
     const aiData = await aiResponse.json();
-    const text = aiData.content[0].text;
+    const text = extractText(aiData);
+    if (!text) {
+      return jsonResponse({ error: 'AI returned no usable content' }, 502, cors);
+    }
 
-    return new Response(JSON.stringify({ text }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ text }, 200, cors);
   } catch (err) {
     console.error('[analyze-input] Unhandled error', err);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ error: 'Internal server error' }, 500, cors);
   }
 });
