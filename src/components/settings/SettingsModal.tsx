@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { OrganisationTab } from './OrganisationTab';
 import { TeamTab } from './TeamTab';
 import { PlanTab } from './PlanTab';
@@ -15,6 +16,7 @@ type Tab = 'organisation' | 'team' | 'plan' | 'data' | 'strategicFrame';
 export function SettingsModal({ onClose }: Props) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>('organisation');
+  const dialogRef = useFocusTrap<HTMLDivElement>();
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'organisation', label: t('settings.tabs.organisation') },
@@ -26,7 +28,7 @@ export function SettingsModal({ onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-card rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[85vh] flex flex-col">
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={t('settings.title')} tabIndex={-1} className="bg-card rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[85vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <h2 className="text-[14px] font-semibold text-text-primary">
@@ -35,7 +37,7 @@ export function SettingsModal({ onClose }: Props) {
           <button
             onClick={onClose}
             className="w-7 h-7 flex items-center justify-center text-text-secondary hover:bg-[var(--bg-hover)] rounded transition-colors text-[16px]"
-            aria-label="Close"
+            aria-label={t('common.close')}
           >
             ×
           </button>

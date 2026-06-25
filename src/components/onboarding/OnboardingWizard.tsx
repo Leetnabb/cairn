@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { useOnboardingStore } from '../../stores/useOnboardingStore';
 import { useStore } from '../../stores/useStore';
 import { StepWelcome } from './StepWelcome';
@@ -67,6 +68,7 @@ export function OnboardingWizard() {
   const importState = useStore(s => s.importState);
   const setComplexityLevel = useStore(s => s.setComplexityLevel);
   const setModules = useStore(s => s.setModules);
+  const dialogRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   if (!isOpen) return null;
 
@@ -102,6 +104,11 @@ export function OnboardingWizard() {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={close}>
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('onboarding.title', 'Onboarding')}
+        tabIndex={-1}
         className="bg-card rounded-xl shadow-xl w-[540px] max-h-[88vh] overflow-hidden flex flex-col"
         onClick={e => e.stopPropagation()}
       >
