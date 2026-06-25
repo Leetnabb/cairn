@@ -664,8 +664,11 @@ export const useStore = create<StoreState>()(
     {
       limit: 50,
       partialize: (state) => {
-        const { ui: _ui, ...rest } = state;
-        return rest as Omit<StoreState, 'ui'>;
+        // Exclude `ui` (transient) and `snapshots` from undo history so that
+        // saving/restoring a snapshot is not itself an undoable step (otherwise
+        // Ctrl+Z would delete a just-saved snapshot).
+        const { ui: _ui, snapshots: _snapshots, ...rest } = state;
+        return rest as Omit<StoreState, 'ui' | 'snapshots'>;
       },
     }
   ),

@@ -156,13 +156,13 @@ export function detectCrossDimensionGaps(initiatives: Initiative[]): DiagnosticR
 
   for (const init of initiatives) {
     const isActive = init.status === 'active' || (!init.status && init.horizon === 'near');
-    if (isActive) dimStats[init.dimension].own++;
+    if (isActive && dimStats[init.dimension]) dimStats[init.dimension].own++;
   }
 
   for (const init of initiatives) {
     for (const depId of init.dependsOn) {
       const dep = initMap.get(depId);
-      if (dep && dep.dimension !== init.dimension) {
+      if (dep && dep.dimension !== init.dimension && dimStats[dep.dimension]) {
         dimStats[dep.dimension].inbound++;
         dimStats[dep.dimension].sources.add(init.dimension);
       }
