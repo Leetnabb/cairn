@@ -6,30 +6,44 @@ functions that proxy Anthropic so the API key never reaches the browser.
 ## Layout
 
 - `migrations/` — SQL migrations (apply in order).
-- `functions/` — Deno edge functions.
-  - `_shared/edge.ts` — shared CORS, rate-limiting, validation and Anthropic helpers.
+- `functions/` — Deno edge functions, each **self-contained** (the CORS,
+  rate-limiting, validation and Anthropic helpers are inlined at the top of each
+  `index.ts`). This means a function can be created/edited/deployed entirely in
+  the Supabase **dashboard editor** without a shared module.
   - `ai-chat`, `ai-form-suggest`, `analyze-input`, `generate-strategic-picture`.
+
+> The helper block is duplicated across the four functions on purpose (so they
+> stay dashboard-deployable). If you change a helper (e.g. CORS origins logic),
+> update it in all four files.
 
 ## Edge function secrets
 
-Set via the Supabase CLI (never commit these):
+Set under **Dashboard → Edge Functions → Secrets** (or via CLI). Never commit them.
 
-```bash
-supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
-# Optional — defaults to www.cairnpath.io, cairnpath.io and localhost:5173
-supabase secrets set ALLOWED_ORIGINS="https://www.cairnpath.io,https://cairnpath.io,http://localhost:5173"
-```
+- `ANTHROPIC_API_KEY` (required) — Anthropic API key used by all four functions.
+- `ALLOWED_ORIGINS` (optional) — comma-separated CORS allow-list. Defaults to
+  `https://www.cairnpath.io,https://cairnpath.io,http://localhost:5173`.
 
-## Deploy order (IMPORTANT)
+`SUPABASE_URL` / `SUPABASE_ANON_KEY` are provided automatically by the platform.
+
+## Deploy
+
+### Migrations first (IMPORTANT)
 
 The functions rate-limit per kind using the `generation_log.kind` column added in
-migration `002`. **Apply migrations before deploying the functions**, otherwise the
-rate-limit query references a missing column and AI requests fail with 500.
+migration `002`. **Apply it before deploying the functions** or AI requests fail
+with 500 (missing column).
 
-```bash
-supabase db push                      # 1. apply migrations (incl. 002)
-supabase functions deploy ai-chat ai-form-suggest analyze-input generate-strategic-picture
-```
+- **Dashboard:** SQL Editor → paste & run the contents of
+  `migrations/002_generation_log_kind.sql` (idempotent).
+- **CLI:** `supabase db push`.
+
+### Functions
+
+- **Dashboard:** Edge Functions → select the function (or "Deploy a new
+  function") → paste the whole `index.ts` into the editor → Deploy. Repeat for
+  all four. No shared file needed.
+- **CLI:** `supabase functions deploy ai-chat ai-form-suggest analyze-input generate-strategic-picture`.
 
 ## Rate limits (per user, rolling 24h)
 

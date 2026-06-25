@@ -1,11 +1,62 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import {
-  corsHeaders,
-  jsonResponse,
-  underRateLimit,
-  logUsage,
-  extractText,
-} from '../_shared/edge.ts';
+
+// --- Inlined shared helpers (kept self-contained so this function can be
+// deployed via the Supabase dashboard editor without a _shared module) ---
+
+type SupabaseClient = ReturnType<typeof createClient>;
+
+const DEFAULT_ORIGINS = ['https://www.cairnpath.io', 'https://cairnpath.io', 'http://localhost:5173'];
+
+function allowedOrigins(): string[] {
+  const env = Deno.env.get('ALLOWED_ORIGINS');
+  if (env) return env.split(',').map((s) => s.trim()).filter(Boolean);
+  return DEFAULT_ORIGINS;
+}
+
+function corsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get('Origin');
+  const allowed = allowedOrigins();
+  const allowOrigin = origin && allowed.includes(origin) ? origin : allowed[0];
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Vary': 'Origin',
+  };
+}
+
+function jsonResponse(body: unknown, status: number, cors: Record<string, string>): Response {
+  return new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
+}
+
+const DAY_MS = 86_400_000;
+
+async function underRateLimit(supabase: SupabaseClient, userId: string, kind: string, limit: number): Promise<boolean> {
+  const { count, error } = await supabase
+    .from('generation_log')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('kind', kind)
+    .gte('created_at', new Date(Date.now() - DAY_MS).toISOString());
+  if (error) throw error;
+  return (count ?? 0) < limit;
+}
+
+async function logUsage(supabase: SupabaseClient, userId: string, kind: string): Promise<void> {
+  const { error } = await supabase.from('generation_log').insert({ user_id: userId, kind });
+  if (error) console.error('[rateLimit] failed to log usage', error);
+}
+
+function extractText(aiData: unknown): string {
+  const blocks = (aiData as { content?: unknown })?.content;
+  if (!Array.isArray(blocks)) return '';
+  const textBlock = blocks.find(
+    (b) => b && typeof b === 'object' && (b as { type?: string }).type === 'text' &&
+      typeof (b as { text?: unknown }).text === 'string',
+  );
+  return (textBlock as { text?: string } | undefined)?.text ?? '';
+}
+
+// --- Function ---
 
 const RATE_LIMIT_KIND = 'generate';
 const DAILY_LIMIT = 10;
