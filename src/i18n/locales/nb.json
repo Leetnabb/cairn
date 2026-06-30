@@ -589,7 +589,9 @@
       "invalidKey": "Ugyldig API-nøkkel. Sjekk innstillingene.",
       "tooMany": "For mange forespørsler. Vent litt og prøv igjen.",
       "serverError": "Tjenestefeil hos AI-leverandør. Prøv igjen senere.",
-      "networkError": "Nettverksfeil. Sjekk internettforbindelsen."
+      "networkError": "Nettverksfeil. Sjekk internettforbindelsen.",
+      "sessionExpired": "Økten er utløpt. Logg inn på nytt for å bruke AI.",
+      "timeout": "Forespørselen tok for lang tid. Prøv igjen."
     }
   },
   "errors": {

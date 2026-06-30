@@ -26,9 +26,10 @@ function buildChatContext(): string {
   });
 }
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: unknown, usingProxy: boolean): string {
   if (err instanceof AIError) {
-    if (err.status === 401) return i18n.t('ai.errors.invalidKey');
+    if (err.status === 408) return i18n.t('ai.errors.timeout');
+    if (err.status === 401) return usingProxy ? i18n.t('ai.errors.sessionExpired') : i18n.t('ai.errors.invalidKey');
     if (err.status === 429) return i18n.t('ai.errors.tooMany');
     if (err.status >= 500) return i18n.t('ai.errors.serverError');
   }
@@ -89,7 +90,7 @@ export function useAIChat() {
         useAIStore.getState().finalizeStreaming();
       } else {
         useAIStore.getState().setStreaming(false);
-        useAIStore.getState().setError(getErrorMessage(err));
+        useAIStore.getState().setError(getErrorMessage(err, !apiKey));
       }
     } finally {
       abortRef.current = null;
