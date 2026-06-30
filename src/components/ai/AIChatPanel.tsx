@@ -7,6 +7,8 @@ import { parseSuggestions, type AISuggestion } from '../../lib/ai/parseSuggestio
 import type { DimensionKey, Horizon } from '../../types';
 import APIKeyInput from './APIKeyInput';
 import { EmptyState } from '../ui/EmptyState';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../providers/AuthProvider';
 
 function SuggestionCard({ suggestion }: { suggestion: AISuggestion }) {
   const { t } = useTranslation();
@@ -254,6 +256,10 @@ export default function AIChatPanel() {
   const setShowApiKeyInput = useAIStore((s) => s.setShowApiKeyInput);
 
   const { sendMessage, stopStreaming } = useAIChat();
+  const { isAuthenticated } = useAuth();
+  // When the Supabase proxy is available, AI uses the server-side key — so the
+  // personal "bring your own key" box is only needed as a fallback.
+  const canUseProxy = !!supabase && isAuthenticated;
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -303,7 +309,7 @@ export default function AIChatPanel() {
         </div>
       </div>
 
-      {(!apiKeyConfigured || showApiKeyInput) && <APIKeyInput />}
+      {((!apiKeyConfigured && !canUseProxy) || showApiKeyInput) && <APIKeyInput />}
 
       {error && (
         <div className="px-3 py-2 bg-red-50 border-b border-red-200 text-[10px] text-red-700">
