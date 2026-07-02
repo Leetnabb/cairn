@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
 import type { AppState, UIState, Capability, Initiative, Scenario, Milestone, ValueChain, Effect, Comment, Snapshot, DimensionKey, ViewMode, EffectType, ModuleSettings, Strategy, ComplexityLevel, MeetingLens, Horizon, StrategicFrame, StrategicTheme, StrategicGoal } from '../types';
-import { createDefaultState } from '../data/defaults';
+import { createDefaultState, defaultScenario, defaultModules } from '../data/defaults';
 import type { IndustryTemplate } from '../data/templates';
 import { reorderInitiatives, reorderEffects, reorderCapabilities } from '../lib/ordering';
 
@@ -115,6 +115,10 @@ interface StoreState extends AppState {
   updateStrategicTheme: (id: string, updates: Partial<StrategicTheme>) => void;
   deleteStrategicTheme: (id: string) => void;
   clearStrategicFrame: () => void;
+
+  // Reset to an empty workspace (used on sign-out so one user's data never
+  // lingers into the next session on the same browser).
+  resetWorkspace: () => void;
 }
 
 const defaultUI: UIState = {
@@ -659,10 +663,34 @@ export const useStore = create<StoreState>()(
           };
         }),
         clearStrategicFrame: () => set({ strategicFrame: undefined }),
+
+        resetWorkspace: () => set({
+          strategies: [],
+          capabilities: [],
+          scenarios: [defaultScenario],
+          scenarioStates: { [defaultScenario.id]: { initiatives: [] } },
+          activeScenario: defaultScenario.id,
+          milestones: [],
+          valueChains: [],
+          effects: [],
+          comments: [],
+          snapshots: [],
+          modules: defaultModules,
+          strategicFrame: undefined,
+        }),
       };
     },
     {
       limit: 50,
+      // Skip recording an undo step when the tracked (non-ui, non-snapshot) state
+      // is unchanged — so snapshot save/delete no longer create dead undo entries.
+      equality: (a: Omit<StoreState, 'ui' | 'snapshots'>, b: Omit<StoreState, 'ui' | 'snapshots'>) => {
+        const ao = a as unknown as Record<string, unknown>;
+        const bo = b as unknown as Record<string, unknown>;
+        const ak = Object.keys(ao);
+        if (ak.length !== Object.keys(bo).length) return false;
+        return ak.every((k) => Object.is(ao[k], bo[k]));
+      },
       partialize: (state) => {
         // Exclude `ui` (transient) and `snapshots` from undo history so that
         // saving/restoring a snapshot is not itself an undoable step (otherwise

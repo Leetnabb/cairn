@@ -60,6 +60,7 @@ function extractText(aiData: unknown): string {
 
 const RATE_LIMIT_KIND = 'analyze';
 const DAILY_LIMIT = 50;
+const MAX_INPUT_CHARS = 200_000;
 
 const ANALYSIS_PROMPT = `You are a strategic advisor analyzing organizational documents.
 
@@ -124,6 +125,9 @@ Deno.serve(async (req) => {
     const { input, industry, orgSize } = await req.json();
     if (!input || typeof input !== 'string') {
       return jsonResponse({ error: 'Missing input' }, 400, cors);
+    }
+    if (input.length > MAX_INPUT_CHARS) {
+      return jsonResponse({ error: 'Input too large' }, 413, cors);
     }
 
     if (!(await underRateLimit(supabase, user.id, RATE_LIMIT_KIND, DAILY_LIMIT))) {

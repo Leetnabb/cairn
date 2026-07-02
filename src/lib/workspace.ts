@@ -1,85 +1,97 @@
 import { supabase } from './supabase';
 
 /**
- * Supabase workspace persistence. This is the single source of truth for
- * cross-device sync (localStorage acts only as an offline cache). All functions
- * surface real errors instead of swallowing them, so callers can fall back to
- * local-only mode deliberately.
+ * Supabase workspace persistence. This is the source of truth for cross-device
+ * sync (localStorage is an offline cache). Reads return null on "no session";
+ * writes THROW on "no session" so the caller can surface/retry instead of
+ * silently no-op'ing. Saves use optimistic concurrency on `updated_at` so a
+ * stale tab/device cannot blindly clobber newer remote data.
  */
 
-// PostgREST "no rows" code returned by .single() when nothing matches.
-const NO_ROWS = 'PGRST116';
-
-export async function saveWorkspaceToSupabase(workspaceId: string, name: string, state: object): Promise<void> {
-  if (!supabase) return;
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) return;
-
-  const { error } = await supabase
-    .from('workspaces')
-    .upsert({
-      id: workspaceId,
-      user_id: session.user.id,
-      name,
-      state,
-    }, { onConflict: 'id' });
-
-  if (error) throw error;
+export interface WorkspaceRecord {
+  id: string;
+  state: unknown;
+  updated_at: string;
 }
 
-export async function loadWorkspaceFromSupabase(workspaceId: string): Promise<object | null> {
+export type SaveResult =
+  | { ok: true; updated_at: string }
+  | { ok: false; conflict: WorkspaceRecord | null };
+
+async function requireSession() {
+  if (!supabase) throw new Error('Supabase not configured');
+  const session = (await supabase.auth.getSession()).data.session;
+  if (!session) throw new Error('Not authenticated');
+  return { client: supabase, userId: session.user.id };
+}
+
+/** The user's most-recently-updated workspace, or null if they have none. */
+export async function fetchPrimaryWorkspace(): Promise<WorkspaceRecord | null> {
   if (!supabase) return null;
   const session = (await supabase.auth.getSession()).data.session;
   if (!session) return null;
 
   const { data, error } = await supabase
     .from('workspaces')
-    .select('state')
-    .eq('id', workspaceId)
+    .select('id, state, updated_at')
     .eq('user_id', session.user.id)
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ? { id: data.id, state: data.state, updated_at: data.updated_at } : null;
+}
+
+/**
+ * Create the user's workspace. Best-effort idempotency: re-checks for an
+ * existing workspace first so a second tab racing first-login reuses it rather
+ * than creating a duplicate (a unique (user_id, name) index would close the
+ * remaining narrow window — see supabase/README.md).
+ */
+export async function createWorkspace(name: string, state: object): Promise<WorkspaceRecord> {
+  const { client, userId } = await requireSession();
+
+  const existing = await fetchPrimaryWorkspace();
+  if (existing) return existing;
+
+  const { data, error } = await client
+    .from('workspaces')
+    .insert({ user_id: userId, name, state })
+    .select('id, state, updated_at')
     .single();
 
-  if (error) {
-    // "Not found" is an expected, non-exceptional outcome — distinguish it from
-    // a real transport/permission failure so callers don't treat a transient
-    // error as "no workspace" and overwrite good data.
-    if (error.code === NO_ROWS) return null;
-    throw error;
+  if (error) throw error;
+  return { id: data.id, state: data.state, updated_at: data.updated_at };
+}
+
+/**
+ * Save state with optimistic concurrency. The update only applies if the row's
+ * `updated_at` still equals `expectedUpdatedAt`; otherwise another writer won
+ * and we return the current remote so the caller can resync instead of clobber.
+ */
+export async function saveWorkspace(
+  id: string,
+  name: string,
+  state: object,
+  expectedUpdatedAt: string,
+): Promise<SaveResult> {
+  const { client, userId } = await requireSession();
+
+  const { data, error } = await client
+    .from('workspaces')
+    .update({ name, state })
+    .eq('id', id)
+    .eq('user_id', userId)
+    .eq('updated_at', expectedUpdatedAt)
+    .select('updated_at')
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) {
+    // No row matched the expected updated_at → concurrent write (or row gone).
+    const current = await fetchPrimaryWorkspace();
+    return { ok: false, conflict: current };
   }
-
-  return data?.state ?? null;
-}
-
-export async function listWorkspacesFromSupabase(): Promise<Array<{ id: string; name: string; updated_at: string }>> {
-  if (!supabase) return [];
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) return [];
-
-  const { data, error } = await supabase
-    .from('workspaces')
-    .select('id, name, updated_at')
-    .eq('user_id', session.user.id)
-    .order('updated_at', { ascending: false });
-
-  if (error) throw error;
-  return data ?? [];
-}
-
-export async function createWorkspaceInSupabase(name: string, state: object): Promise<string> {
-  if (!supabase) throw new Error('Supabase not configured');
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) throw new Error('Not authenticated');
-
-  const id = crypto.randomUUID();
-  const { error } = await supabase
-    .from('workspaces')
-    .insert({
-      id,
-      user_id: session.user.id,
-      name,
-      state,
-    });
-
-  if (error) throw error;
-  return id;
+  return { ok: true, updated_at: data.updated_at };
 }

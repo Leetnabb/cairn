@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { useStore } from '../stores/useStore';
 
 type TenantRole = 'OWNER' | 'ADMIN' | 'EDITOR' | 'VIEWER' | 'BOARD';
 type PlanTier = 'FREE' | 'PRO' | 'ENTERPRISE';
@@ -38,6 +39,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!mounted) return;
       setSession(session);
       setIsLoading(false);
+
+      // Clear the local workspace on sign-out so one user's data never lingers
+      // into the next session on the same browser (leak/loss on user switch).
+      if (event === 'SIGNED_OUT') {
+        useStore.getState().resetWorkspace();
+        useStore.temporal.getState().clear();
+      }
 
       // Create profile on first sign-in (replaces DB trigger)
       if (event === 'SIGNED_IN' && session?.user && supabase) {
