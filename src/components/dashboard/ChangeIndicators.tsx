@@ -15,7 +15,10 @@ export function ChangeIndicators({ snapshots, initiatives, capabilities }: Props
     if (snapshots.length === 0) return null;
     const latest = snapshots[0];
     const prevData = latest.data;
-    const prevInits = Object.values(prevData.scenarioStates).flatMap(s => s.initiatives);
+    // Compare against the snapshot's ACTIVE scenario only — `initiatives` (from
+    // Dashboard) is the current active scenario, so summing all scenarios here
+    // produced phantom deltas when more than one scenario exists.
+    const prevInits = prevData.scenarioStates[prevData.activeScenario]?.initiatives ?? [];
     const prevCaps = prevData.capabilities;
 
     const items: { label: string; delta: string; color: string }[] = [];

@@ -34,9 +34,14 @@ export function PresentationMode() {
   const themes = useStore(s => s.strategicFrame?.themes ?? []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') setPresentationMode(false);
-    else if (e.key === 'ArrowRight' || e.key === ' ') setPresentationSlide(Math.min(slide + 1, SLIDES.length - 1));
-    else if (e.key === 'ArrowLeft') setPresentationSlide(Math.max(slide - 1, 0));
+    if (e.key === 'Escape') { setPresentationMode(false); return; }
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault(); // Space/→ shouldn't also scroll the slide container
+      setPresentationSlide(Math.min(slide + 1, SLIDES.length - 1));
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      setPresentationSlide(Math.max(slide - 1, 0));
+    }
   }, [slide, setPresentationSlide, setPresentationMode]);
 
   useEffect(() => {

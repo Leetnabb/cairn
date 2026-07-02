@@ -452,7 +452,7 @@ export function CapabilityLandscape() {
     titleKey: string,
     _bgClass: string,
   ) => {
-    if (domains.length === 0 && l1.length > 0) return null;
+    if (domains.length === 0) return null;
 
     const isCore = sectionKey === 'core';
 

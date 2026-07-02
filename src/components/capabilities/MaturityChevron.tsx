@@ -51,7 +51,7 @@ export function MaturityChevron({
   const childrenByStep = useMemo(() => {
     const map: Record<number, Capability[]> = { 1: [], 2: [], 3: [] };
     for (const child of children) {
-      map[child.maturity].push(child);
+      (map[child.maturity] ?? map[1]).push(child);
     }
     return map;
   }, [children]);
