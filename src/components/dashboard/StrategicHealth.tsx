@@ -66,7 +66,7 @@ export function StrategicHealth({ initiatives, capabilities, effects: _effects, 
     // Delta from last snapshot
     let initiativesDelta = 0;
     if (snapshots.length > 0) {
-      const lastSnapshot = snapshots[snapshots.length - 1];
+      const lastSnapshot = snapshots[0]; // store prepends snapshots, so [0] is the most recent
       const scenarioStates = lastSnapshot.data.scenarioStates;
       const activeScenario = lastSnapshot.data.activeScenario;
       const prevInitiatives = scenarioStates[activeScenario]?.initiatives ?? [];

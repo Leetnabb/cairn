@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
+import { exportPptx } from '../../lib/exportPptx';
 import type { MeetingLens } from '../../types';
 
 const LENS_ORDER: MeetingLens[] = ['narrative', 'path', 'capabilities', 'effects'];
@@ -17,6 +18,17 @@ export function MeetingNav() {
   const currentLens = useStore(s => s.ui.meetingLens);
   const setMeetingLens = useStore(s => s.setMeetingLens);
   const exitMeetingMode = useStore(s => s.exitMeetingMode);
+  const capabilities = useStore(s => s.capabilities);
+  const effects = useStore(s => s.effects);
+  const activeScenario = useStore(s => s.activeScenario);
+  const scenarioStates = useStore(s => s.scenarioStates);
+
+  const handleExport = () => {
+    const initiatives = scenarioStates[activeScenario]?.initiatives ?? [];
+    void exportPptx(capabilities, initiatives, effects).catch((e) =>
+      console.error('[MeetingNav] export failed', e),
+    );
+  };
 
   const [visible, setVisible] = useState(true);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -134,6 +146,7 @@ export function MeetingNav() {
         {/* Right: Export + Exit */}
         <div className="flex items-center gap-3 min-w-[160px] justify-end">
           <button
+            onClick={handleExport}
             className="px-4 py-2 text-sm rounded transition-colors min-h-10"
             style={{
               backgroundColor: 'var(--bg-hover)',
