@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from '../../stores/useStore';
 import { DIMENSION_MAP } from '../../types';
 import type { Initiative } from '../../types';
-import { Avatar } from '../ui/Avatar';
 
 interface Props {
   initiative: Initiative;
@@ -178,9 +177,12 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
         )}
         <div className={`text-[10px] font-medium leading-tight truncate ${isIdea ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
         {initiative.owner && (
-          <div className="flex items-center gap-1 mt-1 min-w-0">
-            <Avatar name={initiative.owner} size="xs" />
-            <span className="text-[9px] text-text-tertiary truncate" title={initiative.owner}>{initiative.owner}</span>
+          <div className="flex items-center gap-1 mt-1 min-w-0 text-text-tertiary">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21v-1a6 6 0 0 1 12 0v1" />
+            </svg>
+            <span className="text-[9px] truncate" title={initiative.owner}>{initiative.owner}</span>
           </div>
         )}
         {/* Compact info line */}
@@ -266,9 +268,12 @@ export const InitiativeBox = React.forwardRef<HTMLDivElement, Props>(function In
       )}
       <div className={`text-[10px] font-medium leading-tight truncate ${isIdea ? 'italic' : ''}`} title={initiative.name}>{initiative.name}</div>
       {initiative.owner && (
-        <div className="flex items-center gap-1 mt-1 min-w-0">
-          <Avatar name={initiative.owner} size="xs" />
-          <span className="text-[9px] text-text-tertiary truncate" title={initiative.owner}>{initiative.owner}</span>
+        <div className="flex items-center gap-1 mt-1 min-w-0 text-text-tertiary">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21v-1a6 6 0 0 1 12 0v1" />
+          </svg>
+          <span className="text-[9px] truncate" title={initiative.owner}>{initiative.owner}</span>
         </div>
       )}
       {/* Compact info line */}
