@@ -21,6 +21,18 @@ export default defineConfig([
     },
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      // Dev-only HMR hint; not a correctness issue — keep visible but non-blocking.
+      'react-refresh/only-export-components': 'warn',
+      // Flags benign setState-in-mount-effect (bailed-out / one-shot); keep as a
+      // warning rather than a blocking error (see docs/code-review-2026-07-02.md).
+      'react-hooks/set-state-in-effect': 'warn',
+    },
+  },
+  {
+    // `any` is fine in test scaffolding.
+    files: ['**/*.test.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ])
