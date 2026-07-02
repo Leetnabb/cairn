@@ -60,6 +60,7 @@ function extractText(aiData: unknown): string {
 
 const RATE_LIMIT_KIND = 'generate';
 const DAILY_LIMIT = 10;
+const MAX_INPUT_CHARS = 200_000;
 
 const GENERATION_PROMPT = `You are a strategic advisor generating a strategic initiative overview.
 
@@ -114,6 +115,9 @@ Deno.serve(async (req) => {
     const { input, industry, orgSize, findings, answers } = await req.json();
     if (!input || typeof input !== 'string') {
       return jsonResponse({ error: 'Missing input' }, 400, cors);
+    }
+    if (input.length > MAX_INPUT_CHARS) {
+      return jsonResponse({ error: 'Input too large' }, 413, cors);
     }
 
     const anthropicKey = Deno.env.get('ANTHROPIC_API_KEY');
