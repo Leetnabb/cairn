@@ -280,6 +280,9 @@ export function Roadmap() {
       {/* Dependency thread SVG overlay */}
       <DependencyOverlay
         connections={depConnections}
+        // cardRefs Map identity is created once and never changes; reading .current
+        // here is safe (DependencyOverlay only reads its contents inside effects).
+        // eslint-disable-next-line react-hooks/refs
         cardRefs={cardRefs.current}
         containerRef={roadmapContainerRef}
       />

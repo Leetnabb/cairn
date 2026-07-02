@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback } from 'react';
 
 interface DependencyOverlayProps {
   connections: { fromId: string; toId: string }[];
@@ -55,42 +55,28 @@ function computeBezierPath(fromRect: DOMRect, toRect: DOMRect, containerRect: DO
   }
 }
 
+interface Layout {
+  paths: { key: string; d: string }[];
+  width: number;
+  height: number;
+}
+
 export function DependencyOverlay({ connections, cardRefs, containerRef }: DependencyOverlayProps) {
-  const [tick, setTick] = useState(0);
+  const [layout, setLayout] = useState<Layout>({ paths: [], width: 0, height: 0 });
 
-  useEffect(() => {
+  // All ref/DOM reads happen here (in a callback run from effects), never during render.
+  const recompute = useCallback(() => {
     const container = containerRef.current;
-    if (!container) return;
-    let rafId: number | null = null;
-    const throttledUpdate = () => {
-      if (rafId !== null) return;
-      rafId = requestAnimationFrame(() => {
-        setTick(t => t + 1);
-        rafId = null;
-      });
-    };
-    const ro = new ResizeObserver(throttledUpdate);
-    ro.observe(container);
-    container.addEventListener('scroll', throttledUpdate, { passive: true });
-    window.addEventListener('resize', throttledUpdate, { passive: true });
-    return () => {
-      ro.disconnect();
-      container.removeEventListener('scroll', throttledUpdate);
-      window.removeEventListener('resize', throttledUpdate);
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
-  }, [containerRef]);
-
-  const paths = useMemo(() => {
-    void tick; // dependency for recalculation
-    const container = containerRef.current;
-    if (!container || connections.length === 0) return [];
+    if (!container || connections.length === 0) {
+      setLayout({ paths: [], width: 0, height: 0 });
+      return;
+    }
 
     const containerRect = container.getBoundingClientRect();
     const scrollLeft = container.scrollLeft;
     const scrollTop = container.scrollTop;
 
-    return connections
+    const paths = connections
       .map(({ fromId, toId }) => {
         const fromEl = cardRefs.get(fromId);
         const toEl = cardRefs.get(toId);
@@ -105,12 +91,37 @@ export function DependencyOverlay({ connections, cardRefs, containerRef }: Depen
         };
       })
       .filter((p): p is { key: string; d: string } => p !== null);
-  }, [tick, connections, cardRefs, containerRef]);
 
-  if (paths.length === 0) return null;
+    setLayout({ paths, width: container.scrollWidth, height: container.scrollHeight });
+  }, [connections, cardRefs, containerRef]);
 
-  const container = containerRef.current;
-  if (!container) return null;
+  // Recompute synchronously before paint when inputs change (no visible flicker).
+  useLayoutEffect(() => { recompute(); }, [recompute]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    let rafId: number | null = null;
+    const throttledUpdate = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        recompute();
+        rafId = null;
+      });
+    };
+    const ro = new ResizeObserver(throttledUpdate);
+    ro.observe(container);
+    container.addEventListener('scroll', throttledUpdate, { passive: true });
+    window.addEventListener('resize', throttledUpdate, { passive: true });
+    return () => {
+      ro.disconnect();
+      container.removeEventListener('scroll', throttledUpdate);
+      window.removeEventListener('resize', throttledUpdate);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, [containerRef, recompute]);
+
+  if (layout.paths.length === 0) return null;
 
   return (
     <svg
@@ -119,13 +130,13 @@ export function DependencyOverlay({ connections, cardRefs, containerRef }: Depen
         position: 'absolute',
         top: 0,
         left: 0,
-        width: container.scrollWidth,
-        height: container.scrollHeight,
+        width: layout.width,
+        height: layout.height,
         pointerEvents: 'none',
         zIndex: 10,
       }}
     >
-      {paths.map(({ key, d }) => (
+      {layout.paths.map(({ key, d }) => (
         <path
           key={key}
           d={d}
